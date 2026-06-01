@@ -29,7 +29,7 @@ resource "azurerm_resource_group" "workshop" {
 
 module "foundry_account" {
   source  = "Azure/avm-res-cognitiveservices-account/azurerm"
-  version = ">= 0.11.0, < 1.0.0"
+  version = "~> 0.11.0"
 
   name                     = var.foundry_name
   location                 = var.location
@@ -42,7 +42,7 @@ module "foundry_account" {
 
 module "search_service" {
   source  = "Azure/avm-res-search-searchservice/azurerm"
-  version = ">= 0.1.0, < 1.0.0"
+  version = "~> 0.1.0"
 
   name                = var.search_name
   location            = var.location
@@ -51,7 +51,7 @@ module "search_service" {
 
 module "storage_account" {
   source  = "Azure/avm-res-storage-storageaccount/azurerm"
-  version = ">= 0.6.0, < 1.0.0"
+  version = "~> 0.6.0"
 
   name      = var.storage_account_name
   location  = var.location
@@ -85,10 +85,10 @@ resource "azapi_resource" "foundry_search_connection" {
 
   body = {
     properties = {
-      category            = "CognitiveSearch"
-      target              = local.search_resource_id
-      authType            = "SystemAssignedManagedIdentity"
-      isSharedToAll       = true
+      category                     = "CognitiveSearch"
+      target                       = local.search_resource_id
+      authType                     = "SystemAssignedManagedIdentity"
+      isSharedToAll                = true
       useWorkspaceManagedIdentity = true
       metadata = {
         resourceType = "AISearch"

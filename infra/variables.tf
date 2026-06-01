@@ -5,7 +5,7 @@ variable "location" {
 }
 
 variable "env_name" {
-  description = "Short environment suffix"
+  description = "Environment name used for tagging and azd environment mapping"
   type        = string
   default     = "hol"
 }
