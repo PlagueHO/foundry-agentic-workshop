@@ -17,9 +17,12 @@ htmlcov/
 
 # Azure / IaC outputs
 .azure/
-*.bicepparam
 *.tfstate
 *.tfstate.*
+.terraform/
+.terraform.lock.hcl
+crash.log
+crash.*.log
 
 # OS
 .DS_Store

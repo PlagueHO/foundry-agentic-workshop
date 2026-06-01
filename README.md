@@ -12,7 +12,9 @@ This repository scaffolds a **3–4 hour, L200–L300 instructor-led workshop** 
 - VS Code Insiders
 - Foundry Toolkit for VS Code
 - Python 3.11+
-- Azure CLI (`az`) and Bicep CLI support
+- Azure CLI (`az`)
+- Terraform 1.9+
+- Azure Developer CLI (`azd`)
 - An AI coding agent (GitHub Copilot or Claude Code)
 
 ## Agenda (3–4 hours)
@@ -30,7 +32,7 @@ This repository scaffolds a **3–4 hour, L200–L300 instructor-led workshop** 
 | 08 | Agent ID and publishing | 20 |
 
 ## Attendee setup flow
-1. Deploy shared environment from `infra/`.
+1. Deploy shared environment from `infra/` using `azd provision`.
 2. Assign each attendee their parameterized Foundry project.
 3. Complete `labs/00-setup` to verify auth, tools, and project access.
 4. Progress through labs in numerical order.
@@ -41,9 +43,35 @@ Plan for approximately **AUD 50/day** for a sandbox environment, depending on re
 ## Reset between runs
 Use `infra/teardown.sh` or `infra/teardown.ps1` to remove workshop resources between instructor deliveries, then redeploy with updated attendee count.
 
+## Infrastructure deployment (Terraform + azd)
+The infrastructure is defined in Terraform using:
+- **Azure Verified Modules (AVM)** for Foundry account, Azure AI Search, and Storage
+- **AzAPI** for Azure AI Foundry project child resources and Foundry-to-Search connection
+
+### Quick start
+```bash
+az login
+azd auth login
+./infra/deploy.sh hol australiaeast rg-foundry-hol 20
+```
+
+### Optional custom naming
+Set Terraform variables in the active azd environment before provisioning:
+```bash
+azd env set TF_VAR_foundry_name foundryhol001
+azd env set TF_VAR_search_name foundryholsearch001
+azd env set TF_VAR_storage_account_name foundryholstorage01
+azd provision
+```
+
+### Teardown
+```bash
+./infra/teardown.sh hol
+```
+
 ## Repository layout
 - `.github/` Copilot guidance and issue/PR templates
-- `infra/` idempotent infrastructure templates and deploy wrappers
+- `infra/` Terraform IaC (AVM + AzAPI), azd-friendly deploy wrappers
 - `labs/` numbered module content with `src/` starters and `solution/` placeholders
 - `shared/` reusable Python utilities, common dependencies, sample data
 - `docs/` instructor and facilitator assets
