@@ -11,6 +11,7 @@ assignees: ''
 ## Proposed change
 
 ## Workshop impact
+
 - [ ] Setup
 - [ ] Lab flow
 - [ ] Infra

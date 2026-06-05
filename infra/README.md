@@ -3,6 +3,7 @@
 This workshop uses Terraform with Azure Verified Modules (AVM) and AzAPI.
 
 ## What gets deployed
+
 - 1 shared Azure AI Foundry account
 - N attendee projects under the shared Foundry account (`attendee_count`)
 - 1 shared Azure AI Search service
@@ -10,6 +11,7 @@ This workshop uses Terraform with Azure Verified Modules (AVM) and AzAPI.
 - 1 Foundry connection resource targeting the shared Search service
 
 ## Technology choices
+
 - **AVM modules**
   - `Azure/avm-res-cognitiveservices-account/azurerm`
   - `Azure/avm-res-search-searchservice/azurerm`
@@ -19,9 +21,11 @@ This workshop uses Terraform with Azure Verified Modules (AVM) and AzAPI.
   - `Microsoft.CognitiveServices/accounts/connections@2024-10-01`
 
 ## Parameters
+
 Copy `terraform.tfvars.example` if you want local tfvars workflows, or set equivalent values with `azd env set TF_VAR_*`.
 
 Primary workshop variables:
+
 - `location`
 - `resource_group_name`
 - `attendee_count`
@@ -31,6 +35,7 @@ Primary workshop variables:
 - `storage_account_name`
 
 ## Deploy with azd
+
 ```bash
 az login
 azd auth login
@@ -38,6 +43,7 @@ azd auth login
 ```
 
 ## Teardown with azd
+
 ```bash
 ./teardown.sh hol
 ```

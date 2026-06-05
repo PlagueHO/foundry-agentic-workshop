@@ -3,11 +3,13 @@
 This repository scaffolds a **3–4 hour, L200–L300 instructor-led workshop** for building agentic solutions on **Azure AI Foundry**.
 
 ## Audience
+
 - Software engineers and technical data scientists
 - Comfortable with Azure basics
 - Mostly new to Azure AI Foundry
 
 ## Prerequisites
+
 - Azure subscription with quota to deploy lab resources
 - VS Code Insiders
 - Foundry Toolkit for VS Code
@@ -32,23 +34,29 @@ This repository scaffolds a **3–4 hour, L200–L300 instructor-led workshop** 
 | 08 | Agent ID and publishing | 20 |
 
 ## Attendee setup flow
+
 1. Deploy shared environment from `infra/` using `azd provision`.
-2. Assign each attendee their parameterized Foundry project.
-3. Complete `labs/00-setup` to verify auth, tools, and project access.
-4. Progress through labs in numerical order.
+1. Assign each attendee their parameterized Foundry project.
+1. Complete `labs/00-setup` to verify auth, tools, and project access.
+1. Progress through labs in numerical order.
 
 ## Cost note
+
 Plan for approximately **AUD 50/day** for a sandbox environment, depending on region, SKU, and usage.
 
 ## Reset between runs
+
 Use `infra/teardown.sh` or `infra/teardown.ps1` to remove workshop resources between instructor deliveries, then redeploy with updated attendee count.
 
 ## Infrastructure deployment (Terraform + azd)
+
 The infrastructure is defined in Terraform using:
+
 - **Azure Verified Modules (AVM)** for Foundry account, Azure AI Search, and Storage
 - **AzAPI** for Azure AI Foundry project child resources and Foundry-to-Search connection
 
 ### Quick start
+
 ```bash
 az login
 azd auth login
@@ -56,7 +64,9 @@ azd auth login
 ```
 
 ### Optional custom naming
+
 Set Terraform variables in the active azd environment before provisioning:
+
 ```bash
 azd env set TF_VAR_foundry_name foundryhol001
 azd env set TF_VAR_search_name foundryholsearch001
@@ -65,11 +75,13 @@ azd provision
 ```
 
 ### Teardown
+
 ```bash
 ./infra/teardown.sh hol
 ```
 
 ## Repository layout
+
 - `.github/` Copilot guidance and issue/PR templates
 - `infra/` Terraform IaC (AVM + AzAPI), azd-friendly deploy wrappers
 - `labs/` numbered module content with `src/` starters and `solution/` placeholders

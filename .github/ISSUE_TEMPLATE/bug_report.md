@@ -7,21 +7,25 @@ assignees: ''
 ---
 
 ## Summary
+
 Describe the issue.
 
 ## Module / file
+
 Which lab or script is affected?
 
 ## Steps to reproduce
+
 1.
-2.
-3.
+1.
+1.
 
 ## Expected behavior
 
 ## Actual behavior
 
 ## Environment
+
 - OS:
 - Python version:
 - Azure region:
