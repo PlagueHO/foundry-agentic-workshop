@@ -1,4 +1,4 @@
-# Lab 00: Setup and access verification
+# Lab 00: Workshop setup and access verification
 
 ## Objectives
 

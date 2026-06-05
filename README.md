@@ -37,7 +37,7 @@ This repository scaffolds a **3–4 hour, L200–L300 instructor-led workshop** 
 
 1. Deploy shared environment from `infra/` using `azd provision`.
 1. Assign each attendee their parameterized Foundry project.
-1. Complete `labs/00-setup` to verify auth, tools, and project access.
+1. Complete `labs/agent-service-introduction/00-setup` to verify auth, tools, and project access.
 1. Progress through labs in numerical order.
 
 ## Cost note
@@ -84,7 +84,7 @@ azd provision
 
 - `.github/` Copilot guidance and issue/PR templates
 - `infra/` Terraform IaC (AVM + AzAPI), azd-friendly deploy wrappers
-- `labs/` numbered module content with `src/` starters and `solution/` placeholders
+- `labs/agent-service-introduction/` numbered module content with `src/` starters and `solution/` placeholders
 - `shared/` reusable Python utilities, common dependencies, sample data
 - `docs/` instructor and facilitator assets
 - `scripts/` helper scripts for lab operations
