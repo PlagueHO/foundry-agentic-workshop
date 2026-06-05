@@ -7,23 +7,37 @@ __pycache__/
 .venv/
 venv/
 .env
+.env.*
+!.env.example
+!.env.template
 .pytest_cache/
 .mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
 coverage.xml
 htmlcov/
 
-# VS Code
-.vscode/
+# Node / pnpm
+node_modules/
+.pnpm-store/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 # Azure / IaC outputs
 .azure/
 *.tfstate
 *.tfstate.*
 .terraform/
-.terraform.lock.hcl
 crash.log
 crash.*.log
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Editor/IDE local files
+*.swp
+*.swo

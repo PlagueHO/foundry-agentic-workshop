@@ -1,0 +1,21 @@
+{
+  "name": "foundry-agentic-workshop",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \"#node_modules\" \"#.git\" \"#infra/.terraform\"",
+    "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\" \"#node_modules\" \"#.git\" \"#infra/.terraform\"",
+    "lint:md:ci": "markdownlint-cli2 \"**/*.md\" \"#node_modules\" \"#.git\" \"#infra/.terraform\""
+  },
+  "devDependencies": {
+    "markdownlint-cli2": "^0.22.1"
+  },
+  "description": "Microsoft Foundry Agentic Workshop",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PlagueHO/foundry-agentic-workshop.git"
+  },
+  "author": "Daniel Scott-Raynsford",
+  "license": "MIT"
+}

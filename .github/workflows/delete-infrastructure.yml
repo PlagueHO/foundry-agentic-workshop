@@ -1,0 +1,71 @@
+name: Delete Infrastructure
+
+on:
+  workflow_call:
+    inputs:
+      azure_environment:
+        description: GitHub environment name.
+        required: true
+        type: string
+      azure_env_name:
+        description: Azure Developer CLI environment name.
+        required: true
+        type: string
+      azure_location:
+        description: Azure location passed from GitHub environment variable AZURE_LOCATION.
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  cleanup:
+    name: Fallback Azure cleanup
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.azure_environment }}
+    env:
+      AZURE_ENV_NAME: ${{ inputs.azure_env_name }}
+      AZURE_LOCATION: ${{ inputs.azure_location || vars.AZURE_LOCATION }}
+
+    steps:
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Delete resource group if it exists
+        run: |
+          RESOURCE_GROUP="rg-${AZURE_ENV_NAME}"
+          echo "Checking resource group ${RESOURCE_GROUP}..."
+          if az group exists --name "${RESOURCE_GROUP}" | grep -qi "true"; then
+            echo "Deleting resource group ${RESOURCE_GROUP}..."
+            az group delete --name "${RESOURCE_GROUP}" --yes --no-wait
+          else
+            echo "Resource group ${RESOURCE_GROUP} not found."
+          fi
+
+      - name: Purge soft-deleted Cognitive Services accounts from this run
+        run: |
+          set -euo pipefail
+          RESOURCE_GROUP="rg-${AZURE_ENV_NAME}"
+
+          DELETED=$(az cognitiveservices account list-deleted \
+            --query "[?contains(id, 'resourceGroups/${RESOURCE_GROUP}/')].[name,location]" \
+            --output tsv || true)
+
+          if [ -z "${DELETED}" ]; then
+            echo "No soft-deleted Cognitive Services accounts found for ${RESOURCE_GROUP}."
+            exit 0
+          fi
+
+          while IFS=$'\t' read -r ACCOUNT_NAME ACCOUNT_LOCATION; do
+            if [ -z "${ACCOUNT_NAME}" ]; then
+              continue
+            fi
+            echo "Purging ${ACCOUNT_NAME} in ${ACCOUNT_LOCATION}..."
+            az cognitiveservices account purge \
+              --name "${ACCOUNT_NAME}" \
+              --resource-group "${RESOURCE_GROUP}" \
+              --location "${ACCOUNT_LOCATION}" || true
+          done <<< "${DELETED}"

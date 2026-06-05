@@ -1,0 +1,59 @@
+name: Continuous Delivery
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - infra/**
+      - labs/**
+      - shared/**
+      - azure.yaml
+      - .github/workflows/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - infra/**
+      - labs/**
+      - shared/**
+      - azure.yaml
+      - .github/workflows/**
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: continuous-delivery-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate-infrastructure:
+    name: Validate Terraform
+    uses: ./.github/workflows/validate-infrastructure.yml
+
+  provision-infrastructure:
+    name: Provision and Test
+    needs:
+      - validate-infrastructure
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
+    uses: ./.github/workflows/provision-infrastructure.yml
+    with:
+      azure_environment: test
+      azure_env_name: fdyws-${{ github.run_id }}
+      azure_location: ${{ vars.AZURE_LOCATION }}
+
+  delete-infrastructure:
+    name: Final Cleanup (Always)
+    needs:
+      - provision-infrastructure
+    if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false)
+    uses: ./.github/workflows/delete-infrastructure.yml
+    with:
+      azure_environment: test
+      azure_env_name: fdyws-${{ github.run_id }}
+      azure_location: ${{ vars.AZURE_LOCATION }}

@@ -1,0 +1,224 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        // Build/Lint tasks
+        {
+            "label": "python: ruff check",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "ruff", "check", "tools/python/src/", "samples/python/src/"],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "icon": { "id": "check" },
+            "presentation": { "reveal": "always" },
+            "problemMatcher": []
+        },
+        {
+            "label": "python: flake8",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "flake8", "tools/python/src/", "samples/python/src/"],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "icon": { "id": "check" },
+            "problemMatcher": ["$python"],
+            "presentation": { "reveal": "always" }
+        },
+        {
+            "label": "python: pylint",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pylint", "tools/python/src/", "samples/python/src/"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "icon": { "id": "tools" },
+            "problemMatcher": ["$python"]
+        },
+        {
+            "label": "python: mypy",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "mypy", "tools/python/src/", "samples/python/src/"],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "icon": { "id": "check" },
+            "problemMatcher": ["$python"]
+        },
+
+        // Test tasks
+        {
+            "label": "python: test",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pytest", "tools/python/tests/", "samples/python/tests/"],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "icon": { "id": "beaker" },
+            "problemMatcher": ["$python"]
+        },
+
+        // TF Tasks
+        {
+            "label": "terraform: init",
+            "type": "shell",
+            "command": "terraform",
+            "args": ["init"],
+            "options": {
+                "cwd": "${workspaceFolder}/infra"
+            },
+            "problemMatcher": [],
+            "icon": { "id": "server-environment" },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "terraform: fmt",
+            "type": "shell",
+            "command": "terraform",
+            "args": ["fmt", "-recursive"],
+            "options": {
+                "cwd": "${workspaceFolder}/infra"
+            },
+            "problemMatcher": [],
+            "icon": { "id": "wrench" },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "terraform: validate",
+            "type": "shell",
+            "command": "terraform",
+            "args": ["validate"],
+            "options": {
+                "cwd": "${workspaceFolder}/infra"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "icon": { "id": "check" },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "terraform: plan",
+            "type": "shell",
+            "command": "terraform",
+            "args": ["plan", "-out=tfplan"],
+            "options": {
+                "cwd": "${workspaceFolder}/infra"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "icon": { "id": "preview" },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "terraform: apply",
+            "type": "shell",
+            "command": "terraform",
+            "args": ["apply", "tfplan"],
+            "options": {
+                "cwd": "${workspaceFolder}/infra"
+            },
+            "problemMatcher": [],
+            "icon": { "id": "play" },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "terraform: output",
+            "type": "shell",
+            "command": "terraform",
+            "args": ["output"],
+            "options": {
+                "cwd": "${workspaceFolder}/infra"
+            },
+            "problemMatcher": [],
+            "icon": { "id": "list-unordered" },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "terraform: destroy",
+            "type": "shell",
+            "command": "terraform",
+            "args": ["destroy"],
+            "options": {
+                "cwd": "${workspaceFolder}/infra"
+            },
+            "problemMatcher": [],
+            "icon": { "id": "trash" },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+
+        // Markdown tasks
+        {
+            "label": "markdown: lint",
+            "type": "shell",
+            "command": "pnpm",
+            "args": ["run", "lint:md"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "group": "test",
+            "icon": {
+                "id": "checklist",
+                "color": "terminal.ansiMagenta"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "markdown: fix",
+            "type": "shell",
+            "command": "pnpm",
+            "args": ["run", "lint:md:fix"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "wrench",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        }
+    ]
+}

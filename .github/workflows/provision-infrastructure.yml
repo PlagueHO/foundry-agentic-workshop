@@ -1,0 +1,113 @@
+name: Provision Infrastructure
+
+on:
+  workflow_call:
+    inputs:
+      azure_environment:
+        description: GitHub environment name.
+        required: true
+        type: string
+      azure_env_name:
+        description: Azure Developer CLI environment name.
+        required: true
+        type: string
+      azure_location:
+        description: Azure location passed from GitHub environment variable AZURE_LOCATION.
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  provision:
+    name: azd up and validate
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.azure_environment }}
+    env:
+      AZURE_ENV_NAME: ${{ inputs.azure_env_name }}
+      AZURE_LOCATION: ${{ inputs.azure_location || vars.AZURE_LOCATION }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '>=1.9.0'
+
+      - name: Install Azure Developer CLI
+        uses: Azure/setup-azd@v2
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Validate region input
+        run: |
+          if [ -z "${AZURE_LOCATION}" ]; then
+            echo "::error::AZURE_LOCATION is not set. Define it as a GitHub Environment variable on the '${{ inputs.azure_environment }}' environment."
+            exit 1
+          fi
+
+      - name: Authenticate Azure Developer CLI
+        run: |
+          azd auth login \
+            --client-id "${{ secrets.AZURE_CLIENT_ID }}" \
+            --federated-credential-provider github \
+            --tenant-id "${{ secrets.AZURE_TENANT_ID }}"
+
+      - name: Configure azd environment and Terraform variables
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          STORAGE_ACCOUNT_NAME="fdyws${RUN_ID}"
+          FOUNDRY_NAME="fdywsfoundry${RUN_ID}"
+          SEARCH_NAME="fdyws-search-${RUN_ID}"
+          RESOURCE_GROUP_NAME="rg-${AZURE_ENV_NAME}"
+
+          azd env new "${AZURE_ENV_NAME}" --location "${AZURE_LOCATION}" --subscription "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+          azd env set AZURE_LOCATION "${AZURE_LOCATION}"
+          azd env set TF_VAR_location "${AZURE_LOCATION}"
+          azd env set TF_VAR_env_name "${AZURE_ENV_NAME}"
+          azd env set TF_VAR_resource_group_name "${RESOURCE_GROUP_NAME}"
+          azd env set TF_VAR_attendee_count "2"
+          azd env set TF_VAR_storage_account_name "${STORAGE_ACCOUNT_NAME}"
+          azd env set TF_VAR_foundry_name "${FOUNDRY_NAME}"
+          azd env set TF_VAR_search_name "${SEARCH_NAME}"
+
+      - name: Provision infrastructure with azd up
+        id: azd_up
+        continue-on-error: true
+        run: azd up --no-prompt
+
+      - name: Python syntax smoke checks
+        if: steps.azd_up.outcome == 'success'
+        run: python -m compileall labs scripts shared
+
+      - name: Future lab integration checks placeholder
+        if: steps.azd_up.outcome == 'success'
+        run: echo "Add end-to-end lab checks here as lab sample source tests are introduced."
+
+      - name: Teardown with azd down (always)
+        id: azd_down
+        if: always()
+        continue-on-error: true
+        run: azd down --force --purge --no-prompt
+
+      - name: Fail on provision or teardown errors
+        if: always()
+        run: |
+          if [ "${{ steps.azd_up.outcome }}" != "success" ]; then
+            echo "::error::azd up failed."
+            exit 1
+          fi
+
+          if [ "${{ steps.azd_down.outcome }}" != "success" ]; then
+            echo "::error::azd down --force --purge failed. Final cleanup workflow will still run, but this execution must fail."
+            exit 1
+          fi
