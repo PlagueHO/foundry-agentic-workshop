@@ -1,0 +1,79 @@
+version: 2
+
+# Dependabot configuration for Microsoft Foundry Agentic Workshop
+updates:
+  # Python dependencies in shared requirements file
+  - package-ecosystem: pip
+    directory: /shared
+    schedule:
+      interval: weekly
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: deps
+    labels:
+      - dependencies
+      - pip
+    rebase-strategy: auto
+    groups:
+      pip-dependencies:
+        patterns:
+          - "*"
+
+  # JavaScript documentation/tooling dependencies managed with pnpm
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: deps
+    labels:
+      - dependencies
+      - npm
+    rebase-strategy: auto
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
+
+  # GitHub Actions workflow dependencies
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: deps
+    labels:
+      - dependencies
+      - github-actions
+    rebase-strategy: auto
+    groups:
+      github-actions-dependencies:
+        patterns:
+          - "*"
+
+  # Terraform providers and modules for infrastructure
+  - package-ecosystem: terraform
+    directory: /infra
+    schedule:
+      interval: weekly
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: deps
+    labels:
+      - dependencies
+      - terraform
+    rebase-strategy: auto
+    groups:
+      terraform-dependencies:
+        patterns:
+          - "*"
