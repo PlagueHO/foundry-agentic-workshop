@@ -14,8 +14,7 @@
     "**/coverage/**",
     "**/.vscode/**",
     "**/.github/instructions/**",
-    "**/.azure/**",
-    "**/.terraform/**"
+    "**/.azure/**"
   ],
   // Output formatting
   "outputFormatters": [

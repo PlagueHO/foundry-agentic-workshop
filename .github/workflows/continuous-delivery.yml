@@ -4,50 +4,62 @@ on:
   push:
     branches:
       - main
+    tags:
+      - v*
     paths:
       - infra/**
       - labs/**
       - shared/**
       - azure.yaml
       - .github/workflows/continuous-delivery.yml
+      - .github/workflows/lint-and-publish-bicep.yml
+      - .github/workflows/e2e-test.yml
       - .github/workflows/validate-infrastructure.yml
       - .github/workflows/provision-infrastructure.yml
       - .github/workflows/delete-infrastructure.yml
-  schedule:
-    - cron: '0 3 * * *'
   workflow_dispatch:
 
 permissions:
-  contents: read
   id-token: write
+  contents: read
+  checks: write
 
 concurrency:
   group: continuous-delivery-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  validate-infrastructure:
-    name: Validate Terraform
-    uses: ./.github/workflows/validate-infrastructure.yml
+  set-build-variables:
+    name: Set Build Variables
+    runs-on: ubuntu-latest
+    outputs:
+      BUILD_VERSION: ${{ steps.build-version.outputs.BUILD_VERSION }}
+    steps:
+      - name: Set build version
+        id: build-version
+        run: echo "BUILD_VERSION=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
-  provision-infrastructure:
-    name: Provision and Test
+  lint-and-publish-bicep:
+    name: Lint and Publish Bicep
     needs:
-      - validate-infrastructure
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
-    uses: ./.github/workflows/provision-infrastructure.yml
-    with:
-      azure_environment: test
-      azure_env_name: fdyws-${{ github.run_id }}
-      azure_location: ${{ vars.AZURE_LOCATION }}
+      - set-build-variables
+    uses: ./.github/workflows/lint-and-publish-bicep.yml
+    permissions:
+      contents: read
+      pull-requests: write
 
-  delete-infrastructure:
-    name: Final Cleanup (Always)
+  e2e-test-v1:
+    name: E2E Test
     needs:
-      - provision-infrastructure
-    if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false)
-    uses: ./.github/workflows/delete-infrastructure.yml
+      - set-build-variables
+      - lint-and-publish-bicep
+    uses: ./.github/workflows/e2e-test.yml
     with:
-      azure_environment: test
-      azure_env_name: fdyws-${{ github.run_id }}
-      azure_location: ${{ vars.AZURE_LOCATION }}
+      ENVIRONMENT: test
+      BUILD_VERSION: ${{ needs.set-build-variables.outputs.BUILD_VERSION }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION || 'eastus2' }}
+      AZURE_ENV_NAME: ${{ format('fdyws-{0}', github.run_id) }}
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}

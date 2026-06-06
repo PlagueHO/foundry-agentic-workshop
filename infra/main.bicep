@@ -1,0 +1,589 @@
+targetScope = 'subscription'
+
+import { capabilityHostType } from './cognitive-services/accounts/capabilityHost/main.bicep'
+
+// The main bicep module to provision Azure resources for the Microsoft Foundry workshop.
+// For a more complete walkthrough to understand how this file works with azd,
+// see https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/make-azd-compatible?pivots=azd-create
+
+@minLength(1)
+@maxLength(24)
+@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
+param environmentName string
+
+@minLength(1)
+@description('Primary location for all resources')
+param location string
+
+// Optional parameters to override the default azd resource naming conventions.
+// Add the following to main.bicepparam to provide values:
+// param resourceGroupName = readEnvironmentVariable('AZURE_RESOURCE_GROUP', 'myGroupName')
+//
+@description('Name of the resource group to create.')
+param resourceGroupName string = ''
+
+@description('Id of the user or app to assign application roles.')
+param principalId string = ''
+
+@description('Type of the principal referenced by principalId.')
+@allowed([
+  'User'
+  'ServicePrincipal'
+])
+param principalIdType string = 'User'
+
+@description('Number of per-attendee Foundry projects to create. Each attendee receives a dedicated project.')
+@minValue(0)
+@maxValue(50)
+param attendeeCount int = 1
+
+@description('Name prefix for per-attendee Foundry projects. Projects are named "<prefix>-NN" (for example, attendee-01).')
+@minLength(1)
+@maxLength(16)
+param attendeeProjectPrefix string = 'attendee'
+
+@description('Enable Azure AI Search as a vector store capability host connection for Foundry agents.')
+param azureAiSearchCapabilityHost bool = false
+
+@description('Enable Cosmos DB as a thread storage capability host connection for Foundry agents.')
+param cosmosDbCapabilityHost bool = false
+
+@description('Enable Storage Account as a file storage capability host connection for Foundry agents.')
+param azureStorageAccountCapabilityHost bool = false
+
+@description('Optional explicit capability hosts to create in the Foundry account.')
+param foundryCapabilityHosts capabilityHostType[] = []
+
+var abbrs = loadJsonContent('./abbreviations.json')
+var modelDeployments = loadJsonContent('./model-deployments.json')
+
+// tags that should be applied to all resources.
+var tags = {
+  // Tag all resources with the environment name.
+  'azd-env-name': environmentName
+}
+
+var effectiveResourceGroupName = !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
+var deploymentId = uniqueString(subscription().id, environmentName, location)
+var logAnalyticsName = '${abbrs.operationalInsightsWorkspaces}${environmentName}'
+var sendTologAnalyticsCustomSettingName = 'send-to-${logAnalyticsName}'
+var applicationInsightsName = '${abbrs.insightsComponents}${environmentName}'
+var storageAccounName = take(toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', '')), 24)
+var keyVaultName = take(toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', '')), 24)
+var cosmosDbAccountName = toLower(replace('${abbrs.cosmosDBAccounts}${environmentName}', '-', ''))
+var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
+var aiFoundryName = '${abbrs.aiFoundryAccounts}${environmentName}'
+var aiFoundryCustomSubDomainName = toLower(replace(environmentName, '-', ''))
+
+// Build the per-attendee Foundry projects. Attendee role assignments are applied
+// out-of-band by the postprovision hook (scripts/assign-attendee-roles.py), which
+// resolves each attendee UPN to its Microsoft Entra object ID (not possible in Bicep).
+var attendeeProjects = [
+  for i in range(1, attendeeCount): {
+    name: '${attendeeProjectPrefix}-${padLeft(string(i), 2, '0')}'
+    location: location
+    properties: {
+      displayName: '${attendeeProjectPrefix}-${padLeft(string(i), 2, '0')}'
+      description: 'Foundry workshop project for ${attendeeProjectPrefix}-${padLeft(string(i), 2, '0')}.'
+    }
+    tags: tags
+  }
+]
+
+var defaultAttendeeProjectName = attendeeCount > 0 ? '${attendeeProjectPrefix}-${padLeft(string(1), 2, '0')}' : ''
+
+// ---------- CAPABILITY HOSTS CONFIGURATION ----------
+var aiSearchConnectionName = replace(aiSearchName, '-', '')
+var storageConnectionName = replace(storageAccounName, '-', '')
+var cosmosDbConnectionName = replace(cosmosDbAccountName, '-', '')
+
+var foundryServiceConnections = concat(
+  azureAiSearchCapabilityHost ? [
+    {
+      category: 'CognitiveSearch'
+      connectionProperties: {
+        authType: 'AAD'
+      }
+      name: aiSearchConnectionName
+      target: 'https://${aiSearchName}.search.windows.net'
+      isSharedToAll: true
+    }
+  ] : [],
+  cosmosDbCapabilityHost ? [
+    {
+      category: 'CosmosDb'
+      connectionProperties: {
+        authType: 'AAD'
+      }
+      name: cosmosDbConnectionName
+      target: 'https://${cosmosDbAccountName}.documents.azure.com:443/'
+      isSharedToAll: true
+    }
+  ] : [],
+  azureStorageAccountCapabilityHost ? [
+    {
+      category: 'AzureBlob'
+      connectionProperties: {
+        authType: 'AAD'
+      }
+      name: storageConnectionName
+      target: 'https://${storageAccounName}.blob.${environment().suffixes.storage}/'
+      isSharedToAll: true
+    }
+  ] : []
+)
+
+var autoCapabilityHost capabilityHostType = {
+  name: 'default'
+  capabilityHostKind: 'Agents'
+  threadStorageConnectionNames: cosmosDbCapabilityHost ? [cosmosDbConnectionName] : null
+  vectorStoreConnectionNames: azureAiSearchCapabilityHost ? [aiSearchConnectionName] : null
+  storageConnectionNames: azureStorageAccountCapabilityHost ? [storageConnectionName] : null
+}
+
+var hasAutoCapabilityHost = cosmosDbCapabilityHost || azureAiSearchCapabilityHost || azureStorageAccountCapabilityHost
+var effectiveCapabilityHosts = concat(foundryCapabilityHosts, hasAutoCapabilityHost ? [autoCapabilityHost] : [])
+
+// Organize resources in a resource group using Azure Verified Module (AVM)
+module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.3' = {
+  name: 'resource-group-deployment-${deploymentId}'
+  params: {
+    name: effectiveResourceGroupName
+    location: location
+    tags: tags
+  }
+}
+
+// Create the Log Analytics workspace using Azure Verified Module (AVM)
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.1' = {
+  name: 'logAnalytics-workspace-deployment-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
+  params: {
+    name: logAnalyticsName
+    location: location
+    tags: tags
+  }
+}
+
+// Create the Application Insights resource using Azure Verified Module (AVM)
+module applicationInsights 'br/public:avm/res/insights/component:0.7.2' = {
+  name: 'application-insights-deployment-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
+  params: {
+    name: applicationInsightsName
+    location: location
+    tags: tags
+    workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+  }
+}
+
+// Create a Key Vault with public access and RBAC authorization using Azure Verified Module (AVM)
+module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
+  name: 'keyvault-deployment-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
+  params: {
+    name: keyVaultName
+    location: location
+    tags: tags
+    diagnosticSettings: [
+      {
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    enablePurgeProtection: false
+    enableRbacAuthorization: true
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Allow'
+    }
+  }
+}
+
+// Create a Storage Account with public access using Azure Verified Module (AVM)
+module storageAccount 'br/public:avm/res/storage/storage-account:0.32.1' = {
+  name: 'storage-account-deployment-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
+  params: {
+    name: storageAccounName
+    allowBlobPublicAccess: false
+    blobServices: {
+      automaticSnapshotPolicyEnabled: false
+      containerDeleteRetentionPolicyEnabled: false
+      deleteRetentionPolicyEnabled: false
+      lastAccessTimeTrackingPolicyEnabled: true
+    }
+    diagnosticSettings: [
+      {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: sendTologAnalyticsCustomSettingName
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    enableHierarchicalNamespace: false
+    enableNfsV3: false
+    enableSftp: false
+    largeFileSharesState: 'Enabled'
+    location: location
+    managedIdentities: {
+      systemAssigned: true
+    }
+    sasExpirationPeriod: '180.00:00:00'
+    skuName: 'Standard_LRS'
+    tags: tags
+  }
+}
+
+// Create a serverless Cosmos DB account with public access using Azure Verified Module (AVM)
+module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.19.0' = {
+  name: 'cosmos-db-account-deployment-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
+  params: {
+    name: cosmosDbAccountName
+    location: location
+    tags: tags
+    failoverLocations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: location
+      }
+    ]
+    enableAutomaticFailover: false
+    capabilitiesToAdd: [
+      'EnableServerless'
+    ]
+    databaseAccountOfferType: 'Standard'
+    diagnosticSettings: [
+      {
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    disableKeyBasedMetadataWriteAccess: true
+    disableLocalAuthentication: true
+    minimumTlsVersion: 'Tls12'
+    networkRestrictions: {
+      networkAclBypass: 'None'
+      publicNetworkAccess: 'Enabled'
+    }
+    backupStorageRedundancy: 'Local'
+    sqlDatabases: [
+      {
+        // EF Core creates application containers at runtime.
+        // The 'leases' container (partition key: /id, 400 RU/s) is required by
+        // the Cosmos DB Change Feed Processor for search index sync.
+        // It is created automatically by the SearchIndexSyncService on first run.
+        name: 'no-containers-specified'
+      }
+    ]
+  }
+}
+
+// Create an Azure AI Search service with public access using Azure Verified Module (AVM)
+module aiSearchService 'br/public:avm/res/search/search-service:0.12.2' = {
+  name: 'ai-search-service-deployment-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
+  params: {
+    name: aiSearchName
+    location: location
+    sku: 'basic'
+    semanticSearch: 'standard'
+    disableLocalAuth: true
+    managedIdentities: {
+      systemAssigned: true
+    }
+    diagnosticSettings: [
+      {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: sendTologAnalyticsCustomSettingName
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    publicNetworkAccess: 'Enabled'
+    tags: tags
+  }
+}
+
+// Create the Microsoft Foundry account with public access and per-attendee projects.
+// Uses the local cognitive-services module to support Foundry features such as RAI policies.
+module aiFoundryAccount './cognitive-services/accounts/main.bicep' = {
+  name: 'ai-foundry-account-deployment-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
+  params: {
+    kind: 'AIServices'
+    name: aiFoundryName
+    location: location
+    customSubDomainName: aiFoundryCustomSubDomainName
+    disableLocalAuth: true
+    managedIdentities: {
+      systemAssigned: true
+    }
+    sku: 'S0'
+    diagnosticSettings: [
+      {
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    publicNetworkAccess: 'Enabled'
+    allowProjectManagement: true
+    connections: foundryServiceConnections
+    capabilityHosts: effectiveCapabilityHosts
+    projects: attendeeProjects
+    defaultProject: attendeeCount > 0 ? defaultAttendeeProjectName : null
+    raiPolicies: [
+      {
+        name: 'FoundryWorkshopContentPolicy'
+        basePolicyName: 'Microsoft.Default'
+        mode: 'Blocking'
+        contentFilters: [
+          {
+            name: 'Hate'
+            enabled: true
+            blocking: true
+            severityThreshold: 'Medium'
+            source: 'Prompt'
+          }
+          {
+            name: 'Sexual'
+            enabled: true
+            blocking: true
+            severityThreshold: 'Medium'
+            source: 'Prompt'
+          }
+          {
+            name: 'Violence'
+            enabled: true
+            blocking: true
+            severityThreshold: 'Medium'
+            source: 'Prompt'
+          }
+          {
+            name: 'SelfHarm'
+            enabled: true
+            blocking: true
+            severityThreshold: 'Medium'
+            source: 'Prompt'
+          }
+          {
+            name: 'Hate'
+            enabled: true
+            blocking: true
+            severityThreshold: 'Medium'
+            source: 'Completion'
+          }
+          {
+            name: 'Sexual'
+            enabled: true
+            blocking: true
+            severityThreshold: 'Medium'
+            source: 'Completion'
+          }
+          {
+            name: 'Violence'
+            enabled: true
+            blocking: true
+            severityThreshold: 'Medium'
+            source: 'Completion'
+          }
+          {
+            name: 'SelfHarm'
+            enabled: true
+            blocking: true
+            severityThreshold: 'Medium'
+            source: 'Completion'
+          }
+        ]
+      }
+    ]
+    deployments: modelDeployments
+  }
+}
+
+// ---------- AI SEARCH ROLE ASSIGNMENTS ----------
+// Role assignments for the AI Search service to allow Foundry and developer access
+var aiSearchRoleAssignmentsArray = [
+  // Foundry service managed identity needs access to AI Search
+  ...(!empty(aiFoundryAccount.outputs.?systemAssignedMIPrincipalId) ? [
+    {
+      roleDefinitionIdOrName: 'Search Index Data Contributor'
+      principalType: 'ServicePrincipal'
+      principalId: aiFoundryAccount.outputs.?systemAssignedMIPrincipalId ?? ''
+    }
+    {
+      roleDefinitionIdOrName: 'Search Index Data Reader'
+      principalType: 'ServicePrincipal'
+      principalId: aiFoundryAccount.outputs.?systemAssignedMIPrincipalId ?? ''
+    }
+    {
+      roleDefinitionIdOrName: 'Search Service Contributor'
+      principalType: 'ServicePrincipal'
+      principalId: aiFoundryAccount.outputs.?systemAssignedMIPrincipalId ?? ''
+    }
+  ] : [])
+  // Developer role assignments
+  ...(!empty(principalId) ? [
+    {
+      roleDefinitionIdOrName: 'Search Service Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+    {
+      roleDefinitionIdOrName: 'Search Index Data Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+  ] : [])
+]
+
+module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = {
+  name: 'ai-search-role-assignments-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [
+    resourceGroup
+    aiSearchService
+  ]
+  params: {
+    azureAiSearchName: aiSearchName
+    roleAssignments: aiSearchRoleAssignmentsArray
+  }
+}
+
+// ---------- FOUNDRY ROLE ASSIGNMENTS ----------
+// Role assignments for Foundry to allow AI Search and developer access
+var foundryRoleAssignmentsArray = [
+  // AI Search managed identity needs access to Foundry for vectorization
+  ...(!empty(aiSearchService.outputs.?systemAssignedMIPrincipalId) ? [
+    {
+      roleDefinitionIdOrName: 'Cognitive Services Contributor'
+      principalType: 'ServicePrincipal'
+      principalId: aiSearchService.outputs.?systemAssignedMIPrincipalId ?? ''
+    }
+    {
+      roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
+      principalType: 'ServicePrincipal'
+      principalId: aiSearchService.outputs.?systemAssignedMIPrincipalId ?? ''
+    }
+  ] : [])
+  // Developer role assignments
+  ...(!empty(principalId) ? [
+    {
+      roleDefinitionIdOrName: 'Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+    {
+      roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+  ] : [])
+]
+
+module foundryRoleAssignments './core/security/role_foundry.bicep' = {
+  name: 'foundry-role-assignments-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [
+    resourceGroup
+    aiFoundryAccount
+  ]
+  params: {
+    foundryName: aiFoundryName
+    roleAssignments: foundryRoleAssignmentsArray
+  }
+}
+
+// ---------- COSMOS DB ROLE ASSIGNMENTS ----------
+// Assigns Cosmos DB Built-in Data Contributor (data-plane RBAC) to the deploying principal
+// for local development access. Uses a separate module to avoid redeploying the Cosmos DB account.
+// The built-in Data Contributor role GUID is 00000000-0000-0000-0000-000000000002.
+module principalCosmosDbRoles './core/security/role_cosmosdb.bicep' = if (!empty(principalId)) {
+  name: 'principal-cosmos-db-roles-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [
+    resourceGroup
+    cosmosDbAccount
+  ]
+  params: {
+    cosmosDbAccountName: cosmosDbAccountName
+    sqlRoleAssignments: [
+      {
+        principalId: principalId
+        roleDefinitionId: '00000000-0000-0000-0000-000000000002'
+      }
+    ]
+  }
+}
+
+// Alert rule for dead-letter indexing failures.
+// Fires when the indexing failure count exceeds 5 in a 5-minute window.
+module indexingFailureAlert 'br/public:avm/res/insights/metric-alert:0.4.1' = {
+  name: 'indexing-failure-alert-deployment-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
+  params: {
+    name: 'search-indexing-failure-alert-${environmentName}'
+    location: 'global'
+    tags: tags
+    severity: 2
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT5M'
+    criteria: {
+      'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+      allof: [
+        {
+          name: 'IndexingFailureCount'
+          metricName: 'DocumentsProcessedCount'
+          metricNamespace: 'microsoft.search/searchservices'
+          operator: 'GreaterThan'
+          threshold: 5
+          timeAggregation: 'Total'
+          criterionType: 'StaticThresholdCriterion'
+        }
+      ]
+    }
+    scopes: [
+      aiSearchService.outputs.resourceId
+    ]
+  }
+}
+
+@description('The Azure region where resources are deployed.')
+output AZURE_LOCATION string = location
+
+@description('The name of the resource group.')
+output AZURE_RESOURCE_GROUP string = resourceGroup.outputs.name
+
+@description('The Microsoft Entra tenant ID.')
+output AZURE_TENANT_ID string = tenant().tenantId
+
+@description('The name of the Microsoft Foundry account.')
+output FOUNDRY_RESOURCE_NAME string = aiFoundryAccount.outputs.name
+
+@description('The endpoint of the Microsoft Foundry account.')
+output AZURE_AI_FOUNDRY_ENDPOINT string = aiFoundryAccount.outputs.endpoint
+
+@description('The default Foundry project name targeted in single-attendee mode.')
+output FOUNDRY_PROJECT_NAME string = defaultAttendeeProjectName
+
+@description('The names of the per-attendee Foundry projects.')
+output AZURE_ATTENDEE_PROJECT_NAMES array = [for project in attendeeProjects: project.name]
+
+@description('The name of the Azure AI Search service.')
+output AZURE_SEARCH_SERVICE_NAME string = aiSearchService.outputs.name
+
+@description('The name of the storage account.')
+output AZURE_STORAGE_ACCOUNT_NAME string = storageAccount.outputs.name

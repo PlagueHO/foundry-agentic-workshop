@@ -58,22 +58,3 @@ updates:
       github-actions-dependencies:
         patterns:
           - "*"
-
-  # Terraform providers and modules for infrastructure
-  - package-ecosystem: terraform
-    directory: /infra
-    schedule:
-      interval: weekly
-      time: "06:00"
-      timezone: UTC
-    open-pull-requests-limit: 5
-    commit-message:
-      prefix: deps
-    labels:
-      - dependencies
-      - terraform
-    rebase-strategy: auto
-    groups:
-      terraform-dependencies:
-        patterns:
-          - "*"

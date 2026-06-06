@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/continuous-integration.yml'
       - '.github/workflows/lint-markdown.yml'
+      - '.github/workflows/lint-and-publish-bicep.yml'
       - '.github/workflows/validate-infrastructure.yml'
       - '.markdownlint*.json*'
       - 'package.json'
@@ -22,6 +23,7 @@ on:
     paths:
       - '.github/workflows/continuous-integration.yml'
       - '.github/workflows/lint-markdown.yml'
+      - '.github/workflows/lint-and-publish-bicep.yml'
       - '.github/workflows/validate-infrastructure.yml'
       - '.markdownlint*.json*'
       - 'package.json'
@@ -69,40 +71,12 @@ jobs:
       - name: Build docs site
         run: pnpm run docs:build
 
-  terraform-quality:
-    name: Terraform Lint and Validate
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v4
-        with:
-          terraform_version: '>=1.9.0'
-
-      - name: Install TFLint
-        uses: terraform-linters/setup-tflint@v6
-
-      - name: Initialize TFLint plugins
-        working-directory: infra
-        run: tflint --init
-
-      - name: Terraform format check
-        working-directory: infra
-        run: terraform fmt -check -recursive
-
-      - name: Terraform init (no backend)
-        working-directory: infra
-        run: terraform init -backend=false
-
-      - name: Terraform validate
-        working-directory: infra
-        run: terraform validate
-
-      - name: TFLint check
-        working-directory: infra
-        run: tflint --recursive
+  lint-and-publish-bicep:
+    name: Lint and Publish Bicep
+    uses: ./.github/workflows/lint-and-publish-bicep.yml
+    permissions:
+      contents: read
+      pull-requests: write
 
   python-smoke:
     name: Python Syntax Smoke Check

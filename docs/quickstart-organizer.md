@@ -6,7 +6,6 @@ Use this guide when an organizer deploys one shared Microsoft Foundry environmen
 
 1. Azure subscription with sufficient quota.
 1. Azure CLI and Azure Developer CLI installed.
-1. Terraform 1.9 or later.
 1. Python 3.11 or later.
 
 ## Sign in
@@ -27,11 +26,9 @@ azd env select hol-shared
 
 ```bash
 azd env set AZURE_LOCATION australiaeast
-azd env set TF_VAR_location australiaeast
-azd env set TF_VAR_env_name hol-shared
-azd env set TF_VAR_resource_group_name rg-foundry-hol-shared
-azd env set TF_VAR_attendee_count 20
-azd env set TF_VAR_attendee_project_prefix attendee
+azd env set AZURE_RESOURCE_GROUP rg-foundry-hol-shared
+azd env set AZURE_ATTENDEE_COUNT 20
+azd env set AZURE_ATTENDEE_PROJECT_PREFIX attendee
 ```
 
 ## Optional RBAC configuration
@@ -39,8 +36,8 @@ azd env set TF_VAR_attendee_project_prefix attendee
 If your subscription already grants broad access, skip this section.
 
 ```bash
-azd env set TF_VAR_attendee_access_profile project-user
-azd env set TF_VAR_attendee_user_principal_names '["learner1@contoso.com","learner2@contoso.com"]'
+azd env set AZURE_ATTENDEE_ACCESS_PROFILE project-user
+azd env set AZURE_ATTENDEE_USER_PRINCIPAL_NAMES '["learner1@contoso.com","learner2@contoso.com"]'
 ```
 
 Use `project-user` for least-privilege labs 00-07.
@@ -49,14 +46,13 @@ Use `project-publisher` when learners need publishing rights for lab 08.
 ## Provision
 
 ```bash
-azd up
+azd provision
 ```
 
 ## Share attendee assignments
 
 ```bash
-cd infra
-terraform output attendee_project_assignments
+azd env get-value AZURE_ATTENDEE_PROJECT_NAMES
 ```
 
 Give each learner their assigned `FOUNDRY_PROJECT_NAME`.

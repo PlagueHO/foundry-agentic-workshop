@@ -2,29 +2,85 @@ name: Validate Infrastructure
 
 on:
   workflow_call:
+    inputs:
+      ENVIRONMENT:
+        description: The environment to validate infrastructure for.
+        required: true
+        type: string
+      BUILD_VERSION:
+        description: Build version for traceability.
+        required: true
+        type: string
+      AZURE_LOCATION:
+        description: The Azure region to deploy resources to.
+        required: true
+        type: string
+      AZURE_ENV_NAME:
+        description: The Azure Developer CLI environment name.
+        required: true
+        type: string
+
+    secrets:
+      AZURE_TENANT_ID:
+        description: Azure tenant ID for deployment authentication.
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        description: Azure subscription ID for deployment authentication.
+        required: true
+      AZURE_CLIENT_ID:
+        description: Azure client ID for deployment authentication.
+        required: true
 
 jobs:
-  validate-terraform:
-    name: Validate Terraform
+  validate-infrastructure:
+    name: Validate Infrastructure ${{ inputs.ENVIRONMENT }}
+    environment: ${{ inputs.ENVIRONMENT }}
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    env:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME || inputs.AZURE_ENV_NAME }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION || inputs.AZURE_LOCATION }}
+      AZURE_PRINCIPAL_ID_TYPE: ServicePrincipal
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v4
+      - name: Install Azure Developer CLI
+        uses: Azure/setup-azd@v2.3.0
+
+      - name: Authenticate Azure Developer CLI (Federated Credentials)
+        run: |
+          azd auth login \
+            --client-id "$AZURE_CLIENT_ID" \
+            --federated-credential-provider "github" \
+            --tenant-id "$AZURE_TENANT_ID"
+
+      - name: Authenticate Azure CLI (Federated Credentials)
+        uses: azure/login@v3
         with:
-          terraform_version: '>=1.9.0'
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Terraform format check
-        working-directory: infra
-        run: terraform fmt -check -recursive
+      - name: Create Azure Developer CLI environment
+        run: azd env new "$AZURE_ENV_NAME" --location "$AZURE_LOCATION"
 
-      - name: Terraform init (no backend)
-        working-directory: infra
-        run: terraform init -backend=false
+      - name: Set Azure Developer CLI environment variables
+        run: |
+          azd env set AZURE_PRINCIPAL_ID_TYPE "$AZURE_PRINCIPAL_ID_TYPE"
+          azd env set AZURE_RESOURCE_GROUP "rg-${AZURE_ENV_NAME}"
+          azd env set AZURE_ATTENDEE_COUNT "${{ vars.AZURE_ATTENDEE_COUNT || '2' }}"
+          azd env set AZURE_ATTENDEE_PROJECT_PREFIX "${{ vars.AZURE_ATTENDEE_PROJECT_PREFIX || 'attendee' }}"
+          azd env set AZURE_AI_SEARCH_CAPABILITY_HOST "${{ vars.AZURE_AI_SEARCH_CAPABILITY_HOST || 'false' }}"
+          azd env set AZURE_COSMOS_DB_CAPABILITY_HOST "${{ vars.AZURE_COSMOS_DB_CAPABILITY_HOST || 'false' }}"
+          azd env set AZURE_STORAGE_ACCOUNT_CAPABILITY_HOST "${{ vars.AZURE_STORAGE_ACCOUNT_CAPABILITY_HOST || 'false' }}"
 
-      - name: Terraform validate
-        working-directory: infra
-        run: terraform validate
+      - name: Preview Infrastructure using Azure Developer CLI
+        run: azd provision --preview --no-prompt

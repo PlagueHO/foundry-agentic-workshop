@@ -9,9 +9,6 @@
         "ghcr.io/devcontainers/features/azure-cli:1": {
             "version": "latest"
         },
-        "ghcr.io/devcontainers/features/terraform:1": {
-            "version": "latest"
-        },
         "ghcr.io/devcontainers/features/python:1": {
             "version": "3.13",
             "installPip": true,
@@ -49,7 +46,6 @@
                 "ms-dotnettools.csdevkit",
                 "ms-dotnettools.vscode-dotnet-runtime",
                 "ms-toolsai.prompty",
-                "hashicorp.terraform",
                 "ms-vscode.vscode-node-azure-pack",
                 "ms-vscode.azurecli",
                 "ms-azuretools.vscode-azure-github-copilot",

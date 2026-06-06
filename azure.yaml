@@ -2,10 +2,10 @@ name: foundry-agentic-workshop
 metadata:
   template: foundry-agentic-workshop@0.0.1
 infra:
-  provider: terraform
+  provider: bicep
   path: infra
 hooks:
   postprovision:
     shell: sh
-    run: python scripts/seed-search-index.py
+    run: python scripts/seed-search-index.py && python scripts/assign-attendee-roles.py
 services: {}

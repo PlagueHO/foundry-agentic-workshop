@@ -3,111 +3,113 @@ name: Provision Infrastructure
 on:
   workflow_call:
     inputs:
-      azure_environment:
-        description: GitHub environment name.
+      ENVIRONMENT:
+        description: The environment to provision infrastructure for.
         required: true
         type: string
-      azure_env_name:
-        description: Azure Developer CLI environment name.
+      BUILD_VERSION:
+        description: Build version for traceability.
         required: true
         type: string
-      azure_location:
-        description: Azure location passed from GitHub environment variable AZURE_LOCATION.
-        required: false
-        default: ''
+      AZURE_LOCATION:
+        description: The Azure region to deploy resources to.
+        required: true
+        type: string
+      AZURE_ENV_NAME:
+        description: The Azure Developer CLI environment name.
+        required: true
         type: string
 
+    outputs:
+      AZURE_RESOURCE_GROUP:
+        description: The Azure resource group name.
+        value: ${{ jobs.provision-infrastructure.outputs.AZURE_RESOURCE_GROUP }}
+
+    secrets:
+      AZURE_TENANT_ID:
+        description: Azure tenant ID for deployment authentication.
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        description: Azure subscription ID for deployment authentication.
+        required: true
+      AZURE_CLIENT_ID:
+        description: Azure client ID for deployment authentication.
+        required: true
+
 jobs:
-  provision:
-    name: azd up and validate
+  provision-infrastructure:
+    name: Provision Infrastructure ${{ inputs.ENVIRONMENT }}
     runs-on: ubuntu-latest
-    environment: ${{ inputs.azure_environment }}
+    environment: ${{ inputs.ENVIRONMENT }}
+    permissions:
+      id-token: write
+      contents: read
+
     env:
-      AZURE_ENV_NAME: ${{ inputs.azure_env_name }}
-      AZURE_LOCATION: ${{ inputs.azure_location || vars.AZURE_LOCATION }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME || inputs.AZURE_ENV_NAME }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION || inputs.AZURE_LOCATION }}
+      AZURE_PRINCIPAL_ID_TYPE: ServicePrincipal
+
+    outputs:
+      AZURE_RESOURCE_GROUP: ${{ steps.get_infrastructure_outputs.outputs.AZURE_RESOURCE_GROUP }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v4
+      - name: Setup Python
+        uses: actions/setup-python@v6
         with:
-          terraform_version: '>=1.9.0'
+          python-version: '3.11'
 
       - name: Install Azure Developer CLI
-        uses: Azure/setup-azd@v2
+        uses: Azure/setup-azd@v2.3.0
 
-      - name: Azure login (OIDC)
+      - name: Authenticate Azure Developer CLI (Federated Credentials)
+        run: |
+          azd auth login \
+            --client-id "$AZURE_CLIENT_ID" \
+            --federated-credential-provider "github" \
+            --tenant-id "$AZURE_TENANT_ID"
+
+      - name: Authenticate Azure CLI (Federated Credentials)
         uses: azure/login@v3
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Validate region input
+      - name: Create Azure Developer CLI environment
+        run: azd env new "$AZURE_ENV_NAME" --location "$AZURE_LOCATION"
+
+      - name: Set Azure Developer CLI environment variables
         run: |
-          if [ -z "${AZURE_LOCATION}" ]; then
-            echo "::error::AZURE_LOCATION is not set. Define it as a GitHub Environment variable on the '${{ inputs.azure_environment }}' environment."
-            exit 1
+          azd env set AZURE_PRINCIPAL_ID_TYPE "$AZURE_PRINCIPAL_ID_TYPE"
+          azd env set AZURE_RESOURCE_GROUP "rg-${AZURE_ENV_NAME}"
+          azd env set AZURE_ATTENDEE_COUNT "${{ vars.AZURE_ATTENDEE_COUNT || '2' }}"
+          azd env set AZURE_ATTENDEE_PROJECT_PREFIX "${{ vars.AZURE_ATTENDEE_PROJECT_PREFIX || 'attendee' }}"
+          azd env set AZURE_ATTENDEE_ACCESS_PROFILE "${{ vars.AZURE_ATTENDEE_ACCESS_PROFILE || 'project-user' }}"
+          azd env set AZURE_AI_SEARCH_CAPABILITY_HOST "${{ vars.AZURE_AI_SEARCH_CAPABILITY_HOST || 'false' }}"
+          azd env set AZURE_COSMOS_DB_CAPABILITY_HOST "${{ vars.AZURE_COSMOS_DB_CAPABILITY_HOST || 'false' }}"
+          azd env set AZURE_STORAGE_ACCOUNT_CAPABILITY_HOST "${{ vars.AZURE_STORAGE_ACCOUNT_CAPABILITY_HOST || 'false' }}"
+
+          ATTENDEE_UPNS="${{ vars.AZURE_ATTENDEE_USER_PRINCIPAL_NAMES || '' }}"
+          if [ -n "$ATTENDEE_UPNS" ]; then
+            azd env set AZURE_ATTENDEE_USER_PRINCIPAL_NAMES "$ATTENDEE_UPNS"
           fi
 
-      - name: Authenticate Azure Developer CLI
-        run: |
-          azd auth login \
-            --client-id "${{ secrets.AZURE_CLIENT_ID }}" \
-            --federated-credential-provider github \
-            --tenant-id "${{ secrets.AZURE_TENANT_ID }}"
-
-      - name: Configure azd environment and Terraform variables
-        env:
-          RUN_ID: ${{ github.run_id }}
-        run: |
-          set -euo pipefail
-
-          STORAGE_ACCOUNT_NAME="fdyws${RUN_ID}"
-          FOUNDRY_NAME="fdywsfoundry${RUN_ID}"
-          SEARCH_NAME="fdyws-search-${RUN_ID}"
-          RESOURCE_GROUP_NAME="rg-${AZURE_ENV_NAME}"
-
-          azd env new "${AZURE_ENV_NAME}" --location "${AZURE_LOCATION}" --subscription "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
-          azd env set AZURE_LOCATION "${AZURE_LOCATION}"
-          azd env set TF_VAR_location "${AZURE_LOCATION}"
-          azd env set TF_VAR_env_name "${AZURE_ENV_NAME}"
-          azd env set TF_VAR_resource_group_name "${RESOURCE_GROUP_NAME}"
-          azd env set TF_VAR_attendee_count "2"
-          azd env set TF_VAR_storage_account_name "${STORAGE_ACCOUNT_NAME}"
-          azd env set TF_VAR_foundry_name "${FOUNDRY_NAME}"
-          azd env set TF_VAR_search_name "${SEARCH_NAME}"
-
-      - name: Provision infrastructure with azd up
-        id: azd_up
-        continue-on-error: true
-        run: azd up --no-prompt
+      - name: Provision Infrastructure using Azure Developer CLI
+        run: azd provision --no-prompt
 
       - name: Python syntax smoke checks
-        if: steps.azd_up.outcome == 'success'
         run: python -m compileall labs scripts shared
 
-      - name: Future lab integration checks placeholder
-        if: steps.azd_up.outcome == 'success'
-        run: echo "Add end-to-end lab checks here as lab sample source tests are introduced."
-
-      - name: Teardown with azd down (always)
-        id: azd_down
-        if: always()
-        continue-on-error: true
-        run: azd down --force --purge --no-prompt
-
-      - name: Fail on provision or teardown errors
-        if: always()
+      - name: Get infrastructure outputs
+        id: get_infrastructure_outputs
         run: |
-          if [ "${{ steps.azd_up.outcome }}" != "success" ]; then
-            echo "::error::azd up failed."
-            exit 1
-          fi
-
-          if [ "${{ steps.azd_down.outcome }}" != "success" ]; then
-            echo "::error::azd down --force --purge failed. Final cleanup workflow will still run, but this execution must fail."
-            exit 1
-          fi
+          AZD_OUTPUTS=$(azd env get-values)
+          AZURE_RESOURCE_GROUP=$(echo "$AZD_OUTPUTS" | grep "^AZURE_RESOURCE_GROUP=" | cut -d'=' -f2- | xargs)
+          echo "AZURE_RESOURCE_GROUP=$AZURE_RESOURCE_GROUP" >> "$GITHUB_OUTPUT"

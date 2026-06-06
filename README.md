@@ -15,7 +15,6 @@ This repository scaffolds a **3–4 hour, L200–L300 instructor-led workshop** 
 - Foundry Toolkit for VS Code
 - Python 3.11+
 - Azure CLI (`az`)
-- Terraform 1.9+
 - Azure Developer CLI (`azd`)
 - An AI coding agent (GitHub Copilot or Claude Code)
 
@@ -68,22 +67,20 @@ azd env new hol-shared
 azd env select hol-shared
 ```
 
-1. Set core Terraform variables.
+1. Set core deployment variables.
 
 ```bash
 azd env set AZURE_LOCATION australiaeast
-azd env set TF_VAR_location australiaeast
-azd env set TF_VAR_env_name hol-shared
-azd env set TF_VAR_resource_group_name rg-foundry-hol-shared
-azd env set TF_VAR_attendee_count 20
-azd env set TF_VAR_attendee_project_prefix attendee
+azd env set AZURE_RESOURCE_GROUP rg-foundry-hol-shared
+azd env set AZURE_ATTENDEE_COUNT 20
+azd env set AZURE_ATTENDEE_PROJECT_PREFIX attendee
 ```
 
 1. Optional: set RBAC profile and attendee identities.
 
 ```bash
-azd env set TF_VAR_attendee_access_profile project-user
-azd env set TF_VAR_attendee_user_principal_names '["learner1@contoso.com","learner2@contoso.com"]'
+azd env set AZURE_ATTENDEE_ACCESS_PROFILE project-user
+azd env set AZURE_ATTENDEE_USER_PRINCIPAL_NAMES '["learner1@contoso.com","learner2@contoso.com"]'
 ```
 
 Use `project-user` for least-privilege labs (00-07). For publishing scenarios in lab 08, switch to `project-publisher`.
@@ -91,14 +88,13 @@ Use `project-user` for least-privilege labs (00-07). For publishing scenarios in
 1. Provision infrastructure.
 
 ```bash
-azd up
+azd provision
 ```
 
 1. View project assignments and share each learner's `FOUNDRY_PROJECT_NAME` value.
 
 ```bash
-cd infra
-terraform output attendee_project_assignments
+azd env get-value AZURE_ATTENDEE_PROJECT_NAMES
 ```
 
 1. Tear down when the workshop is finished.
@@ -136,7 +132,7 @@ python scripts/health-check.py
 ## Multi-environment model
 
 - Shared environment model: one organizer deploys a shared Foundry account with multiple attendee projects.
-- Per-learner environment model: each learner runs `azd env new <name>` with `TF_VAR_attendee_count=1`.
+- Per-learner environment model: each learner runs `azd env new <name>` with `AZURE_ATTENDEE_COUNT=1`.
 - Environments are isolated by azd environment name and resource group naming.
 
 ## Cost note
@@ -147,12 +143,15 @@ Plan for approximately **AUD 50/day** for a sandbox environment, depending on re
 
 Use `azd down --force --purge` to remove workshop resources between deliveries, then redeploy with updated attendee count.
 
-## Infrastructure deployment (Terraform + azd)
+## Why Bicep
 
-The infrastructure is defined in Terraform using:
+We chose Bicep because it is purpose-built for Azure, concise, readable, and first-class with Azure tooling. It gives us safer infrastructure changes with clear module composition, strong resource typing, and predictable deployment behavior in CI/CD.
 
-- **Azure Verified Modules (AVM)** for Foundry account, Azure AI Search, and Storage
-- **AzAPI** for Microsoft Foundry project child resources and Foundry-to-Search connection
+This workshop also leans on Azure Verified Modules to keep infrastructure patterns consistent, maintainable, and production-aligned.
+
+## Infrastructure deployment (Bicep + azd)
+
+The infrastructure is defined in Bicep using Azure Verified Modules for Foundry account, Azure AI Search, Storage, and supporting services.
 
 ### Quick start
 
@@ -160,21 +159,20 @@ The infrastructure is defined in Terraform using:
 az login
 azd auth login
 azd env new hol
-azd env set TF_VAR_location australiaeast
-azd env set TF_VAR_env_name hol
-azd env set TF_VAR_resource_group_name rg-foundry-hol
-azd env set TF_VAR_attendee_count 20
-azd up
+azd env set AZURE_LOCATION australiaeast
+azd env set AZURE_RESOURCE_GROUP rg-foundry-hol
+azd env set AZURE_ATTENDEE_COUNT 20
+azd provision
 ```
 
-### Optional custom naming
+### Optional attendee configuration
 
-Set Terraform variables in the active azd environment before provisioning:
+Set attendee-specific variables in the active azd environment before provisioning:
 
 ```bash
-azd env set TF_VAR_foundry_name foundryhol001
-azd env set TF_VAR_search_name foundryholsearch001
-azd env set TF_VAR_storage_account_name foundryholstorage01
+azd env set AZURE_ATTENDEE_PROJECT_PREFIX attendee
+azd env set AZURE_ATTENDEE_ACCESS_PROFILE project-user
+azd env set AZURE_ATTENDEE_USER_PRINCIPAL_NAMES '["learner1@contoso.com","learner2@contoso.com"]'
 azd provision
 ```
 
@@ -187,7 +185,7 @@ azd down --force --purge
 ## Repository layout
 
 - `.github/` Copilot guidance and issue/PR templates
-- `infra/` Terraform IaC (AVM + AzAPI) and variable templates
+- `infra/` Bicep IaC (AVM modules) and parameter templates
 - `labs/agent-service-introduction/` numbered module content with `src/` starters and `solution/` placeholders
 - `shared/` reusable Python utilities, common dependencies, sample data
 - `docs/` instructor and facilitator assets

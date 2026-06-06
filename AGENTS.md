@@ -8,7 +8,7 @@ ms.topic: how-to
 
 ## Scope
 
-This repository hosts an instructor-led Microsoft Foundry workshop with numbered labs, Terraform, and shared Python utilities.
+This repository hosts an instructor-led Microsoft Foundry workshop with numbered labs, Bicep infrastructure, and shared Python utilities.
 
 ## Repository Layout
 
@@ -16,7 +16,7 @@ This repository hosts an instructor-led Microsoft Foundry workshop with numbered
 |------|---------|
 | .github/ | Workflow and Copilot repo configuration |
 | docs/ | Instructor and facilitator material |
-| infra/ | Terraform infrastructure and deploy wrappers |
+| infra/ | Bicep infrastructure and deploy wrappers |
 | labs/00-setup ... labs/08-agent-id-and-publishing | Sequential workshop modules |
 | scripts/ | Operational helper scripts |
 | shared/ | Shared Python dependencies, environment template, data, and utilities |
@@ -38,40 +38,36 @@ python -m compileall labs scripts shared
 ```
 
 ```bash
-cd infra && terraform init
+az bicep build --file infra/main.bicep
 ```
 
 ```bash
-cd infra && terraform fmt -recursive
+az bicep lint --file infra/main.bicep
 ```
 
 ```bash
-cd infra && terraform validate
+azd provision
 ```
 
 ```bash
-cd infra && terraform plan -out=tfplan
+azd env get-values
 ```
 
 ```bash
-cd infra && terraform apply tfplan
-```
-
-```bash
-cd infra && terraform destroy
+azd down --force --purge
 ```
 
 ## Change Checklist
 
 * Keep lab numbering and progression intact across files and folders.
 * Preserve runnable Python starter and solution structure for each lab.
-* **Run `terraform fmt -recursive` in infra/ after Terraform edits.**
+* Run `az bicep build --file infra/main.bicep` and `az bicep lint --file infra/main.bicep` after Bicep edits.
 * Do not commit secrets, tokens, keys, or connection strings.
 * Keep `.env.example` templates synchronized with environment variable usage.
 
 ## CI Expectations
 
-The GitHub workflow runs setup validation only for `.github/workflows/copilot-setup-steps.yml` changes, including Terraform and Azure Developer CLI installation.
+The GitHub workflow runs setup validation only for `.github/workflows/copilot-setup-steps.yml` changes, including Azure Bicep and Azure Developer CLI validation.
 
 Treat local lint and validation commands as required quality gates before opening a PR.
 
@@ -82,5 +78,5 @@ Treat local lint and validation commands as required quality gates before openin
 | Lab structure | Each lab includes README.md, src/starter.py, and solution/ |
 | Python style | Type hints where practical, small focused functions, direct script entry points |
 | Strings in Python | Prefer single quotes for literals |
-| Infra | Terraform source in infra/ with wrapper scripts for deploy and teardown |
+| Infra | Bicep source in infra/ with azd-driven deploy and teardown |
 | Shared config | Keep shared/.env.example as the canonical environment template |

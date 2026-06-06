@@ -51,7 +51,6 @@ echo "  NPX location: $(which npx 2>/dev/null || echo 'Not found')"
 echo "  Python version: $(python3 --version 2>/dev/null || echo 'Not found')"
 echo "  Azure CLI version: $(az version --query '"azure-cli"' -o tsv 2>/dev/null || echo 'Not found')"
 echo "  Azure Developer CLI version: $(azd version 2>/dev/null | head -n 1 || echo 'Not found')"
-echo "  Terraform version: $(terraform --version 2>/dev/null | head -n 1 || echo 'Not found')"
 echo "  Bicep version: $(az bicep version 2>/dev/null || echo 'Not found')"
 
 # Configure GitHub Copilot in the CLI alias (ghcs) for bash

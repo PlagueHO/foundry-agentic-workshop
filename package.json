@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "docs:generate-labs": "node scripts/generate-vitepress-labs.mjs",
-    "lint:md": "markdownlint-cli2 \"**/*.md\" \"#node_modules\" \"#.git\" \"#infra/.terraform\"",
-    "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\" \"#node_modules\" \"#.git\" \"#infra/.terraform\"",
-    "lint:md:ci": "markdownlint-cli2 \"**/*.md\" \"#node_modules\" \"#.git\" \"#infra/.terraform\"",
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \"#node_modules\" \"#.git\" \"#.azure\"",
+    "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\" \"#node_modules\" \"#.git\" \"#.azure\"",
+    "lint:md:ci": "markdownlint-cli2 \"**/*.md\" \"#node_modules\" \"#.git\" \"#.azure\"",
     "docs:dev": "pnpm run docs:generate-labs && vitepress dev docs",
     "docs:build": "pnpm run docs:generate-labs && vitepress build docs",
     "docs:preview": "pnpm run docs:generate-labs && vitepress preview docs"

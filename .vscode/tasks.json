@@ -67,16 +67,20 @@
             "problemMatcher": ["$python"]
         },
 
-        // TF Tasks
+        // Bicep tasks
         {
-            "label": "terraform: init",
+            "label": "bicep: build",
             "type": "shell",
-            "command": "terraform",
-            "args": ["init"],
+            "command": "az",
+            "args": ["bicep", "build", "--file", "main.bicep"],
             "options": {
                 "cwd": "${workspaceFolder}/infra"
             },
             "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
             "icon": { "id": "server-environment" },
             "presentation": {
                 "reveal": "always",
@@ -84,25 +88,10 @@
             }
         },
         {
-            "label": "terraform: fmt",
+            "label": "bicep: lint",
             "type": "shell",
-            "command": "terraform",
-            "args": ["fmt", "-recursive"],
-            "options": {
-                "cwd": "${workspaceFolder}/infra"
-            },
-            "problemMatcher": [],
-            "icon": { "id": "wrench" },
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "terraform: validate",
-            "type": "shell",
-            "command": "terraform",
-            "args": ["validate"],
+            "command": "az",
+            "args": ["bicep", "lint", "--file", "main.bicep"],
             "options": {
                 "cwd": "${workspaceFolder}/infra"
             },
@@ -118,31 +107,12 @@
             }
         },
         {
-            "label": "terraform: plan",
+            "label": "azd: provision",
             "type": "shell",
-            "command": "terraform",
-            "args": ["plan", "-out=tfplan"],
+            "command": "azd",
+            "args": ["provision"],
             "options": {
-                "cwd": "${workspaceFolder}/infra"
-            },
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "icon": { "id": "preview" },
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "terraform: apply",
-            "type": "shell",
-            "command": "terraform",
-            "args": ["apply", "tfplan"],
-            "options": {
-                "cwd": "${workspaceFolder}/infra"
+                "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [],
             "icon": { "id": "play" },
@@ -152,27 +122,12 @@
             }
         },
         {
-            "label": "terraform: output",
+            "label": "azd: down",
             "type": "shell",
-            "command": "terraform",
-            "args": ["output"],
+            "command": "azd",
+            "args": ["down", "--force", "--purge"],
             "options": {
-                "cwd": "${workspaceFolder}/infra"
-            },
-            "problemMatcher": [],
-            "icon": { "id": "list-unordered" },
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "terraform: destroy",
-            "type": "shell",
-            "command": "terraform",
-            "args": ["destroy"],
-            "options": {
-                "cwd": "${workspaceFolder}/infra"
+                "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [],
             "icon": { "id": "trash" },
