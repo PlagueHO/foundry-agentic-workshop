@@ -72,7 +72,7 @@ module "foundry_account" {
 
 module "search_service" {
   source  = "Azure/avm-res-search-searchservice/azurerm"
-  version = "~> 0.1.0"
+  version = "~> 0.2.0"
 
   name                = var.search_name
   location            = var.location
@@ -81,7 +81,7 @@ module "search_service" {
 
 module "storage_account" {
   source  = "Azure/avm-res-storage-storageaccount/azurerm"
-  version = "~> 0.6.0"
+  version = "~> 0.7.2"
 
   name                      = var.storage_account_name
   location                  = var.location
