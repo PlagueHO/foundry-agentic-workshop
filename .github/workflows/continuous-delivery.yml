@@ -13,18 +13,6 @@ on:
       - .github/workflows/validate-infrastructure.yml
       - .github/workflows/provision-infrastructure.yml
       - .github/workflows/delete-infrastructure.yml
-  pull_request:
-    branches:
-      - main
-    paths:
-      - infra/**
-      - labs/**
-      - shared/**
-      - azure.yaml
-      - .github/workflows/continuous-delivery.yml
-      - .github/workflows/validate-infrastructure.yml
-      - .github/workflows/provision-infrastructure.yml
-      - .github/workflows/delete-infrastructure.yml
   schedule:
     - cron: '0 3 * * *'
   workflow_dispatch:
