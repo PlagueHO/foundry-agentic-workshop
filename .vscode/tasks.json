@@ -231,6 +231,29 @@
                 "panel": "shared"
             }
         },
+        {
+            "label": "docs: dev",
+            "type": "shell",
+            "command": "pnpm",
+            "args": ["run", "docs:dev", "--", "--host", "127.0.0.1", "--port", "4173"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "isBackground": true,
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "icon": {
+                "id": "play",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
 
         // Markdown tasks
         {

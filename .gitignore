@@ -28,6 +28,7 @@ pnpm-debug.log*
 
 # VitePress
 docs/.vitepress/dist/
+docs/.vitepress/cache/
 docs/dist/
 docs/.generated/
 

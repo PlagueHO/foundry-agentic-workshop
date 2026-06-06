@@ -106,10 +106,12 @@ async function main() {
     const trackPath = path.join(labsRoot, trackName)
     const stepEntries = await fs.readdir(trackPath, { withFileTypes: true })
 
-    sidebarItems.push({
+    const trackSidebarItem = {
       text: trackTitle(trackName),
       link: `/labs/${trackName}`,
-    })
+      collapsed: true,
+      items: [],
+    }
 
     const sortedStepNames = stepEntries
       .filter((entry) => entry.isDirectory() && STEP_DIR_PATTERN.test(entry.name))
@@ -129,11 +131,13 @@ async function main() {
 
       await writeGeneratedStep(trackName, stepName, stepReadmePath, normalizedMarkdown)
 
-      sidebarItems.push({
+      trackSidebarItem.items.push({
         text: stepTitle,
         link: `/.generated/lab-steps/${trackName}/${stepName}`,
       })
     }
+
+    sidebarItems.push(trackSidebarItem)
   }
 
   await writeLabsSidebarFile(sidebarItems)

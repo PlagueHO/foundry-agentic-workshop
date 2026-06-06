@@ -7,5 +7,5 @@ infra:
 hooks:
   postprovision:
     shell: sh
-    run: python scripts/seed-search-index.py && python scripts/assign-attendee-roles.py
+    run: python scripts/assign-attendee-roles.py
 services: {}

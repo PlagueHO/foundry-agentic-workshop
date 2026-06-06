@@ -6,7 +6,7 @@ export default defineConfig({
   description: 'Hands-on labs for building agentic solutions with Microsoft Foundry',
   base: '/foundry-agentic-workshop/',
   outDir: 'dist',
-  appearance: 'force-auto',
+  appearance: 'auto',
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
