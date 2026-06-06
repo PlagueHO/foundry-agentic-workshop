@@ -127,7 +127,7 @@ az account set --subscription <your-subscription-id>
 python scripts/health-check.py
 ```
 
-1. Complete `labs/agent-service-introduction/00-setup` first, then progress through labs 01-08 in order.
+1. Complete `labs/introduction-foundry-agent-service/00-setup` first, then progress through labs 01-08 in order.
 
 ## Multi-environment model
 
@@ -186,7 +186,7 @@ azd down --force --purge
 
 - `.github/` Copilot guidance and issue/PR templates
 - `infra/` Bicep IaC (AVM modules) and parameter templates
-- `labs/agent-service-introduction/` numbered module content with `src/` starters and `solution/` placeholders
+- `labs/introduction-foundry-agent-service/` numbered module content with `src/` starters and `solution/` placeholders
 - `shared/` reusable Python utilities, common dependencies, sample data
 - `docs/` instructor and facilitator assets
 - `scripts/` helper scripts for lab operations

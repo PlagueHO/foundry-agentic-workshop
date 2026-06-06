@@ -1,8 +1,8 @@
-# Agent Service Introduction
+# Introduction to Foundry Agent Service
 
 This lab track contains the full sequence of workshop modules, from setup through publishing.
 
-The module pages are generated automatically during docs build and preview from source README files in the lab directories under `labs/agent-service-introduction`.
+The module pages are generated automatically during docs build and preview from source README files in the lab directories under `labs/introduction-foundry-agent-service`.
 
 ## Modules
 

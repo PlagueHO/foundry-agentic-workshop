@@ -10,4 +10,4 @@ Build and deliver a 3-4 hour, instructor-led workshop for agentic applications w
 
 ## Labs
 
-1. [Agent Service Introduction](./labs/agent-service-introduction.md)
+1. [Introduction to Foundry Agent Service](./labs/introduction-foundry-agent-service.md)

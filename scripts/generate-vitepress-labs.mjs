@@ -10,7 +10,10 @@ const generatedRoot = path.join(docsRoot, '.generated', 'lab-steps')
 const labsSidebarPath = path.join(docsRoot, '.vitepress', 'labs-sidebar.ts')
 
 const STEP_DIR_PATTERN = /^\d{2}-/
-const TRACK_ORDER = ['agent-service-introduction']
+const TRACK_ORDER = ['introduction-foundry-agent-service']
+const TRACK_TITLES = {
+  'introduction-foundry-agent-service': 'Introduction to Foundry Agent Service',
+}
 
 async function directoryExists(targetPath) {
   try {
@@ -33,6 +36,10 @@ function cleanStepTitle(rawTitle) {
 }
 
 function trackTitle(trackName) {
+  if (TRACK_TITLES[trackName]) {
+    return TRACK_TITLES[trackName]
+  }
+
   return trackName
     .split('-')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))

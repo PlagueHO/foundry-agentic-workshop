@@ -34,5 +34,5 @@ python scripts/health-check.py
 
 ## Start labs
 
-1. Begin with [Agent Service Introduction](./labs/agent-service-introduction.md).
+1. Begin with [Introduction to Foundry Agent Service](./labs/introduction-foundry-agent-service.md).
 1. Continue through labs 01-08 in order.

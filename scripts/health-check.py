@@ -39,7 +39,7 @@ def main() -> int:
         return 1
 
     print('Environment variables and Azure CLI context look good.')
-    print('Next: run the lab setup in labs/agent-service-introduction/00-setup.')
+    print('Next: run the lab setup in labs/introduction-foundry-agent-service/00-setup.')
     return 0
 
 
