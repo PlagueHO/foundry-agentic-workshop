@@ -28,6 +28,7 @@ pnpm-debug.log*
 
 # VitePress
 docs/.vitepress/dist/
+docs/dist/
 docs/.generated/
 
 # Azure / IaC outputs
