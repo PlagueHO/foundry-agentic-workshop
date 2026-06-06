@@ -68,6 +68,7 @@ module "foundry_account" {
   sku_name                 = var.foundry_sku
   custom_subdomain_name    = var.foundry_name
   allow_project_management = true
+  local_auth_enabled       = false
 }
 
 module "search_service" {
@@ -85,14 +86,14 @@ module "storage_account" {
 
   name                      = var.storage_account_name
   location                  = var.location
-  resource_group_name       = azurerm_resource_group.workshop.name
+  parent_id                 = azurerm_resource_group.workshop.id
   shared_access_key_enabled = false
 }
 
 resource "azapi_resource" "attendee_projects" {
   for_each = toset(local.attendee_project_names)
 
-  type      = "Microsoft.CognitiveServices/accounts/projects@2024-10-01-preview"
+  type      = "Microsoft.CognitiveServices/accounts/projects@2025-06-01"
   name      = each.value
   parent_id = local.foundry_resource_id
   location  = var.location
@@ -110,7 +111,7 @@ resource "azapi_resource" "attendee_projects" {
 }
 
 resource "azapi_resource" "foundry_search_connection" {
-  type      = "Microsoft.CognitiveServices/accounts/connections@2024-10-01"
+  type      = "Microsoft.CognitiveServices/accounts/connections@2025-06-01"
   name      = var.foundry_search_connection_name
   parent_id = local.foundry_resource_id
 
