@@ -296,6 +296,9 @@ def main() -> int:
 
     rows: list[dict[str, str]] = []
     standard_attendee_count = 0  # index within the standard-attendee group only
+    facilitator_count = 0
+    proctor_count = 0
+    organizer_count = 0
     for attendee in attendees:
         upn = str(attendee['upn']).strip()
         role_key = str(attendee.get('role', '') or default_role).strip()
@@ -314,12 +317,26 @@ def main() -> int:
 
         display_name, role_definition_id, scope_level = ROLE_DEFINITIONS[role_key]
 
+        individual = attendee.get('individualProject', True) is not False
         if scope_level == 'account':
-            target_project_name = ''
             scope = account_scope
+            if individual:
+                if role_key == 'facilitator':
+                    facilitator_count += 1
+                    target_project_name = _project_name_for(attendee, facilitator_count, facilitator_prefix)
+                elif role_key == 'proctor':
+                    proctor_count += 1
+                    target_project_name = _project_name_for(attendee, proctor_count, proctor_prefix)
+                elif role_key == 'organizer':
+                    organizer_count += 1
+                    target_project_name = _project_name_for(attendee, organizer_count, organizer_prefix)
+                else:
+                    standard_attendee_count += 1
+                    target_project_name = _project_name_for(attendee, standard_attendee_count, project_prefix)
+            else:
+                target_project_name = default_project_name
         else:
             standard_attendee_count += 1
-            individual = attendee.get('individualProject', True) is not False
             target_project_name = (
                 _project_name_for(attendee, standard_attendee_count, project_prefix)
                 if individual
