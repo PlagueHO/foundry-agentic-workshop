@@ -6,15 +6,11 @@ ms.date: 2026-06-07
 ms.topic: reference
 ---
 
-The repository ships a multi-stage GitHub Actions pipeline that validates Bicep infrastructure,
-provisions a real Azure environment, runs smoke tests against it, and tears everything down. This
-page explains how the pipeline works, how to configure the GitHub environment, and how the smoke
-tests derive project names from the attendee list.
+The repository ships a multi-stage GitHub Actions pipeline that validates Bicep infrastructure, provisions a real Azure environment, runs smoke tests against it, and tears everything down. This page explains how the pipeline works, how to configure the GitHub environment, and how the smoke tests derive project names from the attendee list.
 
 ## Pipeline architecture
 
-The pipeline is composed of seven reusable workflow files that chain together through a single
-orchestrator. The diagram below shows the call graph for a push to `main`.
+The pipeline is composed of seven reusable workflow files that chain together through a single orchestrator. The diagram below shows the call graph for a push to `main`.
 
 ```mermaid
 flowchart TD
@@ -44,9 +40,7 @@ flowchart TD
 
 ### continuous-delivery.yml
 
-The orchestrator runs on every push to `main` and on any `v*` tag. It computes a short build
-version from `GITHUB_SHA` and passes it downstream. All secrets flow through this file to the
-callee workflows via the `secrets: inherit` mechanism.
+The orchestrator runs on every push to `main` and on any `v*` tag. It computes a short build version from `GITHUB_SHA` and passes it downstream. All secrets flow through this file to the callee workflows via the `secrets: inherit` mechanism.
 
 The `concurrency` group `continuous-delivery-${{ github.ref }}` prevents two simultaneous
 runs against the same branch. The group does **not** cancel in progress, ensuring teardown
@@ -54,9 +48,7 @@ always completes.
 
 ### validate-infrastructure.yml
 
-Authenticates with Azure using OIDC federated credentials, creates an ephemeral `azd` environment,
-sets all attendee and capability-host variables from the GitHub environment, and calls
-`azd provision --preview`. No resources are created; this is a what-if validation only.
+Authenticates with Azure using OIDC federated credentials, creates an ephemeral `azd` environment, sets all attendee and capability-host variables from the GitHub environment, and calls `azd provision --preview`. No resources are created; this is a what-if validation only.
 
 The workflow is scoped to the `${{ inputs.ENVIRONMENT }}` GitHub environment so that all
 `vars.*` overrides apply.
@@ -67,25 +59,21 @@ Creates the `azd` environment, sets all variables, calls `azd provision` (which 
 post-provision hook to assign Foundry RBAC roles), verifies the audit CSV, and finally
 emits the `AZURE_RESOURCE_GROUP` output for downstream steps.
 
-After provisioning, a Python inline script reads the audit CSV produced by
-`scripts/assign-attendee-roles.py` and fails the job if any role assignment has `status=failed`.
+After provisioning, a Python inline script reads the audit CSV produced by `scripts/assign-attendee-roles.py` and fails the job if any role assignment has `status=failed`.
 
 ### smoke-test.yml
 
 Installs Pester 5.5+, assembles a container-data hashtable from environment variables, and
-invokes `tests/smoke/Smoke.Tests.ps1` through a `New-PesterContainer`. Results are written as
-NUnit XML and uploaded as a build artefact named `smoke-test-results-<ENVIRONMENT>`.
+invokes `tests/smoke/Smoke.Tests.ps1` through a `New-PesterContainer`. Results are written as NUnit XML and uploaded as a build artefact named `smoke-test-results-<ENVIRONMENT>`.
 
 ### delete-infrastructure.yml
 
 Deletes the resource group, then purges any soft-deleted Key Vault and Cognitive Services
-(Foundry) accounts so the environment name is immediately reusable. Runs under `if: always()`
-so teardown fires even when smoke tests fail.
+(Foundry) accounts so the environment name is immediately reusable. Runs under `if: always()` so teardown fires even when smoke tests fail.
 
 ## GitHub environment configuration
 
-The pipeline reads configuration exclusively from the `test` GitHub environment
-(Settings > Environments > test). No secrets or variables are hardcoded in workflow files.
+The pipeline reads configuration exclusively from the `test` GitHub environment (Settings > Environments > test). No secrets or variables are hardcoded in workflow files.
 
 ### Required secrets
 
@@ -95,13 +83,11 @@ The pipeline reads configuration exclusively from the `test` GitHub environment
 | `AZURE_SUBSCRIPTION_ID` | Azure subscription ID |
 | `AZURE_CLIENT_ID` | Client ID of the managed identity with federated OIDC credentials |
 
-The managed identity needs `Owner` or `Contributor + User Access Administrator` on the target
-subscription so it can create resource groups and assign Foundry RBAC roles.
+The managed identity needs `Owner` or `Contributor + User Access Administrator` on the target subscription so it can create resource groups and assign Foundry RBAC roles.
 
 ### Variables reference
 
-All variables use the pattern `vars.VAR_NAME || 'default'` in workflow files, so omitting a
-variable from the environment is equivalent to accepting the default.
+All variables use the pattern `vars.VAR_NAME || 'default'` in workflow files, so omitting a variable from the environment is equivalent to accepting the default.
 
 #### Azure environment
 
@@ -138,9 +124,7 @@ variable from the environment is equivalent to accepting the default.
 
 ## Attendee list format and project derivation
 
-`AZURE_ATTENDEE_LIST` is a single-line JSON array. The value is passed to `azd env set` and read
-by both Bicep (project creation) and the post-provision hook (role assignment). Both consumers
-derive project names from the same array, so the array is the single source of truth.
+`AZURE_ATTENDEE_LIST` is a single-line JSON array. The value is passed to `azd env set` and read by both Bicep (project creation) and the post-provision hook (role assignment). Both consumers derive project names from the same array, so the array is the single source of truth.
 
 ### Attendee object fields
 
@@ -153,8 +137,7 @@ derive project names from the same array, so the array is the single source of t
 
 ### Per-role-group indexing
 
-Attendees are filtered into four groups before project names are derived. The index `i` within
-each group starts at `1` and resets independently for each group:
+Attendees are filtered into four groups before project names are derived. The index `i` within each group starts at `1` and resets independently for each group:
 
 | Group | Roles | Default prefix | Example |
 |-------|-------|---------------|---------|
@@ -163,21 +146,16 @@ each group starts at `1` and resets independently for each group:
 | Proctor | `proctor` | `AZURE_PROCTOR_PROJECT_PREFIX` | `proctor-01` |
 | Organizer | `organizer` | `AZURE_ORGANIZER_PROJECT_PREFIX` | `organizer-01` |
 
-The final project list concatenates groups in order: standard, facilitator, proctor, organizer.
-This is the same ordering Bicep uses in `allProjectNames` inside `infra/main.bicep`.
+The final project list concatenates groups in order: standard, facilitator, proctor, organizer. This is the same ordering Bicep uses in `allProjectNames` inside `infra/main.bicep`.
 
 ### EnsureFacilitatorProject
 
-When `AZURE_ENSURE_FACILITATOR_PROJECT=true` (the default) and `AZURE_ATTENDEE_LIST` contains no
-entry with `role=facilitator`, Bicep and the smoke test both guarantee that
-`<facilitatorPrefix>-01` appears in the project list. This ensures a facilitator project always
-exists even when the list is attendee-only.
+When `AZURE_ENSURE_FACILITATOR_PROJECT=true` (the default) and `AZURE_ATTENDEE_LIST` contains no entry with `role=facilitator`, Bicep and the smoke test both guarantee that
+`<facilitatorPrefix>-01` appears in the project list. This ensures a facilitator project always exists even when the list is attendee-only.
 
 ## Smoke test validation logic
 
-`tests/smoke/Smoke.Tests.ps1` is a Pester 5 container-based test that receives all configuration
-through the `New-PesterContainer -Data` hashtable, allowing the same script to validate any
-roster without code changes.
+`tests/smoke/Smoke.Tests.ps1` is a Pester 5 container-based test that receives all configuration through the `New-PesterContainer -Data` hashtable, allowing the same script to validate any roster without code changes.
 
 ### BeforeDiscovery: project name derivation
 
@@ -185,18 +163,13 @@ roster without code changes.
 mirroring the Bicep variable derivation exactly:
 
 1. Parse `$AttendeeList` into an array.
-1. Iterate the array and sort each entry into its role group (standard, facilitator, proctor,
-   organizer), tracking a per-group counter that starts at `0`.
-1. For each entry, derive the project name using the group counter as the index (`counter + 1`
-   zero-padded to two digits), or use the explicit `projectName` field if present.
-1. The standard group counter advances for every standard entry, including those with
-   `individualProject: false`, matching Bicep's loop index.
-1. Apply `EnsureFacilitatorProject`: if no facilitator entries produced names, add
-   `<facilitatorPrefix>-01` to the facilitator names.
+1. Iterate the array and sort each entry into its role group (standard, facilitator, proctor, organizer), tracking a per-group counter that starts at `0`.
+1. For each entry, derive the project name using the group counter as the index (`counter + 1` zero-padded to two digits), or use the explicit `projectName` field if present.
+1. The standard group counter advances for every standard entry, including those with `individualProject: false`, matching Bicep's loop index.
+1. Apply `EnsureFacilitatorProject`: if no facilitator entries produced names, add `<facilitatorPrefix>-01` to the facilitator names.
 1. Concatenate groups: standard, facilitator, proctor, organizer.
 
-This derivation produces identical names to those Bicep creates in Azure, so the smoke test
-assertions reference resources that actually exist.
+This derivation produces identical names to those Bicep creates in Azure, so the smoke test assertions reference resources that actually exist.
 
 ### Describe blocks
 
@@ -218,14 +191,12 @@ For each attendee in `$script:AttendeeTestCases`, the test:
 
 1. Resolves the UPN to an Entra object ID via `az ad user show`.
 1. Looks up the role definition ID from the hardcoded `$script:RoleDefinitions` table.
-1. Determines the scope: `project` scope becomes the full ARM resource ID of the attendee's
-   project; `account` scope is the Foundry account resource ID.
+1. Determines the scope: `project` scope becomes the full ARM resource ID of the attendee's project; `account` scope is the Foundry account resource ID.
 1. Calls `az role assignment list` and asserts the assignment count is greater than zero.
 
 ## 6-user reference scenario
 
-The `test` environment is configured with the following attendee list that maps the six lab
-accounts shown in the Azure portal to their respective roles and projects:
+The `test` environment is configured with the following attendee list that maps the six lab accounts shown in the Azure portal to their respective roles and projects:
 
 ```json
 [
@@ -267,13 +238,11 @@ Set the following variables in the `test` GitHub environment to activate this sc
 
 ## Teardown
 
-`delete-infrastructure.yml` always runs at the end of `e2e-test.yml`, even when earlier jobs
-fail. It performs three steps:
+`delete-infrastructure.yml` always runs at the end of `e2e-test.yml`, even when earlier jobs fail. It performs three steps:
 
 1. Deletes the resource group `rg-<AZURE_ENV_NAME>` with `az group delete --yes`.
 1. Purges soft-deleted Key Vault instances whose vault ID contains the resource group name.
-1. Purges soft-deleted Cognitive Services (Foundry) accounts whose ARM ID contains the
-   resource group name.
+1. Purges soft-deleted Cognitive Services (Foundry) accounts whose ARM ID contains the resource group name.
 
 Purging ensures the environment name is immediately reusable without waiting for the
 30-day soft-delete retention period to expire.

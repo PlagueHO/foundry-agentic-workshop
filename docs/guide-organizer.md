@@ -1,30 +1,21 @@
----
-title: Organizer Guide
-description: Deploy and manage a shared Microsoft Foundry workshop environment with per-attendee access control.
-author: Foundry Agentic Workshop Maintainers
-ms.date: 2026-06-07
-ms.topic: how-to
----
+# Organizer Guide
 
-This guide covers standing up and tearing down a shared Microsoft Foundry workshop environment:
-infrastructure deployment, per-attendee access, validation, and cleanup. For the condensed
-checklist, see the [Organizer Quickstart](./quickstart-organizer.md).
+This guide covers standing up and tearing down a shared Microsoft Foundry workshop environment: infrastructure deployment, per-attendee access, validation, and cleanup. For the condensed checklist, see the [Organizer Quickstart](./quickstart-organizer.md).
 
 ## Prerequisites
 
-1. An Azure subscription where you can create resources and assign roles (Owner or User
-   Access Administrator on the target resource group).
+1. An Azure subscription to use to host the labaratory infrastructure where you have permission to create resources and assign roles.
+   1. To create resources requires requires Owner or Contributor role on the subscription or resource group.
+   1. To assign roles requires Owner or User Access Administrator on the subscription or resource group.
 1. [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. Python 3.11 or later (the post-provision role assignment runs as a Python hook).
 1. [Foundry Model quota](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits) in your target region for the models the labs use.
-1. The Microsoft Entra ID UPN for each attendee and facilitator.
+1. The Microsoft Entra ID UPN for each attendee, organizer, facilitator and proctor. The organizer, facilitator and proctors are optional.
 
 ## Typical workshop setup
 
-This section walks through the most common scenario: a handful of standard attendees and one
-facilitator. The whole flow takes about five minutes. A single command — `azd provision` —
-deploys the Azure resources and assigns all roles; re-run it any time the roster changes.
+This section walks through the most common scenario: a handful of standard attendees and one facilitator. The whole flow takes about five minutes. A single command - `azd provision` - deploys the Azure resources and assigns all roles; re-run it any time the roster changes.
 
 ### 1. Sign in
 
@@ -49,23 +40,19 @@ azd env set AZURE_RESOURCE_GROUP rg-my-workshop
 
 ### 3. Set your attendee list
 
-`AZURE_ATTENDEE_LIST` is the single configuration variable that drives both project creation
-and role assignment. Set it to a single-line JSON array of attendees before provisioning.
+`AZURE_ATTENDEE_LIST` is the single configuration variable that drives both project creation and role assignment. Set it to a single-line JSON array of attendees before provisioning.
 
 The example below registers five standard attendees and one facilitator. Each standard
-attendee gets a dedicated project named `attendee-01` through `attendee-05`; the facilitator
-gets `facilitator-01`.
+attendee gets a dedicated project named `attendee-01` through `attendee-05`; the facilitator gets `facilitator-01`.
 
 ```bash
 azd env set AZURE_ATTENDEE_LIST '[{"upn":"alice@contoso.com"},{"upn":"bob@contoso.com"},{"upn":"carol@contoso.com"},{"upn":"david@contoso.com"},{"upn":"eve@contoso.com"},{"upn":"facilitator@contoso.com","role":"facilitator"}]'
 ```
 
-The default role for entries without an explicit `role` is `foundry-user` — least privilege,
-suitable for labs 00–07. The `facilitator` role grants full account-level access.
+The default role for entries without an explicit `role` is `foundry-user`- least privilege, suitable for labs 00–07. The `facilitator` role grants full account-level access.
 
 > [!TIP]
-> Store the formatted version in a local file for readability and paste the single-line form
-> into `azd env set`. See [Scenario examples](#scenario-examples) for more roster patterns.
+> Store the formatted version in a local file for readability and paste the single-line form into `azd env set`. See [Scenario examples](#scenario-examples) for more roster patterns.
 
 ### 4. Provision
 
@@ -73,14 +60,10 @@ suitable for labs 00–07. The `facilitator` role grants full account-level acce
 azd provision
 ```
 
-This deploys all Azure resources, runs the post-provision hook to assign roles, and seeds the
-Azure AI Search indexes. Re-run this command any time you change `AZURE_ATTENDEE_LIST`,
-`AZURE_ATTENDEE_COUNT`, or the project prefix.
+This deploys all Azure resources, runs the post-provision hook to assign roles, and seeds the Azure AI Search indexes. Re-run this command any time you change `AZURE_ATTENDEE_LIST`, `AZURE_ATTENDEE_COUNT`, or the project prefix.
 
 > [!NOTE]
-> Screenshot placeholder — *the Foundry account and its projects in the Azure portal after
-> provisioning.* Alt text: "Azure portal resource group showing the Foundry account and one
-> project per attendee."
+> Screenshot placeholder- *the Foundry account and its projects in the Azure portal after provisioning.* Alt text: "Azure portal resource group showing the Foundry account and one project per attendee."
 
 ## Validate and share
 
@@ -93,20 +76,17 @@ attendees.
 azd env get-value AZURE_ATTENDEE_PROJECT_NAMES
 ```
 
-Open the [Foundry portal](https://ai.azure.com) and confirm the projects and model deployments
-exist. Optionally sign in as a test attendee to verify the expected capabilities.
+Open the [Foundry portal](https://ai.azure.com) and confirm the projects and model deployments exist. Optionally sign in as a test attendee to verify the expected capabilities.
 
 > [!NOTE]
-> Screenshot placeholder — *the project list in the Foundry portal.* Alt text: "Microsoft
-> Foundry portal showing one project per attendee."
+> Screenshot placeholder- *the project list in the Foundry portal.* Alt text: "Microsoft Foundry portal showing one project per attendee."
 
 ### Share with attendees
 
 Give each attendee:
 
 * Their `FOUNDRY_PROJECT_NAME` (for example `attendee-01`).
-* The shared connection values for `.env`: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`,
-  `FOUNDRY_RESOURCE_NAME`, and `AZURE_SEARCH_SERVICE_NAME`.
+* The shared connection values for `.env`: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, and `AZURE_SEARCH_SERVICE_NAME`.
 
 Refer them to the [Attendee Quickstart](./quickstart-attendee.md) for setup instructions.
 
@@ -115,9 +95,7 @@ Refer them to the [Attendee Quickstart](./quickstart-attendee.md) for setup inst
 ## Attendee list reference
 
 `AZURE_ATTENDEE_LIST` is a single-line JSON array persisted by `azd env set` and read by
-both the Bicep deployment (project creation) and the post-provision hook (role assignment).
-Set it before provisioning; both consumers derive project names and role scopes from the
-same value.
+both the Bicep deployment (project creation) and the post-provision hook (role assignment). Set it before provisioning; both consumers derive project names and role scopes from the same value.
 
 The full JSON schema is at `shared/schemas/attendee-list.schema.json`.
 
@@ -125,17 +103,16 @@ The full JSON schema is at `shared/schemas/attendee-list.schema.json`.
 
 | Field | Required | Default | Purpose |
 |-------|----------|---------|---------|
-| `upn` | Yes | — | Microsoft Entra UPN; resolved to an object ID at provisioning time. |
-| `role` | No | `AZURE_ATTENDEE_DEFAULT_ROLE` | Role key — see [Role catalog](#role-catalog). |
+| `upn` | Yes |- | Microsoft Entra UPN; resolved to an object ID at provisioning time. |
+| `role` | No | `AZURE_ATTENDEE_DEFAULT_ROLE` | Role key- see [Role catalog](#role-catalog). |
 | `individualProject` | No | `true` | `true` = dedicated project; `false` = shares the first project in the list. |
 | `projectName` | No | `<prefix>-NN` by group position | Explicit project name (lowercase alphanumeric, hyphens, 2–64 chars). |
 
 ### Scenario examples
 
-**Anonymous projects — headcount only**
+**Anonymous projects- headcount only**
 
-Use this when you have a seat count but no UPN list yet. Creates five blank projects with no
-role assignments. Switch to a named list once UPNs are available.
+Use this when you have a seat count but no UPN list yet. Creates five blank projects with no role assignments. Switch to a named list once UPNs are available.
 
 ```bash
 azd env set AZURE_ATTENDEE_COUNT 5
@@ -166,8 +143,7 @@ azd env set AZURE_ATTENDEE_LIST '[{"upn":"alice@contoso.com"},{"upn":"bob@contos
 
 **Standard attendees with a facilitator**
 
-The facilitator gets `Foundry Owner` at account scope and a `facilitator-01` project. Standard
-attendees are unaffected.
+The facilitator gets `Foundry Owner` at account scope and a `facilitator-01` project. Standard attendees are unaffected.
 
 ```json
 [
@@ -180,7 +156,7 @@ attendees are unaffected.
 
 ---
 
-**Workshop staff — facilitator, proctor, organizer**
+**Workshop staff- facilitator, proctor, organizer**
 
 Each staff role receives a project under its own prefix. Attendees and staff are numbered
 independently, so `attendee-01`, `facilitator-01`, and `proctor-01` are distinct projects.
@@ -252,22 +228,19 @@ check-jsonschema --schemafile shared/schemas/attendee-list.schema.json /tmp/atte
 
 ## Role catalog
 
-Role keys map to Foundry built-in roles. See
-[Role-based access control for Microsoft Foundry](https://learn.microsoft.com/en-us/azure/foundry/concepts/rbac-foundry).
+Role keys map to Foundry built-in roles. See [Role-based access control for Microsoft Foundry](https://learn.microsoft.com/en-us/azure/foundry/concepts/rbac-foundry).
 
 | Role key | Foundry role | Scope | Can | Cannot |
 |----------|--------------|-------|-----|--------|
 | `foundry-user` | Foundry User | Project | Build agents, create connections, use deployed models, Foundry IQ, toolboxes (labs 00–07). | Deploy models, publish agents. |
 | `foundry-project-manager` | Foundry Project Manager | Account | Everything above plus publish agents (lab 08). | Deploy models. |
-| `foundry-account-owner` | Foundry Account Owner | Account | Everything above plus deploy models. | — |
-| `foundry-owner` | Foundry Owner | Account | Full build and manage. | — |
-| `facilitator` | Foundry Owner | Account | Full access under the facilitator project prefix. | — |
-| `proctor` | Foundry Owner | Account | Full access under the proctor project prefix. | — |
-| `organizer` | Foundry Owner | Account | Full access under the organizer project prefix. | — |
+| `foundry-account-owner` | Foundry Account Owner | Account | Everything above plus deploy models. |- |
+| `foundry-owner` | Foundry Owner | Account | Full build and manage. |- |
+| `facilitator` | Foundry Owner | Account | Full access under the facilitator project prefix. |- |
+| `proctor` | Foundry Owner | Account | Full access under the proctor project prefix. |- |
+| `organizer` | Foundry Owner | Account | Full access under the organizer project prefix. |- |
 
-`foundry-user` is the default and is least privilege. Because the organizer pre-deploys models
-during provisioning, attendees stay on `foundry-user` for labs 00–07. Elevate only when a lab
-requires it.
+`foundry-user` is the default and is least privilege. Because the organizer pre-deploys models during provisioning, attendees stay on `foundry-user` for labs 00–07. Elevate only when a lab requires it.
 
 ```bash
 # Elevate everyone to deploy models
@@ -279,9 +252,7 @@ azd env set AZURE_ATTENDEE_LIST '[{"upn":"alice@contoso.com","role":"foundry-acc
 
 ### Staff project prefixes
 
-Staff roles use their own prefix and are numbered independently of standard attendees. A
-`facilitator-01` project is always provisioned by default even when no facilitator appears in
-`AZURE_ATTENDEE_LIST` (controlled by `AZURE_ENSURE_FACILITATOR_PROJECT`).
+Staff roles use their own prefix and are numbered independently of standard attendees. A `facilitator-01` project is always provisioned by default even when no facilitator appears in `AZURE_ATTENDEE_LIST` (controlled by `AZURE_ENSURE_FACILITATOR_PROJECT`).
 
 | Role | Default prefix | Env var | Example project |
 |------|---------------|---------|-----------------|
@@ -310,8 +281,7 @@ File: `./.azure/attendee-provisioning-<env>-<timestamp>.csv`
 | `status` | `succeeded` or `failed`. |
 | `message` | Failure detail when status is `failed`. |
 
-Review failed rows before the workshop starts. The most common cause is a UPN that does not
-resolve to an object ID (typo or guest account not in the tenant).
+Review failed rows before the workshop starts. The most common cause is a UPN that does not resolve to an object ID (typo or guest account not in the tenant).
 
 ## Teardown
 
