@@ -1,4 +1,4 @@
-# Step 11: Publish an agent (optional)
+# Module 12: Publish an agent (optional)
 
 ## Objectives
 

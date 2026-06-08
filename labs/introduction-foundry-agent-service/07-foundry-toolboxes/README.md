@@ -1,4 +1,4 @@
-# Step 06: Foundry Toolboxes (optional)
+# Module 07: Foundry Toolboxes (optional)
 
 ## Objectives
 

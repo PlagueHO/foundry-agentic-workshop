@@ -1,4 +1,4 @@
-# Step 03: Create and run a prompt-based agent
+# Module 05: Create and run a prompt-based agent
 
 ## Objectives
 
@@ -35,4 +35,4 @@
   Build tab and that your role grants access.
 - If responses are empty, check the agent instructions are saved and not blank.
 - If requests fail, confirm your session is authenticated and the project is
-  the one assigned in Step 00.
+  the one assigned in Module 00.

@@ -13,17 +13,17 @@ In this Lab, you will learn how to:
 
 The module pages are generated automatically during docs build and preview from source README files in the lab directories under `labs/introduction-foundry-agent-service`.
 
-## Steps
+## Modules
 
-- 00: Setup
-- 01: Foundry Portal Walkthrough
-- 02: Foundry Toolkit for VS Code
-- 03: Prompt-based Agents
-- 04: Agent Tools and Evaluations
-- 05: MCP Tools
-- 06: Foundry Toolboxes (optional)
-- 07: Foundry IQ
-- 08: Agent Framework Python
-- 09: Hosted Agents
-- 10: Agent Ops and Agent ID
-- 11: Publishing Agents (optional)
+1. Setup
+1. Foundry Portal Walkthrough
+1. Foundry Toolkit for VS Code
+1. Prompt-based Agents
+1. Agent Tools and Evaluations
+1. MCP Tools
+1. Foundry Toolboxes (optional)
+1. Foundry IQ
+1. Agent Framework Python
+1. Hosted Agents
+1. Agent Ops and Agent ID
+1. Publishing Agents (optional)

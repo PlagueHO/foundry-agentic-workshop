@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "1689357089240885860"
+      "templateHash": "17099597430738971861"
     }
   },
   "definitions": {
@@ -23,7 +23,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional Foundry role key. Defaults to AZURE_ATTENDEE_DEFAULT_ROLE in the postprovision role-assignment hook."
+            "description": "Optional Foundry role key. Defaults to attendeeDefaultRole."
           }
         },
         "individualProject": {
@@ -43,6 +43,51 @@
       },
       "metadata": {
         "description": "A single workshop attendee parsed from AZURE_ATTENDEE_LIST."
+      }
+    },
+    "resolvedAttendeeType": {
+      "type": "object",
+      "properties": {
+        "upn": {
+          "type": "string",
+          "metadata": {
+            "description": "Attendee user principal name (UPN)."
+          }
+        },
+        "objectId": {
+          "type": "string",
+          "metadata": {
+            "description": "Microsoft Entra object ID. Empty string when UPN resolution failed."
+          }
+        },
+        "projectName": {
+          "type": "string",
+          "metadata": {
+            "description": "Precomputed Foundry project name, mirrors infra/main.bicep name derivation."
+          }
+        },
+        "role": {
+          "type": "string",
+          "metadata": {
+            "description": "Effective role key (default applied by the preprovision hook)."
+          }
+        },
+        "individualProject": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Whether the attendee receives a dedicated project."
+          }
+        },
+        "resolved": {
+          "type": "bool",
+          "metadata": {
+            "description": "True when the UPN was successfully resolved to an Entra object ID."
+          }
+        }
+      },
+      "metadata": {
+        "description": "A resolved attendee entry from the preprovision hook (scripts/prepare-attendee-roles.py)."
       }
     },
     "capabilityHostType": {
@@ -212,6 +257,32 @@
         "description": "When true (the default) and attendeeList is provided, project names are derived from the attendee UPN local part (before @, with . and _ replaced by -) instead of sequential prefix-NN names. Has no effect when attendeeList is empty."
       }
     },
+    "attendeeDefaultRole": {
+      "type": "string",
+      "defaultValue": "foundry-user",
+      "allowedValues": [
+        "foundry-user",
+        "foundry-project-manager",
+        "foundry-account-owner",
+        "foundry-owner",
+        "facilitator",
+        "proctor",
+        "organizer"
+      ],
+      "metadata": {
+        "description": "Default Foundry role key applied to attendees without an explicit role. Mirrors AZURE_ATTENDEE_DEFAULT_ROLE."
+      }
+    },
+    "resolvedAttendeeList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/resolvedAttendeeType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Resolved attendee list from the preprovision hook (scripts/prepare-attendee-roles.py). Each entry carries the Entra object ID and precomputed project name. When empty, no per-attendee role assignments are created."
+      }
+    },
     "azureAiSearchCapabilityHost": {
       "type": "bool",
       "defaultValue": false,
@@ -281,7 +352,8 @@
             "displayName": "[variables('allProjectNames')[copyIndex('attendeeProjects')]]",
             "description": "[format('Foundry workshop project for {0}.', variables('allProjectNames')[copyIndex('attendeeProjects')])]"
           },
-          "tags": "[variables('tags')]"
+          "tags": "[variables('tags')]",
+          "roleAssignments": "[map(filter(variables('attendeeProjectRoleEntries'), lambda('pr', equals(lambdaVariables('pr').projectName, variables('allProjectNames')[copyIndex('attendeeProjects')]))), lambda('pr', lambdaVariables('pr').roleAssignment))]"
         }
       }
     ],
@@ -451,6 +523,24 @@
     ],
     "abbrs": "[variables('$fxv#0')]",
     "modelDeployments": "[variables('$fxv#1')]",
+    "foundryRoleCatalog": {
+      "foundry-user": "53ca6127-db72-4b80-b1b0-d745d6d5456d",
+      "foundry-project-manager": "eadc314b-1a2d-4efa-be10-5d325db5065e",
+      "foundry-account-owner": "e47c6f54-e4a2-4754-9501-8e0985b135e1",
+      "foundry-owner": "c883944f-8b7b-4483-af10-35834be79c4a",
+      "facilitator": "c883944f-8b7b-4483-af10-35834be79c4a",
+      "proctor": "c883944f-8b7b-4483-af10-35834be79c4a",
+      "organizer": "c883944f-8b7b-4483-af10-35834be79c4a"
+    },
+    "searchRoleCatalog": {
+      "foundry-user": "1407120a-92aa-4202-b7e9-c0e197c71c8f",
+      "foundry-project-manager": "8ebe5a00-799e-43f5-93ac-243d3dce84a7",
+      "foundry-account-owner": "7ca78c08-252a-4471-8644-bb5ff32d4ba0",
+      "foundry-owner": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+      "facilitator": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+      "proctor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+      "organizer": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+    },
     "tags": {
       "azd-env-name": "[parameters('environmentName')]"
     },
@@ -477,6 +567,11 @@
     "effectiveOrganizerProjectNames": "[variables('organizerProjectNamesFromList')]",
     "allProjectNames": "[concat(variables('effectiveStandardProjectNames'), variables('effectiveFacilitatorProjectNames'), variables('effectiveProctorProjectNames'), variables('effectiveOrganizerProjectNames'))]",
     "defaultAttendeeProjectName": "[if(not(empty(variables('effectiveStandardProjectNames'))), variables('effectiveStandardProjectNames')[0], '')]",
+    "resolvedAttendeesWithIds": "[filter(parameters('resolvedAttendeeList'), lambda('a', not(empty(lambdaVariables('a').objectId))))]",
+    "attendeeProjectRoleEntries": "[flatten(map(filter(variables('resolvedAttendeesWithIds'), lambda('a', and(and(equals(lambdaVariables('a').role, 'foundry-user'), coalesce(tryGet(lambdaVariables('a'), 'individualProject'), true())), not(empty(lambdaVariables('a').projectName))))), lambda('a', createArray(createObject('projectName', lambdaVariables('a').projectName, 'roleAssignment', createObject('roleDefinitionIdOrName', variables('foundryRoleCatalog')['foundry-user'], 'principalId', lambdaVariables('a').objectId, 'principalType', 'User'))))))]",
+    "attendeeFoundryAccountRoleAssignments": "[map(filter(variables('resolvedAttendeesWithIds'), lambda('a', not(equals(lambdaVariables('a').role, 'foundry-user')))), lambda('a', createObject('roleDefinitionIdOrName', variables('foundryRoleCatalog')[lambdaVariables('a').role], 'principalId', lambdaVariables('a').objectId, 'principalType', 'User')))]",
+    "attendeeSearchRoleAssignments": "[map(variables('resolvedAttendeesWithIds'), lambda('a', createObject('roleDefinitionIdOrName', variables('searchRoleCatalog')[lambdaVariables('a').role], 'principalId', lambdaVariables('a').objectId, 'principalType', 'User')))]",
+    "attendeeResourceGroupReaderRoleAssignments": "[map(variables('resolvedAttendeesWithIds'), lambda('a', createObject('roleDefinitionIdOrName', 'acdd72a7-3385-48ef-bd42-f606fba81ae7', 'principalId', lambdaVariables('a').objectId, 'principalType', 'User')))]",
     "aiSearchConnectionName": "[replace(variables('aiSearchName'), '-', '')]",
     "storageConnectionName": "[replace(variables('storageAccounName'), '-', '')]",
     "cosmosDbConnectionName": "[replace(variables('cosmosDbAccountName'), '-', '')]",
@@ -33360,7 +33455,7 @@
             "value": "[variables('aiSearchName')]"
           },
           "roleAssignments": {
-            "value": "[flatten(createArray(if(not(empty(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'))), createArray(createObject('roleDefinitionIdOrName', 'Search Index Data Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')), createObject('roleDefinitionIdOrName', 'Search Index Data Reader', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')), createObject('roleDefinitionIdOrName', 'Search Service Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'), ''))), createArray()), if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', 'Search Service Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Search Index Data Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray())))]"
+            "value": "[flatten(createArray(if(not(empty(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'))), createArray(createObject('roleDefinitionIdOrName', 'Search Index Data Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')), createObject('roleDefinitionIdOrName', 'Search Index Data Reader', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')), createObject('roleDefinitionIdOrName', 'Search Service Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'), ''))), createArray()), if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', 'Search Service Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Search Index Data Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray()), variables('attendeeSearchRoleAssignments')))]"
           }
         },
         "template": {
@@ -33560,7 +33655,7 @@
             "value": "[variables('aiFoundryName')]"
           },
           "roleAssignments": {
-            "value": "[flatten(createArray(if(not(empty(tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'))), createArray(createObject('roleDefinitionIdOrName', 'Cognitive Services Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')), createObject('roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'), ''))), createArray()), if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', 'Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray())))]"
+            "value": "[flatten(createArray(if(not(empty(tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'))), createArray(createObject('roleDefinitionIdOrName', 'Cognitive Services Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')), createObject('roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'), ''))), createArray()), if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', 'Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray()), variables('attendeeFoundryAccountRoleAssignments')))]"
           }
         },
         "template": {
@@ -33762,6 +33857,185 @@
       "dependsOn": [
         "aiFoundryAccount",
         "aiSearchService",
+        "resourceGroup"
+      ]
+    },
+    "attendeeResourceGroupRoles": {
+      "condition": "[not(empty(variables('resolvedAttendeesWithIds')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('attendee-resource-group-roles-{0}', variables('deploymentId'))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "roleAssignments": {
+            "value": "[variables('attendeeResourceGroupReaderRoleAssignments')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.43.8.12551",
+              "templateHash": "1990254475738160548"
+            },
+            "name": "Resource Group Role Assignments",
+            "description": "Creates role assignments scoped to the resource group."
+          },
+          "definitions": {
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            }
+          },
+          "parameters": {
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "rg_roleAssignments": {
+              "copy": {
+                "name": "rg_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceGroup().id, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              }
+            }
+          },
+          "outputs": {
+            "roleAssignmentResourceIds": {
+              "type": "array",
+              "metadata": {
+                "description": "The resource IDs of the role assignments."
+              },
+              "copy": {
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]",
+                "input": "[resourceId('Microsoft.Authorization/roleAssignments', coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceGroup().id, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId)))]"
+              }
+            },
+            "roleAssignmentNames": {
+              "type": "array",
+              "metadata": {
+                "description": "The names of the role assignments."
+              },
+              "copy": {
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]",
+                "input": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceGroup().id, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]"
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
         "resourceGroup"
       ]
     },

@@ -30,7 +30,7 @@ function titleFromReadme(markdown, fallback) {
 }
 
 function cleanStepTitle(rawTitle) {
-  return rawTitle.replace(/^(?:Lab|Step)\s*\d{2}\s*:?\s*/i, (prefix) => {
+  return rawTitle.replace(/^(?:Lab|Module|Step)\s*\d{2}\s*:?\s*/i, (prefix) => {
     return prefix.includes(':') ? prefix.replace(':', '') : prefix
   })
 }

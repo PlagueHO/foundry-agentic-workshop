@@ -1,4 +1,4 @@
-# Step 00: Workshop setup and access verification
+# Module 01: Workshop setup and access verification
 
 ## Objectives
 

@@ -1,4 +1,4 @@
-# Step 02: Foundry Toolkit for VS Code
+# Module 03: Foundry Toolkit for VS Code
 
 ## Objectives
 
@@ -15,7 +15,7 @@
    reports an authenticated session.
 1. Connect to your existing Foundry project:
    1. Select your subscription and resource group.
-   1. Select the Foundry resource and the project assigned to you in Step 00.
+   1. Select the Foundry resource and the project assigned to you in Module 00.
 1. Tour the toolkit surfaces:
    1. **Models** lists the deployed models available to the project.
    1. **Agents** lists prompt-based and hosted agents.
@@ -26,7 +26,7 @@
 ## Validation
 
 - The toolkit shows an authenticated session for your workshop account.
-- The connected project matches the one assigned to you in Step 00.
+- The connected project matches the one assigned to you in Module 00.
 - You can list the deployed models and any existing agents for the project.
 
 ## Troubleshooting

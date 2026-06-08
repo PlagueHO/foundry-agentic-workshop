@@ -7,7 +7,7 @@ type attendeeType = {
   @description('Attendee user principal name (UPN).')
   upn: string
 
-  @description('Optional Foundry role key. Defaults to AZURE_ATTENDEE_DEFAULT_ROLE in the postprovision role-assignment hook.')
+  @description('Optional Foundry role key. Defaults to attendeeDefaultRole.')
   role: string?
 
   @description('Whether the attendee receives a dedicated project. Defaults to true.')
@@ -15,6 +15,27 @@ type attendeeType = {
 
   @description('Optional explicit project name. Defaults to "<prefix>-NN" by list position.')
   projectName: string?
+}
+
+@description('A resolved attendee entry from the preprovision hook (scripts/prepare-attendee-roles.py).')
+type resolvedAttendeeType = {
+  @description('Attendee user principal name (UPN).')
+  upn: string
+
+  @description('Microsoft Entra object ID. Empty string when UPN resolution failed.')
+  objectId: string
+
+  @description('Precomputed Foundry project name, mirrors infra/main.bicep name derivation.')
+  projectName: string
+
+  @description('Effective role key (default applied by the preprovision hook).')
+  role: string
+
+  @description('Whether the attendee receives a dedicated project.')
+  individualProject: bool?
+
+  @description('True when the UPN was successfully resolved to an Entra object ID.')
+  resolved: bool
 }
 
 // The main bicep module to provision Azure resources for the Microsoft Foundry workshop.
@@ -81,6 +102,22 @@ param ensureFacilitatorProject bool = true
 @description('When true (the default) and attendeeList is provided, project names are derived from the attendee UPN local part (before @, with . and _ replaced by -) instead of sequential prefix-NN names. Has no effect when attendeeList is empty.')
 param useUpnProjectNames bool = true
 
+@description('Default Foundry role key applied to attendees without an explicit role. Mirrors AZURE_ATTENDEE_DEFAULT_ROLE.')
+@allowed([
+  'foundry-user'
+  'foundry-project-manager'
+  'foundry-account-owner'
+  'foundry-owner'
+  'facilitator'
+  'proctor'
+  'organizer'
+])
+#disable-next-line no-unused-params
+param attendeeDefaultRole string = 'foundry-user'
+
+@description('Resolved attendee list from the preprovision hook (scripts/prepare-attendee-roles.py). Each entry carries the Entra object ID and precomputed project name. When empty, no per-attendee role assignments are created.')
+param resolvedAttendeeList resolvedAttendeeType[] = []
+
 @description('Enable Azure AI Search as a vector store capability host connection for Foundry agents.')
 param azureAiSearchCapabilityHost bool = false
 
@@ -95,6 +132,31 @@ param foundryCapabilityHosts capabilityHostType[] = []
 
 var abbrs = loadJsonContent('./abbreviations.json')
 var modelDeployments = loadJsonContent('./model-deployments.json')
+
+// Role definition GUIDs for per-attendee Foundry RBAC assignments. Mirrors ROLE_DEFINITION_IDS
+// in scripts/generate-attendee-onboarding.py. Bicep owns this catalog as the authoritative
+// source — Python scripts derive their catalogs from this same set of values.
+var foundryRoleCatalog = {
+  'foundry-user':            '53ca6127-db72-4b80-b1b0-d745d6d5456d'
+  'foundry-project-manager': 'eadc314b-1a2d-4efa-be10-5d325db5065e'
+  'foundry-account-owner':   'e47c6f54-e4a2-4754-9501-8e0985b135e1'
+  'foundry-owner':           'c883944f-8b7b-4483-af10-35834be79c4a'
+  facilitator:               'c883944f-8b7b-4483-af10-35834be79c4a'
+  proctor:                   'c883944f-8b7b-4483-af10-35834be79c4a'
+  organizer:                 'c883944f-8b7b-4483-af10-35834be79c4a'
+}
+
+// Azure AI Search role definition GUIDs paired with each Foundry role. Mirrors
+// SEARCH_ROLE_DEFINITION_IDS in scripts/generate-attendee-onboarding.py.
+var searchRoleCatalog = {
+  'foundry-user':            '1407120a-92aa-4202-b7e9-c0e197c71c8f'
+  'foundry-project-manager': '8ebe5a00-799e-43f5-93ac-243d3dce84a7'
+  'foundry-account-owner':   '7ca78c08-252a-4471-8644-bb5ff32d4ba0'
+  'foundry-owner':           'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  facilitator:               'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  proctor:                   'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  organizer:                 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+}
 
 // tags that should be applied to all resources.
 var tags = {
@@ -114,14 +176,15 @@ var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
 var aiFoundryName = '${abbrs.aiFoundryAccounts}${environmentName}'
 var aiFoundryCustomSubDomainName = toLower(replace(environmentName, '-', ''))
 
-// Build per-attendee and per-role Foundry projects. Role assignments are applied
-// out-of-band by the postprovision hook (scripts/assign-attendee-roles.py), which
-// resolves each attendee UPN to its Microsoft Entra object ID (not possible in Bicep).
+// Build per-attendee and per-role Foundry projects. Role assignments are created here
+// in Bicep using the Entra object IDs resolved by the preprovision hook
+// (scripts/prepare-attendee-roles.py), which emits AZURE_ATTENDEE_LIST_RESOLVED with
+// objectId and precomputed projectName for each attendee.
 //
 // Attendees with role 'facilitator', 'proctor', or 'organizer' receive projects under
 // their role-specific prefix (e.g. facilitator-01). All other attendees use the standard
 // attendeeProjectPrefix. When attendeeList is empty the fallback is attendeeCount sequential
-// projects. The postprovision hook derives the same names so role scopes line up exactly.
+// projects. The preprovision hook computes the same names so role scopes line up exactly.
 // The ensureFacilitatorProject flag (default true) guarantees at least one facilitator
 // project even when attendeeList contains no facilitator entries.
 
@@ -190,10 +253,61 @@ var attendeeProjects = [
       description: 'Foundry workshop project for ${name}.'
     }
     tags: tags
+    roleAssignments: map(
+      filter(attendeeProjectRoleEntries, pr => pr.projectName == name),
+      pr => pr.roleAssignment
+    )
   }
 ]
 
 var defaultAttendeeProjectName = !empty(effectiveStandardProjectNames) ? effectiveStandardProjectNames[0] : ''
+
+// ---------- ATTENDEE ROLE ASSIGNMENT DATA ----------
+// Uses resolvedAttendeeList from AZURE_ATTENDEE_LIST_RESOLVED (set by the preprovision hook).
+// Entries with an empty objectId (unresolved UPNs) are excluded from all role assignments.
+
+// Attendees whose UPNs were successfully resolved to Entra object IDs.
+var resolvedAttendeesWithIds = filter(resolvedAttendeeList, a => !empty(a.objectId))
+
+// Project-scoped entries (foundry-user → role is assigned on the individual Foundry project).
+// Flattened to {projectName, roleAssignment} pairs so attendeeProjects can group by name.
+var attendeeProjectRoleEntries = flatten(map(
+  filter(resolvedAttendeesWithIds, a =>
+    a.role == 'foundry-user' && (a.?individualProject ?? true) && !empty(a.projectName)
+  ),
+  a => [{
+    projectName: a.projectName
+    roleAssignment: {
+      roleDefinitionIdOrName: foundryRoleCatalog['foundry-user']
+      principalId: a.objectId
+      principalType: 'User'
+    }
+  }]
+))
+
+// Account-scoped Foundry role assignments (all roles except foundry-user).
+var attendeeFoundryAccountRoleAssignments = map(
+  filter(resolvedAttendeesWithIds, a => a.role != 'foundry-user'),
+  a => {
+    roleDefinitionIdOrName: foundryRoleCatalog[a.role]
+    principalId: a.objectId
+    principalType: 'User'
+  }
+)
+
+// Azure AI Search role assignments (all resolved attendees receive a paired search role).
+var attendeeSearchRoleAssignments = map(resolvedAttendeesWithIds, a => {
+  roleDefinitionIdOrName: searchRoleCatalog[a.role]
+  principalId: a.objectId
+  principalType: 'User'
+})
+
+// Resource group Reader role assignments (all resolved attendees).
+var attendeeResourceGroupReaderRoleAssignments = map(resolvedAttendeesWithIds, a => {
+  roleDefinitionIdOrName: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+  principalId: a.objectId
+  principalType: 'User'
+})
 
 // ---------- CAPABILITY HOSTS CONFIGURATION ----------
 var aiSearchConnectionName = replace(aiSearchName, '-', '')
@@ -550,6 +664,8 @@ var aiSearchRoleAssignmentsArray = [
       principalId: principalId
     }
   ] : [])
+  // Per-attendee search role assignments (paired role for each Foundry role).
+  ...attendeeSearchRoleAssignments
 ]
 
 module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = {
@@ -594,6 +710,8 @@ var foundryRoleAssignmentsArray = [
       principalId: principalId
     }
   ] : [])
+  // Per-attendee account-scoped Foundry role assignments (all roles except foundry-user).
+  ...attendeeFoundryAccountRoleAssignments
 ]
 
 module foundryRoleAssignments './core/security/role_foundry.bicep' = {
@@ -613,6 +731,20 @@ module foundryRoleAssignments './core/security/role_foundry.bicep' = {
 // Assigns Cosmos DB Built-in Data Contributor (data-plane RBAC) to the deploying principal
 // for local development access. Uses a separate module to avoid redeploying the Cosmos DB account.
 // The built-in Data Contributor role GUID is 00000000-0000-0000-0000-000000000002.
+// ---------- ATTENDEE RESOURCE GROUP ROLE ASSIGNMENTS ----------
+// Grants the resource group Reader role to every resolved attendee so they can browse
+// the workshop resource group in the Azure portal and run health checks.
+module attendeeResourceGroupRoles './core/security/role_resourcegroup.bicep' = if (!empty(resolvedAttendeesWithIds)) {
+  name: 'attendee-resource-group-roles-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [
+    resourceGroup
+  ]
+  params: {
+    roleAssignments: attendeeResourceGroupReaderRoleAssignments
+  }
+}
+
 module principalCosmosDbRoles './core/security/role_cosmosdb.bicep' = if (!empty(principalId)) {
   name: 'principal-cosmos-db-roles-${deploymentId}'
   scope: az.resourceGroup(effectiveResourceGroupName)

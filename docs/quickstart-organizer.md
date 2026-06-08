@@ -56,8 +56,7 @@ detailed steps, the RBAC model, and troubleshooting.
 
 ## Attendee access
 
-`AZURE_ATTENDEE_LIST` is the single source of truth for both per-attendee project creation
-and role assignment. Set it as a single-line JSON array, then provision.
+`AZURE_ATTENDEE_LIST` drives per-attendee project creation and UPN resolution. Set it as a single-line JSON array, then provision. The pre-provision hook resolves UPNs to Entra object IDs; Bicep assigns roles at deploy time.
 
 ```bash
 azd env set AZURE_ATTENDEE_DEFAULT_ROLE foundry-user

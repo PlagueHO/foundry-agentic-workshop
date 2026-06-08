@@ -1,4 +1,4 @@
-# Step 07: Integrate Foundry IQ knowledge bases
+# Module 08: Integrate Foundry IQ knowledge bases
 
 ## Objectives
 
@@ -8,7 +8,7 @@
 
 ## Steps
 
-1. Confirm the AI Search indices provisioned in Step 00 exist:
+1. Confirm the AI Search indices provisioned in Module 00 exist:
    1. The retail products index (`AZURE_SEARCH_PRODUCT_INDEX_NAME`).
    1. The retail policies index (`AZURE_SEARCH_DOCUMENT_INDEX_NAME`).
 1. In the Build tab, open **Knowledge** and create a Foundry IQ knowledge base.

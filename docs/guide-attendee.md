@@ -12,8 +12,7 @@ Your organizer provisions the shared Foundry environment and assigns you a proje
 you start, you should have:
 
 - Your `FOUNDRY_PROJECT_NAME` (for example, `attendee-01`).
-- The shared values: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`,
-  `FOUNDRY_RESOURCE_NAME`, and `AZURE_SEARCH_SERVICE_NAME`.
+- The shared values: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_OPENAI_ENDPOINT`, and `AZURE_SEARCH_SERVICE_NAME`.
 
 With the default `foundry-user` role you can build agents and use the models your organizer
 pre-deployed. You do not deploy models yourself.
@@ -49,6 +48,8 @@ cd foundry-agentic-workshop
    - `AZURE_RESOURCE_GROUP`
    - `FOUNDRY_RESOURCE_NAME`
    - `FOUNDRY_PROJECT_NAME` — typically the local part of your UPN (for example `alice-smith` from `alice.smith@contoso.com`), unless your organizer configured sequential names. Confirm with your organizer if unsure.
+   - `FOUNDRY_PROJECT_ENDPOINT` — derived as `https://<FOUNDRY_RESOURCE_NAME>.services.ai.azure.com/api/projects/<FOUNDRY_PROJECT_NAME>`. Your organizer's onboarding file contains the exact value.
+   - `AZURE_OPENAI_ENDPOINT` — derived as `https://<FOUNDRY_RESOURCE_NAME>.openai.azure.com/openai/v1`. Your organizer's onboarding file contains the exact value.
    - `AZURE_SEARCH_SERVICE_NAME`
 1. Leave the attendee RBAC and `AZURE_SEARCH_ADMIN_KEY` values blank; those are for
    organizers.

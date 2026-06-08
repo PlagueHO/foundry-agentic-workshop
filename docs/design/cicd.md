@@ -154,7 +154,7 @@ All variables use the pattern `vars.VAR_NAME || 'default'` in workflow files, so
 
 ## Attendee list format and project derivation
 
-`AZURE_ATTENDEE_LIST` is a single-line JSON array. The value is passed to `azd env set` and read by both Bicep (project creation) and the post-provision hook (role assignment). Both consumers derive project names from the same array, so the array is the single source of truth.
+`AZURE_ATTENDEE_LIST` is a single-line JSON array. The value is passed to `azd env set` and read by Bicep (project creation) and the pre-provision hook (UPN resolution). The pre-provision hook emits `AZURE_ATTENDEE_LIST_RESOLVED` with resolved Entra object IDs and precomputed project names; Bicep reads that resolved list to create RBAC role assignments at deploy time.
 
 ### Attendee object fields
 

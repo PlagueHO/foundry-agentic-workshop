@@ -1,4 +1,4 @@
-# Step 01: Foundry portal walkthrough
+# Module 02: Foundry portal walkthrough
 
 ## Objectives
 
@@ -37,7 +37,7 @@
 ## Troubleshooting
 
 - If you cannot see your project, confirm the active project selector matches
-  the project assigned to you in Step 00.
+  the project assigned to you in Module 00.
 - If models are missing from Build, confirm provisioning completed and that
   `azd env get-values` shows the expected Foundry resource.
 - If a tab is empty, refresh the portal and confirm your role grants read

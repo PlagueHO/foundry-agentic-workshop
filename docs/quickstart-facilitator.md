@@ -13,19 +13,16 @@ issues.
    cd foundry-agentic-workshop
    ```
 
-1. Confirm the organizer has provisioned the environment and shared attendee assignments
-   (see the [Organizer Quickstart](./quickstart-organizer.md)).
-1. Run the labs end to end once on a `foundry-user` test identity so you hit the same
-   constraints attendees do.
-1. Confirm proctors have the [Proctor Guide](./guide-proctor.md) and the attendee assignment
-   list.
+1. Confirm the organizer has provisioned the environment and shared attendee assignments (see the [Organizer Quickstart](./quickstart-organizer.md)).
+1. Run the labs end to end once on a `foundry-user` test identity so you hit the same constraints attendees do.
+1. Confirm proctors have the [Proctor Guide](./guide-proctor.md) and the attendee assignment list.
 
 ## During delivery
 
 1. Open with the [workshop overview](./index.md) and the architecture context.
 1. Have attendees complete the [Attendee Quickstart](./quickstart-attendee.md) setup and run `python scripts/health-check.py` before the first lab.
-1. Work through labs in order, time-boxing each module. See the [Facilitator Guide](./guide-facilitator.md#suggested-pacing) for pacing guidance.
-1. Reveal solutions only after attendees attempt a lab.
+1. Work through lab modules in order, time-boxing each module. See the [Facilitator Guide](./guide-facilitator.md#suggested-pacing) for pacing guidance.
+1. For each, module run the attendees through the key concepts and what they should see and tasks to perform. Indicate common issues to watch for and how to resolve them. See the [Facilitator Guide](./guide-facilitator.md) for details.
 
 ## If you run short on time
 
