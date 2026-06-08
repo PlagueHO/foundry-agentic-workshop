@@ -1,4 +1,4 @@
-# Module 10: Build and run a hosted agent
+# 10. Build and run a hosted agent
 
 ## Objectives
 

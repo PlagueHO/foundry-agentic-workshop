@@ -1,4 +1,4 @@
-# Module 06: Integrate MCP tools
+# 06. Integrate MCP tools
 
 ## Objectives
 

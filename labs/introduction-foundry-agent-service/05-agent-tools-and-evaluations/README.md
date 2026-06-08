@@ -1,4 +1,4 @@
-# Module 05: Agent tools and evaluations
+# 05. Agent tools and evaluations
 
 ## Objectives
 

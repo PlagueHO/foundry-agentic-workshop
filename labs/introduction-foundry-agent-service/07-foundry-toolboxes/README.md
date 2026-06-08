@@ -1,4 +1,4 @@
-# Module 07: Foundry Toolboxes (optional)
+# 07. Foundry Toolboxes (optional)
 
 ## Objectives
 

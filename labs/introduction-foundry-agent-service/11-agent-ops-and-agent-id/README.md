@@ -1,4 +1,4 @@
-# Module 11: Agent operations and Agent ID
+# 11. Agent operations and Agent ID
 
 ## Objectives
 

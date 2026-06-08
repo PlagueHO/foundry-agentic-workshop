@@ -1,4 +1,4 @@
-# Module 08: Integrate Foundry IQ knowledge bases
+# 08 Integrate Foundry IQ knowledge bases
 
 ## Objectives
 

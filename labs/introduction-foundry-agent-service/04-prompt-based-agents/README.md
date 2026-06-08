@@ -1,4 +1,4 @@
-# Module 04: Create and run a prompt-based agent
+# 04. Create and run a prompt-based agent
 
 ## Objectives
 

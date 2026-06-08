@@ -1,4 +1,4 @@
-# Module 02: Foundry portal walkthrough
+# 02. Foundry portal walkthrough
 
 ## Objectives
 

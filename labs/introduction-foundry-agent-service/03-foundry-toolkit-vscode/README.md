@@ -1,4 +1,4 @@
-# Module 03: Foundry Toolkit for VS Code
+# 03. Foundry Toolkit for VS Code
 
 ## Objectives
 
