@@ -29,7 +29,7 @@ CLI ──▶ DataGeneratorTool (prompt + post-process)
 
 ## Prerequisites
 
-- Python 3.10 or later.
+- Python 3.13 or later.
 - An Azure OpenAI resource with a **chat** deployment, and (for index-ready
   scenarios) a **text embedding** deployment (for example
   `text-embedding-3-small`).

@@ -20,6 +20,7 @@ param facilitatorProjectPrefix = readEnvironmentVariable('AZURE_FACILITATOR_PROJ
 param proctorProjectPrefix = readEnvironmentVariable('AZURE_PROCTOR_PROJECT_PREFIX', 'proctor')
 param organizerProjectPrefix = readEnvironmentVariable('AZURE_ORGANIZER_PROJECT_PREFIX', 'organizer')
 param ensureFacilitatorProject = toLower(readEnvironmentVariable('AZURE_ENSURE_FACILITATOR_PROJECT', 'true')) != 'false'
+param useUpnProjectNames = toLower(readEnvironmentVariable('AZURE_USE_UPN_PROJECT_NAMES', 'true')) != 'false'
 
 // Capability host flags (off by default)
 param azureAiSearchCapabilityHost = toLower(readEnvironmentVariable('AZURE_AI_SEARCH_CAPABILITY_HOST', 'false')) == 'true'

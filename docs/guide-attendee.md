@@ -3,6 +3,9 @@
 This guide walks through preparing your machine and validating access before you run the
 labs. For the condensed flow, see the [Attendee Quickstart](./quickstart-attendee.md).
 
+> [!NOTE]
+> Running the labs on your local machine is recommended for the best performance and direct Azure credential access. GitHub Codespaces and local dev containers are also fully supported; see [Run in GitHub Codespaces](#run-in-github-codespaces) and [Run in a dev container (local)](#run-in-a-dev-container-local) below for guidance on each.
+
 ## What your organizer provides
 
 Your organizer provisions the shared Foundry environment and assigns you a project. Before
@@ -26,7 +29,7 @@ cd foundry-agentic-workshop
 
 1. Install [VS Code Insiders](https://code.visualstudio.com/insiders/).
 1. Install the [Foundry Toolkit for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-windows-ai-studio.windows-ai-studio) from the Extensions view.
-1. Install [Python 3.11 or later](https://www.python.org/downloads/).
+1. Install [Python 3.13 or later](https://www.python.org/downloads/).
 1. Install the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. Install the workshop Python dependencies using [pip](https://pip.pypa.io/en/stable/).
 
@@ -45,7 +48,7 @@ cd foundry-agentic-workshop
    - `AZURE_SUBSCRIPTION_ID`
    - `AZURE_RESOURCE_GROUP`
    - `FOUNDRY_RESOURCE_NAME`
-   - `FOUNDRY_PROJECT_NAME`
+   - `FOUNDRY_PROJECT_NAME` — typically the local part of your UPN (for example `alice-smith` from `alice.smith@contoso.com`), unless your organizer configured sequential names. Confirm with your organizer if unsure.
    - `AZURE_SEARCH_SERVICE_NAME`
 1. Leave the attendee RBAC and `AZURE_SEARCH_ADMIN_KEY` values blank; those are for
    organizers.
@@ -81,6 +84,62 @@ it against the assignment your organizer shared.
 
 Open the [available labs](./labs/introduction-foundry-agent-service) in the docs and begin with the first lab in the series. Each lab is independently runnable, so you can resume at any point if you fall behind.
 
+## Run in GitHub Codespaces
+
+GitHub Codespaces creates a fully configured cloud development environment directly from the
+repository. The `.devcontainer` configuration installs all prerequisites automatically.
+
+1. Navigate to the [repository on GitHub](https://github.com/PlagueHO/foundry-agentic-workshop).
+1. Select **Code**, then select the **Codespaces** tab.
+1. Select the **+** icon or **Create codespace on main**.
+
+   > [!NOTE]
+   > ![GitHub repository page showing the Code dropdown with the Codespaces tab selected, displaying a Create codespace on main button and an active codespace named silver lamp on the main branch.](./assets/screenshots/github-codespaces-panel-full.png)
+   > *The Code dropdown on the GitHub repository page with the Codespaces tab selected.*
+
+1. Wait for the container to build and the post-create setup script to complete. This takes a few minutes on the first launch.
+1. Once VS Code loads in the browser (or in the desktop client), continue from
+   [Configure your environment file](#configure-your-environment-file) and [Sign in](#sign-in) below.
+
+> [!NOTE]
+> During `az login` inside a Codespace, the Azure CLI opens a browser tab for device-code authentication. Ensure your browser allows pop-ups from `github.dev` or `*.github.dev`.
+>
+> Some Foundry Toolkit visual features work best on a local machine. All scripted lab steps run normally in a Codespace.
+
+## Run in a dev container (local)
+
+If you have Docker and the Dev Containers VS Code extension, you can run the same pre-configured
+environment locally without installing Python, the Azure CLI, or other dependencies by hand.
+
+### Additional prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) or a compatible container
+  runtime with the `docker` CLI (such as Podman Desktop in compatibility mode)
+- [VS Code](https://code.visualstudio.com/)
+- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+  (`ms-vscode-remote.remote-containers`)
+
+### Steps
+
+1. Clone the repository and open it in VS Code:
+
+   ```bash
+   git clone https://github.com/PlagueHO/foundry-agentic-workshop.git
+   code foundry-agentic-workshop
+   ```
+
+1. When VS Code prompts **Reopen in Container**, select it. If the notification does not appear,
+   open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`) and run
+   **Dev Containers: Reopen in Container**.
+1. Wait for the container to build and the post-create setup script to finish. Progress is visible
+   in the terminal that opens automatically.
+1. Once the container is ready, continue from [Configure your environment file](#configure-your-environment-file)
+   and [Sign in](#sign-in) below.
+
+> [!NOTE]
+> The dev container requires at least 8 GB of memory allocated to Docker. Increase this in
+> **Docker Desktop > Settings > Resources** if the build fails or VS Code reports low memory.
+
 ## Troubleshooting
 
 | Symptom | Likely cause | Fix |
@@ -89,3 +148,5 @@ Open the [available labs](./labs/introduction-foundry-agent-service) in the docs
 | Project not visible in the portal | Role not yet assigned, or wrong project name. | Confirm your `FOUNDRY_PROJECT_NAME` with your organizer or proctor. |
 | Cannot deploy a model | Expected with the `foundry-user` role. | Use the models your organizer pre-deployed. |
 | Cannot perform an action in a lab | The lab may require an elevated Foundry role. | Ask your organizer to check and adjust your role assignment. |
+| Codespace build fails | Container build error or Docker timeout. | Retry by selecting **Rebuild Container** from the Command Palette. |
+| Dev container shows low-memory warning | Docker Desktop memory limit too low. | Increase Docker memory to at least 8 GB in Docker Desktop settings. |

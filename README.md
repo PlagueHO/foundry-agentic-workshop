@@ -8,7 +8,7 @@ This repository contains **L200–L400 hands-on labs** for building agentic solu
 
 - Software engineers, architects, and technical roles building or designing AI solutions in Azure
 - Comfortable with Azure basics; mostly new to Microsoft Foundry and agentic development
-- Delivered as an instructor-led session (3–4 hours) or completed independently
+- Delivered as an facilitator-led session (3–4 hours) or completed independently
 
 ## Roles
 
@@ -39,7 +39,7 @@ The organizer deploys a shared Foundry account in their Azure subscription and c
 - Azure subscription with [Foundry model quota](https://learn.microsoft.com/azure/foundry/foundry-models/quotas-limits) in your target region
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
-- Python 3.11+
+- Python 3.13
 
 ### Clone this repo
 
@@ -123,7 +123,7 @@ This repository includes a [dev container](https://containers.dev/) that install
 Install the following tools manually:
 
 - [VS Code Insiders](https://code.visualstudio.com/insiders/) with the [Foundry Toolkit for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-windows-ai-studio.windows-ai-studio)
-- [Python 3.11 or later](https://www.python.org/downloads/)
+- [Python 3.13 or later](https://www.python.org/downloads/)
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
 

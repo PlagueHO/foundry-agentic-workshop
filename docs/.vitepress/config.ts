@@ -12,7 +12,7 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Organizer Quickstart', link: '/quickstart-organizer' },
       { text: 'Attendee Quickstart', link: '/quickstart-attendee' },
-      { text: 'Instructor Quickstart', link: '/quickstart-instructor' },
+      { text: 'Facilitator Quickstart', link: '/quickstart-facilitator' },
       { text: 'Proctor Guide', link: '/guide-proctor' },
     ],
     sidebar: [
@@ -22,7 +22,7 @@ export default defineConfig({
           { text: 'Overview', link: '/' },
           { text: 'Organizer Quickstart', link: '/quickstart-organizer' },
           { text: 'Attendee Quickstart', link: '/quickstart-attendee' },
-          { text: 'Instructor Quickstart', link: '/quickstart-instructor' },
+          { text: 'Facilitator Quickstart', link: '/quickstart-facilitator' },
         ],
       },
       {
@@ -30,7 +30,7 @@ export default defineConfig({
         items: [
           { text: 'Organizer Guide', link: '/guide-organizer' },
           { text: 'Attendee Guide', link: '/guide-attendee' },
-          { text: 'Instructor Guide', link: '/guide-instructor' },
+          { text: 'Facilitator Guide', link: '/guide-facilitator' },
           { text: 'Proctor Guide', link: '/guide-proctor' },
           { text: 'Architecture Diagram', link: '/architecture-diagram' },
         ],

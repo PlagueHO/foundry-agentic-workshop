@@ -78,6 +78,9 @@ param organizerProjectPrefix string = 'organizer'
 @description('Always provision at least one facilitator project, even when no facilitator entry appears in attendeeList.')
 param ensureFacilitatorProject bool = true
 
+@description('When true (the default) and attendeeList is provided, project names are derived from the attendee UPN local part (before @, with . and _ replaced by -) instead of sequential prefix-NN names. Has no effect when attendeeList is empty.')
+param useUpnProjectNames bool = true
+
 @description('Enable Azure AI Search as a vector store capability host connection for Foundry agents.')
 param azureAiSearchCapabilityHost bool = false
 
@@ -132,7 +135,9 @@ var organizerEntries = filter(attendeeList, a => a.?role == 'organizer')
 // Standard attendee project names (indexed sequentially within the standard-attendee group only).
 var standardAttendeeProjectNames = [
   for (attendee, i) in standardAttendeeEntries: (attendee.?individualProject ?? true)
-    ? (attendee.?projectName ?? '${attendeeProjectPrefix}-${padLeft(string(i + 1), 2, '0')}')
+    ? (attendee.?projectName ?? (useUpnProjectNames
+        ? take(toLower(replace(replace(split(attendee.upn, '@')[0], '.', '-'), '_', '-')), 32)
+        : '${attendeeProjectPrefix}-${padLeft(string(i + 1), 2, '0')}'))
     : ''
 ]
 var standardAttendeeProjectNamesFiltered = filter(standardAttendeeProjectNames, name => !empty(name))
@@ -146,13 +151,19 @@ var effectiveStandardProjectNames = empty(attendeeList)
 
 // Role-specific project names (indexed sequentially within each role group).
 var facilitatorProjectNamesFromList = [
-  for (attendee, i) in facilitatorEntries: (attendee.?projectName ?? '${facilitatorProjectPrefix}-${padLeft(string(i + 1), 2, '0')}')
+  for (attendee, i) in facilitatorEntries: (attendee.?projectName ?? (useUpnProjectNames
+    ? take(toLower(replace(replace(split(attendee.upn, '@')[0], '.', '-'), '_', '-')), 32)
+    : '${facilitatorProjectPrefix}-${padLeft(string(i + 1), 2, '0')}'))
 ]
 var proctorProjectNamesFromList = [
-  for (attendee, i) in proctorEntries: (attendee.?projectName ?? '${proctorProjectPrefix}-${padLeft(string(i + 1), 2, '0')}')
+  for (attendee, i) in proctorEntries: (attendee.?projectName ?? (useUpnProjectNames
+    ? take(toLower(replace(replace(split(attendee.upn, '@')[0], '.', '-'), '_', '-')), 32)
+    : '${proctorProjectPrefix}-${padLeft(string(i + 1), 2, '0')}'))
 ]
 var organizerProjectNamesFromList = [
-  for (attendee, i) in organizerEntries: (attendee.?projectName ?? '${organizerProjectPrefix}-${padLeft(string(i + 1), 2, '0')}')
+  for (attendee, i) in organizerEntries: (attendee.?projectName ?? (useUpnProjectNames
+    ? take(toLower(replace(replace(split(attendee.upn, '@')[0], '.', '-'), '_', '-')), 32)
+    : '${organizerProjectPrefix}-${padLeft(string(i + 1), 2, '0')}'))
 ]
 
 // Apply ensureFacilitatorProject: always provision at least one facilitator project.

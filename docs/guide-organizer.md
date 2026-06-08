@@ -9,7 +9,7 @@ This guide covers standing up and tearing down a shared Microsoft Foundry worksh
    1. To assign roles requires Owner or User Access Administrator on the subscription or resource group.
 1. [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
-1. Python 3.11 or later (the post-provision role assignment runs as a Python hook).
+1. Python 3.13 or later (the post-provision role assignment runs as a Python hook).
 1. [Foundry Model quota](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits) in your target region for the models the labs use.
 1. The Microsoft Entra ID UPN for each attendee, organizer, facilitator and proctor. The organizer, facilitator and proctors are optional.
 
@@ -49,8 +49,7 @@ azd env set AZURE_RESOURCE_GROUP rg-my-workshop
 
 `AZURE_ATTENDEE_LIST` is the single configuration variable that drives both project creation and role assignment. Set it to a single-line JSON array of attendees before provisioning.
 
-The example below registers five standard attendees and one facilitator. Each standard
-attendee gets a dedicated project named `attendee-01` through `attendee-05`; the facilitator gets `facilitator-01`.
+The example below registers five standard attendees and one facilitator. By default, each attendee's project is named after the local part of their UPN (for example `alice`, `bob`, and `facilitator`); see the tip below if you prefer sequential names such as `attendee-01`.
 
 ```bash
 azd env set AZURE_ATTENDEE_LIST '[{"upn":"alice@contoso.com"},{"upn":"bob@contoso.com"},{"upn":"carol@contoso.com"},{"upn":"david@contoso.com"},{"upn":"eve@contoso.com"},{"upn":"facilitator@contoso.com","role":"facilitator"}]'
@@ -60,6 +59,9 @@ The default role for entries without an explicit `role` is `foundry-user`, the l
 
 > [!TIP]
 > Store the formatted version in a local file for readability and paste the single-line form into `azd env set`. See [Scenario examples](#scenario-examples) for more roster patterns.
+
+> [!TIP]
+> By default, each attendee's Foundry project is named from the local part of their UPN — for example `alice.smith@contoso.com` becomes `alice-smith`. Dots and underscores are replaced with hyphens and the name is lowercased and capped at 32 characters. Set `AZURE_USE_UPN_PROJECT_NAMES=false` to revert to sequential `<prefix>-NN` names (for example `attendee-01`).
 
 ### 5. Provision
 
@@ -113,7 +115,7 @@ The full JSON schema is at `shared/schemas/attendee-list.schema.json`.
 | `upn` | Yes |- | Microsoft Entra UPN; resolved to an object ID at provisioning time. |
 | `role` | No | `AZURE_ATTENDEE_DEFAULT_ROLE` | Role key- see [Role catalog](#role-catalog). |
 | `individualProject` | No | `true` | `true` = dedicated project; `false` = shares the first project in the list. |
-| `projectName` | No | `<prefix>-NN` by group position | Explicit project name (lowercase alphanumeric, hyphens, 2–64 chars). |
+| `projectName` | No | UPN local part or `<prefix>-NN` | Explicit project name (lowercase alphanumeric, hyphens, 2–64 chars). Takes priority over `AZURE_USE_UPN_PROJECT_NAMES`. |
 
 ### Scenario examples
 

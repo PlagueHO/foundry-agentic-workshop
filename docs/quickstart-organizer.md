@@ -81,8 +81,10 @@ full model and the provisioning audit CSV.
 azd env get-value AZURE_ATTENDEE_PROJECT_NAMES
 ```
 
-Give each attendee their assigned `FOUNDRY_PROJECT_NAME` and the shared resource values
-they need for the [Attendee Quickstart](./quickstart-attendee.md).
+Give each attendee their assigned `FOUNDRY_PROJECT_NAME` (by default the local part of
+their UPN, for example `alice-smith` from `alice.smith@contoso.com`; set
+`AZURE_USE_UPN_PROJECT_NAMES=false` to use sequential `<prefix>-NN` names) and the shared
+resource values they need for the [Attendee Quickstart](./quickstart-attendee.md).
 
 ## Teardown
 

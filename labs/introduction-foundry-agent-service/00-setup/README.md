@@ -12,7 +12,7 @@
 1. Confirm prerequisites are installed:
    1. The Foundry Toolkit for VS Code extension.
    1. The Azure CLI (`az`) and the Azure Developer CLI (`azd`).
-   1. Python 3.11 or later.
+   1. Python 3.13 or later.
 1. Install the shared Python dependencies from `shared/requirements.txt`.
 1. Sign in and select your subscription:
    1. Run `az login`.

@@ -28,7 +28,7 @@ Apply these instructions to generated code, Markdown edits, and PRs.
 
 ## Python Authoring Rules
 
-- Use Python 3.11+ syntax.
+- Use Python 3.13 syntax.
 - Prefer explicit, typed functions for reusable helpers.
 - Keep scripts simple and executable, with a clear `main` entry point when applicable.
 - Prefer single-quoted Python strings unless escaping makes double quotes clearer.

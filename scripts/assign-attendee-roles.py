@@ -10,7 +10,9 @@ For each attendee, this script:
   2. Resolves the attendee role key to a Foundry built-in role and scope.
   3. Grants that role at the resolved scope (the attendee project, or the
      Foundry account for account-scoped roles).
-  4. Records the outcome in a CSV audit file and a console summary.
+  4. Grants the Azure Reader role on the resource group to every attendee.
+  5. Records the outcome in a CSV audit file and a per-attendee onboarding
+     markdown file (written to the same directory as the CSV).
 
 Environment variables (set via `azd env set`):
   AZURE_ATTENDEE_LIST           Single-line JSON array of attendee objects:
@@ -35,6 +37,9 @@ Environment variables (set via `azd env set`):
   AZURE_SEARCH_SERVICE_NAME     Azure AI Search service name (azd output). When set,
                                   a paired Search role is also assigned (see
                                   SEARCH_ROLE_DEFINITIONS).
+  AZURE_USE_UPN_PROJECT_NAMES   When true (default), project names are derived from the
+                                  attendee UPN local part (before @, with . and _ replaced
+                                  by -) instead of sequential prefix-NN names.
 """
 
 from __future__ import annotations
@@ -79,6 +84,9 @@ SEARCH_ROLE_DEFINITIONS: dict[str, tuple[str, str, str]] = {
 
 DEFAULT_ROLE_KEY = 'foundry-user'
 
+# Azure built-in Reader role — granted on the resource group for every attendee.
+RESOURCE_GROUP_READER_ROLE_ID = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+
 # Resolve the Azure CLI executable; on Windows it is az.cmd which subprocess
 # cannot find by bare name without shell=True.
 _AZ_CMD: str = shutil.which('az') or 'az'
@@ -117,6 +125,16 @@ def _project_name_for(attendee: dict[str, object], index: int, project_prefix: s
     return f'{project_prefix}-{index:02d}'
 
 
+def _upn_to_project_name(upn: str) -> str:
+    """Derive a Foundry project name from a UPN, mirroring the Bicep transformation exactly.
+
+    Takes the local part (before @), replaces '.' and '_' with '-', lowercases,
+    and truncates to 32 characters.
+    """
+    local = upn.split('@')[0]
+    return local.replace('.', '-').replace('_', '-').lower()[:32]
+
+
 def _resolve_project_names(
     attendees: list[dict[str, object]],
     attendee_prefix: str,
@@ -124,6 +142,7 @@ def _resolve_project_names(
     proctor_prefix: str,
     organizer_prefix: str,
     ensure_facilitator_project: bool,
+    use_upn_project_names: bool,
 ) -> list[str]:
     """Derive the ordered project list matching what Bicep creates.
 
@@ -142,19 +161,19 @@ def _resolve_project_names(
             continue
         explicit = str(attendee.get('projectName', '') or '').strip()
         if role == 'facilitator':
-            name = explicit or f'{facilitator_prefix}-{len(facilitator) + 1:02d}'
+            name = explicit or (_upn_to_project_name(str(attendee['upn'])) if use_upn_project_names else f'{facilitator_prefix}-{len(facilitator) + 1:02d}')
             if name not in facilitator:
                 facilitator.append(name)
         elif role == 'proctor':
-            name = explicit or f'{proctor_prefix}-{len(proctor) + 1:02d}'
+            name = explicit or (_upn_to_project_name(str(attendee['upn'])) if use_upn_project_names else f'{proctor_prefix}-{len(proctor) + 1:02d}')
             if name not in proctor:
                 proctor.append(name)
         elif role == 'organizer':
-            name = explicit or f'{organizer_prefix}-{len(organizer) + 1:02d}'
+            name = explicit or (_upn_to_project_name(str(attendee['upn'])) if use_upn_project_names else f'{organizer_prefix}-{len(organizer) + 1:02d}')
             if name not in organizer:
                 organizer.append(name)
         else:
-            name = explicit or f'{attendee_prefix}-{len(standard) + 1:02d}'
+            name = explicit or (_upn_to_project_name(str(attendee['upn'])) if use_upn_project_names else f'{attendee_prefix}-{len(standard) + 1:02d}')
             if name not in standard:
                 standard.append(name)
 
@@ -195,6 +214,10 @@ def _search_scope(subscription_id: str, resource_group: str, search_service_name
         f'/subscriptions/{subscription_id}/resourceGroups/{resource_group}'
         f'/providers/Microsoft.Search/searchServices/{search_service_name}'
     )
+
+
+def _resource_group_scope(subscription_id: str, resource_group: str) -> str:
+    return f'/subscriptions/{subscription_id}/resourceGroups/{resource_group}'
 
 
 def _assign_role(object_id: str, role_definition_id: str, scope: str) -> tuple[bool, str]:
@@ -243,6 +266,74 @@ def _print_summary(rows: list[dict[str, str]]) -> None:
         print(f'    {role_key}: {per_role[role_key]}')
 
 
+def _write_attendee_markdowns(
+    attendee_infos: list[dict[str, str]],
+    audit_dir: Path,
+    subscription_id: str,
+    resource_group: str,
+    foundry_name: str,
+    search_service_name: str,
+) -> list[Path]:
+    """Write a per-attendee onboarding markdown file to audit_dir."""
+    written: list[Path] = []
+    for info in attendee_infos:
+        upn = info['upn']
+        project_name = info['project_name']
+        upn_local = upn.split('@')[0]
+        out_path = audit_dir / f'{upn_local}.md'
+        search_line = (
+            f'AZURE_SEARCH_SERVICE_NAME={search_service_name}'
+            if search_service_name
+            else '# AZURE_SEARCH_SERVICE_NAME=  # not configured'
+        )
+        content = (
+            '---\n'
+            f'title: Workshop Onboarding - {upn_local}\n'
+            f'description: Environment configuration for {upn}.\n'
+            '---\n'
+            '\n'
+            f'# Workshop Onboarding: {upn_local}\n'
+            '\n'
+            'Use these values to configure your `.env` file and connect to the shared lab\n'
+            'environment. Follow the [Attendee Quickstart](../docs/quickstart-attendee.md) or\n'
+            'the full [Attendee Guide](../docs/guide-attendee.md) for step-by-step setup\n'
+            'instructions.\n'
+            '\n'
+            '## Your Environment Variables\n'
+            '\n'
+            'Copy `shared/.env.example` to `.env` in the repository root, then set these values:\n'
+            '\n'
+            '```env\n'
+            f'AZURE_SUBSCRIPTION_ID={subscription_id}\n'
+            f'AZURE_RESOURCE_GROUP={resource_group}\n'
+            f'FOUNDRY_RESOURCE_NAME={foundry_name}\n'
+            f'FOUNDRY_PROJECT_NAME={project_name}\n'
+            f'{search_line}\n'
+            '```\n'
+            '\n'
+            '## Sign In\n'
+            '\n'
+            '```bash\n'
+            f'az login\n'
+            f'az account set --subscription {subscription_id}\n'
+            '```\n'
+            '\n'
+            '## Validate Setup\n'
+            '\n'
+            '```bash\n'
+            'python scripts/health-check.py\n'
+            '```\n'
+            '\n'
+            '## Next Steps\n'
+            '\n'
+            'Follow the [Attendee Quickstart](../docs/quickstart-attendee.md) to complete\n'
+            'setup and begin the labs.\n'
+        )
+        out_path.write_text(content, encoding='utf-8')
+        written.append(out_path)
+    return written
+
+
 def main() -> int:
     try:
         attendees = _parse_attendee_list(os.getenv('AZURE_ATTENDEE_LIST', ''))
@@ -267,6 +358,9 @@ def main() -> int:
     ensure_facilitator_project = (
         os.getenv('AZURE_ENSURE_FACILITATOR_PROJECT', 'true').strip().lower() not in ('false', '0', '')
     )
+    use_upn_project_names = (
+        os.getenv('AZURE_USE_UPN_PROJECT_NAMES', 'true').strip().lower() not in ('false', '0', '')
+    )
     foundry_name = os.getenv('FOUNDRY_RESOURCE_NAME', '').strip()
     resource_group = os.getenv('AZURE_RESOURCE_GROUP', '').strip()
     if not foundry_name or not resource_group:
@@ -289,12 +383,15 @@ def main() -> int:
         proctor_prefix=proctor_prefix,
         organizer_prefix=organizer_prefix,
         ensure_facilitator_project=ensure_facilitator_project,
+        use_upn_project_names=use_upn_project_names,
     )
     default_project_name = project_names[0]
     account_scope = _account_scope(subscription_id, resource_group, foundry_name)
     search_svc_scope = _search_scope(subscription_id, resource_group, search_service_name) if search_service_name else ''
+    rg_scope = _resource_group_scope(subscription_id, resource_group)
 
     rows: list[dict[str, str]] = []
+    attendee_infos: list[dict[str, str]] = []
     standard_attendee_count = 0  # index within the standard-attendee group only
     facilitator_count = 0
     proctor_count = 0
@@ -344,6 +441,7 @@ def main() -> int:
             )
             scope = f'{account_scope}/projects/{target_project_name}'
 
+        attendee_infos.append({'upn': upn, 'project_name': target_project_name})
         scope_label = target_project_name if scope_level == 'project' else 'account'
         print(f'Assigning {display_name} ({scope_level} scope) to {upn} on {scope_label}.')
 
@@ -371,6 +469,20 @@ def main() -> int:
             'status': 'succeeded' if assigned else 'failed', 'message': error_message,
         })
 
+        # Assign Azure Reader on the resource group for every attendee.
+        print(f'Assigning Reader (resource group scope) to {upn}.')
+        rg_reader_assigned, rg_reader_error = _assign_role(
+            object_id=object_id, role_definition_id=RESOURCE_GROUP_READER_ROLE_ID, scope=rg_scope,
+        )
+        if not rg_reader_assigned:
+            print(f'  Failed to assign resource group Reader role: {rg_reader_error}')
+        rows.append({
+            'upn': upn, 'object_id': object_id, 'role_key': 'rg-reader',
+            'role_display_name': 'Reader', 'role_definition_id': RESOURCE_GROUP_READER_ROLE_ID,
+            'project_name': '', 'scope': 'resource-group',
+            'status': 'succeeded' if rg_reader_assigned else 'failed', 'message': rg_reader_error,
+        })
+
         if search_svc_scope and role_key in SEARCH_ROLE_DEFINITIONS:
             search_role_key, search_display_name, search_role_def_id = SEARCH_ROLE_DEFINITIONS[role_key]
             print(f'Assigning {search_display_name} (search scope) to {upn}.')
@@ -387,8 +499,19 @@ def main() -> int:
             })
 
     audit_path = _write_audit_csv(rows)
+    markdown_paths = _write_attendee_markdowns(
+        attendee_infos=attendee_infos,
+        audit_dir=audit_path.parent,
+        subscription_id=subscription_id,
+        resource_group=resource_group,
+        foundry_name=foundry_name,
+        search_service_name=search_service_name,
+    )
     _print_summary(rows)
     print(f'\nAudit written to {audit_path}.')
+    print(f'Attendee onboarding files written: {len(markdown_paths)}')
+    for md_path in markdown_paths:
+        print(f'  {md_path}')
 
     failures = sum(1 for row in rows if row['status'] == 'failed')
     if failures:

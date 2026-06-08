@@ -8,7 +8,7 @@ detailed setup and troubleshooting.
 
 1. [VS Code Insiders](https://code.visualstudio.com/insiders/) with the [Foundry Toolkit for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-windows-ai-studio.windows-ai-studio).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
-1. [Python 3.11 or later](https://www.python.org/downloads/).
+1. [Python 3.13 or later](https://www.python.org/downloads/).
 1. Your assigned project information from your organizer.
 
 ## Clone the repository

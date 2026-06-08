@@ -8,7 +8,7 @@ ms.topic: how-to
 
 ## Scope
 
-This repository hosts an instructor-led Microsoft Foundry workshop with numbered labs, Bicep infrastructure, and shared Python utilities.
+This repository hosts an facilitator-led Microsoft Foundry workshop with numbered labs, Bicep infrastructure, and shared Python utilities.
 
 ## Repository Layout
 

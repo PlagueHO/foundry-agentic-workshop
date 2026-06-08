@@ -7,7 +7,7 @@ ms.topic: overview
 
 ![Microsoft Foundry Agentic Workshop — Hands-on-labs](./assets/banners/microsoft-foundry-agentic-workshop.png)
 
-Build and deliver a 3–4 hour, instructor-led workshop for agentic applications with [Microsoft Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-foundry).
+Build and deliver a 3–4 hour, facilitator-led workshop for agentic applications with [Microsoft Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-foundry).
 
 ## Roles
 

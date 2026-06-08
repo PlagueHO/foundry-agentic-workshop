@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "5524318076731616723"
+      "templateHash": "1689357089240885860"
     }
   },
   "definitions": {
@@ -205,6 +205,13 @@
         "description": "Always provision at least one facilitator project, even when no facilitator entry appears in attendeeList."
       }
     },
+    "useUpnProjectNames": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "When true (the default) and attendeeList is provided, project names are derived from the attendee UPN local part (before @, with . and _ replaced by -) instead of sequential prefix-NN names. Has no effect when attendeeList is empty."
+      }
+    },
     "azureAiSearchCapabilityHost": {
       "type": "bool",
       "defaultValue": false,
@@ -242,7 +249,7 @@
       {
         "name": "standardAttendeeProjectNames",
         "count": "[length(variables('standardAttendeeEntries'))]",
-        "input": "[if(coalesce(tryGet(variables('standardAttendeeEntries')[copyIndex('standardAttendeeProjectNames')], 'individualProject'), true()), coalesce(tryGet(variables('standardAttendeeEntries')[copyIndex('standardAttendeeProjectNames')], 'projectName'), format('{0}-{1}', parameters('attendeeProjectPrefix'), padLeft(string(add(copyIndex('standardAttendeeProjectNames'), 1)), 2, '0'))), '')]"
+        "input": "[if(coalesce(tryGet(variables('standardAttendeeEntries')[copyIndex('standardAttendeeProjectNames')], 'individualProject'), true()), coalesce(tryGet(variables('standardAttendeeEntries')[copyIndex('standardAttendeeProjectNames')], 'projectName'), if(parameters('useUpnProjectNames'), take(toLower(replace(replace(split(variables('standardAttendeeEntries')[copyIndex('standardAttendeeProjectNames')].upn, '@')[0], '.', '-'), '_', '-')), 32), format('{0}-{1}', parameters('attendeeProjectPrefix'), padLeft(string(add(copyIndex('standardAttendeeProjectNames'), 1)), 2, '0')))), '')]"
       },
       {
         "name": "countProjectNames",
@@ -252,17 +259,17 @@
       {
         "name": "facilitatorProjectNamesFromList",
         "count": "[length(variables('facilitatorEntries'))]",
-        "input": "[coalesce(tryGet(variables('facilitatorEntries')[copyIndex('facilitatorProjectNamesFromList')], 'projectName'), format('{0}-{1}', parameters('facilitatorProjectPrefix'), padLeft(string(add(copyIndex('facilitatorProjectNamesFromList'), 1)), 2, '0')))]"
+        "input": "[coalesce(tryGet(variables('facilitatorEntries')[copyIndex('facilitatorProjectNamesFromList')], 'projectName'), if(parameters('useUpnProjectNames'), take(toLower(replace(replace(split(variables('facilitatorEntries')[copyIndex('facilitatorProjectNamesFromList')].upn, '@')[0], '.', '-'), '_', '-')), 32), format('{0}-{1}', parameters('facilitatorProjectPrefix'), padLeft(string(add(copyIndex('facilitatorProjectNamesFromList'), 1)), 2, '0'))))]"
       },
       {
         "name": "proctorProjectNamesFromList",
         "count": "[length(variables('proctorEntries'))]",
-        "input": "[coalesce(tryGet(variables('proctorEntries')[copyIndex('proctorProjectNamesFromList')], 'projectName'), format('{0}-{1}', parameters('proctorProjectPrefix'), padLeft(string(add(copyIndex('proctorProjectNamesFromList'), 1)), 2, '0')))]"
+        "input": "[coalesce(tryGet(variables('proctorEntries')[copyIndex('proctorProjectNamesFromList')], 'projectName'), if(parameters('useUpnProjectNames'), take(toLower(replace(replace(split(variables('proctorEntries')[copyIndex('proctorProjectNamesFromList')].upn, '@')[0], '.', '-'), '_', '-')), 32), format('{0}-{1}', parameters('proctorProjectPrefix'), padLeft(string(add(copyIndex('proctorProjectNamesFromList'), 1)), 2, '0'))))]"
       },
       {
         "name": "organizerProjectNamesFromList",
         "count": "[length(variables('organizerEntries'))]",
-        "input": "[coalesce(tryGet(variables('organizerEntries')[copyIndex('organizerProjectNamesFromList')], 'projectName'), format('{0}-{1}', parameters('organizerProjectPrefix'), padLeft(string(add(copyIndex('organizerProjectNamesFromList'), 1)), 2, '0')))]"
+        "input": "[coalesce(tryGet(variables('organizerEntries')[copyIndex('organizerProjectNamesFromList')], 'projectName'), if(parameters('useUpnProjectNames'), take(toLower(replace(replace(split(variables('organizerEntries')[copyIndex('organizerProjectNamesFromList')].upn, '@')[0], '.', '-'), '_', '-')), 32), format('{0}-{1}', parameters('organizerProjectPrefix'), padLeft(string(add(copyIndex('organizerProjectNamesFromList'), 1)), 2, '0'))))]"
       },
       {
         "name": "attendeeProjects",
@@ -424,7 +431,7 @@
         },
         "sku": {
           "name": "GlobalStandard",
-          "capacity": 50
+          "capacity": 120
         },
         "raiPolicyName": "FoundryWorkshopContentPolicy"
       },
