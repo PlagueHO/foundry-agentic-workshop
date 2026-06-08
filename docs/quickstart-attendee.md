@@ -11,6 +11,10 @@ detailed setup and troubleshooting.
 1. [Python 3.13 or later](https://www.python.org/downloads/).
 1. Your assigned project information from your organizer.
 
+```bash
+python -m pip install -r shared/requirements.txt
+```
+
 ## Clone the repository
 
 ```bash
@@ -43,6 +47,11 @@ az account set --subscription <your-subscription-id>
 python scripts/health-check.py
 ```
 
+## Open your project
+
+1. Sign in to the [Foundry portal](https://ai.azure.com/login).
+1. Select the project named in your `FOUNDRY_PROJECT_NAME`.
+
 ## Start the labs
 
-Open the [available labs](./labs/introduction-foundry-agent-service) in the docs and begin with the first lab in your assigned series. Each lab is independently runnable, so you can resume at any point.
+Open the [available labs](./labs/introduction-foundry-agent-service) in the docs and begin with the first lab in the series. Each lab is independently runnable, so you can resume at any point.

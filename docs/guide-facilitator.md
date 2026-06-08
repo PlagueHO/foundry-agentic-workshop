@@ -20,8 +20,16 @@ attendees hit most often. For the condensed flow, see the
    cd foundry-agentic-workshop
    ```
 
-1. Confirm the organizer has provisioned the environment and that
-   `azd env get-value AZURE_ATTENDEE_PROJECT_NAMES` lists a project per attendee.
+1. Confirm the organizer has provisioned the environment and run `azd up` (or `azd provision`).
+   The preprovision hook (`scripts/prepare-attendee-roles.py`) resolves UPNs to Entra object IDs
+   and writes a resolution audit CSV to `.azure/<env>/attendee-resolution-<env>-<ts>.csv`.
+   The postprovision hook (`scripts/generate-attendee-onboarding.py`) writes:
+   - A per-attendee onboarding markdown file to `.azure/<env>/<upn_local>.md` for every resolved attendee.
+   - A provisioning summary CSV to `.azure/<env>/attendee-provisioning-<env>-<ts>.csv`.
+1. **Distribute per-attendee onboarding files.** Locate each `.azure/<env>/<upn_local>.md` file and
+   send it to the corresponding attendee before the session. Each file contains the attendee's
+   pre-populated `.env` values, sign-in commands, and setup instructions. Attendees whose UPNs
+   could not be resolved will not have a file; follow up with the organizer for those cases.
 1. Run all labs once on a `foundry-user` test identity. This surfaces the same
    least-privilege constraints attendees experience (for example, no model deployment).
 1. Confirm proctors have the attendee assignment list and the [Proctor Guide](./guide-proctor.md).

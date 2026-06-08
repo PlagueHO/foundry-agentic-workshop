@@ -43,7 +43,6 @@ detailed steps, the RBAC model, and troubleshooting.
    azd env new hol-shared
    azd env set AZURE_LOCATION australiaeast
    azd env set AZURE_RESOURCE_GROUP rg-foundry-hol-shared
-   azd env set AZURE_ATTENDEE_PROJECT_PREFIX attendee
    ```
 
 1. Configure [attendee access](#attendee-access).
@@ -71,19 +70,18 @@ azd env set AZURE_ATTENDEE_LIST '[{"upn":"ana@contoso.com"},{"upn":"ben@contoso.
 | `foundry-owner` | Full build and manage. | Account |
 
 Attendees cannot deploy models with the default role; you pre-deploy models during
-provisioning. The [Organizer Guide](./guide-organizer.md#per-attendee-rbac) explains the
-full model and the provisioning audit CSV.
+provisioning. The [Organizer Guide](./guide-organizer.md#provisioning-audit) explains the
+full role model and the provisioning audit CSVs.
 
 ## Share assignments
+
+After provisioning, confirm project names and hand the per-attendee onboarding files to the facilitator.
 
 ```bash
 azd env get-value AZURE_ATTENDEE_PROJECT_NAMES
 ```
 
-Give each attendee their assigned `FOUNDRY_PROJECT_NAME` (by default the local part of
-their UPN, for example `alice-smith` from `alice.smith@contoso.com`; set
-`AZURE_USE_UPN_PROJECT_NAMES=false` to use sequential `<prefix>-NN` names) and the shared
-resource values they need for the [Attendee Quickstart](./quickstart-attendee.md).
+The post-provision hook writes a per-attendee onboarding file to `.azure/<env>/<upn_local>.md` for each resolved attendee (for example `.azure/hol-shared/alice-smith.md`). Each file contains the attendee's `FOUNDRY_PROJECT_NAME` and all shared `.env` values pre-populated. It is the **facilitator's responsibility** to distribute each attendee's file to them before the workshop starts. Refer attendees to the [Attendee Quickstart](./quickstart-attendee.md) for setup instructions.
 
 ## Teardown
 

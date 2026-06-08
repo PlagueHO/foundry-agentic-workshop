@@ -13,17 +13,16 @@ guide and the attendee assignment list handy throughout the session.
    ```
 
 1. Get the attendee assignment list from the organizer (UPN to `FOUNDRY_PROJECT_NAME`).
-1. Confirm the environment is provisioned: run `python scripts/list-attendee-projects.py` to
-   see the expected project names.
+1. Confirm the environment is provisioned: run `python scripts/list-attendee-projects.py` to see the expected project names.
 1. Keep one demo project as a fallback for an attendee whose assignment is blocked.
 
 ## During the session
 
 - Watch for blocked attendees during setup and the first lab — most issues surface there.
-- Triage with the [Attendee Guide troubleshooting table](./guide-attendee.md#troubleshooting)
-  before escalating.
+- Triage with the [Attendee Guide troubleshooting table](./guide-attendee.md#troubleshooting) before escalating.
 - Each lab is independently runnable, so help a blocked attendee move on and return later.
 - Escalate to the facilitator only when an issue affects multiple attendees.
+- Watch for model 503 issues and increase quotas as needed.
 
 ## Common requests
 

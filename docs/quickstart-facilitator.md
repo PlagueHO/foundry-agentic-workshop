@@ -13,7 +13,7 @@ issues.
    cd foundry-agentic-workshop
    ```
 
-1. Confirm the organizer has provisioned the environment and shared attendee assignments (see the [Organizer Quickstart](./quickstart-organizer.md)).
+1. Confirm the organizer has run `azd up`. Collect the per-attendee onboarding markdown files from `.azure/<env>/<upn_local>.md` and send each file to the corresponding attendee. See the [Facilitator Guide](./guide-facilitator.md#prepare) for details on what these files contain and how the provisioning hooks produce them.
 1. Run the labs end to end once on a `foundry-user` test identity so you hit the same constraints attendees do.
 1. Confirm proctors have the [Proctor Guide](./guide-proctor.md) and the attendee assignment list.
 
