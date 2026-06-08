@@ -49,8 +49,12 @@ python scripts/health-check.py
 
 ## Open your project
 
-1. Sign in to the [Foundry portal](https://ai.azure.com/login).
-1. Select the project named in your `FOUNDRY_PROJECT_NAME`.
+> [!IMPORTANT]
+> All labs use the **New Foundry** experience. Enable the **New Foundry** toggle in the top navigation bar before starting.
+
+1. Sign in to the [Foundry portal](https://ai.azure.com).
+1. Enable the **New Foundry** toggle in the top navigation bar if it is not already on.
+1. When prompted, select the project named in your `FOUNDRY_PROJECT_NAME` from the dropdown and select **Let's go**.
 
 ## Start the labs
 

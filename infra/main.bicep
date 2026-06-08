@@ -174,7 +174,7 @@ var keyVaultName = take(toLower(replace('${abbrs.keyVaultVaults}${environmentNam
 var cosmosDbAccountName = toLower(replace('${abbrs.cosmosDBAccounts}${environmentName}', '-', ''))
 var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
 var aiFoundryName = '${abbrs.aiFoundryAccounts}${environmentName}'
-var aiFoundryCustomSubDomainName = toLower(replace(environmentName, '-', ''))
+var aiFoundryCustomSubDomainName = toLower(replace(aiFoundryName, '-', ''))
 
 // Build per-attendee and per-role Foundry projects. Role assignments are created here
 // in Bicep using the Entra object IDs resolved by the preprovision hook
@@ -808,8 +808,11 @@ output AZURE_TENANT_ID string = tenant().tenantId
 @description('The name of the Microsoft Foundry account.')
 output FOUNDRY_RESOURCE_NAME string = aiFoundryAccount.outputs.name
 
+@description('The custom subdomain name of the Microsoft Foundry account.')
+output FOUNDRY_CUSTOM_DOMAIN_NAME string = aiFoundryAccount.outputs.customSubDomainName
+
 @description('The endpoint of the Microsoft Foundry account.')
-output AZURE_AI_FOUNDRY_ENDPOINT string = aiFoundryAccount.outputs.endpoint
+output FOUNDRY_ENDPOINT string = aiFoundryAccount.outputs.endpoint
 
 @description('The default Foundry project name targeted in single-attendee mode.')
 output FOUNDRY_PROJECT_NAME string = defaultAttendeeProjectName

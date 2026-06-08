@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
 const labsRoot = path.join(repoRoot, 'labs')
 const docsRoot = path.join(repoRoot, 'docs')
-const generatedRoot = path.join(docsRoot, '.generated', 'lab-steps')
+const generatedRoot = path.join(docsRoot, 'lab-steps')
 const labsSidebarPath = path.join(docsRoot, '.vitepress', 'labs-sidebar.ts')
 
 const STEP_DIR_PATTERN = /^\d{2}-/
@@ -30,9 +30,7 @@ function titleFromReadme(markdown, fallback) {
 }
 
 function cleanStepTitle(rawTitle) {
-  return rawTitle.replace(/^(?:Lab|Module|Step)\s*\d{2}\s*:?\s*/i, (prefix) => {
-    return prefix.includes(':') ? prefix.replace(':', '') : prefix
-  })
+  return rawTitle.replace(/^(?:Lab|Module|Step)\s*(\d{2})\s*:?\s*/i, '$1. ')
 }
 
 function trackTitle(trackName) {
@@ -140,7 +138,7 @@ async function main() {
 
       trackSidebarItem.items.push({
         text: stepTitle,
-        link: `/.generated/lab-steps/${trackName}/${stepName}`,
+        link: `/lab-steps/${trackName}/${stepName}`,
       })
     }
 

@@ -30,7 +30,7 @@ pnpm-debug.log*
 docs/.vitepress/dist/
 docs/.vitepress/cache/
 docs/dist/
-docs/.generated/
+docs/lab-steps/
 
 # Azure / IaC outputs
 .azure/

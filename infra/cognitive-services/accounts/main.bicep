@@ -723,6 +723,9 @@ output systemAssignedMIPrincipalId string? = cognitiveService.?identity.?princip
 @description('The location the resource was deployed into.')
 output location string = cognitiveService.location
 
+@description('The custom subdomain name of the cognitive services account.')
+output customSubDomainName string = cognitiveService.properties.customSubDomainName ?? ''
+
 import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)

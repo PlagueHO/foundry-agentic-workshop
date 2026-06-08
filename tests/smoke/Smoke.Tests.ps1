@@ -37,8 +37,28 @@ param(
     [string] $OrganizerProjectPrefix = 'organizer',
 
     [Parameter()]
-    [bool] $EnsureFacilitatorProject = $true
+    [bool] $EnsureFacilitatorProject = $true,
+
+    [Parameter()]
+    [bool] $UseUpnProjectNames = $true
 )
+
+# Derives a Foundry project name from a UPN local part, mirroring Bicep's useUpnProjectNames logic.
+# When UseUpn is $false, falls back to the padded-index format used by countProjectNames.
+function Get-AttendeeProjectName {
+    param(
+        [string] $Upn,
+        [string] $Prefix,
+        [int]    $Index,
+        [bool]   $UseUpn
+    )
+    if ($UseUpn) {
+        $local   = ($Upn -split '@')[0]
+        $derived = $local.ToLower() -replace '\.', '-' -replace '_', '-'
+        return $derived.Substring(0, [Math]::Min($derived.Length, 32))
+    }
+    return '{0}-{1:D2}' -f $Prefix, ($Index + 1)
+}
 
 BeforeDiscovery {
     # Build project names and attendee test cases, mirroring the variable derivation in
@@ -75,7 +95,7 @@ BeforeDiscovery {
                         $name = if ($attendee.PSObject.Properties.Name.Contains('projectName') -and $attendee.projectName) {
                             $attendee.projectName
                         } else {
-                            '{0}-{1:D2}' -f $FacilitatorProjectPrefix, ($facGrpIdx + 1)
+                            Get-AttendeeProjectName -Upn $attendee.upn -Prefix $FacilitatorProjectPrefix -Index $facGrpIdx -UseUpn $UseUpnProjectNames
                         }
                         $facilitatorNames.Add($name)
                         $facGrpIdx++
@@ -84,7 +104,7 @@ BeforeDiscovery {
                         $name = if ($attendee.PSObject.Properties.Name.Contains('projectName') -and $attendee.projectName) {
                             $attendee.projectName
                         } else {
-                            '{0}-{1:D2}' -f $ProctorProjectPrefix, ($prcGrpIdx + 1)
+                            Get-AttendeeProjectName -Upn $attendee.upn -Prefix $ProctorProjectPrefix -Index $prcGrpIdx -UseUpn $UseUpnProjectNames
                         }
                         $proctorNames.Add($name)
                         $prcGrpIdx++
@@ -93,7 +113,7 @@ BeforeDiscovery {
                         $name = if ($attendee.PSObject.Properties.Name.Contains('projectName') -and $attendee.projectName) {
                             $attendee.projectName
                         } else {
-                            '{0}-{1:D2}' -f $OrganizerProjectPrefix, ($orgGrpIdx + 1)
+                            Get-AttendeeProjectName -Upn $attendee.upn -Prefix $OrganizerProjectPrefix -Index $orgGrpIdx -UseUpn $UseUpnProjectNames
                         }
                         $organizerNames.Add($name)
                         $orgGrpIdx++
@@ -107,7 +127,7 @@ BeforeDiscovery {
                             $name = if ($attendee.PSObject.Properties.Name.Contains('projectName') -and $attendee.projectName) {
                                 $attendee.projectName
                             } else {
-                                '{0}-{1:D2}' -f $AttendeeProjectPrefix, ($stdGrpIdx + 1)
+                                Get-AttendeeProjectName -Upn $attendee.upn -Prefix $AttendeeProjectPrefix -Index $stdGrpIdx -UseUpn $UseUpnProjectNames
                             }
                             if (-not $standardNames.Contains($name)) {
                                 $standardNames.Add($name)
@@ -174,22 +194,22 @@ BeforeDiscovery {
             $projectName = if ($attendee.PSObject.Properties.Name.Contains('projectName') -and $attendee.projectName) {
                 $attendee.projectName
             } elseif ($roleKey -eq 'facilitator') {
-                $name = '{0}-{1:D2}' -f $FacilitatorProjectPrefix, ($facIdx + 1)
+                $name = Get-AttendeeProjectName -Upn $attendee.upn -Prefix $FacilitatorProjectPrefix -Index $facIdx -UseUpn $UseUpnProjectNames
                 $facIdx++
                 $name
             } elseif ($roleKey -eq 'proctor') {
-                $name = '{0}-{1:D2}' -f $ProctorProjectPrefix, ($prcIdx + 1)
+                $name = Get-AttendeeProjectName -Upn $attendee.upn -Prefix $ProctorProjectPrefix -Index $prcIdx -UseUpn $UseUpnProjectNames
                 $prcIdx++
                 $name
             } elseif ($roleKey -eq 'organizer') {
-                $name = '{0}-{1:D2}' -f $OrganizerProjectPrefix, ($orgIdx + 1)
+                $name = Get-AttendeeProjectName -Upn $attendee.upn -Prefix $OrganizerProjectPrefix -Index $orgIdx -UseUpn $UseUpnProjectNames
                 $orgIdx++
                 $name
             } else {
                 $includesProject = -not $attendee.PSObject.Properties.Name.Contains('individualProject') -or
                     $attendee.individualProject -ne $false
                 $name = if ($includesProject) {
-                    '{0}-{1:D2}' -f $AttendeeProjectPrefix, ($stdIdx + 1)
+                    Get-AttendeeProjectName -Upn $attendee.upn -Prefix $AttendeeProjectPrefix -Index $stdIdx -UseUpn $UseUpnProjectNames
                 } else {
                     '{0}-01' -f $AttendeeProjectPrefix
                 }
@@ -238,6 +258,23 @@ BeforeAll {
 
     $script:AccountResourceId = "/subscriptions/$SubscriptionId/resourceGroups/$script:ResourceGroup" +
         "/providers/Microsoft.CognitiveServices/accounts/$script:FoundryAccountName"
+
+    $script:ResourceGroupScope = "/subscriptions/$SubscriptionId/resourceGroups/$script:ResourceGroup"
+    $script:SearchResourceId   = "/subscriptions/$SubscriptionId/resourceGroups/$script:ResourceGroup" +
+        "/providers/Microsoft.Search/searchServices/$script:AiSearchName"
+    $script:SearchBaseUrl      = "https://$($script:AiSearchName).search.windows.net"
+    $script:RgReaderRoleId     = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+
+    # Search role IDs assigned to each attendee by the postprovision hook.
+    $script:SearchRoleDefinitions = @{
+        'foundry-user'            = @{ Id = '8ebe5a00-799e-43f5-93ac-243d3dce84a7'; Name = 'Search Index Data Contributor' }
+        'foundry-project-manager' = @{ Id = '8ebe5a00-799e-43f5-93ac-243d3dce84a7'; Name = 'Search Index Data Contributor' }
+        'foundry-account-owner'   = @{ Id = '8ebe5a00-799e-43f5-93ac-243d3dce84a7'; Name = 'Search Index Data Contributor' }
+        'foundry-owner'           = @{ Id = '8ebe5a00-799e-43f5-93ac-243d3dce84a7'; Name = 'Search Index Data Contributor' }
+        'facilitator'             = @{ Id = 'b24988ac-6180-42a0-ab88-20f7382dd24c'; Name = 'Contributor' }
+        'proctor'                 = @{ Id = 'b24988ac-6180-42a0-ab88-20f7382dd24c'; Name = 'Contributor' }
+        'organizer'               = @{ Id = 'b24988ac-6180-42a0-ab88-20f7382dd24c'; Name = 'Contributor' }
+    }
 }
 
 Describe 'Resource Group' {
@@ -279,22 +316,16 @@ Describe 'Foundry Projects' {
 
 Describe 'Model Deployments' {
     It 'Chat model deployment exists and is in Succeeded state' {
-        $rawOutput = az cognitiveservices account deployment show `
-            --name 'chat' `
-            --account-name $script:FoundryAccountName `
-            --resource-group $script:ResourceGroup `
-            --output json 2>&1
+        $resourceId = "$script:AccountResourceId/deployments/chat"
+        $rawOutput = az resource show --ids $resourceId --output json 2>&1
         $LASTEXITCODE | Should -Be 0 `
             -Because "Model deployment 'chat' must exist on account '$script:FoundryAccountName'"
         ($rawOutput | ConvertFrom-Json).properties.provisioningState | Should -Be 'Succeeded'
     }
 
     It 'Embedding model deployment exists and is in Succeeded state' {
-        $rawOutput = az cognitiveservices account deployment show `
-            --name 'embedding' `
-            --account-name $script:FoundryAccountName `
-            --resource-group $script:ResourceGroup `
-            --output json 2>&1
+        $resourceId = "$script:AccountResourceId/deployments/embedding"
+        $rawOutput = az resource show --ids $resourceId --output json 2>&1
         $LASTEXITCODE | Should -Be 0 `
             -Because "Model deployment 'embedding' must exist on account '$script:FoundryAccountName'"
         ($rawOutput | ConvertFrom-Json).properties.provisioningState | Should -Be 'Succeeded'
@@ -325,6 +356,39 @@ Describe 'Attendee Role Assignments' -Skip:($script:AttendeeTestCases.Count -eq 
         ($rawOutput | ConvertFrom-Json).Count | Should -BeGreaterThan 0 `
             -Because "Attendee '$Upn' must have role '$RoleKey' assigned at scope '$scope'"
     }
+
+    It 'Attendee <Upn> has Reader role on resource group' -ForEach $script:AttendeeTestCases {
+        $objectId = (az ad user show --id $Upn --query id --output tsv 2>&1).Trim()
+        $LASTEXITCODE | Should -Be 0 -Because "UPN '$Upn' must be resolvable in the tenant"
+        $objectId | Should -Not -BeNullOrEmpty -Because "Resolved object ID for '$Upn' must not be empty"
+
+        $rawOutput = az role assignment list `
+            --scope $script:ResourceGroupScope `
+            --assignee $objectId `
+            --role $script:RgReaderRoleId `
+            --output json 2>&1
+        $LASTEXITCODE | Should -Be 0
+        ($rawOutput | ConvertFrom-Json).Count | Should -BeGreaterThan 0 `
+            -Because "Attendee '$Upn' must have Reader role on resource group '$script:ResourceGroup'"
+    }
+
+    It 'Attendee <Upn> has correct Search role assigned' -Skip:(-not $AiSearchEnabled) -ForEach $script:AttendeeTestCases {
+        $searchRoleDef = $script:SearchRoleDefinitions[$RoleKey]
+        $searchRoleDef | Should -Not -BeNullOrEmpty -Because "Role key '$RoleKey' must have a Search role mapping"
+
+        $objectId = (az ad user show --id $Upn --query id --output tsv 2>&1).Trim()
+        $LASTEXITCODE | Should -Be 0 -Because "UPN '$Upn' must be resolvable in the tenant"
+        $objectId | Should -Not -BeNullOrEmpty -Because "Resolved object ID for '$Upn' must not be empty"
+
+        $rawOutput = az role assignment list `
+            --scope $script:SearchResourceId `
+            --assignee $objectId `
+            --role $searchRoleDef.Id `
+            --output json 2>&1
+        $LASTEXITCODE | Should -Be 0
+        ($rawOutput | ConvertFrom-Json).Count | Should -BeGreaterThan 0 `
+            -Because "Attendee '$Upn' must have '$($searchRoleDef.Name)' on Search service '$script:AiSearchName'"
+    }
 }
 
 Describe 'Key Vault' {
@@ -345,7 +409,24 @@ Describe 'AI Search' -Skip:(-not $AiSearchEnabled) {
             --resource-group $script:ResourceGroup `
             --output json 2>&1
         $LASTEXITCODE | Should -Be 0 -Because "AI Search service '$script:AiSearchName' must exist"
-        ($rawOutput | ConvertFrom-Json).properties.provisioningState | Should -Be 'Succeeded'
+        ($rawOutput | ConvertFrom-Json).provisioningState | Should -Be 'Succeeded'
+    }
+
+    It 'Index <_> exists' -ForEach @('retail-products', 'retail-policies') {
+        $rawOutput = az rest --method get `
+            --url "$($script:SearchBaseUrl)/indexes/${_}?api-version=2024-07-01" `
+            --resource 'https://search.azure.com' `
+            --output json 2>&1
+        $LASTEXITCODE | Should -Be 0 -Because "AI Search index '$_' must exist in '$script:AiSearchName'"
+    }
+
+    It 'Index <_> contains seeded documents' -ForEach @('retail-products', 'retail-policies') {
+        $rawOutput = az rest --method get `
+            --url "$($script:SearchBaseUrl)/indexes/${_}/docs/`$count?api-version=2024-07-01" `
+            --resource 'https://search.azure.com' 2>&1
+        $LASTEXITCODE | Should -Be 0
+        [int]$rawOutput | Should -BeGreaterThan 0 `
+            -Because "AI Search index '$_' must contain seeded documents"
     }
 }
 
@@ -356,7 +437,7 @@ Describe 'Cosmos DB' -Skip:(-not $CosmosDbEnabled) {
             --resource-group $script:ResourceGroup `
             --output json 2>&1
         $LASTEXITCODE | Should -Be 0 -Because "Cosmos DB account '$script:CosmosDbAccountName' must exist"
-        ($rawOutput | ConvertFrom-Json).properties.provisioningState | Should -BeIn @('Succeeded', 'Online')
+        ($rawOutput | ConvertFrom-Json).provisioningState | Should -BeIn @('Succeeded', 'Online')
     }
 }
 
@@ -367,6 +448,6 @@ Describe 'Storage Account' -Skip:(-not $StorageAccountEnabled) {
             --resource-group $script:ResourceGroup `
             --output json 2>&1
         $LASTEXITCODE | Should -Be 0 -Because "Storage account '$script:StorageAccountName' must exist"
-        ($rawOutput | ConvertFrom-Json).properties.provisioningState | Should -Be 'Succeeded'
+        ($rawOutput | ConvertFrom-Json).provisioningState | Should -Be 'Succeeded'
     }
 }

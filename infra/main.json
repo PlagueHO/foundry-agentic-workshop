@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "17099597430738971861"
+      "templateHash": "4145621309836316527"
     }
   },
   "definitions": {
@@ -554,7 +554,7 @@
     "cosmosDbAccountName": "[toLower(replace(format('{0}{1}', variables('abbrs').cosmosDBAccounts, parameters('environmentName')), '-', ''))]",
     "aiSearchName": "[format('{0}{1}', variables('abbrs').aiSearchSearchServices, parameters('environmentName'))]",
     "aiFoundryName": "[format('{0}{1}', variables('abbrs').aiFoundryAccounts, parameters('environmentName'))]",
-    "aiFoundryCustomSubDomainName": "[toLower(replace(parameters('environmentName'), '-', ''))]",
+    "aiFoundryCustomSubDomainName": "[toLower(replace(variables('aiFoundryName'), '-', ''))]",
     "standardAttendeeEntries": "[filter(parameters('attendeeList'), lambda('a', and(and(not(equals(tryGet(lambdaVariables('a'), 'role'), 'facilitator')), not(equals(tryGet(lambdaVariables('a'), 'role'), 'proctor'))), not(equals(tryGet(lambdaVariables('a'), 'role'), 'organizer')))))]",
     "facilitatorEntries": "[filter(parameters('attendeeList'), lambda('a', equals(tryGet(lambdaVariables('a'), 'role'), 'facilitator')))]",
     "proctorEntries": "[filter(parameters('attendeeList'), lambda('a', equals(tryGet(lambdaVariables('a'), 'role'), 'proctor')))]",
@@ -25261,7 +25261,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "13842324619170547612"
+              "templateHash": "13424615894554679403"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service account.\nThis is a temporary module for deploying Azure Foundry Cognitive Services accounts.\nIt is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts\nonce it supports Foundry V2 (projects, connections etc)\nhttps://github.com/Azure/bicep-registry-modules/issues/5390\n"
@@ -33339,6 +33339,13 @@
               },
               "value": "[reference('cognitiveService', '2025-10-01-preview', 'full').location]"
             },
+            "customSubDomainName": {
+              "type": "string",
+              "metadata": {
+                "description": "The custom subdomain name of the cognitive services account."
+              },
+              "value": "[coalesce(reference('cognitiveService').customSubDomainName, '')]"
+            },
             "exportedSecrets": {
               "$ref": "#/definitions/secretsOutputType",
               "metadata": {
@@ -34749,7 +34756,14 @@
       },
       "value": "[reference('aiFoundryAccount').outputs.name.value]"
     },
-    "AZURE_AI_FOUNDRY_ENDPOINT": {
+    "FOUNDRY_CUSTOM_DOMAIN_NAME": {
+      "type": "string",
+      "metadata": {
+        "description": "The custom subdomain name of the Microsoft Foundry account."
+      },
+      "value": "[reference('aiFoundryAccount').outputs.customSubDomainName.value]"
+    },
+    "FOUNDRY_ENDPOINT": {
       "type": "string",
       "metadata": {
         "description": "The endpoint of the Microsoft Foundry account."

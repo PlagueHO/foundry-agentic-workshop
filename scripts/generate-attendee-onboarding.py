@@ -13,6 +13,8 @@ Environment variables (azd outputs populated after provisioning):
   AZURE_ATTENDEE_LIST_RESOLVED  Enriched attendee list from the preprovision hook.
                                 When not set, this script exits without error.
   FOUNDRY_RESOURCE_NAME         Foundry account name (azd output).
+  FOUNDRY_CUSTOM_DOMAIN_NAME    Foundry custom subdomain name (azd output). Used to
+                                construct project and OpenAI endpoint URLs.
   AZURE_RESOURCE_GROUP          Resource group name (azd output).
   AZURE_SEARCH_SERVICE_NAME     Azure AI Search service name (azd output).
   AZURE_SUBSCRIPTION_ID         Subscription ID (optional; resolved via az account show).
@@ -222,6 +224,7 @@ def _write_attendee_markdowns(
     subscription_id: str,
     resource_group: str,
     foundry_name: str,
+    foundry_custom_domain_name: str,
     search_service_name: str,
 ) -> list[Path]:
     """Write a per-attendee onboarding markdown file to audit_dir for resolved attendees."""
@@ -239,9 +242,9 @@ def _write_attendee_markdowns(
             else '# AZURE_SEARCH_SERVICE_NAME=  # not configured'
         )
         project_endpoint = (
-            f'https://{foundry_name}.services.ai.azure.com/api/projects/{project_name}'
+            f'https://{foundry_custom_domain_name}.services.ai.azure.com/api/projects/{project_name}'
         )
-        openai_endpoint = f'https://{foundry_name}.openai.azure.com/openai/v1'
+        openai_endpoint = f'https://{foundry_custom_domain_name}.openai.azure.com/openai/v1'
         content = (
             '---\n'
             f'title: Workshop Onboarding - {upn_local}\n'
@@ -331,11 +334,12 @@ def main() -> int:
 
     env_name = os.getenv('AZURE_ENV_NAME', 'workshop').strip() or 'workshop'
     foundry_name = os.getenv('FOUNDRY_RESOURCE_NAME', '').strip()
+    foundry_custom_domain_name = os.getenv('FOUNDRY_CUSTOM_DOMAIN_NAME', '').strip()
     resource_group = os.getenv('AZURE_RESOURCE_GROUP', '').strip()
     search_service_name = os.getenv('AZURE_SEARCH_SERVICE_NAME', '').strip()
 
-    if not foundry_name or not resource_group:
-        print('FOUNDRY_RESOURCE_NAME and AZURE_RESOURCE_GROUP must be set. Skipping onboarding generation.')
+    if not foundry_name or not foundry_custom_domain_name or not resource_group:
+        print('FOUNDRY_RESOURCE_NAME, FOUNDRY_CUSTOM_DOMAIN_NAME and AZURE_RESOURCE_GROUP must be set. Skipping onboarding generation.')
         return 1
 
     subscription_id = _resolve_subscription_id()
@@ -352,6 +356,7 @@ def main() -> int:
         subscription_id=subscription_id,
         resource_group=resource_group,
         foundry_name=foundry_name,
+        foundry_custom_domain_name=foundry_custom_domain_name,
         search_service_name=search_service_name,
     )
 

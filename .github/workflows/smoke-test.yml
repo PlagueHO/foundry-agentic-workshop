@@ -68,11 +68,13 @@ jobs:
           AZURE_PROCTOR_PROJECT_PREFIX: ${{ vars.AZURE_PROCTOR_PROJECT_PREFIX || 'proctor' }}
           AZURE_ORGANIZER_PROJECT_PREFIX: ${{ vars.AZURE_ORGANIZER_PROJECT_PREFIX || 'organizer' }}
           AZURE_ENSURE_FACILITATOR_PROJECT: ${{ vars.AZURE_ENSURE_FACILITATOR_PROJECT || 'true' }}
+          AZURE_USE_UPN_PROJECT_NAMES: ${{ vars.AZURE_USE_UPN_PROJECT_NAMES || 'true' }}
         run: |
           $aiSearchEnabled          = $env:AZURE_AI_SEARCH_CAPABILITY_HOST -eq 'true'
           $cosmosDbEnabled          = $env:AZURE_COSMOS_DB_CAPABILITY_HOST -eq 'true'
           $storageAccountEnabled    = $env:AZURE_STORAGE_ACCOUNT_CAPABILITY_HOST -eq 'true'
           $ensureFacilitatorProject = $env:AZURE_ENSURE_FACILITATOR_PROJECT -ne 'false'
+          $useUpnProjectNames       = $env:AZURE_USE_UPN_PROJECT_NAMES -ne 'false'
 
           New-Item -ItemType Directory -Path 'TestResults' -Force | Out-Null
 
@@ -87,6 +89,7 @@ jobs:
               ProctorProjectPrefix     = $env:AZURE_PROCTOR_PROJECT_PREFIX
               OrganizerProjectPrefix   = $env:AZURE_ORGANIZER_PROJECT_PREFIX
               EnsureFacilitatorProject = $ensureFacilitatorProject
+              UseUpnProjectNames       = $useUpnProjectNames
               AiSearchEnabled          = $aiSearchEnabled
               CosmosDbEnabled          = $cosmosDbEnabled
               StorageAccountEnabled    = $storageAccountEnabled

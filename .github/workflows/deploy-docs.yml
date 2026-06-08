@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - "docs/**"
+      - "labs/**"
+      - "scripts/generate-vitepress-labs.mjs"
       - "package.json"
       - "pnpm-lock.yaml"
       - ".github/workflows/deploy-docs.yml"
