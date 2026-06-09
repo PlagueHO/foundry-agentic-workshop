@@ -9,7 +9,18 @@
 
 ## Steps
 
-1. Install the shared dependencies from `shared/requirements.txt`.
+1. Activate the `.venv` virtual environment from the repository root, then confirm the shared dependencies are installed:
+
+   - **Windows (PowerShell):** `.venv\Scripts\Activate.ps1`
+   - **macOS / Linux:** `source .venv/bin/activate`
+
+   ```bash
+   python -m pip install -r shared/requirements.txt
+   ```
+
+   > [!NOTE]
+   > If you completed lab 01 in the same terminal session, your virtual environment may already be active. Look for the `(.venv)` prefix in the terminal prompt to confirm.
+
 1. Confirm `azd env get-values` exposes the Foundry project endpoint and that
    you are signed in with `az login`.
 1. Open `src/starter.py` and review the Agent Framework client setup.

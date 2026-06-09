@@ -7,6 +7,9 @@
 
 ## Steps
 
+> [!NOTE]
+> Steps 3 and 4 run Python scripts. Confirm your `.venv` virtual environment is active before running them — look for the `(.venv)` prefix in your terminal prompt. If it is not active, run `.venv\Scripts\Activate.ps1` (Windows PowerShell) or `source .venv/bin/activate` (macOS / Linux) from the repository root.
+
 1. Create a hosted agent in the portal or Foundry Toolkit:
    1. Select the deployed `chat` model.
    1. Provide instructions and attach any tools or knowledge from earlier steps.

@@ -30,17 +30,24 @@ cd foundry-agentic-workshop
 1. Install the [Foundry Toolkit for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-windows-ai-studio.windows-ai-studio) from the Extensions view.
 1. Install [Python 3.13 or later](https://www.python.org/downloads/).
 1. Install the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
-1. Create a Python virtual environment in the repository root and activate it:
+1. Create a Python virtual environment in the repository root:
 
    ```bash
    python -m venv .venv
    ```
 
-   - **Windows:** `.venv\Scripts\activate`
+   A virtual environment isolates the workshop's Python packages from your system Python and from other projects on your machine. This prevents version conflicts with packages you may already have installed and keeps your global Python installation clean.
+
+   Activate the virtual environment before installing packages or running any lab scripts:
+
+   - **Windows (PowerShell):** `.venv\Scripts\Activate.ps1`
+   - **Windows (cmd):** `.venv\Scripts\activate.bat`
    - **macOS / Linux:** `source .venv/bin/activate`
 
-   > [!NOTE]
-   > Activate the virtual environment in every new terminal session before running lab scripts.
+   When activated, your terminal prompt shows `(.venv)` as a prefix, confirming the environment is active.
+
+   > [!IMPORTANT]
+   > You must activate the virtual environment in every new terminal session before running lab scripts or installing packages. If you open a new terminal and the `(.venv)` prefix is absent, run the activate command again before continuing.
 
 1. Install the workshop Python dependencies:
 
