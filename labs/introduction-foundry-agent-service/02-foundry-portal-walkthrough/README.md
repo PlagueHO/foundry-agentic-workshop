@@ -17,8 +17,8 @@ The Microsoft Foundry portal at [ai.azure.com](https://ai.azure.com) is the brow
 
 ### 1. Open the portal and select your project
 
-1. Navigate to [ai.azure.com](https://ai.azure.com) and sign in with your workshop account.
-1. From the project list, click on your assigned project. If you're not sure of the name, check the `FOUNDRY_PROJECT_NAME` value in your `.env` file (for example, **lab-attendee-1**).
+- [ ] Navigate to [ai.azure.com](https://ai.azure.com) and sign in with your workshop account.
+- [ ] From the project list, click on your assigned project. If you're not sure of the name, check the `FOUNDRY_PROJECT_NAME` value in your `.env` file (for example, **lab-attendee-1**).
 
 ### 2. Explore the Home tab
 
@@ -56,14 +56,14 @@ The Discover tab is the starting point for finding models, tools, and solution t
 
 #### Browse the model catalog
 
-1. Click **Models** in the left sidebar.
+- [ ] Click **Models** in the left sidebar.
 
    ![Model catalog showing 90 available models with filters for availability, source, and inference tasks](../../../docs/assets/screenshots/02-discover-models.png)
 
-1. Notice the **Availability** filter is set to **Available in my project** by default — this shows only the models already deployed and ready to use in your project.
-1. Click **All models** to see the full catalog of 90+ models across providers (OpenAI, Anthropic, Microsoft, Meta, Mistral, DeepSeek, and more).
-1. Click any model card to view its description, supported inference tasks, context window, and pricing.
-1. Click **Compare models** (top right) to place two models side by side and compare capabilities.
+- [ ] Notice the **Availability** filter is set to **Available in my project** by default — this shows only the models already deployed and ready to use in your project.
+- [ ] Click **All models** to see the full catalog of 90+ models across providers (OpenAI, Anthropic, Microsoft, Meta, Mistral, DeepSeek, and more).
+- [ ] Click any model card to view its description, supported inference tasks, context window, and pricing.
+- [ ] Click **Compare models** (top right) to place two models side by side and compare capabilities.
 
 > You do not need to deploy any models — your workshop environment already has `gpt-4o` and an embedding model ready to go.
 

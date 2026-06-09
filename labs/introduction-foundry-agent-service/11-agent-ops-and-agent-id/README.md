@@ -9,14 +9,14 @@
 
 ## Steps
 
-1. Open the `retail-assistant` agent in the portal.
-1. Review the agent's overview, including its name, identifier, and the project
+- [ ] Open the `retail-assistant` agent in the portal.
+- [ ] Review the agent's overview, including its name, identifier, and the project
    it belongs to.
-1. Review the operational metadata:
-   1. The deployed model the agent uses.
-   1. Attached tools and knowledge sources.
-   1. Run history and any available metrics or traces.
-1. Note how the agent identity ties together its configuration, runs, and
+- [ ] Review the operational metadata:
+  - [ ] The deployed model the agent uses.
+  - [ ] Attached tools and knowledge sources.
+  - [ ] Run history and any available metrics or traces.
+- [ ] Note how the agent identity ties together its configuration, runs, and
    access, and how this supports operations and governance.
 
 ## Validation

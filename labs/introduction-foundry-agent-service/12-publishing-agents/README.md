@@ -7,14 +7,14 @@
 
 ## Steps
 
-1. Open the `retail-assistant` agent in the portal.
-1. Review the publishing options and what publishing makes available to
+- [ ] Open the `retail-assistant` agent in the portal.
+- [ ] Review the publishing options and what publishing makes available to
    consumers.
-1. Publish the agent:
-   1. Confirm the model, tools, and knowledge are configured as intended.
-   1. Complete the publish action.
-1. Confirm the agent shows a published state.
-1. Note how a published agent can be consumed and where to find its connection
+- [ ] Publish the agent:
+  - [ ] Confirm the model, tools, and knowledge are configured as intended.
+  - [ ] Complete the publish action.
+- [ ] Confirm the agent shows a published state.
+- [ ] Note how a published agent can be consumed and where to find its connection
    details.
 
 ## Validation

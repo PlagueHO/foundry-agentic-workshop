@@ -34,7 +34,7 @@ Install the following before continuing:
 
 ## Steps
 
-1. Clone the repository and open it in VS Code Insiders:
+- [ ] Clone the repository and open it in VS Code Insiders:
 
    ```bash
    git clone https://github.com/PlagueHO/foundry-agentic-workshop.git
@@ -42,53 +42,54 @@ Install the following before continuing:
    code-insiders .
    ```
 
-1. Create a Python virtual environment in the repository root and activate it:
+- [ ] Create a Python virtual environment in the repository root and activate it:
 
-   ```bash
-   python -m venv .venv
-   ```
+  ```bash
+  python -m venv .venv
+  ```
 
-   - **Windows:** `.venv\Scripts\activate`
-   - **macOS / Linux:** `source .venv/bin/activate`
+  - **Windows:** `.venv\Scripts\activate`
+  - **macOS / Linux:** `source .venv/bin/activate`
 
-1. Install the shared Python dependencies:
+- [ ] Install the shared Python dependencies:
 
    ```bash
    python -m pip install -r shared/requirements.txt
    ```
 
-1. Copy `shared/.env.example` to `.env` in the repository root and populate the values your organizer provided:
-   - `AZURE_SUBSCRIPTION_ID`
-   - `AZURE_RESOURCE_GROUP`
-   - `FOUNDRY_RESOURCE_NAME`
-   - `FOUNDRY_PROJECT_NAME`
-   - `FOUNDRY_PROJECT_ENDPOINT`
-   - `AZURE_OPENAI_ENDPOINT`
-   - `AZURE_SEARCH_SERVICE_NAME`
+- [ ] Copy `shared/.env.example` to `.env` in the repository root and populate the values your organizer provided:
 
-1. Sign in to Azure and select your subscription:
+  - `AZURE_SUBSCRIPTION_ID`
+  - `AZURE_RESOURCE_GROUP`
+  - `FOUNDRY_RESOURCE_NAME`
+  - `FOUNDRY_PROJECT_NAME`
+  - `FOUNDRY_PROJECT_ENDPOINT`
+  - `AZURE_OPENAI_ENDPOINT`
+  - `AZURE_SEARCH_SERVICE_NAME`
+
+- [ ] Sign in to Azure and select your subscription:
 
    ```bash
    az login
    az account set --subscription <your-subscription-id>
    ```
 
-1. Run the health check to validate your environment:
+- [ ] Run the health check to validate your environment:
 
    ```bash
    python scripts/health-check.py
    ```
 
-1. Sign in to the [Foundry portal](https://ai.azure.com).
+- [ ] Sign in to the [Foundry portal](https://ai.azure.com).
 
    > [!IMPORTANT]
    > All labs use the **New Foundry** experience. Enable the **New Foundry** toggle in the top navigation bar before starting.
 
-1. Enable the **New Foundry** toggle in the top navigation bar if it is not already on.
+- [ ] Enable the **New Foundry** toggle in the top navigation bar if it is not already on.
 
    ![New Foundry toggle in the top navigation bar](../../../docs/assets/screenshots/foundry-new-foundry-toggle.png)
 
-1. When prompted, select the project named in your `FOUNDRY_PROJECT_NAME` from the dropdown and select **Let's go**.
+- [ ] When prompted, select the project named in your `FOUNDRY_PROJECT_NAME` from the dropdown and select **Let's go**.
 
    You should see the New Foundry project home page:
 

@@ -9,14 +9,14 @@
 
 ## Steps
 
-1. Open the `retail-assistant` agent.
-1. Add an MCP tool source to the agent:
-   1. Select **Tools** and add an MCP tool connection.
-   1. Confirm the tool's available functions are discovered and listed.
-1. Update the agent instructions to describe when to call the MCP tool.
-1. Run the agent and issue a prompt that should trigger the tool, for example a
+- [ ] Open the `retail-assistant` agent.
+- [ ] Add an MCP tool source to the agent:
+  - [ ] Select **Tools** and add an MCP tool connection.
+  - [ ] Confirm the tool's available functions are discovered and listed.
+- [ ] Update the agent instructions to describe when to call the MCP tool.
+- [ ] Run the agent and issue a prompt that should trigger the tool, for example a
    request that requires a live lookup the model cannot answer on its own.
-1. Inspect the run and confirm the MCP tool was invoked and its result was used
+- [ ] Inspect the run and confirm the MCP tool was invoked and its result was used
    in the response.
 
 ## Validation

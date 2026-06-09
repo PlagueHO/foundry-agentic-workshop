@@ -9,12 +9,12 @@
 
 ## Steps
 
-1. Open the `retail-assistant` agent.
-1. Review the available Foundry Toolboxes and what each bundles together.
-1. Attach a toolbox to the agent.
-1. Update the agent instructions to describe when to use the toolbox.
-1. Run the agent with a prompt that exercises a toolbox capability.
-1. Inspect the run and confirm the toolbox capability was used.
+- [ ] Open the `retail-assistant` agent.
+- [ ] Review the available Foundry Toolboxes and what each bundles together.
+- [ ] Attach a toolbox to the agent.
+- [ ] Update the agent instructions to describe when to use the toolbox.
+- [ ] Run the agent with a prompt that exercises a toolbox capability.
+- [ ] Inspect the run and confirm the toolbox capability was used.
 
 ## Validation
 

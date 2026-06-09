@@ -10,20 +10,20 @@
 
 ## Steps
 
-1. In the Foundry Toolkit, create a new **prompt-based agent**.
-1. Give the agent a clear name, for example `retail-assistant`.
-1. Configure the agent:
-   1. Select the deployed `chat` model.
-   1. Provide instructions that describe a helpful retail assistant for an
+- [ ] In the Foundry Toolkit, create a new **prompt-based agent**.
+- [ ] Give the agent a clear name, for example `retail-assistant`.
+- [ ] Configure the agent:
+  - [ ] Select the deployed `chat` model.
+  - [ ] Provide instructions that describe a helpful retail assistant for an
       online store.
-   1. Keep tools and knowledge empty for now; you add them in later steps.
-1. Save the agent and confirm it appears in the Agents list.
-1. Run the agent from the toolkit chat surface.
-1. Execute a few simple test prompts, for example:
-   1. "What can you help me with?"
-   1. "Suggest a gift under 50 dollars for a coffee lover."
-   1. "Summarize your role in one sentence."
-1. Review the responses and confirm the agent follows its instructions.
+  - [ ] Keep tools and knowledge empty for now; you add them in later steps.
+- [ ] Save the agent and confirm it appears in the Agents list.
+- [ ] Run the agent from the toolkit chat surface.
+- [ ] Execute a few simple test prompts, for example:
+  - [ ] "What can you help me with?"
+  - [ ] "Suggest a gift under 50 dollars for a coffee lover."
+  - [ ] "Summarize your role in one sentence."
+- [ ] Review the responses and confirm the agent follows its instructions.
 
 ## Validation
 

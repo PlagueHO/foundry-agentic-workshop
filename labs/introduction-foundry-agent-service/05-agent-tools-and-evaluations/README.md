@@ -9,23 +9,23 @@
 
 ## Steps
 
-1. Open the `retail-assistant` agent in the Foundry Toolkit.
-1. Add built-in tools to the agent:
-   1. Select **Tools** and enable tools appropriate for a retail assistant,
+- [ ] Open the `retail-assistant` agent in the Foundry Toolkit.
+- [ ] Add built-in tools to the agent:
+  - [ ] Select **Tools** and enable tools appropriate for a retail assistant,
       such as file search or code interpreter.
-   1. Confirm each tool appears in the agent's tool list.
-1. Update the agent instructions to describe when each tool should be used.
-1. Run the agent and issue prompts that trigger each tool.
-1. Inspect the run trace to confirm the correct tool was invoked and its output
+  - [ ] Confirm each tool appears in the agent's tool list.
+- [ ] Update the agent instructions to describe when each tool should be used.
+- [ ] Run the agent and issue prompts that trigger each tool.
+- [ ] Inspect the run trace to confirm the correct tool was invoked and its output
    was incorporated into the response.
-1. Open the **Evaluations** panel for the agent.
-1. Create a new evaluation run:
-   1. Select an evaluation dataset or provide sample prompts.
-   1. Choose one or more built-in evaluators, such as groundedness or
+- [ ] Open the **Evaluations** panel for the agent.
+- [ ] Create a new evaluation run:
+  - [ ] Select an evaluation dataset or provide sample prompts.
+  - [ ] Choose one or more built-in evaluators, such as groundedness or
       relevance.
-   1. Start the evaluation and wait for results.
-1. Review the evaluation report and note any low-scoring responses.
-1. Adjust the agent instructions or tool configuration based on findings and
+  - [ ] Start the evaluation and wait for results.
+- [ ] Review the evaluation report and note any low-scoring responses.
+- [ ] Adjust the agent instructions or tool configuration based on findings and
    re-run the evaluation.
 
 ## Validation
