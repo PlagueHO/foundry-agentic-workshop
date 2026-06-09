@@ -2,6 +2,9 @@
 
 **Estimated time:** TBD
 
+> [!TIP]
+> Tick the checkbox next to each step as you complete it to track your progress through this module.
+
 ## Objectives
 
 - Create a prompt-based agent with the Foundry Toolkit.

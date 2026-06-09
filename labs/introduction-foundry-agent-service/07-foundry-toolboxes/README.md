@@ -2,6 +2,9 @@
 
 **Estimated time:** TBD
 
+> [!TIP]
+> Tick the checkbox next to each step as you complete it to track your progress through this module.
+
 ## Objectives
 
 - Understand what a Foundry Toolbox provides to an agent.

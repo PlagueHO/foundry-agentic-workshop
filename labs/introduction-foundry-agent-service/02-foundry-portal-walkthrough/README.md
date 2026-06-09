@@ -4,6 +4,9 @@
 
 **Estimated time:** 5 minutes
 
+> [!TIP]
+> Tick the checkbox next to each step as you complete it to track your progress through this module.
+
 The Microsoft Foundry portal at [ai.azure.com](https://ai.azure.com) is the browser-based control plane for your project. This module gives you a quick orientation across the four main tabs — **Home**, **Discover**, **Build**, and **Operate** — so you know where everything lives before you write any code.
 
 > **Tip:** The portal is a great place to explore and experiment. Most developers prefer to work directly in their IDE once they're comfortable, so Module 03 covers the Foundry Toolkit extension for VS Code.

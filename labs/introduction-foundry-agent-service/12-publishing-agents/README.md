@@ -1,5 +1,13 @@
 # Module 12: Publish an agent (optional)
 
+<!-- markdownlint-disable MD028 -->
+> [!IMPORTANT]
+> This module requires the **`foundry-project-manager`** role or higher. Attendees assigned the `foundry-user` role cannot publish agents and will not be able to complete this module. Ask your organizer to confirm your role before proceeding. Organizers: set `AZURE_ATTENDEE_DEFAULT_ROLE=foundry-project-manager` (the recommended default) or grant individual attendees the `foundry-project-manager` role.
+
+> [!TIP]
+> Tick the checkbox next to each step as you complete it to track your progress through this module.
+<!-- markdownlint-enable MD028 -->
+
 ## Objectives
 
 - Understand when and why agents are published.

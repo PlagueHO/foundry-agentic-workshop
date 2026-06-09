@@ -2,6 +2,9 @@
 
 **Estimated time:** TBD
 
+> [!TIP]
+> Tick the checkbox next to each step as you complete it to track your progress through this module.
+
 ## Objectives
 
 - Add built-in tools to the prompt-based agent.

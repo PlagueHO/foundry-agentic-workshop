@@ -9,6 +9,11 @@ This is the azd postprovision hook for the Microsoft Foundry workshop. It:
 Role assignments are handled by Bicep during provisioning. This script generates
 output files only and makes no Azure API calls.
 
+The recommended default attendee role for lab deployments is `foundry-project-manager`,
+which covers all lab modules including Module 08 (Foundry IQ) and Module 12 (Publishing
+Agents). Using `foundry-user` is possible but will prevent attendees from completing those
+modules. The effective role for each attendee is encoded in AZURE_ATTENDEE_LIST_RESOLVED.
+
 Environment variables (azd outputs populated after provisioning):
   AZURE_ATTENDEE_LIST_RESOLVED  Enriched attendee list from the preprovision hook.
                                 When not set, this script exits without error.

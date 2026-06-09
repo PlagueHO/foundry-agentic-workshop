@@ -58,13 +58,15 @@ The example below registers five standard attendees and one facilitator. By defa
 azd env set AZURE_ATTENDEE_LIST '[{"upn":"alice@contoso.com"},{"upn":"bob@contoso.com"},{"upn":"carol@contoso.com"},{"upn":"david@contoso.com"},{"upn":"eve@contoso.com"},{"upn":"facilitator@contoso.com","role":"facilitator"}]'
 ```
 
-The default role for entries without an explicit `role` is `foundry-user`, the least-privilege role for attendees. The `facilitator` role grants full account-level access.
+The default role for entries without an explicit `role` is `foundry-project-manager`, which is recommended for lab deployments as it covers all workshop modules. You can set a lower role with `AZURE_ATTENDEE_DEFAULT_ROLE=foundry-user`, but attendees will not be able to complete Module 08 (Foundry IQ) or Module 12 (Publishing Agents). The `facilitator` role grants full account-level access.
 
+<!-- markdownlint-disable MD028 -->
 > [!TIP]
 > Store the formatted version in a local file for readability and paste the single-line form into `azd env set`. See [Scenario examples](#scenario-examples) for more roster patterns.
 
 > [!TIP]
 > By default, each attendee's Foundry project is named from the local part of their UPN — for example `alice.smith@contoso.com` becomes `alice-smith`. Dots and underscores are replaced with hyphens and the name is lowercased and capped at 32 characters. Set `AZURE_USE_UPN_PROJECT_NAMES=false` to revert to sequential `<prefix>-NN` names (for example `attendee-01`).
+<!-- markdownlint-enable MD028 -->
 
 ### 5. Provision
 
@@ -250,21 +252,26 @@ Role keys map to Foundry built-in roles. See [Role-based access control for Micr
 
 | Role key | Foundry role | Scope | Can | Cannot |
 |----------|--------------|-------|-----|--------|
-| `foundry-user` | Foundry User | Project | Build agents, create connections, use deployed models, Foundry IQ, and toolboxes. | Deploy models, publish agents. |
-| `foundry-project-manager` | Foundry Project Manager | Account | Everything above plus publish agents. | Deploy models. |
+| `foundry-user` | Foundry User | Project | Build agents, create connections, use deployed models, and toolboxes. | Deploy models, publish agents, create Foundry IQ knowledge bases. |
+| `foundry-project-manager` | Foundry Project Manager | Account | Everything above plus publish agents and create Foundry IQ knowledge bases. **Recommended default for lab deployments.** | Deploy models. |
 | `foundry-account-owner` | Foundry Account Owner | Account | Everything above plus deploy models. |- |
 | `foundry-owner` | Foundry Owner | Account | Full build and manage. |- |
 | `facilitator` | Foundry Owner | Account | Full access under the facilitator project prefix. |- |
 | `proctor` | Foundry Owner | Account | Full access under the proctor project prefix. |- |
 | `organizer` | Foundry Owner | Account | Full access under the organizer project prefix. |- |
 
-`foundry-user` is the default and is least privilege. Because the organizer pre-deploys models during provisioning, attendees do not need to deploy models themselves. Elevate roles only when a specific lab requires it.
+`foundry-project-manager` is the recommended default for lab deployments. It covers all workshop modules, including Module 08 (Foundry IQ) and Module 12 (Publishing Agents). Because the organizer pre-deploys models during provisioning, attendees do not need the `foundry-account-owner` role to deploy models themselves.
+
+You can set a more restrictive default for environments where those modules are not used:
 
 ```bash
-# Elevate everyone to deploy models
+# Restrict to least privilege (Module 08 and Module 12 will not be completable)
+azd env set AZURE_ATTENDEE_DEFAULT_ROLE foundry-user
+
+# Elevate to allow model deployment
 azd env set AZURE_ATTENDEE_DEFAULT_ROLE foundry-account-owner
 
-# Or elevate individual attendees
+# Or set roles individually per attendee
 azd env set AZURE_ATTENDEE_LIST '[{"upn":"alice@contoso.com","role":"foundry-account-owner"},{"upn":"bob@contoso.com"}]'
 ```
 

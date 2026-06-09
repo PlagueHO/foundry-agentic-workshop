@@ -2,6 +2,9 @@
 
 **Estimated time:** 15 minutes
 
+> [!TIP]
+> Tick the checkbox next to each step as you complete it to track your progress through this module.
+
 The **Foundry Toolkit for VS Code** extension brings Microsoft Foundry directly into your editor — no browser switching required. From the Activity Bar you can browse deployed models, open a live playground, create agents, inspect tool catalogs, and generate production-ready code without leaving VS Code.
 
 > **Reference:** [Work with the Microsoft Foundry Toolkit for Visual Studio Code extension](https://learn.microsoft.com/en-us/azure/foundry/how-to/develop/get-started-projects-vs-code)
@@ -76,7 +79,7 @@ The Foundry Toolkit sidebar has three collapsible sections.
 
 - [ ] Expand **My Resources** and note your project name. Expand it to see the sub-sections: **Models**, **Prompt Agents**, **Hosted Agents**, **Connections**, and **Knowledge Stores**.
 - [ ] Expand **Developer Tools** to see the **Discover** and **Build** groups.
-- [ ] Take a moment to read the links under **Help and Feedback** — the documentation link opens the [Foundry Toolkit docs on `aka.ms/foundrytk/docs`](https://aka.ms/foundrytk/docs).
+- [ ] Take a moment to scan the links under **Help and Feedback** — the documentation link opens the [Foundry Toolkit docs on `aka.ms/foundrytk/docs`](https://aka.ms/foundrytk/docs).
 
   > **Tip:** Press <kbd>F1</kbd> and type **Foundry Toolkit** to see all available commands from the command palette.
 
@@ -85,10 +88,7 @@ The Foundry Toolkit sidebar has three collapsible sections.
 ### 5. Explore My Resources — deployed models
 
 - [ ] Under **My Resources**, expand your project, then expand **Models**.
-- [ ] You should see the `chat` model (GPT-4o) and the `embedding` model that were deployed when the workshop environment was provisioned.
-
-  ![Foundry Toolkit model catalog showing available models with filters for publisher and model type](../../../docs/assets/screenshots/03-foundry-toolkit-model-catalog.png)
-
+- [ ] You should see a model deployment called `chat` and one called `embedding` that were deployed when the workshop environment was provisioned. The names of the deployment does not have to match the model name. So the specific model that is deployed as `chat` and `embedding` is up to your lab organizer.
 - [ ] Click on the `chat` model entry to open the **model card**. Review:
   - **Deployment info**: name, provisioning state, deployment type, and rate limit.
   - **Endpoint info**: target URI and authentication type.

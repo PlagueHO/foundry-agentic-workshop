@@ -14,7 +14,8 @@
     "**/coverage/**",
     "**/.vscode/**",
     "**/.github/instructions/**",
-    "**/.azure/**"
+    "**/.azure/**",
+    "**/.venv/**"
   ],
   // Output formatting
   "outputFormatters": [

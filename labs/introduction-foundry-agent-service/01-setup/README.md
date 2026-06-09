@@ -2,6 +2,9 @@
 
 **Estimated time:** 15 minutes
 
+> [!TIP]
+> Tick the checkbox next to each step as you complete it to track your progress through this module.
+
 ## Objectives
 
 - Understand what Azure services you have been provisioned with for this lab.

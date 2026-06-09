@@ -58,18 +58,18 @@ detailed steps, the RBAC model, and troubleshooting.
 `AZURE_ATTENDEE_LIST` drives per-attendee project creation and UPN resolution. Set it as a single-line JSON array, then provision. The pre-provision hook resolves UPNs to Entra object IDs; Bicep assigns roles at deploy time.
 
 ```bash
-azd env set AZURE_ATTENDEE_DEFAULT_ROLE foundry-user
+azd env set AZURE_ATTENDEE_DEFAULT_ROLE foundry-project-manager
 azd env set AZURE_ATTENDEE_LIST '[{"upn":"ana@contoso.com"},{"upn":"ben@contoso.com","role":"foundry-project-manager"}]'
 ```
 
 | Role key | Capability | Scope |
 |----------|------------|-------|
-| `foundry-user` | Build agents, create connections, and use deployed models. Default, least privilege. | Project |
-| `foundry-project-manager` | Publish agents, plus everything above. | Account |
+| `foundry-user` | Build agents, create connections, and use deployed models. Least privilege. Cannot complete Module 08 (Foundry IQ) or Module 12 (Publishing Agents). | Project |
+| `foundry-project-manager` | Create Foundry IQ knowledge bases, publish agents, plus everything above. **Recommended default for lab deployments.** | Account |
 | `foundry-account-owner` | Deploy models plus everything above. | Account |
 | `foundry-owner` | Full build and manage. | Account |
 
-Attendees cannot deploy models with the default role; you pre-deploy models during
+Attendees cannot deploy models with either default role; you pre-deploy models during
 provisioning. The [Organizer Guide](./guide-organizer.md#provisioning-audit) explains the
 full role model and the provisioning audit CSVs.
 

@@ -14,7 +14,10 @@ resolved=false; Bicep skips role assignments for those entries.
 
 Environment variables (set via `azd env set`):
   AZURE_ATTENDEE_LIST               Input attendee list (single-line JSON array).
-  AZURE_ATTENDEE_DEFAULT_ROLE       Default role key (default 'foundry-user').
+  AZURE_ATTENDEE_DEFAULT_ROLE       Default role key (default 'foundry-project-manager').
+                                    Set to 'foundry-user' for a more restrictive environment,
+                                    but Module 08 (Foundry IQ) and Module 12 (Publishing Agents)
+                                    will not be completable by those attendees.
   AZURE_ATTENDEE_PROJECT_PREFIX     Project name prefix for standard attendees
                                     (default 'attendee').
   AZURE_FACILITATOR_PROJECT_PREFIX  Project name prefix for facilitators
@@ -55,7 +58,7 @@ ROLE_SCOPE_LEVELS: dict[str, str] = {
     'organizer': 'account',
 }
 
-DEFAULT_ROLE_KEY = 'foundry-user'
+DEFAULT_ROLE_KEY = 'foundry-project-manager'
 
 _AZ_CMD: str = shutil.which('az') or 'az'
 _AZD_CMD: str = shutil.which('azd') or 'azd'

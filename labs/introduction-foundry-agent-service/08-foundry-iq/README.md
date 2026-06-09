@@ -1,6 +1,12 @@
 # 08 Integrate Foundry IQ knowledge bases
 
+> [!IMPORTANT]
+> This module requires the **`foundry-project-manager`** role or higher. Attendees assigned the `foundry-user` role cannot create Foundry IQ knowledge bases and will not be able to complete this module. Ask your organizer to confirm your role before proceeding. Organizers: set `AZURE_ATTENDEE_DEFAULT_ROLE=foundry-project-manager` (the recommended default) or grant individual attendees the `foundry-project-manager` role.
+
 **Estimated time:** TBD
+
+> [!TIP]
+> Tick the checkbox next to each step as you complete it to track your progress through this module.
 
 ## Objectives
 
