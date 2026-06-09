@@ -1,5 +1,7 @@
 # 07. Foundry Toolboxes (optional)
 
+**Estimated time:** TBD
+
 ## Objectives
 
 - Understand what a Foundry Toolbox provides to an agent.

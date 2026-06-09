@@ -1,5 +1,7 @@
 # 04. Create and run a prompt-based agent
 
+**Estimated time:** TBD
+
 ## Objectives
 
 - Create a prompt-based agent with the Foundry Toolkit.

@@ -1,5 +1,7 @@
 # 05. Agent tools and evaluations
 
+**Estimated time:** TBD
+
 ## Objectives
 
 - Add built-in tools to the prompt-based agent.

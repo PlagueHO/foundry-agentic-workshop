@@ -1,5 +1,7 @@
 # 08 Integrate Foundry IQ knowledge bases
 
+**Estimated time:** TBD
+
 ## Objectives
 
 - Configure a Foundry IQ knowledge base backed by Azure AI Search.

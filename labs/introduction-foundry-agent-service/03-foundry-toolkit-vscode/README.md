@@ -1,5 +1,7 @@
 # 03. Foundry Toolkit for VS Code
 
+**Estimated time:** TBD
+
 ## Objectives
 
 - Confirm the Foundry Toolkit for VS Code extension is installed and signed in.

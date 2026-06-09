@@ -18,7 +18,7 @@ The Microsoft Foundry portal at [ai.azure.com](https://ai.azure.com) is the brow
 ### 1. Open the portal and select your project
 
 1. Navigate to [ai.azure.com](https://ai.azure.com) and sign in with your workshop account.
-1. From the project list, click on your assigned project (for example, **lab-attendee-1**).
+1. From the project list, click on your assigned project. If you're not sure of the name, check the `FOUNDRY_PROJECT_NAME` value in your `.env` file (for example, **lab-attendee-1**).
 
 ### 2. Explore the Home tab
 

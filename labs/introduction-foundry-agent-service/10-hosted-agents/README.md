@@ -1,5 +1,7 @@
 # 10. Build and run a hosted agent
 
+**Estimated time:** TBD
+
 ## Objectives
 
 - Create a hosted agent in your Foundry project.

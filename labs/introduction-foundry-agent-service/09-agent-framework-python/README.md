@@ -1,5 +1,7 @@
 # 09. Use Agent Framework for Python
 
+**Estimated time:** TBD
+
 ## Objectives
 
 - Connect to your Foundry project from Python with the Microsoft Agent

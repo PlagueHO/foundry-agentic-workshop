@@ -1,5 +1,7 @@
 # 11. Agent operations and Agent ID
 
+**Estimated time:** TBD
+
 ## Objectives
 
 - Understand how agents are identified and managed in Foundry.

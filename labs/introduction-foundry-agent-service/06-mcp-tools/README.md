@@ -1,5 +1,7 @@
 # 06. Integrate MCP tools
 
+**Estimated time:** TBD
+
 ## Objectives
 
 - Add Model Context Protocol (MCP) tools to the prompt-based agent.

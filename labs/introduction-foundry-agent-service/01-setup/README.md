@@ -1,5 +1,7 @@
 # 01. Workshop setup and access verification
 
+**Estimated time:** 15 minutes
+
 ## Objectives
 
 - Understand what Azure services you have been provisioned with for this lab.
