@@ -17,6 +17,8 @@ Foundry brings together several core functions:
 - **IQ** — Ground agent responses in enterprise and web content with citation-backed answers (Foundry IQ), including Fabric IQ and Work IQ connectors.
 - **Tools** — Connect over 1,400 pre-built tools and MCP servers through public and private catalogs.
 
+## The Foundry Portal
+
 > [!TIP]
 > Tick the checkbox next to each step as you complete it to track your progress through this module.
 
