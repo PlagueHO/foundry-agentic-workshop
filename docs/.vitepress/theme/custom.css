@@ -64,3 +64,23 @@
   white-space: normal;
   word-break: break-word;
 }
+
+/* ── Task list checkboxes ──────────────────────────────────────────────────
+ * GFM task list items rendered as interactive HTML checkboxes.
+ * The parent <ul> should not show the standard disc bullet when a list
+ * contains only task items; we hide the bullet and shift the item left.
+ * ─────────────────────────────────────────────────────────────────────── */
+.task-list-item {
+  list-style: none;
+  margin-left: -1.25em;
+}
+
+.task-list-item-checkbox {
+  margin-right: 0.5em;
+  cursor: pointer;
+  vertical-align: middle;
+  position: relative;
+  top: -0.1em;
+  /* Respect user system accent colour; browsers handle light/dark automatically */
+  accent-color: var(--vp-c-brand-1);
+}

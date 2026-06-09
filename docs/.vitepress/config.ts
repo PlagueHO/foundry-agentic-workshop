@@ -1,12 +1,56 @@
 import { defineConfig } from 'vitepress'
 import { labsSidebarItems } from './labs-sidebar.js'
 
+/**
+ * Custom markdown-it core rule that converts GFM task list syntax
+ * (- [ ] / - [x]) to interactive HTML checkbox inputs.
+ *
+ * VitePress does not include a task list plugin by default, so this rule
+ * adds proper rendering without requiring an extra npm dependency.
+ */
+function taskListPlugin(md: { core: { ruler: { after: (afterRule: string, ruleName: string, fn: (state: any) => void) => void } } }): void {
+  md.core.ruler.after('inline', 'task_list', (state: any) => {
+    for (let i = 2; i < state.tokens.length; i++) {
+      const token = state.tokens[i]
+      if (
+        token.type !== 'inline' ||
+        state.tokens[i - 1].type !== 'paragraph_open' ||
+        state.tokens[i - 2].type !== 'list_item_open'
+      ) continue
+
+      const children: any[] = token.children
+      if (!children?.length) continue
+
+      const firstChild = children[0]
+      if (firstChild.type !== 'text') continue
+
+      const text: string = firstChild.content
+      const unchecked = text.startsWith('[ ] ')
+      const checked = text.startsWith('[x] ') || text.startsWith('[X] ')
+      if (!unchecked && !checked) continue
+
+      firstChild.content = text.slice(4)
+
+      const cbToken = new state.Token('html_inline', '', 0)
+      cbToken.content = checked
+        ? '<input type="checkbox" class="task-list-item-checkbox" checked aria-label="Mark step as complete"> '
+        : '<input type="checkbox" class="task-list-item-checkbox" aria-label="Mark step as complete"> '
+      children.unshift(cbToken)
+
+      state.tokens[i - 2].attrSet('class', 'task-list-item')
+    }
+  })
+}
+
 export default defineConfig({
   title: 'Microsoft Foundry Agentic Workshop',
   description: 'Hands-on labs for building agentic solutions with Microsoft Foundry',
   base: '/foundry-agentic-workshop/',
   outDir: 'dist',
   appearance: 'auto',
+  markdown: {
+    config: taskListPlugin,
+  },
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
