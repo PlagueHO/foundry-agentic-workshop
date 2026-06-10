@@ -29,6 +29,12 @@ With a **Prompt Agent**, Foundry Agent Service hosts the loop for you. You send 
 
 > **Module 09** introduces the **Microsoft Agent Framework**, which gives you the control of a code-implemented loop while providing structured patterns for complex, multi-agent workflows. For now, you'll use `AIProjectClient` — the simplest path for interacting with a Prompt Agent from code.
 
+### Agent versioning
+
+Every time you **Save to Foundry**, Foundry Agent Service stores an immutable snapshot of the agent's configuration (model, instructions, tools, and settings) and assigns it an incrementing version number — `v1`, `v2`, and so on. The version badge appears in the Agent Builder header next to the agent name once the save succeeds.
+
+The version your code calls is controlled by the `agent_reference` you pass in each request. Referencing an agent by **name** always routes to the **latest** saved version. This means you can iterate and improve the agent in Agent Builder without changing any code — the next time your script runs, it picks up the latest version automatically.
+
 ### Agent Builder vs code creation
 
 There are two ways to create a Prompt Agent:
@@ -101,6 +107,8 @@ Both produce the same agent. This module uses Agent Builder so you can see the c
 #### 4. Save and test in the playground
 
 - [ ] Click **Save to Foundry**.
+- [ ] Wait for the confirmation notification: *Agent 'acl-remedy-advisor' published to Foundry successfully.*
+- [ ] Confirm the Agent Builder header now shows `acl-remedy-advisor | Microsoft Foundry | v1`. This is the **agent version** — each subsequent save produces `v2`, `v3`, and so on. Referencing the agent by name in your code always routes to the latest version.
 - [ ] Once saved, type a test message in the playground at the bottom of the Agent Builder:
 
   > A customer wants to return a $1,200 TV that stopped working after 18 months. What are their rights under Australian Consumer Law?
@@ -170,6 +178,7 @@ Open `src/starter.py` and note these key patterns:
 ## Validation
 
 - `acl-remedy-advisor` appears under **Prompt Agents** in the Foundry Toolkit **My Resources** panel.
+- The Agent Builder header shows `acl-remedy-advisor | Microsoft Foundry | v1` after saving.
 - The playground response for the TV question cites at least one link from `accc.gov.au` or a state consumer affairs site.
 - Running `src/starter.py` prints a conversation ID, shows a `[web search]` indicator, and returns a cited response.
 - The follow-up question receives an answer that references the TV from the first question, confirming conversation memory is working.
