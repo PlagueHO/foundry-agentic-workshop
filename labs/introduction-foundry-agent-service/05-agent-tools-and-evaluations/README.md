@@ -13,6 +13,8 @@
 > python labs/introduction-foundry-agent-service/04-prompt-based-agents/solution/create_agent.py
 > ```
 
+<!-- -->
+
 > [!TIP]
 > Tick the checkbox next to each step as you complete it to track your progress through this module.
 
@@ -21,7 +23,8 @@
 - Add the **Code Interpreter** tool to the `acl-remedy-advisor` agent.
 - Update the agent instructions to guide the model on when to use each tool.
 - Save the updated agent as **v2** and test it in the playground.
-- Scaffold evaluation code using the Foundry Toolkit and explore the generated files.
+- Run an automatic evaluation in the Foundry portal to score the agent against generated test data.
+- (Optional) Scaffold local evaluation code using the Foundry Toolkit for CI/CD pipelines.
 
 ## Concepts
 
@@ -173,109 +176,13 @@ With two tools available, the agent needs guidance on *when* to use each one. Wi
 
   > **Note:** The test prompt is designed to trigger Web search (for ACL guidance) but may not always trigger Code Interpreter for the refund calculation — the model exercises judgement. In a real scenario you would iterate on both the prompt and the instructions until Code Interpreter fires reliably for calculation requests.
 
-### Part 4 — Scaffold evaluation code
+### Part 4 — Run an automatic evaluation in the Foundry portal
 
-Manually testing one prompt in the playground is useful for quick checks, but it does not give you reproducible, measurable quality scores. Evaluations fill that gap — they run your agent against a dataset and score every response automatically.
+Evaluations run your agent against a dataset and score each response automatically, giving you quantitative, reproducible feedback that playground testing alone cannot provide. The Foundry portal provides a no-code path: it generates test data, runs your agent, and scores responses — all in the cloud, with no Python required.
 
-The Foundry Toolkit can generate the evaluation scaffolding for you so you can get started without writing boilerplate.
+#### 7. Open the Evaluation tab in the portal
 
-#### 7. Open the Evaluation tab
-
-- [ ] Click the **Evaluation** tab in the Agent Builder header (next to Playground and Conversations).
-- [ ] The **Evaluation Setup** screen appears with two options:
-
-  <details>
-  <summary>📸 Screenshot: Evaluation Setup screen</summary>
-
-  ![Agent Builder Evaluation tab showing the Evaluation Setup screen with a Scaffold Evaluation Code button and a link to continue in Foundry](../../../docs/assets/screenshots/05-evaluation-setup.png)
-
-  </details>
-
-  - **Scaffold Evaluation Code** — generates a `pytest-agent-evals` test suite in your local workspace. Use this to run evaluations locally or in CI/CD.
-  - **Go to Foundry** — opens the Foundry portal where you can run evaluations directly in the cloud without any local setup.
-
-  You will use the local scaffold option in this module.
-
-#### 8. Choose your evaluators
-
-- [ ] Click **Scaffold Evaluation Code**.
-- [ ] The **Select Evaluator(s)** dialog opens, listing all available evaluators grouped by category.
-
-  <details>
-  <summary>📸 Screenshot: Select Evaluator(s) dialog</summary>
-
-  ![Select Evaluator(s) dialog showing evaluators including Custom Prompt Evaluator, Custom Code Evaluator, Intent Resolution, Tool Call Accuracy, Task Adherence, and Relevance](../../../docs/assets/screenshots/05-evaluator-selection.png)
-
-  </details>
-
-- [ ] In the **Agents** category, check **Tool Call Accuracy**.
-
-  > **Tool Call Accuracy** evaluates whether the agent called the right tools and passed them the right arguments. It is important for this agent because the instructions tell the model *when* to call Code Interpreter — Tool Call Accuracy verifies the model is following those instructions.
-
-- [ ] Also check **Task Adherence**.
-
-  > **Task Adherence** evaluates whether the agent's final response actually satisfies what the user asked for. A response can invoke a tool correctly but still fail to give the user a useful answer — Task Adherence catches that.
-
-  <details>
-  <summary>📸 Screenshot: Evaluators selected</summary>
-
-  ![Select Evaluator(s) dialog showing Tool Call Accuracy and Task Adherence checked with 2 Selected counter in the header](../../../docs/assets/screenshots/05-evaluators-selected.png)
-
-  </details>
-
-- [ ] Click **OK**.
-
-#### 9. Select the save folder
-
-- [ ] A folder picker dialog appears: *Select a folder to save the evaluation code*.
-- [ ] Navigate to (or type):
-
-  ```text
-  labs/introduction-foundry-agent-service/05-agent-tools-and-evaluations/src
-  ```
-
-- [ ] Click **Select Folder**.
-
-#### 10. Explore the generated files
-
-The Foundry Toolkit generates the following files in `src/`:
-
-| File | Purpose |
-|---|---|
-| `test_acl_remedy_advisor.py` | pytest test file; each row in `data.jsonl` becomes one test case |
-| `data.jsonl` | Sample test inputs and expected tool calls |
-| `evaluators.py` | Evaluator configuration wired to your Azure OpenAI endpoint |
-| `requirements.txt` | Python dependencies (`pytest-agent-evals`, `python-dotenv`) |
-| `pytest.ini` | pytest settings for the evaluation suite |
-| `README.md` | Instructions for running the evaluation locally |
-
-- [ ] Open `test_acl_remedy_advisor.py`. Notice the imports at the top:
-
-  ```python
-  from pytest_agent_evals import (
-      EvaluatorResults,
-      evals,
-      AzureOpenAIModelConfig,
-      FoundryAgentConfig,
-      BuiltInEvaluatorConfig,
-      CustomPromptEvaluatorConfig,
-      CustomCodeEvaluatorConfig
-  )
-  ```
-
-  The `pytest_agent_evals` package wraps the Azure AI evaluation SDK with a pytest-compatible interface. Each test case loads from `data.jsonl`, runs your agent, and scores the response against the configured evaluators.
-
-- [ ] Open `data.jsonl` to see the sample test inputs. Each line is a JSON object with a `query` field (what the user sends) and optional `expected_tool_calls` metadata (what tools should fire).
-- [ ] Open `evaluators.py` to see how the Tool Call Accuracy and Task Adherence evaluators are wired to your Azure OpenAI deployment.
-
-  > The evaluation code uses your `AZURE_OPENAI_ENDPOINT` and `AZURE_OPENAI_DEPLOYMENT_NAME` environment variables as the **judge model** — a separate model instance that scores the responses produced by your agent. A stronger judge model generally produces more reliable scores.
-
-### Part 5 — Run an automatic evaluation in the Foundry portal
-
-The local scaffold from Part 4 runs evaluations on your machine. The Foundry portal provides a no-code alternative: it generates test data, runs your agent, and scores responses — all in the cloud, with no Python required.
-
-#### 11. Open the Evaluation tab in the portal
-
+- [ ] Switch to your browser — Part 4 uses the **Foundry portal**, not VS Code.
 - [ ] Open the [Microsoft Foundry portal](https://ai.azure.com) and navigate to your project.
 - [ ] In the left navigation, click **Agents**.
 - [ ] Click **acl-remedy-advisor** to open the agent detail view.
@@ -291,7 +198,7 @@ The local scaffold from Part 4 runs evaluations on your machine. The Foundry por
 
 - [ ] Click **Create** (top-right of the evaluations list).
 
-#### 12. Step 1 — Select the evaluation target
+#### 8. Step 1 — Select the evaluation target
 
 - [ ] The **Create new evaluation** wizard opens at **Step 1: Target**.
 - [ ] Confirm **Agent** is already selected. `acl-remedy-advisor v2` is pre-checked in the agent list on the right.
@@ -305,7 +212,7 @@ The local scaffold from Part 4 runs evaluations on your machine. The Foundry por
 
 - [ ] Click **Next**.
 
-#### 13. Step 2 — Select the evaluation scope
+#### 9. Step 2 — Select the evaluation scope
 
 - [ ] **Step 2: Scope** offers two options:
   - **Individual turns** — evaluates single query–response pairs. Best for testing tool selection and per-turn response quality.
@@ -318,10 +225,10 @@ The local scaffold from Part 4 runs evaluations on your machine. The Foundry por
 
   </details>
 
-- [ ] Keep **Individual turns** selected — it gives you per-turn tool accuracy scores which align with the evaluators you selected in Part 4.
+- [ ] Keep **Individual turns** selected — it gives you per-turn tool accuracy scores that are straightforward to interpret.
 - [ ] Click **Next**.
 
-#### 14. Step 3 — Choose a data source
+#### 10. Step 3 — Choose a data source
 
 - [ ] **Step 3: Data** offers four sources:
   - **Synthetic generation** — the portal auto-generates test questions using a model and a prompt you provide.
@@ -369,7 +276,7 @@ The local scaffold from Part 4 runs evaluations on your machine. The Foundry por
 
 - [ ] Click **Next**.
 
-#### 15. Step 4 — Review the auto-suggested criteria
+#### 11. Step 4 — Review the auto-suggested criteria
 
 - [ ] **Step 4: Criteria** automatically pre-selects evaluators based on your target and scope. For an Agent evaluated at Individual turns scope, the portal suggests:
   - **Agents (9)**: ToolSelection, ToolOutputUtilization, ToolInputAccuracy, ToolCallSuccessEvaluator, TaskCompletion, TaskAdherence, IntentResolution, CustomerSatisfaction, ToolCallAccuracy
@@ -383,12 +290,12 @@ The local scaffold from Part 4 runs evaluations on your machine. The Foundry por
 
   </details>
 
-  > The portal automatically maps your dataset fields to the evaluator inputs and shows the field bindings in the right panel (<code v-pre>query: {{item.query}}</code>, <code v-pre>response: {{sample.output_text}}</code>, etc.). You do not need to configure field mapping manually for synthetic data.
+  > The portal automatically maps your dataset fields to the evaluator inputs and shows the field bindings in the right panel (`query: {{item.query}}`, `response: {{sample.output_text}}`, etc.). You do not need to configure field mapping manually for synthetic data.
 
 - [ ] Leave all 19 evaluators selected — the breadth shows how the portal covers quality, tool usage, and safety in a single run.
 - [ ] Click **Next**.
 
-#### 16. Step 5 — Name and submit the evaluation
+#### 12. Step 5 — Name and submit the evaluation
 
 - [ ] **Step 5: Review** shows a full summary on the right: Target, Scope, Dataset, and all selected Evaluators.
 - [ ] Replace the auto-generated evaluation name with something descriptive, for example:
@@ -406,7 +313,7 @@ The local scaffold from Part 4 runs evaluations on your machine. The Foundry por
 
 - [ ] Click **Submit**.
 
-#### 17. Monitor the evaluation run
+#### 13. Monitor the evaluation run
 
 - [ ] After submitting, the portal navigates to the **acl-remedy-advisor-tools-eval** evaluation detail page.
 - [ ] Under **Evaluation runs**, you will see a row for your run. Wait for the **Status** to change to **Completed** (typically a few minutes for 5 rows).
@@ -435,14 +342,108 @@ The local scaffold from Part 4 runs evaluations on your machine. The Foundry por
 
   > Evaluation results give you a quantitative baseline you can compare across agent versions. After improving the instructions or adding tools, run the same evaluation again and compare the scores — a higher ToolCallAccuracy score means the agent is following your tool-usage instructions more reliably.
 
+### Part 5 (optional — extra credit) — Scaffold local evaluation code
+
+For extra credit, scaffold a local evaluation suite using the Foundry Toolkit. This generates pytest-compatible code you can run in your own environment or integrate into a CI/CD pipeline — useful for automated quality gates on agent changes.
+
+#### 14. Open the Evaluation tab in Agent Builder
+
+- [ ] Switch back to **VS Code** — Part 5 uses the **Foundry Toolkit** extension, not the browser portal.
+- [ ] Click the **Evaluation** tab in the Agent Builder header (next to Playground and Conversations).
+- [ ] The **Evaluation Setup** screen appears with two options:
+
+  <details>
+  <summary>📸 Screenshot: Evaluation Setup screen</summary>
+
+  ![Agent Builder Evaluation tab showing the Evaluation Setup screen with a Scaffold Evaluation Code button and a link to continue in Foundry](../../../docs/assets/screenshots/05-evaluation-setup.png)
+
+  </details>
+
+  - **Scaffold Evaluation Code** — generates a `pytest-agent-evals` test suite in your local workspace. Use this to run evaluations locally or in CI/CD.
+  - **Go to Foundry** — opens the Foundry portal where you can run evaluations directly in the cloud without any local setup.
+
+#### 15. Choose your evaluators
+
+- [ ] Click **Scaffold Evaluation Code**.
+- [ ] The **Select Evaluator(s)** dialog opens, listing all available evaluators grouped by category.
+
+  <details>
+  <summary>📸 Screenshot: Select Evaluator(s) dialog</summary>
+
+  ![Select Evaluator(s) dialog showing evaluators including Custom Prompt Evaluator, Custom Code Evaluator, Intent Resolution, Tool Call Accuracy, Task Adherence, and Relevance](../../../docs/assets/screenshots/05-evaluator-selection.png)
+
+  </details>
+
+- [ ] In the **Agents** category, check **Tool Call Accuracy**.
+
+  > **Tool Call Accuracy** evaluates whether the agent called the right tools and passed them the right arguments. It is important for this agent because the instructions tell the model *when* to call Code Interpreter — Tool Call Accuracy verifies the model is following those instructions.
+
+- [ ] Also check **Task Adherence**.
+
+  > **Task Adherence** evaluates whether the agent's final response actually satisfies what the user asked for. A response can invoke a tool correctly but still fail to give the user a useful answer — Task Adherence catches that.
+
+  <details>
+  <summary>📸 Screenshot: Evaluators selected</summary>
+
+  ![Select Evaluator(s) dialog showing Tool Call Accuracy and Task Adherence checked with 2 Selected counter in the header](../../../docs/assets/screenshots/05-evaluators-selected.png)
+
+  </details>
+
+- [ ] Click **OK**.
+
+#### 16. Select the save folder
+
+- [ ] A folder picker dialog appears: *Select a folder to save the evaluation code*.
+- [ ] Navigate to (or type):
+
+  ```text
+  labs/introduction-foundry-agent-service/05-agent-tools-and-evaluations/src
+  ```
+
+- [ ] Click **Select Folder**.
+
+#### 17. Explore the generated files
+
+The Foundry Toolkit generates the following files in `src/`:
+
+| File | Purpose |
+|---|---|
+| `test_acl_remedy_advisor.py` | pytest test file; each row in `data.jsonl` becomes one test case |
+| `data.jsonl` | Sample test inputs and expected tool calls |
+| `evaluators.py` | Evaluator configuration wired to your Azure OpenAI endpoint |
+| `requirements.txt` | Python dependencies (`pytest-agent-evals`, `python-dotenv`) |
+| `pytest.ini` | pytest settings for the evaluation suite |
+| `README.md` | Instructions for running the evaluation locally |
+
+- [ ] Open `test_acl_remedy_advisor.py`. Notice the imports at the top:
+
+  ```python
+  from pytest_agent_evals import (
+      EvaluatorResults,
+      evals,
+      AzureOpenAIModelConfig,
+      FoundryAgentConfig,
+      BuiltInEvaluatorConfig,
+      CustomPromptEvaluatorConfig,
+      CustomCodeEvaluatorConfig
+  )
+  ```
+
+  The `pytest_agent_evals` package wraps the Azure AI evaluation SDK with a pytest-compatible interface. Each test case loads from `data.jsonl`, runs your agent, and scores the response against the configured evaluators.
+
+- [ ] Open `data.jsonl` to see the sample test inputs. Each line is a JSON object with a `query` field (what the user sends) and optional `expected_tool_calls` metadata (what tools should fire).
+- [ ] Open `evaluators.py` to see how the Tool Call Accuracy and Task Adherence evaluators are wired to your Azure OpenAI deployment.
+
+  > The evaluation code uses your `AZURE_OPENAI_ENDPOINT` and `AZURE_OPENAI_DEPLOYMENT_NAME` environment variables as the **judge model** — a separate model instance that scores the responses produced by your agent. A stronger judge model generally produces more reliable scores.
+
 ## Validation
 
 - The Agent Builder header shows `acl-remedy-advisor | Microsoft Foundry | v2` after saving.
 - **Code Interpreter** appears in the **TOOL** section of Agent Builder alongside **Web search**.
 - **v2** appears under `acl-remedy-advisor` in the **MY RESOURCES** panel.
 - The playground response for the laptop battery prompt classifies the failure under ACL and provides remedy options.
-- The evaluation scaffold generates these files in `src/`: `test_acl_remedy_advisor.py`, `data.jsonl`, `evaluators.py`, `requirements.txt`, `pytest.ini`, `README.md`.
 - The Foundry portal shows an `acl-remedy-advisor-tools-eval` evaluation with a **Completed** status and per-evaluator scores.
+- (Optional, Part 5) The evaluation scaffold generates these files in `src/`: `test_acl_remedy_advisor.py`, `data.jsonl`, `evaluators.py`, `requirements.txt`, `pytest.ini`, `README.md`.
 
 ## Troubleshooting
 

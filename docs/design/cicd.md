@@ -42,7 +42,7 @@ flowchart TD
 
 The orchestrator runs on every push to `main` and on any `v*` tag. It computes a short build version from `GITHUB_SHA` and passes it downstream. All secrets flow through this file to the callee workflows via the `secrets: inherit` mechanism.
 
-The `concurrency` group <code v-pre>continuous-delivery-${{ github.ref }}</code> prevents two simultaneous
+The `concurrency` group `continuous-delivery-${{ github.ref }}` prevents two simultaneous
 runs against the same branch. The group does **not** cancel in progress, ensuring teardown
 always completes.
 
@@ -50,7 +50,7 @@ always completes.
 
 Authenticates with Azure using OIDC federated credentials, creates an ephemeral `azd` environment, sets all attendee and capability-host variables from the GitHub environment, and calls `azd provision --preview`. No resources are created; this is a what-if validation only.
 
-The workflow is scoped to the <code v-pre>${{ inputs.ENVIRONMENT }}</code> GitHub environment so that all
+The workflow is scoped to the `${{ inputs.ENVIRONMENT }}` GitHub environment so that all
 `vars.*` overrides apply.
 
 ### provision-infrastructure.yml
