@@ -292,6 +292,30 @@
                 "reveal": "always",
                 "panel": "shared"
             }
+        },
+
+        // Lab tasks
+        {
+            "label": "lab06: run mcp server",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "labs/introduction-foundry-agent-service/06-mcp-tools/src/server.py"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "isBackground": true,
+            "icon": {
+                "id": "plug",
+                "color": "terminal.ansiCyan"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "label": "MCP Server (Lab 06)"
+            }
         }
     ]
 }

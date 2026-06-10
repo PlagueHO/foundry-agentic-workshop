@@ -1,0 +1,175 @@
+{
+  "purchases": [
+    {
+      "receipt_id": "R-1007",
+      "customer_id": "C-1042",
+      "product_id": "PROD-LAPTOP-14",
+      "purchase_date": "2025-04-10",
+      "price_paid": 899.00,
+      "currency": "AUD",
+      "discounts": [{ "type": "promotion", "amount": 100.00 }],
+      "channel": "in_store",
+      "store_location": "Sydney CBD",
+      "receipt_available": true
+    },
+    {
+      "receipt_id": "R-1023",
+      "customer_id": "C-1108",
+      "product_id": "PROD-PHONE-07",
+      "purchase_date": "2025-10-15",
+      "price_paid": 649.00,
+      "currency": "AUD",
+      "discounts": [],
+      "channel": "online",
+      "store_location": null,
+      "receipt_available": true
+    },
+    {
+      "receipt_id": "R-1031",
+      "customer_id": "C-1055",
+      "product_id": "PROD-HEADPHONES-03",
+      "purchase_date": "2026-01-20",
+      "price_paid": 199.00,
+      "currency": "AUD",
+      "discounts": [],
+      "channel": "in_store",
+      "store_location": "Melbourne Central",
+      "receipt_available": true
+    }
+  ],
+  "products": [
+    {
+      "product_id": "PROD-LAPTOP-14",
+      "name": "ProBook 14 Laptop",
+      "category": "laptop",
+      "brand": "ProBook",
+      "expected_lifespan_months": 36,
+      "warranty_months": 12,
+      "repairability": "high",
+      "current_rrp_aud": 999.00,
+      "notes": "Consumer expectation: battery should retain reasonable capacity throughout the expected lifespan."
+    },
+    {
+      "product_id": "PROD-PHONE-07",
+      "name": "Nova X7 Smartphone",
+      "category": "mobile_phone",
+      "brand": "Nova",
+      "expected_lifespan_months": 24,
+      "warranty_months": 12,
+      "repairability": "medium",
+      "current_rrp_aud": 699.00,
+      "notes": "Consumer expectation: hardware and software should remain functional for at least 2 years."
+    },
+    {
+      "product_id": "PROD-HEADPHONES-03",
+      "name": "SoundMax Pro Headphones",
+      "category": "headphones",
+      "brand": "SoundMax",
+      "expected_lifespan_months": 18,
+      "warranty_months": 12,
+      "repairability": "low",
+      "current_rrp_aud": 229.00,
+      "notes": "Consumer expectation: audio quality and connectivity should be reliable for the expected lifespan."
+    }
+  ],
+  "policies": [
+    {
+      "policy_id": "POL-001",
+      "title": "Consumer Guarantee — Major Failure",
+      "keywords": ["major failure", "refund", "replacement", "consumer guarantee", "acl", "serious problem"],
+      "excerpt": "Under the Australian Consumer Law (ACL), a customer is entitled to a refund, replacement, or repair of their choice when a product has a major failure. A major failure occurs when: the product would not have been bought if the customer had known about the problem; the product is significantly different from the description or sample; the product is substantially unfit for its common purpose and cannot easily be fixed; or the product is unsafe. Staff must not restrict the customer's choice of remedy for a major failure."
+    },
+    {
+      "policy_id": "POL-002",
+      "title": "Consumer Guarantee — Minor Failure",
+      "keywords": ["minor failure", "repair", "reasonable time", "consumer guarantee", "acl"],
+      "excerpt": "For a minor failure, the business may choose to repair the product within a reasonable time, or offer a replacement or refund. If the business cannot repair within a reasonable time, the customer may ask for a refund or replacement. A minor failure is one that can be fixed and does not make the product unsafe or significantly different from what was described."
+    },
+    {
+      "policy_id": "POL-003",
+      "title": "Warranty and Statutory Rights",
+      "keywords": ["warranty", "statutory", "guarantee", "acl", "voluntary warranty", "manufacturer warranty"],
+      "excerpt": "Our 12-month manufacturer warranty is in addition to, and does not exclude, restrict, or modify, consumer guarantees under the ACL. A product failing after the warranty period has expired does not automatically mean the customer has no rights. If the product has failed before the end of its reasonably expected lifespan, the customer may still be entitled to a remedy under the ACL consumer guarantees."
+    },
+    {
+      "policy_id": "POL-004",
+      "title": "No Refund Signs Are Unlawful",
+      "keywords": ["no refund", "refund policy", "sign", "unlawful", "acl"],
+      "excerpt": "It is unlawful under the ACL to display a 'No Refund' sign or tell customers they are not entitled to a refund under any circumstances. Customers always retain their ACL consumer guarantee rights regardless of any store policy displayed."
+    },
+    {
+      "policy_id": "POL-005",
+      "title": "Pro-Rata Refund Calculation",
+      "keywords": ["pro-rata", "prorata", "partial refund", "depreciation", "calculation", "refund amount"],
+      "excerpt": "When a full refund is not appropriate (for example, the product has been used for a significant portion of its expected lifespan), a pro-rata refund may be calculated as: Refund = Price Paid x (Remaining Expected Lifespan / Total Expected Lifespan). Staff should use Code Interpreter to calculate the exact amount and show the working to the customer."
+    },
+    {
+      "policy_id": "POL-006",
+      "title": "Battery Life and Consumer Expectations",
+      "keywords": ["battery", "battery life", "degradation", "laptop", "mobile phone", "charge"],
+      "excerpt": "Battery degradation is normal in rechargeable devices. However, a battery that retains only 20% of its original capacity within the device's expected lifespan would generally not meet acceptable quality standards under the ACL. For a laptop with a 3-year expected lifespan, a battery failing within 14 months is likely to constitute at least a minor failure, and may be a major failure depending on the degree of degradation."
+    }
+  ],
+  "inventory": {
+    "PROD-LAPTOP-14": {
+      "product_id": "PROD-LAPTOP-14",
+      "current_stock_status": "in_stock",
+      "replacements": [
+        {
+          "product_id": "PROD-LAPTOP-14",
+          "name": "ProBook 14 Laptop (same model)",
+          "current_price_aud": 999.00,
+          "price_delta_aud": 100.00,
+          "note": "Same model; customer would pay the difference if opting for like-for-like replacement at current RRP."
+        },
+        {
+          "product_id": "PROD-LAPTOP-15",
+          "name": "ProBook 15 Laptop (upgraded model)",
+          "current_price_aud": 1099.00,
+          "price_delta_aud": 200.00,
+          "note": "Upgraded 15-inch model; customer pays the difference."
+        },
+        {
+          "product_id": "PROD-LAPTOP-13",
+          "name": "ProBook 13 Compact Laptop (lower spec)",
+          "current_price_aud": 799.00,
+          "price_delta_aud": -100.00,
+          "note": "Lower-spec 13-inch model; store refunds the difference."
+        }
+      ]
+    },
+    "PROD-PHONE-07": {
+      "product_id": "PROD-PHONE-07",
+      "current_stock_status": "in_stock",
+      "replacements": [
+        {
+          "product_id": "PROD-PHONE-07",
+          "name": "Nova X7 Smartphone (same model)",
+          "current_price_aud": 699.00,
+          "price_delta_aud": 50.00,
+          "note": "Price has increased since purchase; customer pays the difference."
+        },
+        {
+          "product_id": "PROD-PHONE-08",
+          "name": "Nova X8 Smartphone (upgraded)",
+          "current_price_aud": 799.00,
+          "price_delta_aud": 150.00,
+          "note": "Upgraded model; customer pays the difference."
+        }
+      ]
+    },
+    "PROD-HEADPHONES-03": {
+      "product_id": "PROD-HEADPHONES-03",
+      "current_stock_status": "in_stock",
+      "replacements": [
+        {
+          "product_id": "PROD-HEADPHONES-03",
+          "name": "SoundMax Pro Headphones (same model)",
+          "current_price_aud": 229.00,
+          "price_delta_aud": 30.00,
+          "note": "Price has increased; customer pays the difference."
+        }
+      ]
+    }
+  }
+}

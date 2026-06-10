@@ -2,10 +2,16 @@
 
 **Estimated time:** 30 minutes
 
-![Diagram showing the Microsoft Foundry Agent Service architecture, with agents, tools, knowledge bases, and model deployments connected through a Foundry project.](../../../docs/assets/diagrams/foundry-agent-service.png)
-
 > [!IMPORTANT]
 > This module builds on [Module 04 — Create and chat with a Prompt Agent](../04-prompt-based-agents/README.md). Complete Module 04 before starting here. The `acl-remedy-advisor` agent must already exist in your Foundry project.
+
+<!-- markdownlint-disable-next-line MD028 -->
+> [!NOTE]
+> If you could not complete Module 04, run the solution script to create the required agent before continuing:
+>
+> ```bash
+> python labs/introduction-foundry-agent-service/04-prompt-based-agents/solution/create_agent.py
+> ```
 
 > [!TIP]
 > Tick the checkbox next to each step as you complete it to track your progress through this module.
