@@ -15,7 +15,7 @@ You must test the steps in the #file:docs/guide-attendee.md for the attendee spe
 
 The lab organizer provisioned the environment with `azd provision`. The post-provision hook (#file:scripts/generate-attendee-onboarding.py) wrote a per-attendee onboarding file to:
 
-```
+```bash
 .azure/${input:envName}/<upn_local>.md
 ```
 

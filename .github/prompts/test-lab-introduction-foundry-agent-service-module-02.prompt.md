@@ -17,7 +17,7 @@ Use the browser tools to open and navigate the portal. **Do not skip any navigat
 
 The lab organizer provisioned the environment with `azd provision`. The post-provision hook (#file:scripts/generate-attendee-onboarding.py) wrote a per-attendee onboarding file to:
 
-```
+```bash
 .azure/${input:envName}/<upn_local>.md
 ```
 

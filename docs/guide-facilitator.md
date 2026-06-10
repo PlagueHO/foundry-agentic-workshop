@@ -58,8 +58,8 @@ Each entry in the file follows this structure:
 
 Two deployments are required for all lab sample code to work without modification:
 
-* A deployment named `chat` pointing to a ChatCompletions-compatible model (for example, `gpt-4o`).
-* A deployment named `embedding` pointing to an Embeddings-compatible model (for example, `text-embedding-3-small`).
+- A deployment named `chat` pointing to a ChatCompletions-compatible model (for example, `gpt-4o`).
+- A deployment named `embedding` pointing to an Embeddings-compatible model (for example, `text-embedding-3-small`).
 
 Additional models can be added alongside these two as long as they are available in your target region.
 

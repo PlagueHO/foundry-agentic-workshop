@@ -34,7 +34,7 @@ You must test the steps in the #file:labs/introduction-foundry-agent-service/03-
 
 1. Locate the attendee onboarding file at:
 
-   ```
+   ```bash
    .azure/${input:envName}/<upn_local>.md
    ```
 
@@ -92,9 +92,9 @@ Follow lab step **5. Explore My Resources — deployed models**:
 1. Under **My Resources**, expand the project, then expand **Models**.
 1. Confirm both the `chat` model (GPT-4o) and the `embedding` model are listed.
 1. Click the `chat` model entry and confirm the model card opens showing:
-   - **Deployment info**: name, provisioning state, deployment type, and rate limit.
-   - **Endpoint info**: target URI and authentication type.
-   - **Useful links**: code sample and tutorial links.
+   * **Deployment info**: name, provisioning state, deployment type, and rate limit.
+   * **Endpoint info**: target URI and authentication type.
+   * **Useful links**: code sample and tutorial links.
 
 ## Step 8 — Validate Step 6 of the lab (Explore Developer Tools — Model Catalog)
 
@@ -137,9 +137,9 @@ Follow lab step **8. Open the Model Playground**:
    ```
 
 1. Confirm the model returns a response that:
-   - Is in the role of a Contoso Outdoors retail assistant.
-   - Addresses the return policy question.
-   - Mentions or acknowledges waterproof boot options.
+   * Is in the role of a Contoso Outdoors retail assistant.
+   * Addresses the return policy question.
+   * Mentions or acknowledges waterproof boot options.
 1. Click **View Code** (top right of the playground) and confirm a code snippet is displayed that reproduces the playground call.
 
 ## Step 11 — Validate Step 9 of the lab (Generate starter code for a model)
@@ -148,14 +148,14 @@ Follow lab step **9. Generate starter code for a model**:
 
 1. In **My Resources > Models**, right-click the `chat` model and select **Open code file**.
 1. Confirm a dialog or quick-pick appears prompting for:
-   - **SDK**: Azure AI Foundry SDK (or Azure OpenAI SDK) — select **Azure AI Foundry SDK**.
-   - **Language**: Python — select **Python**.
-   - **Authentication**: DefaultAzureCredential — select **DefaultAzureCredential**.
+   * **SDK**: Azure AI Foundry SDK (or Azure OpenAI SDK) — select **Azure AI Foundry SDK**.
+   * **Language**: Python — select **Python**.
+   * **Authentication**: DefaultAzureCredential — select **DefaultAzureCredential**.
 1. Confirm a new file opens in the editor containing a working Python code sample.
 1. Verify the generated code:
-   - Pulls the project endpoint from an environment variable (not a hard-coded value).
-   - Uses `DefaultAzureCredential` for authentication.
-   - Contains an import for `azure-ai-projects` or equivalent SDK.
+   * Pulls the project endpoint from an environment variable (not a hard-coded value).
+   * Uses `DefaultAzureCredential` for authentication.
+   * Contains an import for `azure-ai-projects` or equivalent SDK.
 
 ## Step 12 — Validate the Validation criteria
 
@@ -171,9 +171,9 @@ Confirm each item listed in the **Validation** section of the lab README is sati
 
 Report the outcome of every step above clearly. For each step state whether it **passed** or **failed**. For any failure, include:
 
-- The exact step number and description.
-- The observed behaviour.
-- The expected behaviour.
-- Any error messages or unexpected UI state encountered.
+* The exact step number and description.
+* The observed behaviour.
+* The expected behaviour.
+* Any error messages or unexpected UI state encountered.
 
 If all steps pass, confirm the lab module 03 end-to-end validation is complete.
