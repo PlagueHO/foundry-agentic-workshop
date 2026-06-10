@@ -142,7 +142,66 @@ Both produce the same agent. This module uses Agent Builder so you can see the c
   pip install -r shared/requirements.txt
   ```
 
-#### 6. Run the starter script
+#### 6. Complete the starter code
+
+Open `src/starter.py`. The file contains the program structure and four `TODO` comments. Work through each one below, then run the finished script in step 7.
+
+##### TODO 1 — Connect to the Foundry project
+
+Replace `# TODO 1` with:
+
+```python
+client = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
+openai = client.get_openai_client()
+```
+
+`AIProjectClient` connects to your Foundry project using your Azure identity. `get_openai_client()` returns an OpenAI-compatible client that is already scoped to the project, so every call is automatically routed to your Foundry endpoint.
+
+##### TODO 2 — Start a conversation thread
+
+Replace `# TODO 2` with:
+
+```python
+conversation = openai.conversations.create()
+print(f'Conversation started: {conversation.id}\n')
+```
+
+`conversations.create()` creates a persistent thread on the service. Passing the same `conversation.id` on every subsequent call tells the agent service to accumulate context across turns — the agent can refer back to earlier messages in the same session.
+
+##### TODO 3 — Send a message to the agent
+
+Replace `# TODO 3` with:
+
+```python
+response = openai.responses.create(
+    conversation=conversation.id,
+    extra_body={
+        'agent_reference': {
+            'name': agent_name,
+            'type': 'agent_reference',
+        },
+    },
+    input=user_input,
+)
+```
+
+`responses.create()` sends the user's message to the service. The `agent_reference` in `extra_body` tells the service which saved agent to use — by name, so it always resolves to the latest saved version. The service runs the full agent loop (reasoning, tool calls, response) and returns the finished result.
+
+##### TODO 4 — Display the response
+
+Replace `# TODO 4` with:
+
+```python
+for item in response.output:
+    if item.type == 'web_search_call':
+        print('[web search]')
+
+print(f'\nAdvisor: {response.output_text}\n')
+```
+
+`response.output` contains all the items the agent loop produced — tool calls, run steps, and the final message. Checking for `web_search_call` lets you show an indicator when the agent searched the web. `response.output_text` is the agent's final text response.
+
+#### 7. Run the starter script
 
 - [ ] Open a terminal and run:
 
@@ -154,7 +213,7 @@ Both produce the same agent. This module uses Agent Builder so you can see the c
 
   > A customer wants to return a $1,200 TV that stopped working after 18 months. What are their rights under Australian Consumer Law?
 
-- [ ] Review the response in the terminal. You should see a `[web search]` indicator before the answer, followed by the advisor's response with citations.
+- [ ] Confirm you see a `[web search]` indicator before the answer, followed by the advisor's response with ACCC citations.
 
 - [ ] Ask the follow-up question to confirm the conversation remembers the first turn:
 
@@ -162,18 +221,25 @@ Both produce the same agent. This module uses Agent Builder so you can see the c
 
 - [ ] Type `exit` to quit.
 
-#### 7. Review the code
+#### 8. Inspect the conversation in Agent Builder
 
-Open `src/starter.py` and note these key patterns:
+Every conversation your code creates is recorded by Foundry Agent Service and visible in the Agent Builder. This lets you inspect exactly what the agent loop did — which tool calls were made, in what order, and how the response was assembled — without adding any observability code.
 
-| Code | What it does |
-|---|---|
-| `AIProjectClient(endpoint, DefaultAzureCredential())` | Connects to your Foundry project using your Azure identity |
-| `client.get_openai_client()` | Returns an OpenAI-compatible client scoped to the project |
-| `openai.conversations.create()` | Creates a conversation thread — all turns share this context |
-| `openai.responses.create(conversation=..., extra_body={"agent_reference": ...})` | Sends a message to the agent and receives a response |
-| `response.output_text` | The agent's final text response |
-| `response.output` items of type `web_search_call` | Tool calls the agent made during this turn |
+- [ ] Return to the **Agent Builder** tab in VS Code.
+- [ ] Click the **Conversations** tab in the Agent Builder header.
+- [ ] Confirm your conversation appears in the list with a **Completed** status and token counts.
+
+  ![Agent Builder Conversations tab showing a list of completed conversations with token counts and timestamps](../../../docs/assets/screenshots/04-agent-conversations-list.png)
+
+- [ ] Click the top conversation ID to open the detail view.
+- [ ] In the detail panel, observe the full agentic loop recorded by the service:
+  - The user message that triggered the turn.
+  - The `web_search_call` tool invocation — the agent decided to search and the service executed it.
+  - The final `message` run step containing the response text.
+
+  > The entire loop — reasoning, tool dispatch, result processing, and response generation — ran inside Foundry Agent Service. Your Python code only sent the user message and received the finished response; it never saw the intermediate steps.
+
+  ![Agent Builder conversation detail showing the agentic loop: user message, web_search_call tool step, and final message response](../../../docs/assets/screenshots/04-agent-conversation-detail.png)
 
 ## Validation
 

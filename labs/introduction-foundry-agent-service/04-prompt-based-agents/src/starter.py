@@ -13,12 +13,13 @@ def run() -> None:
     endpoint = os.environ['FOUNDRY_PROJECT_ENDPOINT']
     agent_name = os.environ['AGENT_NAME']
 
-    client = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
-    openai = client.get_openai_client()
+    # TODO 1 — Create an AIProjectClient connected to your Foundry project
+    # and get an OpenAI-compatible client scoped to that project.
 
-    # Create a new conversation thread — persists context across turns.
-    conversation = openai.conversations.create()
-    print(f'Conversation started: {conversation.id}\n')
+
+    # TODO 2 — Create a new conversation thread so that all turns share
+    # the same context, then print the conversation ID.
+
 
     print('ACL Remedy Advisor — type your question, or "exit" to quit.\n')
 
@@ -28,23 +29,12 @@ def run() -> None:
             print('Goodbye.')
             break
 
-        response = openai.responses.create(
-            conversation=conversation.id,
-            extra_body={
-                'agent_reference': {
-                    'name': agent_name,
-                    'type': 'agent_reference',
-                },
-            },
-            input=user_input,
-        )
+        # TODO 3 — Send the user's message to the agent and store the response.
+        # Route the message to the saved agent by name using agent_reference.
 
-        # Show a web search indicator when the agent calls the search tool.
-        for item in response.output:
-            if item.type == 'web_search_call':
-                print('[web search]')
 
-        print(f'\nAdvisor: {response.output_text}\n')
+        # TODO 4 — Print '[web search]' for each web search tool call the agent
+        # made during this turn, then print the agent's final response text.
 
 
 if __name__ == '__main__':
