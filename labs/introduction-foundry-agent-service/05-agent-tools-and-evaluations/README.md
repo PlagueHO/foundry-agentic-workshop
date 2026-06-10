@@ -290,7 +290,7 @@ Evaluations run your agent against a dataset and score each response automatical
 
   </details>
 
-  > The portal automatically maps your dataset fields to the evaluator inputs and shows the field bindings in the right panel (`query: {{item.query}}`, `response: {{sample.output_text}}`, etc.). You do not need to configure field mapping manually for synthetic data.
+  > The portal automatically maps your dataset fields to the evaluator inputs and shows the field bindings in the right panel (<code v-pre>query: {{item.query}}</code>, <code v-pre>response: {{sample.output_text}}</code>, etc.). You do not need to configure field mapping manually for synthetic data.
 
 - [ ] Leave all 19 evaluators selected — the breadth shows how the portal covers quality, tool usage, and safety in a single run.
 - [ ] Click **Next**.

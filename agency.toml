@@ -1,0 +1,5 @@
+[mcps.servers]
+github = { tools = ["*"], type = "http", url = "https://api.githubcopilot.com/mcp/" }
+playwright = { args = ["-y", "@playwright/mcp@latest"], command = "npx", tools = ["*"], type = "stdio" }
+microsoft-learn = { tools = ["*"], type = "http", url = "https://learn.microsoft.com/api/mcp" }
+context7 = { args = ["-y", "@upstash/context7-mcp@latest"], command = "npx", tools = ["*"], type = "stdio" }
