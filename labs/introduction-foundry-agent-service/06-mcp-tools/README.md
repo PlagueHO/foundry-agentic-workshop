@@ -121,6 +121,10 @@ The agent runs in the cloud and cannot reach `localhost`. You must expose port 8
 - [ ] In the **MY RESOURCES** panel, expand **Prompt Agents** → `acl-remedy-advisor` and open the latest version.
 - [ ] Confirm the Agent Builder header shows `acl-remedy-advisor`.
 
+  > You can also view your agents in the [Microsoft Foundry portal](https://ai.azure.com) under **Build → Agents**.
+  >
+  > ![Microsoft Foundry portal — Agents list showing acl-remedy-advisor at version 3](../../../docs/assets/screenshots/lab-06/01-agents-list.png)
+
 #### 7. Add the MCP tool
 
 - [ ] Scroll to the **TOOL** section and click the **+** button.
@@ -135,6 +139,10 @@ The agent runs in the cloud and cannot reach `localhost`. You must expose port 8
 
 - [ ] Confirm and save. Agent Builder discovers the tools from the server's `/mcp` endpoint.
 - [ ] Verify that all six tool names appear in the tool list (`lookup_purchase`, `get_product_profile`, `search_store_policy`, `find_replacement_options`, `draft_remedy_summary`, `create_remedy_case`).
+
+  After saving, the Foundry portal Playground view shows all three tool groups — Code Interpreter, Web Search, and the MCP server — connected to the agent:
+
+  ![Agent playground showing Code Interpreter, Web Search, and retail_remedy_ops MCP tool connected to acl-remedy-advisor v3](../../../docs/assets/screenshots/lab-06/02-agent-playground.png)
 
 > [!TIP]
 > **Code fallback:** If the Agent Builder UI cannot add the MCP tool, run the code fallback script which creates a new agent version directly via the API:
@@ -187,7 +195,12 @@ The agent needs guidance on when to call the MCP tools. Without it the model may
   pro-rata refund.
   ```
 
+  ![Portal playground with the battery-failure prompt ready to send](../../../docs/assets/screenshots/lab-06/05-playground-prompt.png)
+
 - [ ] Watch the run trace. Confirm the agent calls the MCP tools in sequence before producing its answer.
+
+  > [!NOTE]
+  > If the portal playground returns a `missing_required_parameter: tools[1].container` error, this means the Code Interpreter tool needs to be re-added through the Agent Builder UI (the code fallback script does not configure the container automatically). Use `starter.py` from the terminal to test instead, or remove and re-add Code Interpreter through Agent Builder.
 
 #### 11. Inspect the run trace
 
@@ -195,6 +208,36 @@ The agent needs guidance on when to call the MCP tools. Without it the model may
 - [ ] Confirm MCP tool calls appear in the trace (e.g., `lookup_purchase`, `get_product_profile`, `search_store_policy`).
 - [ ] Confirm Code Interpreter is called to calculate the pro-rata refund.
 - [ ] Confirm the final response includes a clear remedy recommendation citing store policy and ACL.
+
+### Part 7 (extra credit) — Browse the run trace in the Foundry portal
+
+The **Traces** tab in the Foundry portal shows each agent conversation as a structured trace when Application Insights is connected to your Foundry project. This lets you inspect the exact sequence of MCP tool calls, model reasoning steps, and Code Interpreter invocations.
+
+#### 13. Open the agent in the Foundry portal
+
+- [ ] In a browser, navigate to [Microsoft Foundry](https://ai.azure.com) and sign in.
+- [ ] In the left navigation, click **Build** → **Agents**.
+- [ ] Click **acl-remedy-advisor** to open the agent.
+
+  ![Foundry portal Agents list showing acl-remedy-advisor at version 3](../../../docs/assets/screenshots/lab-06/01-agents-list.png)
+
+#### 14. Open the Traces tab
+
+- [ ] In the agent view, click the **Traces** tab.
+
+  ![Traces tab for acl-remedy-advisor — shows Conversations and Responses sub-tabs](../../../docs/assets/screenshots/lab-06/04-traces-tab.png)
+
+  > [!NOTE]
+  > Trace data requires **Application Insights** to be connected to your Foundry project. If the Traces tab shows a "Connect" banner, click it to link an Application Insights resource. Once connected, future conversations will appear as traces automatically.
+
+#### 15. Inspect the MCP tool call flow
+
+- [ ] Under the **Conversations** sub-tab, click any conversation row to expand it.
+- [ ] In the trace timeline, locate the MCP tool call steps — they appear as `mcp_call` entries labelled with the tool name (e.g., `lookup_purchase`, `get_product_profile`).
+- [ ] Confirm the calls appear in the expected sequence: purchase lookup → product profile → store policy → replacement options → reasoning → Code Interpreter (pro-rata) → summary.
+- [ ] Click any individual tool call to view the exact input payload and returned JSON.
+
+---
 
 ### Part 6 (optional) — Verify from code
 
@@ -232,3 +275,4 @@ The agent needs guidance on when to call the MCP tools. Without it the model may
 - **Tool call times out:** The Agent Service times out MCP calls at 100 seconds. If the server is unresponsive, restart it and verify the tunnel is still active.
 - **Tunnel URL changed:** If you recreated the tunnel, the URL changes. Update `MCP_SERVER_URL` in `.env`, edit the MCP tool connection in Agent Builder with the new URL, and re-save the agent.
 - **`MCPTool` import fails in the code fallback:** Confirm `azure-ai-projects>=2.0.0` is installed (`pip install -r shared/requirements.txt`).
+- **Portal playground returns `missing_required_parameter: tools[1].container`:** The code fallback script (`create_agent_with_mcp.py`) creates Code Interpreter without the container reference the portal requires. To fix: in Agent Builder, click the `⋮` menu next to Code Interpreter, remove it, then click **Add** → **Code Interpreter** to re-add it through the UI. Alternatively, test using `starter.py` from the terminal, which does not require the container reference.
