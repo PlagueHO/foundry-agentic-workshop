@@ -296,7 +296,67 @@
 
         // Lab tasks
         {
-            "label": "lab06: run mcp server",
+            "label": "introduction-foundry-agent-service: lab 04- create agent (solution)",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "labs/introduction-foundry-agent-service/04-prompt-based-agents/solution/create_agent.py"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "introduction-foundry-agent-service: lab 05- create agent (solution)",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "labs/introduction-foundry-agent-service/05-agent-tools-and-evaluations/solution/create_agent.py"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "introduction-foundry-agent-service: lab 06- create agent with mcp (solution)",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "introduction-foundry-agent-service: lab 06- run mcp server",
             "type": "shell",
             "command": "${command:python.interpreterPath}",
             "args": [
@@ -314,7 +374,6 @@
             "presentation": {
                 "reveal": "always",
                 "panel": "dedicated",
-                "label": "MCP Server (Lab 06)"
             }
         }
     ]

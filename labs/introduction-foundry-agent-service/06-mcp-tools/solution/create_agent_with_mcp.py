@@ -67,8 +67,15 @@ def run() -> None:
 
     endpoint = os.environ['FOUNDRY_PROJECT_ENDPOINT']
     agent_name = os.environ.get('AGENT_NAME', 'acl-remedy-advisor')
-    mcp_server_url = os.environ['MCP_SERVER_URL']
+    mcp_server_url = os.environ.get('MCP_SERVER_URL', '').strip()
     mcp_server_label = os.environ.get('MCP_SERVER_LABEL', 'retail_remedy_ops')
+
+    if not mcp_server_url:
+        raise ValueError(
+            'MCP_SERVER_URL is not set. Start the MCP server (server.py), expose it via a dev '
+            'tunnel or port forward, then set MCP_SERVER_URL to the public URL plus /mcp in your '
+            '.env file. Example: MCP_SERVER_URL=https://abc123-8080.devtunnels.ms/mcp'
+        )
 
     client = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
 

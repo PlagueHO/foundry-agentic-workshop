@@ -75,6 +75,12 @@ def _run_az(args: list[str]) -> subprocess.CompletedProcess[str]:
     )
 
 
+def _check_az_logged_in() -> bool:
+    """Return True if the Azure CLI has an active authenticated session."""
+    result = _run_az(['account', 'show'])
+    return result.returncode == 0
+
+
 def _parse_attendee_list(raw: str) -> list[dict[str, object]]:
     stripped = raw.strip()
     if not stripped:
@@ -282,6 +288,10 @@ def _write_resolution_audit(
 # ---------- main ----------
 
 def main() -> int:
+    if not _check_az_logged_in():
+        print('Azure CLI is not authenticated. Run `az login` then re-run the provision.')
+        return 1
+
     try:
         attendees = _parse_attendee_list(os.getenv('AZURE_ATTENDEE_LIST', ''))
     except (json.JSONDecodeError, ValueError) as error:
@@ -349,10 +359,11 @@ def main() -> int:
 
     if unresolved_count:
         print(
-            f'\nWarning: {unresolved_count} UPN(s) could not be resolved. '
-            'Foundry projects will be created for those attendees but no RBAC role assignments will be made. '
-            'Verify the UPNs are correct and the caller has Microsoft Entra directory read access.'
+            f'\nError: {unresolved_count} UPN(s) could not be resolved. '
+            'Deployment aborted. Verify the UPNs are correct and the caller has '
+            'Microsoft Entra directory read access, then re-run azd provision.'
         )
+        return 1
 
     return 0
 

@@ -22,7 +22,7 @@ Environment variables (azd outputs populated after provisioning):
                                 construct project and OpenAI endpoint URLs.
   AZURE_RESOURCE_GROUP          Resource group name (azd output).
   AZURE_SEARCH_SERVICE_NAME     Azure AI Search service name (azd output).
-  AZURE_SUBSCRIPTION_ID         Subscription ID (optional; resolved via az account show).
+  AZURE_SUBSCRIPTION_ID         Subscription ID (required; set automatically by azd after provision).
   AZURE_ENV_NAME                azd environment name (used in the audit CSV filename).
 """
 
@@ -31,8 +31,6 @@ from __future__ import annotations
 import csv
 import json
 import os
-import shutil
-import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -91,19 +89,7 @@ SEARCH_ROLE_DISPLAY_NAMES: dict[str, str] = {
     'organizer': 'Contributor',
 }
 
-_AZ_CMD: str = shutil.which('az') or 'az'
-
-
 # ---------- helpers ----------
-
-def _run_az(args: list[str]) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        [_AZ_CMD, *args],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-
 
 def _parse_resolved_list(raw: str) -> list[dict[str, object]]:
     stripped = raw.strip()
@@ -116,13 +102,8 @@ def _parse_resolved_list(raw: str) -> list[dict[str, object]]:
 
 
 def _resolve_subscription_id() -> str:
-    subscription_id = os.getenv('AZURE_SUBSCRIPTION_ID', '').strip()
-    if subscription_id:
-        return subscription_id
-    result = _run_az(['account', 'show', '--query', 'id', '-o', 'tsv'])
-    if result.returncode != 0:
-        return ''
-    return result.stdout.strip()
+    """Return AZURE_SUBSCRIPTION_ID from the environment (populated by azd after provision)."""
+    return os.getenv('AZURE_SUBSCRIPTION_ID', '').strip()
 
 
 def _write_provisioning_summary(
@@ -273,8 +254,12 @@ def _write_attendee_markdowns(
             f'FOUNDRY_RESOURCE_NAME={foundry_name}\n'
             f'FOUNDRY_PROJECT_NAME={project_name}\n'
             f'FOUNDRY_PROJECT_ENDPOINT={project_endpoint}\n'
+            f'AGENT_NAME=acl-remedy-advisor\n'
             f'AZURE_OPENAI_ENDPOINT={openai_endpoint}\n'
             f'{search_line}\n'
+            f'MCP_SERVER_PORT=8080\n'
+            f'MCP_SERVER_URL=\n'
+            f'MCP_SERVER_LABEL=retail_remedy_ops\n'
             '```\n'
             '\n'
             '## Sign In\n'
@@ -342,14 +327,19 @@ def main() -> int:
     foundry_custom_domain_name = os.getenv('FOUNDRY_CUSTOM_DOMAIN_NAME', '').strip()
     resource_group = os.getenv('AZURE_RESOURCE_GROUP', '').strip()
     search_service_name = os.getenv('AZURE_SEARCH_SERVICE_NAME', '').strip()
-
-    if not foundry_name or not foundry_custom_domain_name or not resource_group:
-        print('FOUNDRY_RESOURCE_NAME, FOUNDRY_CUSTOM_DOMAIN_NAME and AZURE_RESOURCE_GROUP must be set. Skipping onboarding generation.')
-        return 1
-
     subscription_id = _resolve_subscription_id()
-    if not subscription_id:
-        print('Unable to resolve the subscription ID. Skipping onboarding generation.')
+
+    missing = [
+        name for name, val in [
+            ('FOUNDRY_RESOURCE_NAME', foundry_name),
+            ('FOUNDRY_CUSTOM_DOMAIN_NAME', foundry_custom_domain_name),
+            ('AZURE_RESOURCE_GROUP', resource_group),
+            ('AZURE_SUBSCRIPTION_ID', subscription_id),
+        ] if not val
+    ]
+    if missing:
+        print(f'Required environment variable(s) not set: {", ".join(missing)}.')
+        print('These are populated by azd after provisioning. Ensure azd provision completed successfully.')
         return 1
 
     audit_dir = Path('.azure') / env_name

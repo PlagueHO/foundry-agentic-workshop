@@ -334,7 +334,7 @@ var foundryServiceConnections = concat(
       }
     }
   ],
-  azureAiSearchCapabilityHost ? [
+  [
     {
       category: 'CognitiveSearch'
       connectionProperties: {
@@ -352,7 +352,7 @@ var foundryServiceConnections = concat(
         DeploymentApiVersion: '2023-11-01'
       }
     }
-  ] : [],
+  ],
   cosmosDbCapabilityHost ? [
     {
       category: 'CosmosDb'
