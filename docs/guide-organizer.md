@@ -58,7 +58,7 @@ The example below registers five standard attendees and one facilitator. By defa
 azd env set AZURE_ATTENDEE_LIST '[{"upn":"alice@contoso.com"},{"upn":"bob@contoso.com"},{"upn":"carol@contoso.com"},{"upn":"david@contoso.com"},{"upn":"eve@contoso.com"},{"upn":"facilitator@contoso.com","role":"facilitator"}]'
 ```
 
-The default role for entries without an explicit `role` is `foundry-project-manager`, which is recommended for lab deployments as it covers all workshop modules. You can set a lower role with `AZURE_ATTENDEE_DEFAULT_ROLE=foundry-user`, but attendees will not be able to complete Module 08 (Foundry IQ) or Module 12 (Publishing Agents). The `facilitator` role grants full account-level access.
+The default role for entries without an explicit `role` is `foundry-project-manager`, which is recommended for lab deployments as it covers all workshop modules. You can set a lower role with `AZURE_ATTENDEE_DEFAULT_ROLE=foundry-user`, but attendees will not be able to complete Module 07 (Foundry IQ) or Module 12 (Publishing Agents). The `facilitator` role grants full account-level access.
 
 <!-- markdownlint-disable MD028 -->
 > [!TIP]
@@ -73,6 +73,9 @@ The default role for entries without an explicit `role` is `foundry-project-mana
 ```bash
 azd provision
 ```
+
+> [!NOTE]
+> Every Foundry project's system-assigned managed identity is automatically granted the **Reader** role on the workshop's Application Insights component so the project can read agent traces in the Foundry portal. This assignment is always created for every project and requires no configuration. Without it, the portal reports "Setup incomplete: Assign the Foundry project's managed identity the Reader role on Application Insights to access traces."
 
 The pre-provision hook (`scripts/prepare-attendee-roles.py`) resolves each UPN to a Microsoft Entra object ID, computes project names, and writes a resolution audit CSV to `.azure/<env>/attendee-resolution-<env>-<timestamp>.csv`. Bicep then deploys all Azure resources with role assignments embedded. The post-provision hook (`scripts/generate-attendee-onboarding.py`) writes a per-attendee onboarding markdown file to `.azure/<env>/<upn_local>.md` for each resolved attendee, writes a provisioning summary CSV to `.azure/<env>/attendee-provisioning-<env>-<timestamp>.csv`, and seeds the Azure AI Search indexes. Re-run this command any time you change `AZURE_ATTENDEE_LIST`, `AZURE_ATTENDEE_COUNT`, or the project prefix.
 
@@ -260,12 +263,12 @@ Role keys map to Foundry built-in roles. See [Role-based access control for Micr
 | `proctor` | Foundry Owner | Account | Full access under the proctor project prefix. |- |
 | `organizer` | Foundry Owner | Account | Full access under the organizer project prefix. |- |
 
-`foundry-project-manager` is the recommended default for lab deployments. It covers all workshop modules, including Module 08 (Foundry IQ) and Module 12 (Publishing Agents). Because the organizer pre-deploys models during provisioning, attendees do not need the `foundry-account-owner` role to deploy models themselves.
+`foundry-project-manager` is the recommended default for lab deployments. It covers all workshop modules, including Module 07 (Foundry IQ) and Module 12 (Publishing Agents). Because the organizer pre-deploys models during provisioning, attendees do not need the `foundry-account-owner` role to deploy models themselves.
 
 You can set a more restrictive default for environments where those modules are not used:
 
 ```bash
-# Restrict to least privilege (Module 08 and Module 12 will not be completable)
+# Restrict to least privilege (Module 07 and Module 12 will not be completable)
 azd env set AZURE_ATTENDEE_DEFAULT_ROLE foundry-user
 
 # Elevate to allow model deployment

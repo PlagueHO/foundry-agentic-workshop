@@ -4,7 +4,7 @@
 
 ![Diagram showing the Microsoft Foundry Agent Service architecture, with agents, tools, knowledge bases, and model deployments connected through a Foundry project.](../../../docs/assets/diagrams/foundry-agent-service.png)
 
-Foundry Agent Service supports two agent types. **Prompt agents** are fully configuration-driven: you specify a model, instructions, and tools, then Foundry runs the agent loop with no application code or container to maintain. **Hosted agents** (preview) are code-based: you write the agent logic with Agent Framework, LangGraph, the OpenAI Agents SDK, or your own code, package it as a container, and Foundry provides a managed endpoint, automatic scaling, and a dedicated Microsoft Entra identity. Prompt agents suit fast starts and production workloads that do not need custom orchestration logic; Hosted agents give you full control over agent logic when you need it. This module covers Prompt agents. [Module 10](../10-hosted-agents/README.md) introduces Hosted agents.
+Foundry Agent Service supports two agent types. **Prompt agents** are fully configuration-driven: you specify a model, instructions, and tools, then Foundry runs the agent loop with no application code or container to maintain. **Hosted agents** (preview) are code-based: you write the agent logic with Agent Framework, LangGraph, the OpenAI Agents SDK, or your own code, package it as a container, and Foundry provides a managed endpoint, automatic scaling, and a dedicated Microsoft Entra identity. Prompt agents suit fast starts and production workloads that do not need custom orchestration logic; Hosted agents give you full control over agent logic when you need it. This module covers Prompt agents. [Module 09](../09-hosted-agents/README.md) introduces Hosted agents.
 
 > [!TIP]
 > Tick the checkbox next to each step as you complete it to track your progress through this module.
@@ -29,7 +29,7 @@ You can implement this loop yourself — write code that calls a model, parses a
 
 With a **Prompt Agent**, Foundry Agent Service hosts the loop for you. You send a message and receive a finished response. The service handles tool calls, context management, and retries on your behalf.
 
-> **Module 09** introduces the **Microsoft Agent Framework**, which gives you the control of a code-implemented loop while providing structured patterns for complex, multi-agent workflows. For now, you'll use `AIProjectClient` — the simplest path for interacting with a Prompt Agent from code.
+> **Module 08** introduces the **Microsoft Agent Framework**, which gives you the control of a code-implemented loop while providing structured patterns for complex, multi-agent workflows. For now, you'll use `AIProjectClient` — the simplest path for interacting with a Prompt Agent from code.
 
 ### Agent versioning
 

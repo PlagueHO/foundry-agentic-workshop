@@ -719,6 +719,11 @@ output endpoints endpointType = cognitiveService.properties.endpoints
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = cognitiveService.?identity.?principalId
 
+@description('The system-assigned managed identity principal IDs of the created projects, in the same order as the projects input array. Empty strings indicate projects without a system-assigned identity.')
+output projectSystemAssignedMIPrincipalIds string[] = [
+  for (project, index) in (projects ?? []): cognitiveService_projects[index].outputs.?systemAssignedMIPrincipalId ?? ''
+]
+
 @description('The location the resource was deployed into.')
 output location string = cognitiveService.location
 

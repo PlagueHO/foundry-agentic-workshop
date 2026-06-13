@@ -307,7 +307,7 @@ The **Traces** tab in the Foundry portal shows each agent conversation as a stru
 ---
 
 > [!IMPORTANT]
-> **Keep the MCP server and tunnel running.** Leave the server terminal open and the port 8080 tunnel set to Public. The `acl-remedy-advisor` agent uses these tools in Module 07 (Foundry Toolboxes) and Module 10 (Hosted Agents). If you need to recreate the tunnel, update `MCP_SERVER_URL` in your `.env` file and reconnect the MCP tool in Agent Builder.
+> **Keep the MCP server and tunnel running.** Leave the server terminal open and the port 8080 tunnel set to Public. The `acl-remedy-advisor` agent uses these tools in Module 09 (Hosted Agents) and Module 10 (Foundry Toolboxes). If you need to recreate the tunnel, update `MCP_SERVER_URL` in your `.env` file and reconnect the MCP tool in Agent Builder.
 
 ---
 

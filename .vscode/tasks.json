@@ -296,6 +296,29 @@
 
         // Lab tasks
         {
+            "label": "lab: health-check",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["scripts/health-check.py"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            },
+            "icon": {
+                "id": "heart",
+                "color": "terminal.ansiGreen"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+
+        {
             "label": "introduction-foundry-agent-service: lab 04- create agent (solution)",
             "type": "shell",
             "command": "${command:python.interpreterPath}",

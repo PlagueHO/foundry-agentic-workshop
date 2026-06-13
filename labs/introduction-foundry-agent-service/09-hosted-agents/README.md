@@ -1,4 +1,4 @@
-# 10. Build and run a hosted agent
+# 09. Build and run a hosted agent
 
 **Estimated time:** TBD
 

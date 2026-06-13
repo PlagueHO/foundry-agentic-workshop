@@ -15,9 +15,11 @@ resolved=false; Bicep skips role assignments for those entries.
 Environment variables (set via `azd env set`):
   AZURE_ATTENDEE_LIST               Input attendee list (single-line JSON array).
   AZURE_ATTENDEE_DEFAULT_ROLE       Default role key (default 'foundry-project-manager').
-                                    Set to 'foundry-user' for a more restrictive environment,
-                                    but Module 08 (Foundry IQ) and Module 12 (Publishing Agents)
-                                    will not be completable by those attendees.
+                                    Set to 'foundry-user' for a more restrictive, project-scoped
+                                    environment. All attendee roles receive the Azure AI Search
+                                    permissions needed for Module 07 (Foundry IQ), but Module 12
+                                    (Publishing Agents) requires account-scoped permissions that
+                                    'foundry-user' does not grant.
   AZURE_ATTENDEE_PROJECT_PREFIX     Project name prefix for standard attendees
                                     (default 'attendee').
   AZURE_FACILITATOR_PROJECT_PREFIX  Project name prefix for facilitators

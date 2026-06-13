@@ -147,15 +147,28 @@ var foundryRoleCatalog = {
 }
 
 // Azure AI Search role definition GUIDs paired with each Foundry role. Mirrors
-// SEARCH_ROLE_DEFINITION_IDS in scripts/generate-attendee-onboarding.py.
+// SEARCH_ROLES in scripts/generate-attendee-onboarding.py. Bicep owns this catalog as the
+// authoritative source.
+//
+// Foundry IQ knowledge base and knowledge source creation (Module 07) is authorized through
+// the Azure AI Search data plane, not ARM. Creating those objects requires Search Service
+// Contributor, and Search Index Data Contributor is additionally needed when a knowledge
+// source generates an indexing pipeline or when reading/writing index content. Every lab
+// attendee role therefore receives both roles so attendees can create and test their own
+// knowledge base against the shared search service. Higher roles keep the broad Contributor
+// role for service management and add Search Index Data Contributor for data-plane access.
+// See: https://learn.microsoft.com/azure/search/agentic-knowledge-source-overview#creating-knowledge-sources
+var searchServiceContributorRoleId = '7ca78c08-252a-4471-8644-bb5ff32d4ba0'
+var searchIndexDataContributorRoleId = '8ebe5a00-799e-43f5-93ac-243d3dce84a7'
+var searchContributorRoleId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 var searchRoleCatalog = {
-  'foundry-user':            '1407120a-92aa-4202-b7e9-c0e197c71c8f'
-  'foundry-project-manager': '8ebe5a00-799e-43f5-93ac-243d3dce84a7'
-  'foundry-account-owner':   '7ca78c08-252a-4471-8644-bb5ff32d4ba0'
-  'foundry-owner':           'b24988ac-6180-42a0-ab88-20f7382dd24c'
-  facilitator:               'b24988ac-6180-42a0-ab88-20f7382dd24c'
-  proctor:                   'b24988ac-6180-42a0-ab88-20f7382dd24c'
-  organizer:                 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  'foundry-user':            [searchServiceContributorRoleId, searchIndexDataContributorRoleId]
+  'foundry-project-manager': [searchServiceContributorRoleId, searchIndexDataContributorRoleId]
+  'foundry-account-owner':   [searchServiceContributorRoleId, searchIndexDataContributorRoleId]
+  'foundry-owner':           [searchContributorRoleId, searchIndexDataContributorRoleId]
+  facilitator:               [searchContributorRoleId, searchIndexDataContributorRoleId]
+  proctor:                   [searchContributorRoleId, searchIndexDataContributorRoleId]
+  organizer:                 [searchContributorRoleId, searchIndexDataContributorRoleId]
 }
 
 // tags that should be applied to all resources.
@@ -295,12 +308,15 @@ var attendeeFoundryAccountRoleAssignments = map(
   }
 )
 
-// Azure AI Search role assignments (all resolved attendees receive a paired search role).
-var attendeeSearchRoleAssignments = map(resolvedAttendeesWithIds, a => {
-  roleDefinitionIdOrName: searchRoleCatalog[a.role]
-  principalId: a.objectId
-  principalType: 'User'
-})
+// Azure AI Search role assignments. Each resolved attendee receives every search role paired
+// with their Foundry role, flattened into one assignment per role.
+var attendeeSearchRoleAssignments = flatten(map(resolvedAttendeesWithIds, a =>
+  map(searchRoleCatalog[a.role], roleId => {
+    roleDefinitionIdOrName: roleId
+    principalId: a.objectId
+    principalType: 'User'
+  })
+))
 
 // Resource group Reader role assignments (all resolved attendees).
 var attendeeResourceGroupReaderRoleAssignments = map(resolvedAttendeesWithIds, a => {
@@ -706,6 +722,65 @@ module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = {
     roleAssignments: aiSearchRoleAssignmentsArray
   }
 }
+
+// Per-project managed identity search role assignments for Foundry IQ knowledge base retrieval.
+// Each Foundry project's system-assigned managed identity authenticates to the Azure AI Search
+// knowledge base MCP endpoint (https://<search>.search.windows.net/knowledgebases/<kb>/mcp) when an
+// agent performs Foundry IQ retrieval (Module 07). Without the Search Index Data Reader role, those
+// knowledge base tool calls fail with HTTP 403 Forbidden. A module loop is used (rather than a
+// variable loop) so the per-project principal IDs — only known after the Foundry account deploys —
+// can be referenced in the loop body. The loop count comes from allProjectNames (compile-time), and
+// the project array order matches aiFoundryAccount's projects input so IDs are indexed by position.
+// See: https://learn.microsoft.com/azure/foundry/agents/how-to/foundry-iq-connect#authentication-and-permissions
+module projectSearchRoleAssignments './core/security/role_aisearch.bicep' = [
+  for (name, i) in allProjectNames: {
+    name: 'project-search-role-${i}-${deploymentId}'
+    scope: az.resourceGroup(effectiveResourceGroupName)
+    dependsOn: [
+      resourceGroup
+      aiSearchService
+    ]
+    params: {
+      azureAiSearchName: aiSearchName
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Search Index Data Reader'
+          principalType: 'ServicePrincipal'
+          principalId: aiFoundryAccount.outputs.projectSystemAssignedMIPrincipalIds[i]
+        }
+      ]
+    }
+  }
+]
+
+// Per-project managed identity Application Insights Reader role assignments for trace access.
+// Each Foundry project's system-assigned managed identity needs the Reader role on the shared
+// Application Insights component to read traces in the Foundry portal. Without it, the portal
+// reports "Setup incomplete: Assign the Foundry project's managed identity the Reader role on
+// Application Insights to access traces." A module loop is used (rather than a variable loop) so
+// the per-project principal IDs — only known after the Foundry account deploys — can be referenced
+// in the loop body. The loop count comes from allProjectNames (compile-time), and the project array
+// order matches aiFoundryAccount's projects input so IDs are indexed by position.
+module projectAppInsightsRoleAssignments './core/security/role_appinsights.bicep' = [
+  for (name, i) in allProjectNames: {
+    name: 'project-appinsights-role-${i}-${deploymentId}'
+    scope: az.resourceGroup(effectiveResourceGroupName)
+    dependsOn: [
+      resourceGroup
+      applicationInsights
+    ]
+    params: {
+      applicationInsightsName: applicationInsightsName
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Reader'
+          principalType: 'ServicePrincipal'
+          principalId: aiFoundryAccount.outputs.projectSystemAssignedMIPrincipalIds[i]
+        }
+      ]
+    }
+  }
+]
 
 // ---------- FOUNDRY ROLE ASSIGNMENTS ----------
 // Role assignments for Foundry to allow AI Search and developer access

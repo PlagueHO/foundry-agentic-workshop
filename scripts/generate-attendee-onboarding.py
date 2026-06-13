@@ -10,9 +10,11 @@ Role assignments are handled by Bicep during provisioning. This script generates
 output files only and makes no Azure API calls.
 
 The recommended default attendee role for lab deployments is `foundry-project-manager`,
-which covers all lab modules including Module 08 (Foundry IQ) and Module 12 (Publishing
-Agents). Using `foundry-user` is possible but will prevent attendees from completing those
-modules. The effective role for each attendee is encoded in AZURE_ATTENDEE_LIST_RESOLVED.
+which covers all lab modules including Module 07 (Foundry IQ) and Module 12 (Publishing
+Agents). All attendee roles receive the Azure AI Search permissions needed for Module 07
+(Foundry IQ); `foundry-user` is project-scoped and additionally cannot complete Module 12
+(Publishing Agents), which requires account-scoped permissions. The effective role for each
+attendee is encoded in AZURE_ATTENDEE_LIST_RESOLVED.
 
 Environment variables (azd outputs populated after provisioning):
   AZURE_ATTENDEE_LIST_RESOLVED  Enriched attendee list from the preprovision hook.
@@ -69,24 +71,35 @@ ROLE_SCOPE_LEVELS: dict[str, str] = {
 
 RESOURCE_GROUP_READER_ROLE_ID = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 
-SEARCH_ROLE_DEFINITION_IDS: dict[str, str] = {
-    'foundry-user': '1407120a-92aa-4202-b7e9-c0e197c71c8f',
-    'foundry-project-manager': '8ebe5a00-799e-43f5-93ac-243d3dce84a7',
-    'foundry-account-owner': '7ca78c08-252a-4471-8644-bb5ff32d4ba0',
-    'foundry-owner': 'b24988ac-6180-42a0-ab88-20f7382dd24c',
-    'facilitator': 'b24988ac-6180-42a0-ab88-20f7382dd24c',
-    'proctor': 'b24988ac-6180-42a0-ab88-20f7382dd24c',
-    'organizer': 'b24988ac-6180-42a0-ab88-20f7382dd24c',
-}
+# Azure AI Search role definition GUIDs paired with each Foundry role. Mirrors the
+# searchRoleCatalog variable in infra/main.bicep, which is the authoritative source.
+#
+# Foundry IQ knowledge base/source creation (Module 07) requires Search Service Contributor
+# plus Search Index Data Contributor on the shared search service. Every lab attendee role
+# receives both; higher roles keep the broad Contributor role and add Search Index Data
+# Contributor for data-plane access.
+SEARCH_SERVICE_CONTRIBUTOR_ROLE_ID = '7ca78c08-252a-4471-8644-bb5ff32d4ba0'
+SEARCH_INDEX_DATA_CONTRIBUTOR_ROLE_ID = '8ebe5a00-799e-43f5-93ac-243d3dce84a7'
+CONTRIBUTOR_ROLE_ID = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 
-SEARCH_ROLE_DISPLAY_NAMES: dict[str, str] = {
-    'foundry-user': 'Search Index Data Reader',
-    'foundry-project-manager': 'Search Index Data Contributor',
-    'foundry-account-owner': 'Search Service Contributor',
-    'foundry-owner': 'Contributor',
-    'facilitator': 'Contributor',
-    'proctor': 'Contributor',
-    'organizer': 'Contributor',
+_ATTENDEE_SEARCH_ROLES = [
+    ('Search Service Contributor', SEARCH_SERVICE_CONTRIBUTOR_ROLE_ID),
+    ('Search Index Data Contributor', SEARCH_INDEX_DATA_CONTRIBUTOR_ROLE_ID),
+]
+_HIGH_SEARCH_ROLES = [
+    ('Contributor', CONTRIBUTOR_ROLE_ID),
+    ('Search Index Data Contributor', SEARCH_INDEX_DATA_CONTRIBUTOR_ROLE_ID),
+]
+
+# Each Foundry role maps to a list of (display_name, role_definition_id) search roles.
+SEARCH_ROLES: dict[str, list[tuple[str, str]]] = {
+    'foundry-user': _ATTENDEE_SEARCH_ROLES,
+    'foundry-project-manager': _ATTENDEE_SEARCH_ROLES,
+    'foundry-account-owner': _ATTENDEE_SEARCH_ROLES,
+    'foundry-owner': _HIGH_SEARCH_ROLES,
+    'facilitator': _HIGH_SEARCH_ROLES,
+    'proctor': _HIGH_SEARCH_ROLES,
+    'organizer': _HIGH_SEARCH_ROLES,
 }
 
 # ---------- helpers ----------
@@ -182,19 +195,20 @@ def _write_provisioning_summary(
             'message': message,
         })
 
-        # Azure AI Search role row (always included when search service is configured).
+        # Azure AI Search role rows (one per paired search role; included when search configured).
         if search_scope:
-            rows.append({
-                'upn': upn,
-                'object_id': object_id,
-                'role_key': role,
-                'role_display_name': SEARCH_ROLE_DISPLAY_NAMES.get(role, role),
-                'role_definition_id': SEARCH_ROLE_DEFINITION_IDS.get(role, ''),
-                'project_name': '',
-                'scope': 'search',
-                'status': status,
-                'message': message,
-            })
+            for search_role_name, search_role_id in SEARCH_ROLES.get(role, []):
+                rows.append({
+                    'upn': upn,
+                    'object_id': object_id,
+                    'role_key': role,
+                    'role_display_name': search_role_name,
+                    'role_definition_id': search_role_id,
+                    'project_name': '',
+                    'scope': 'search',
+                    'status': status,
+                    'message': message,
+                })
 
     with audit_path.open('w', encoding='utf-8', newline='') as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
@@ -255,6 +269,8 @@ def _write_attendee_markdowns(
             f'FOUNDRY_PROJECT_NAME={project_name}\n'
             f'FOUNDRY_PROJECT_ENDPOINT={project_endpoint}\n'
             f'AGENT_NAME=acl-remedy-advisor\n'
+            f'KNOWLEDGE_BASE_NAME=acl-remedy-knowledge-{project_name}\n'
+            f'TOOLBOX_NAME=acl-remedy-toolbox\n'
             f'AZURE_OPENAI_ENDPOINT={openai_endpoint}\n'
             f'{search_line}\n'
             f'MCP_SERVER_PORT=8080\n'

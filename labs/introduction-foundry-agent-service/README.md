@@ -15,15 +15,17 @@ The module pages are generated automatically during docs build and preview from 
 
 ## Modules
 
-1. [Setup](./01-setup/README.md)
-1. [Foundry Portal Walkthrough](./02-foundry-portal-walkthrough/README.md)
-1. [Foundry Toolkit for VS Code](./03-foundry-toolkit-vscode/README.md)
-1. [Prompt Agents](./04-prompt-based-agents/README.md)
-1. [Agent Tools and Evaluations](./05-agent-tools-and-evaluations/README.md)
-1. [MCP Tools](./06-mcp-tools/README.md)
-1. [Foundry Toolboxes (optional)](./07-foundry-toolboxes/README.md)
-1. [Foundry IQ](./08-foundry-iq/README.md)
-1. [Agent Framework Python](./09-agent-framework-python/README.md)
-1. [Hosted Agents](./10-hosted-agents/README.md)
-1. [Agent Ops and Agent ID](./11-agent-ops-and-agent-id/README.md)
-1. [Publishing Agents (optional)](./12-publishing-agents/README.md)
+| # | Module | Estimated Time | Required | End State |
+|---|--------|----------------|:--------:|-----------|
+| 1 | [Setup](./01-setup/README.md) | 15 min | ✅ | Working environment with verified Foundry access — no agent created yet. |
+| 2 | [Foundry Portal Walkthrough](./02-foundry-portal-walkthrough/README.md) | 10 min | ✅ | Comfortable navigating the portal — nothing created. |
+| 3 | [Foundry Toolkit for VS Code](./03-foundry-toolkit-vscode/README.md) | 15 min | ✅ | Foundry Toolkit installed and connected to your project in VS Code. |
+| 4 | [Prompt Agents](./04-prompt-based-agents/README.md) | 20 min | ✅ | The `acl-remedy-advisor` prompt agent created and chattable. |
+| 5 | [Agent Tools and Evaluations](./05-agent-tools-and-evaluations/README.md) | 30 min | ✅ | `acl-remedy-advisor` extended with tools plus an evaluation run. |
+| 6 | [MCP Tools](./06-mcp-tools/README.md) | 30 min | ✅ | A running `retail_remedy_ops` MCP server wired into the agent. |
+| 7 | [Foundry IQ](./07-foundry-iq/README.md) | 25 min | ✅ | A Foundry IQ knowledge base grounding the agent's answers. |
+| 8 | [Agent Framework Python (Planned)](./08-agent-framework-python/README.md) | TBD | ✅ | A Python Agent Framework app driving the agent. |
+| 9 | [Hosted Agents (Planned)](./09-hosted-agents/README.md) | TBD | ✅ | A hosted agent deployed in your Foundry project. |
+| 10 | [Foundry Toolboxes (Incomplete)](./10-foundry-toolboxes/README.md) | 30 min | ✅ | An `acl-remedy-toolbox` consumed from a Python Agent Framework app. |
+| 11 | [Agent Ops and Agent ID (Planned)](./11-agent-ops-and-agent-id/README.md) | TBD | | Agent identity and operational monitoring configured. |
+| 12 | [Publishing Agents (Planned)](./12-publishing-agents/README.md) | TBD | | A published agent ready for consumers. |

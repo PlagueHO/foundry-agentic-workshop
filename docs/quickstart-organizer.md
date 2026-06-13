@@ -64,7 +64,7 @@ azd env set AZURE_ATTENDEE_LIST '[{"upn":"ana@contoso.com"},{"upn":"ben@contoso.
 
 | Role key | Capability | Scope |
 |----------|------------|-------|
-| `foundry-user` | Build agents, create connections, and use deployed models. Least privilege. Cannot complete Module 08 (Foundry IQ) or Module 12 (Publishing Agents). | Project |
+| `foundry-user` | Build agents, create connections, and use deployed models. Least privilege. Cannot complete Module 07 (Foundry IQ) or Module 12 (Publishing Agents). | Project |
 | `foundry-project-manager` | Create Foundry IQ knowledge bases, publish agents, plus everything above. **Recommended default for lab deployments.** | Account |
 | `foundry-account-owner` | Deploy models plus everything above. | Account |
 | `foundry-owner` | Full build and manage. | Account |
