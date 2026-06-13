@@ -31,7 +31,7 @@ The Foundry Toolkit extension (`ms-windows-ai-studio.windows-ai-studio`) is pre-
   <details>
   <summary>📸 Screenshot: Foundry Toolkit on the Visual Studio Marketplace</summary>
 
-  ![Foundry Toolkit for VS Code on the Visual Studio Marketplace showing 1.1M installs and the Install button](../../../docs/assets/screenshots/foundry-toolkit-marketplace.png)
+  ![Foundry Toolkit for VS Code on the Visual Studio Marketplace showing 1.1M installs and the Install button](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-03/01-foundry-toolkit-marketplace.png)
 
   </details>
 
@@ -69,7 +69,7 @@ With the Azure identity confirmed, link the Foundry Toolkit to your assigned pro
   <details>
   <summary>📸 Screenshot: Foundry Toolkit My Resources panel</summary>
 
-  ![Foundry Toolkit My Resources panel showing lab-attendee-1 project expanded with chat and embedding models visible](../../../docs/assets/screenshots/03-foundry-toolkit-my-resources.png)
+  ![Foundry Toolkit My Resources panel showing lab-attendee-1 project expanded with chat and embedding models visible](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-03/02-foundry-toolkit-my-resources.png)
 
   </details>
 
@@ -82,7 +82,7 @@ The Foundry Toolkit sidebar has three collapsible sections.
 <details>
 <summary>📸 Screenshot: Foundry Toolkit sidebar sections</summary>
 
-![Microsoft Foundry Toolkit for VS Code extension interface showing My Resources with lab-attendee-1 project expanded and Developer Tools sections](../../../docs/assets/screenshots/03-foundry-toolkit-my-resources.png)
+![Microsoft Foundry Toolkit for VS Code extension interface showing My Resources with lab-attendee-1 project expanded and Developer Tools sections](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-03/02-foundry-toolkit-my-resources.png)
 
 </details>
 
@@ -101,7 +101,7 @@ The Foundry Toolkit sidebar has three collapsible sections.
   <details>
   <summary>📸 Screenshot: VS Code command palette with Foundry Toolkit commands</summary>
 
-  ![VS Code command palette showing available Foundry Toolkit commands such as Open Model Catalog and Open Playground](../../../docs/assets/screenshots/03-foundry-toolkit-command-palette.png)
+  ![VS Code command palette showing available Foundry Toolkit commands such as Open Model Catalog and Open Playground](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-03/03-foundry-toolkit-command-palette.png)
 
   </details>
 
@@ -126,7 +126,7 @@ The Model Catalog lets you browse all models available across providers, not jus
   <details>
   <summary>📸 Screenshot: Foundry Toolkit model catalog</summary>
 
-  ![Foundry Toolkit model catalog inside VS Code showing model cards with filters for publisher and model type](../../../docs/assets/screenshots/03-foundry-toolkit-models-view.png)
+  ![Foundry Toolkit model catalog inside VS Code showing model cards with filters for publisher and model type](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-03/04-foundry-toolkit-models-view.png)
 
   </details>
 
@@ -174,7 +174,7 @@ Test a deployed model directly in VS Code without writing any code.
   <details>
   <summary>📸 Screenshot: Model Playground response</summary>
 
-  ![Model Playground showing the chat model responding as a Contoso Outdoors retail assistant with return policy and waterproof boot options](../../../docs/assets/screenshots/03-foundry-toolkit-playground-response.png)
+  ![Model Playground showing the chat model responding as a Contoso Outdoors retail assistant with return policy and waterproof boot options](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-03/05-foundry-toolkit-playground-response.png)
 
   </details>
 
@@ -196,7 +196,7 @@ Foundry Toolkit can generate a ready-to-run Python (or TypeScript) file that cal
   <details>
   <summary>📸 Screenshot: Generated Python sample code</summary>
 
-  ![Generated Python sample code file showing a synchronous API call in VS Code](../../../docs/assets/screenshots/03-foundry-toolkit-sample-code.png)
+  ![Generated Python sample code file showing a synchronous API call in VS Code](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-03/06-foundry-toolkit-sample-code.png)
 
   </details>
 

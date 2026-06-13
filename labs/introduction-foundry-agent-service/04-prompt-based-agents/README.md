@@ -60,7 +60,7 @@ Both produce the same agent. This module uses Agent Builder so you can see the c
   <details>
   <summary>📸 Screenshot: Agent Builder — Create Agent</summary>
 
-  ![Foundry Toolkit Developer Tools section showing the Create Agent option leading to Agent Builder](../../../docs/assets/screenshots/04-agent-builder-new.png)
+  ![Foundry Toolkit Developer Tools section showing the Create Agent option leading to Agent Builder](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-04/01-agent-builder-new.png)
 
   </details>
 
@@ -101,7 +101,7 @@ Both produce the same agent. This module uses Agent Builder so you can see the c
   <details>
   <summary>📸 Screenshot: Agent Builder — configured instructions</summary>
 
-  ![Agent Builder showing acl-remedy-advisor configured with the chat model and instructions filled in](../../../docs/assets/screenshots/04-agent-builder-config.png)
+  ![Agent Builder showing acl-remedy-advisor configured with the chat model and instructions filled in](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-04/02-agent-builder-config.png)
 
   </details>
 
@@ -115,7 +115,7 @@ Both produce the same agent. This module uses Agent Builder so you can see the c
   <details>
   <summary>📸 Screenshot: Agent Builder — Web search tool added</summary>
 
-  ![Agent Builder Configured tools dialog showing Web search selected with a checkmark](../../../docs/assets/screenshots/04-agent-builder-web-search.png)
+  ![Agent Builder Configured tools dialog showing Web search selected with a checkmark](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-04/03-agent-builder-web-search.png)
 
   </details>
 
@@ -138,7 +138,7 @@ Both produce the same agent. This module uses Agent Builder so you can see the c
   <details>
   <summary>📸 Screenshot: Agent Builder — playground response</summary>
 
-  ![Agent Builder playground showing the acl-remedy-advisor agent responding with ACCC citations and major/minor failure analysis](../../../docs/assets/screenshots/04-agent-playground-test.png)
+  ![Agent Builder playground showing the acl-remedy-advisor agent responding with ACCC citations and major/minor failure analysis](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-04/04-agent-playground-test.png)
 
   </details>
 
@@ -257,7 +257,7 @@ Every conversation your code creates is recorded by Foundry Agent Service and vi
   <details>
   <summary>📸 Screenshot: Agent Builder — Conversations tab</summary>
 
-  ![Agent Builder Conversations tab showing a list of completed conversations with token counts and timestamps](../../../docs/assets/screenshots/04-agent-conversations-list.png)
+  ![Agent Builder Conversations tab showing a list of completed conversations with token counts and timestamps](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-04/05-agent-conversations-list.png)
 
   </details>
 
@@ -272,7 +272,7 @@ Every conversation your code creates is recorded by Foundry Agent Service and vi
   <details>
   <summary>📸 Screenshot: Agent Builder — conversation detail</summary>
 
-  ![Agent Builder conversation detail showing the agentic loop: user message, web_search_call tool step, and final message response](../../../docs/assets/screenshots/04-agent-conversation-detail.png)
+  ![Agent Builder conversation detail showing the agentic loop: user message, web_search_call tool step, and final message response](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-04/06-agent-conversation-detail.png)
 
   </details>
 

@@ -47,7 +47,7 @@ You land on the **Home** tab for your project.
 <details>
 <summary>📸 Screenshot: Microsoft Foundry portal Home tab</summary>
 
-![Microsoft Foundry portal Home tab showing the project endpoint and quick-start actions](../../../docs/assets/screenshots/02-home-tab.png)
+![Microsoft Foundry portal Home tab showing the project endpoint and quick-start actions](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-02/01-home-tab.png)
 
 </details>
 
@@ -70,7 +70,7 @@ Click **Discover** in the top navigation bar.
 <details>
 <summary>📸 Screenshot: Microsoft Foundry Discover tab</summary>
 
-![Microsoft Foundry Discover tab showing featured models and provider collections](../../../docs/assets/screenshots/02-discover-tab.png)
+![Microsoft Foundry Discover tab showing featured models and provider collections](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-02/02-discover-tab.png)
 
 </details>
 
@@ -91,7 +91,7 @@ The Discover tab is the starting point for finding models, tools, and solution t
   <details>
   <summary>📸 Screenshot: Model catalog</summary>
 
-  ![Model catalog showing 90 available models with filters for availability, source, and inference tasks](../../../docs/assets/screenshots/02-discover-models.png)
+  ![Model catalog showing 90 available models with filters for availability, source, and inference tasks](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-02/03-discover-models.png)
 
   </details>
 
@@ -109,7 +109,7 @@ Click **Build** in the top navigation bar.
 <details>
 <summary>📸 Screenshot: Microsoft Foundry Build tab</summary>
 
-![Microsoft Foundry Build tab showing the Agents section with the left-sidebar navigation](../../../docs/assets/screenshots/02-build-tab.png)
+![Microsoft Foundry Build tab showing the Agents section with the left-sidebar navigation](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-02/04-build-tab.png)
 
 </details>
 
@@ -136,7 +136,7 @@ Click **Operate** in the top navigation bar.
 <details>
 <summary>📸 Screenshot: Microsoft Foundry Operate tab</summary>
 
-![Microsoft Foundry Operate tab showing the Overview dashboard with running agents, cost, success rate, and token usage](../../../docs/assets/screenshots/02-operate-tab.png)
+![Microsoft Foundry Operate tab showing the Overview dashboard with running agents, cost, success rate, and token usage](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-02/05-operate-tab.png)
 
 </details>
 

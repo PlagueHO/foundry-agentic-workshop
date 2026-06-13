@@ -49,7 +49,22 @@ export default defineConfig({
   outDir: 'dist',
   appearance: 'auto',
   markdown: {
-    config: taskListPlugin,
+    config: (md: any) => {
+      // Add v-pre to all inline code elements so that content such as
+      // `${{ github.ref }}` is not interpreted as a Vue template expression
+      // during SSR compilation.
+      const defaultCodeInline: ((tokens: any[], idx: number, options: any, env: any, self: any) => string) | undefined =
+        md.renderer.rules.code_inline
+      md.renderer.rules.code_inline = (tokens: any[], idx: number, options: any, env: any, self: any) => {
+        tokens[idx].attrSet('v-pre', '')
+        if (defaultCodeInline) {
+          return defaultCodeInline(tokens, idx, options, env, self)
+        }
+        const token = tokens[idx]
+        return `<code${self.renderAttrs(token)}>${md.utils.escapeHtml(token.content)}</code>`
+      }
+      taskListPlugin(md)
+    },
   },
   themeConfig: {
     lightbox: true,

@@ -101,7 +101,7 @@ The built-in evaluators relevant to an agent with tools are:
   <details>
   <summary>📸 Screenshot: Select a tool dialog</summary>
 
-  ![Select a tool dialog showing the Configured tab with Foundry Tools including Web search (already added), Code Interpreter, File Search, Grounding with Bing Search, and Azure AI Search](../../../docs/assets/screenshots/05-add-tool-dialog.png)
+  ![Select a tool dialog showing the Configured tab with Foundry Tools including Web search (already added), Code Interpreter, File Search, Grounding with Bing Search, and Azure AI Search](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/01-add-tool-dialog.png)
 
   </details>
 
@@ -116,7 +116,7 @@ The built-in evaluators relevant to an agent with tools are:
   <details>
   <summary>📸 Screenshot: Agent Builder — two tools configured</summary>
 
-  ![Agent Builder TOOL section showing both Web search and Code Interpreter listed as configured tools](../../../docs/assets/screenshots/05-agent-tools-added.png)
+  ![Agent Builder TOOL section showing both Web search and Code Interpreter listed as configured tools](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/02-agent-tools-added.png)
 
   </details>
 
@@ -154,7 +154,7 @@ With two tools available, the agent needs guidance on *when* to use each one. Wi
   <details>
   <summary>📸 Screenshot: Agent Builder — agent saved as v2</summary>
 
-  ![Agent Builder header and sidebar showing acl-remedy-advisor saved as v2, with v1 and v2 visible in the sidebar](../../../docs/assets/screenshots/05-agent-saved-v2.png)
+  ![Agent Builder header and sidebar showing acl-remedy-advisor saved as v2, with v1 and v2 visible in the sidebar](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/03-agent-saved-v2.png)
 
   </details>
 
@@ -175,7 +175,7 @@ With two tools available, the agent needs guidance on *when* to use each one. Wi
   <details>
   <summary>📸 Screenshot: Agent Builder — playground response (v2)</summary>
 
-  ![Agent Builder playground showing the acl-remedy-advisor v2 agent responding with ACL classification, remedy options, and ACCC citations](../../../docs/assets/screenshots/05-playground-response.png)
+  ![Agent Builder playground showing the acl-remedy-advisor v2 agent responding with ACL classification, remedy options, and ACCC citations](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/04-playground-response.png)
 
   </details>
 
@@ -197,7 +197,7 @@ Evaluations run your agent against a dataset and score each response automatical
   <details>
   <summary>📸 Screenshot: Foundry portal — Evaluation tab</summary>
 
-  ![Foundry portal showing the Evaluation tab for acl-remedy-advisor agent with Automatic Evaluation, Human Evaluation, and Red team sub-tabs. No evaluations are listed.](../../../docs/assets/screenshots/05-portal-evaluation-tab.png)
+  ![Foundry portal showing the Evaluation tab for acl-remedy-advisor agent with Automatic Evaluation, Human Evaluation, and Red team sub-tabs. No evaluations are listed.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/05-portal-evaluation-tab.png)
 
   </details>
 
@@ -211,7 +211,7 @@ Evaluations run your agent against a dataset and score each response automatical
   <details>
   <summary>📸 Screenshot: Create new evaluation — Step 1 Target</summary>
 
-  ![Foundry portal Create new evaluation wizard showing Step 1 with Agent selected and acl-remedy-advisor v2 pre-checked in the agent list](../../../docs/assets/screenshots/05-portal-eval-step1-target.png)
+  ![Foundry portal Create new evaluation wizard showing Step 1 with Agent selected and acl-remedy-advisor v2 pre-checked in the agent list](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/06-portal-eval-step1-target.png)
 
   </details>
 
@@ -226,7 +226,7 @@ Evaluations run your agent against a dataset and score each response automatical
   <details>
   <summary>📸 Screenshot: Create new evaluation — Step 2 Scope</summary>
 
-  ![Foundry portal Step 2 Scope showing Individual turns selected with explanatory text about best use cases on the right panel](../../../docs/assets/screenshots/05-portal-eval-step2-scope.png)
+  ![Foundry portal Step 2 Scope showing Individual turns selected with explanatory text about best use cases on the right panel](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/07-portal-eval-step2-scope.png)
 
   </details>
 
@@ -244,7 +244,7 @@ Evaluations run your agent against a dataset and score each response automatical
   <details>
   <summary>📸 Screenshot: Create new evaluation — Step 3 Data</summary>
 
-  ![Foundry portal Step 3 Data showing Synthetic generation selected with Generate button and other options below it](../../../docs/assets/screenshots/05-portal-eval-step3-data.png)
+  ![Foundry portal Step 3 Data showing Synthetic generation selected with Generate button and other options below it](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/08-portal-eval-step3-data.png)
 
   </details>
 
@@ -266,7 +266,7 @@ Evaluations run your agent against a dataset and score each response automatical
   <details>
   <summary>📸 Screenshot: Generate synthetic dataset dialog</summary>
 
-  ![Generate synthetic dataset dialog showing dataset name, Model set to chat, Number of rows set to 5, and the ACL scenario prompt filled in](../../../docs/assets/screenshots/05-portal-eval-synthetic-configured.png)
+  ![Generate synthetic dataset dialog showing dataset name, Model set to chat, Number of rows set to 5, and the ACL scenario prompt filled in](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/09-portal-eval-synthetic-configured.png)
 
   </details>
 
@@ -275,7 +275,7 @@ Evaluations run your agent against a dataset and score each response automatical
   <details>
   <summary>📸 Screenshot: Synthetic dataset configured</summary>
 
-  ![Foundry portal Step 3 Data showing the configured synthetic dataset card with name, Version 1.0, and a Synthetic generation badge](../../../docs/assets/screenshots/05-portal-eval-data-confirmed.png)
+  ![Foundry portal Step 3 Data showing the configured synthetic dataset card with name, Version 1.0, and a Synthetic generation badge](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/10-portal-eval-data-confirmed.png)
 
   </details>
 
@@ -291,7 +291,7 @@ Evaluations run your agent against a dataset and score each response automatical
   <details>
   <summary>📸 Screenshot: Create new evaluation — Step 4 Criteria</summary>
 
-  ![Foundry portal Step 4 Criteria showing 19 auto-suggested evaluators grouped into Agents (9), Quality (4), and Safety (6) categories with a mapped fields summary on the right panel](../../../docs/assets/screenshots/05-portal-eval-criteria-full.png)
+  ![Foundry portal Step 4 Criteria showing 19 auto-suggested evaluators grouped into Agents (9), Quality (4), and Safety (6) categories with a mapped fields summary on the right panel](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/11-portal-eval-criteria-full.png)
 
   </details>
 
@@ -312,7 +312,7 @@ Evaluations run your agent against a dataset and score each response automatical
   <details>
   <summary>📸 Screenshot: Create new evaluation — Step 5 Review</summary>
 
-  ![Foundry portal Step 5 Review showing the evaluation name field set to acl-remedy-advisor-tools-eval with a Summary panel on the right listing Target, Scope, Dataset, and Evaluators](../../../docs/assets/screenshots/05-portal-eval-review-named.png)
+  ![Foundry portal Step 5 Review showing the evaluation name field set to acl-remedy-advisor-tools-eval with a Summary panel on the right listing Target, Scope, Dataset, and Evaluators](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/12-portal-eval-review-named.png)
 
   </details>
 
@@ -326,7 +326,7 @@ Evaluations run your agent against a dataset and score each response automatical
   <details>
   <summary>📸 Screenshot: Evaluation run submitted</summary>
 
-  ![Foundry portal acl-remedy-advisor-tools-eval detail page showing the evaluation run with Completed status and the list of Evaluators below](../../../docs/assets/screenshots/05-portal-eval-submitted.png)
+  ![Foundry portal acl-remedy-advisor-tools-eval detail page showing the evaluation run with Completed status and the list of Evaluators below](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/13-portal-eval-submitted.png)
 
   </details>
 
@@ -336,7 +336,7 @@ Evaluations run your agent against a dataset and score each response automatical
   <details>
   <summary>📸 Screenshot: Evaluation results</summary>
 
-  ![Foundry portal evaluation run results page showing Status Completed with per-evaluator score columns including Groundedness, Violence, SelfHarm, and IndirectAttack](../../../docs/assets/screenshots/05-portal-eval-results.png)
+  ![Foundry portal evaluation run results page showing Status Completed with per-evaluator score columns including Groundedness, Violence, SelfHarm, and IndirectAttack](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/14-portal-eval-results.png)
 
   </details>
 
@@ -360,7 +360,7 @@ For extra credit, scaffold a local evaluation suite using the Foundry Toolkit. T
   <details>
   <summary>📸 Screenshot: Evaluation Setup screen</summary>
 
-  ![Agent Builder Evaluation tab showing the Evaluation Setup screen with a Scaffold Evaluation Code button and a link to continue in Foundry](../../../docs/assets/screenshots/05-evaluation-setup.png)
+  ![Agent Builder Evaluation tab showing the Evaluation Setup screen with a Scaffold Evaluation Code button and a link to continue in Foundry](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/15-evaluation-setup.png)
 
   </details>
 
@@ -375,7 +375,7 @@ For extra credit, scaffold a local evaluation suite using the Foundry Toolkit. T
   <details>
   <summary>📸 Screenshot: Select Evaluator(s) dialog</summary>
 
-  ![Select Evaluator(s) dialog showing evaluators including Custom Prompt Evaluator, Custom Code Evaluator, Intent Resolution, Tool Call Accuracy, Task Adherence, and Relevance](../../../docs/assets/screenshots/05-evaluator-selection.png)
+  ![Select Evaluator(s) dialog showing evaluators including Custom Prompt Evaluator, Custom Code Evaluator, Intent Resolution, Tool Call Accuracy, Task Adherence, and Relevance](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/16-evaluator-selection.png)
 
   </details>
 
@@ -390,7 +390,7 @@ For extra credit, scaffold a local evaluation suite using the Foundry Toolkit. T
   <details>
   <summary>📸 Screenshot: Evaluators selected</summary>
 
-  ![Select Evaluator(s) dialog showing Tool Call Accuracy and Task Adherence checked with 2 Selected counter in the header](../../../docs/assets/screenshots/05-evaluators-selected.png)
+  ![Select Evaluator(s) dialog showing Tool Call Accuracy and Task Adherence checked with 2 Selected counter in the header](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-05/17-evaluators-selected.png)
 
   </details>
 

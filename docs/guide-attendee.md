@@ -57,7 +57,6 @@ cd foundry-agentic-workshop
    ```
 
 > [!NOTE]
-> ![Foundry Toolkit for VS Code in the Visual Studio Marketplace, showing the Install button, extension description, and 1 million+ installs.](./assets/screenshots/foundry-toolkit-marketplace.png)
 > *Foundry Toolkit for VS Code on the Visual Studio Marketplace.*
 
 ## Configure your environment file
@@ -110,7 +109,7 @@ it against the assignment your organizer shared.
 1. Confirm the project home page loads showing your project endpoint.
 
    > [!NOTE]
-   > ![New Microsoft Foundry project home page showing "Welcome, Azure Lab Attendee 1" with project endpoint and Azure OpenAI endpoint fields, and cards for Create agents, Explore playgrounds, and Find models.](./assets/screenshots/new-foundry-project-home.png)
+   > ![New Microsoft Foundry project home page showing "Welcome, Azure Lab Attendee 1" with project endpoint and Azure OpenAI endpoint fields, and cards for Create agents, Explore playgrounds, and Find models.](./assets/screenshots/foundry-new-foundry-project-home.png)
    > *The New Foundry project home page showing your project endpoint and available actions.*
 
 ## Start the labs

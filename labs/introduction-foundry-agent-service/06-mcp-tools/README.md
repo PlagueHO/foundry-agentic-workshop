@@ -126,7 +126,7 @@ The agent runs in the cloud and cannot reach `localhost`. You must expose port 8
   <details>
   <summary>📸 Screenshot: Foundry portal — Agents list</summary>
 
-  ![Foundry portal Agents list showing acl-remedy-advisor at version 3](../../../docs/assets/screenshots/lab-06/01-agents-list.png)
+  ![Foundry portal Agents list showing acl-remedy-advisor](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-06/01-agents-list.png)
 
   </details>
 
@@ -138,9 +138,12 @@ The agent runs in the cloud and cannot reach `localhost`. You must expose port 8
 
   | Field | Value |
   |---|---|
-  | Label / Name | `retail_remedy_ops` |
+  | Label / Name | `retail-remedy-ops` |
   | Server URL | The tunnel URL you copied, ending in `/mcp` |
   | Authentication | None / Anonymous |
+
+  > [!NOTE]
+  > **Naming difference between the portal and the solution script.** The portal connection name only allows letters, numbers, **dashes**, and dots — so you enter `retail-remedy-ops` (with dashes). The Python solution script (`solution/create_agent_with_mcp.py`) uses the Azure AI Agents SDK, whose `server_label` only allows letters, numbers, and **underscores** — so it uses `retail_remedy_ops` (with underscores). The two values intentionally differ because each platform enforces a different naming rule; both refer to the same MCP server.
 
 - [ ] Confirm and save. Agent Builder discovers the tools from the server's `/mcp` endpoint.
 - [ ] Verify that all six tool names appear in the tool list (`lookup_purchase`, `get_product_profile`, `search_store_policy`, `find_replacement_options`, `draft_remedy_summary`, `create_remedy_case`).
@@ -150,7 +153,7 @@ The agent runs in the cloud and cannot reach `localhost`. You must expose port 8
   <details>
   <summary>📸 Screenshot: Agent playground with all tool groups connected</summary>
 
-  ![Agent playground showing Code Interpreter, Web Search, and retail_remedy_ops MCP tool connected to acl-remedy-advisor v3](../../../docs/assets/screenshots/lab-06/02-agent-playground.png)
+  ![Agent playground showing Code Interpreter, Web Search, and the retail remedy operations MCP tool connected to acl-remedy-advisor](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-06/02-agent-playground.png)
 
   </details>
 
@@ -185,16 +188,16 @@ The agent needs guidance on when to call the MCP tools. Without it the model may
   warranty, policy, or stock details — call the MCP tools instead.
   ```
 
-#### 9. Save as v3
+#### 9. Save the new version
 
 - [ ] Click **Save to Foundry** in Agent Builder.
-- [ ] Confirm the version increments to **v3** (v1: Web search only; v2: + Code Interpreter; v3: + MCP tools).
+- [ ] Confirm Agent Builder saves a **new version** of the agent. Saving any change — including adding the MCP tool — creates a new version. The exact number depends on how many times the agent has been saved before; for example, an agent created by the Module 05 solution script starts at **Version 1**, so this save produces **Version 2**.
 
 ### Part 5 — Test with a realistic scenario
 
 #### 10. Run the battery-failure test prompt
 
-- [ ] Open the playground for `acl-remedy-advisor v3`.
+- [ ] Open the playground for `acl-remedy-advisor`.
 - [ ] Paste the following prompt and send it:
 
   ```text
@@ -208,7 +211,7 @@ The agent needs guidance on when to call the MCP tools. Without it the model may
   <details>
   <summary>📸 Screenshot: Portal playground with battery-failure prompt</summary>
 
-  ![Portal playground with the battery-failure prompt ready to send](../../../docs/assets/screenshots/lab-06/05-playground-prompt.png)
+  ![Portal playground with the battery-failure prompt ready to send](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-06/05-playground-prompt.png)
 
   </details>
 
@@ -217,18 +220,42 @@ The agent needs guidance on when to call the MCP tools. Without it the model may
   > [!NOTE]
   > If the portal playground returns a `missing_required_parameter: tools[1].container` error, this means the Code Interpreter tool needs to be re-added through the Agent Builder UI (the code fallback script does not configure the container automatically). Use `starter.py` from the terminal to test instead, or remove and re-add Code Interpreter through Agent Builder.
 
-#### 11. Inspect the run trace
+#### 11. Approve the MCP tool calls
+
+The first time the agent calls an MCP tool, the playground pauses and shows an **Approve / Deny** prompt. This is the MCP human-in-the-loop approval gate — the agent will not call the tool until you approve it.
+
+- [ ] When the **Approve / Deny** prompt appears, click the dropdown arrow on the **Approve** button.
+- [ ] Select **Always approve all tools** so the remaining tool calls in this run proceed without prompting you for each one.
+
+  > [!NOTE]
+  > The Approve menu also offers **Approve once** (approve this single call) and **Always approve this tool** (auto-approve future calls to this one tool). Until you save the agent with the approval preference applied, the playground may still prompt once per new tool the agent calls.
+
+  <details>
+  <summary>📸 Screenshot: MCP tool approval prompt</summary>
+
+  ![Playground showing the Approve / Deny prompt for the lookup_purchase MCP tool call](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-06/10-mcp-approval-request.png)
+
+  </details>
+
+#### 12. Inspect the run trace
 
 - [ ] Open the **Run** trace in the playground or the Runs panel.
 - [ ] Confirm MCP tool calls appear in the trace (e.g., `lookup_purchase`, `get_product_profile`, `search_store_policy`).
 - [ ] Confirm Code Interpreter is called to calculate the pro-rata refund.
 - [ ] Confirm the final response includes a clear remedy recommendation citing store policy and ACL.
 
+  <details>
+  <summary>📸 Screenshot: Completed run with MCP tool calls</summary>
+
+  ![Completed agent answer with the pro-rata refund calculation and the retail remedy operations MCP tool plus Code Interpreter trace chips](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-06/11-mcp-final-answer.png)
+
+  </details>
+
 ### Part 7 (extra credit) — Browse the run trace in the Foundry portal
 
 The **Traces** tab in the Foundry portal shows each agent conversation as a structured trace when Application Insights is connected to your Foundry project. This lets you inspect the exact sequence of MCP tool calls, model reasoning steps, and Code Interpreter invocations.
 
-#### 13. Open the agent in the Foundry portal
+#### 14. Open the agent in the Foundry portal
 
 - [ ] In a browser, navigate to [Microsoft Foundry](https://ai.azure.com) and sign in.
 - [ ] In the left navigation, click **Build** → **Agents**.
@@ -237,25 +264,25 @@ The **Traces** tab in the Foundry portal shows each agent conversation as a stru
   <details>
   <summary>📸 Screenshot: Foundry portal — Agents list</summary>
 
-  ![Foundry portal Agents list showing acl-remedy-advisor at version 3](../../../docs/assets/screenshots/lab-06/01-agents-list.png)
+  ![Foundry portal Agents list showing acl-remedy-advisor](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-06/01-agents-list.png)
 
   </details>
 
-#### 14. Open the Traces tab
+#### 15. Open the Traces tab
 
 - [ ] In the agent view, click the **Traces** tab.
 
   <details>
   <summary>📸 Screenshot: Traces tab for acl-remedy-advisor</summary>
 
-  ![Traces tab for acl-remedy-advisor — shows Conversations and Responses sub-tabs](../../../docs/assets/screenshots/lab-06/04-traces-tab.png)
+  ![Traces tab for acl-remedy-advisor — shows Conversations and Responses sub-tabs](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-06/04-traces-tab.png)
 
   </details>
 
   > [!NOTE]
   > Trace data requires **Application Insights** to be connected to your Foundry project. If the Traces tab shows a "Connect" banner, click it to link an Application Insights resource. Once connected, future conversations will appear as traces automatically.
 
-#### 15. Inspect the MCP tool call flow
+#### 16. Inspect the MCP tool call flow
 
 - [ ] Under the **Conversations** sub-tab, click any conversation row to expand it.
 - [ ] In the trace timeline, locate the MCP tool call steps — they appear as `mcp_call` entries labelled with the tool name (e.g., `lookup_purchase`, `get_product_profile`).
@@ -266,7 +293,7 @@ The **Traces** tab in the Foundry portal shows each agent conversation as a stru
 
 ### Part 6 (optional) — Verify from code
 
-#### 12. Chat from the terminal
+#### 13. Chat from the terminal
 
 - [ ] In a new terminal (keep the server terminal running), start the chat client:
 

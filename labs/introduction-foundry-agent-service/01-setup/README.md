@@ -94,7 +94,7 @@ Install the following before continuing:
   <details>
   <summary>📸 Screenshot: New Foundry toggle in the top navigation bar</summary>
 
-  ![New Foundry toggle in the top navigation bar](../../../docs/assets/screenshots/foundry-new-foundry-toggle.png)
+  ![New Foundry toggle in the top navigation bar](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-01/01-new-foundry-toggle.png)
 
   </details>
 
@@ -105,7 +105,7 @@ Install the following before continuing:
   <details>
   <summary>📸 Screenshot: New Foundry project home page</summary>
 
-  ![New Foundry project home page](../../../docs/assets/screenshots/new-foundry-project-home.png)
+  ![New Foundry project home page](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-01/02-new-foundry-project-home.png)
 
   </details>
 
