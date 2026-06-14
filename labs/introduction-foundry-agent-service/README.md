@@ -25,9 +25,9 @@ The module pages are generated automatically during docs build and preview from 
 | 6 | [MCP Tools](./06-mcp-tools/README.md) | 30 min | ✅ | A running `retail_remedy_ops` MCP server wired into the agent. |
 | 7 | [Foundry IQ](./07-foundry-iq/README.md) | 25 min | ✅ | A Foundry IQ knowledge base grounding the agent's answers. |
 | 8 | [Agent Framework Python](./08-agent-framework-python/README.md) | 25 min | ✅ | A Python Agent Framework app driving the agent. |
-| 9 | [Hosted Agents (Planned)](./09-hosted-agents/README.md) | TBD | ✅ | A hosted agent deployed in your Foundry project. |
-| 10 | [Foundry Toolboxes (Incomplete)](./10-foundry-toolboxes/README.md) | 30 min | ✅ | An `acl-remedy-toolbox` consumed from a Python Agent Framework app. |
-| 11 | [Agent Ops and Agent ID (Planned)](./11-agent-ops-and-agent-id/README.md) | TBD | | Agent identity and operational monitoring configured. |
+| 9 | [Hosted Agents](./09-hosted-agents/README.md) | 35 min | ✅ | A hosted agent deployed in your Foundry project as a container and as source code. |
+| 10 | [Foundry Toolboxes (Needs Testing)](./10-foundry-toolboxes/README.md) | 30 min | ✅ | An `acl-remedy-toolbox` consumed from a Python Agent Framework app. |
+| 11 | [Agent Ops and Agent ID (Incomplete)](./11-agent-ops-and-agent-id/README.md) | TBD | | Agent identity and operational monitoring configured. |
 | 12 | [Publishing Agents (Planned)](./12-publishing-agents/README.md) | TBD | | A published agent ready for consumers. |
 
 Total time: ~3-4 hours, depending on how many modules you complete and your familiarity with the concepts. Each module builds on the previous ones, so we recommend following them in order.

@@ -246,6 +246,22 @@ You complete [`src/starter.py`](https://github.com/PlagueHO/foundry-agentic-work
 
   </details>
 
+- [ ] Open the **Traces** tab and confirm the invocation from the previous step appears as a completed trace with MCP tool calls visible in the span tree. Then switch to the **Monitor** tab and confirm the agent run count and token usage reflect the invoke run.
+
+  <details>
+  <summary>📸 Screenshot: Hosted agent traces</summary>
+
+  ![Foundry portal Traces view for acl-remedy-advisor-hosted-code showing the invoke_agent span tree with HTTP POST and GET /mcp spans confirming retail MCP tool calls, a Chat span, and a nested model responses call.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-09/03-hosted-agent-traces.png)
+
+  </details>
+
+  <details>
+  <summary>📸 Screenshot: Hosted agent monitor</summary>
+
+  ![Foundry portal Monitor view for acl-remedy-advisor-hosted-code showing operational metrics including agent run count, total token usage, and tool call count recorded from the invoke run.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-09/04-hosted-agent-monitor.png)
+
+  </details>
+
 ## Validation
 
 - The deploy reports `Agent version is now active.` once the new version finishes building (`acl-remedy-advisor-hosted-code` for Part 2, `acl-remedy-advisor-hosted-container` for Part 1).
