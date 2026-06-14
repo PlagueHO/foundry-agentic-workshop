@@ -235,7 +235,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server from Module 06. You ne
 > python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py
 > ```
 >
-> The script creates the `acl-remedy-toolbox` toolbox with Web Search, the `retail_remedy_ops` MCP server, Code Interpreter, and Tool Search enabled, then prints the consumer endpoint URL. Set the new version as the default in the portal if it is not already, then continue with Part 3.
+> The script creates the `acl-remedy-toolbox` toolbox with Web Search, the `retail_remedy_ops` MCP server, Code Interpreter, and Tool Search enabled, promotes the new version to the toolbox default, then prints the consumer endpoint URL. Continue with Part 3.
 
 ---
 
@@ -315,28 +315,28 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
 - [ ] Confirm the printed response:
   - References the customer's purchase and the relevant store policy retrieved through the `retail_remedy_ops` tools.
   - Applies Australian Consumer Law reasoning (a major or minor failure and the appropriate remedy).
-  - Includes a calculated figure (such as a pro-rata refund) produced by Code Interpreter.
+  - Recommends a concrete next step for the customer (such as a repair, replacement, or refund).
 
-  > Because Tool Search is enabled, the agent first calls `tool_search` to discover the retail tools, then calls them through `call_tool` — it never receives the full tool list up front. Every tool reaches the agent through the single toolbox endpoint.
+  > Because Tool Search is enabled, the agent first calls `tool_search` to discover the retail tools, then calls them through `call_tool` — it never receives the full tool list up front. The agent calls only the tools each turn needs; for the `R-1007` scenario that is the `retail_remedy_ops` lookups. Web Search and Code Interpreter stay available through the same toolbox for questions that need an external ruling or a calculation (such as a pro-rata refund). Every tool reaches the agent through the single toolbox endpoint.
 
 #### 16. Review the run traces and metrics
 
-- [ ] Back in the portal, with `acl-remedy-advisor-hosted-code` open, select **Traces** (or **Monitoring → Traces**).
-- [ ] Open the most recent run and expand the tool calls. Confirm you can see the `tool_search` call followed by the discovered retail, web search, and code interpreter tool calls flowing through the toolbox.
+- [ ] Back in the portal, with `acl-remedy-advisor-hosted-code` open, select the **Traces** tab.
+- [ ] Open the most recent run and expand the trajectory. Confirm you can see the `execute_tool tool_search` span followed by the discovered `execute_tool call_tool` span flowing through the toolbox. For the `R-1007` scenario the dispatched tool is a `retail_remedy_ops` lookup; Web Search and Code Interpreter appear only on runs whose questions need them.
 
   <details>
   <summary>📸 Screenshot: Agent run traces</summary>
 
-  ![Foundry portal trace view for the hosted agent run, showing the tool_search call followed by the retail and code interpreter tool calls through the toolbox.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-10/10-agent-run-traces.png)
+  ![Foundry portal trace view for the hosted agent run, showing the tool_search span followed by the discovered retail tool call dispatched through the toolbox.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-10/10-agent-run-traces.png)
 
   </details>
 
-- [ ] Select **Monitoring** (or **Metrics**) and confirm the run appears in the request, latency, and token charts.
+- [ ] Select the **Monitor** tab and confirm the run appears in the operational charts — agent runs, token usage, and tool calls.
 
   <details>
   <summary>📸 Screenshot: Agent metrics</summary>
 
-  ![Foundry portal monitoring dashboard showing request, latency, and token metrics for the hosted agent.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-10/11-agent-metrics.png)
+  ![Foundry portal Monitor dashboard showing agent runs, token usage, and tool call metrics for the hosted agent.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-10/11-agent-metrics.png)
 
   </details>
 
@@ -347,8 +347,8 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
 - The `acl-remedy-toolbox` toolbox exists in your Foundry project containing **Web Search**, the `retail_remedy_ops` MCP server, and **Code Interpreter**, with **Tool Search** enabled and a default version set.
 - `python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/deploy_hosted_agent_code.py` publishes a new version of `acl-remedy-advisor-hosted-code` that reports **active**.
 - The new version appears in the portal **Agents** view for `acl-remedy-advisor-hosted-code`.
-- `python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py` runs to completion and prints a clear remedy recommendation citing store policy and Australian Consumer Law, including a calculated figure (such as a pro-rata refund) from Code Interpreter.
-- The portal **Traces** and **Monitoring** views show the run, with tool calls flowing through the toolbox via Tool Search.
+- `python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py` runs to completion and prints a clear remedy recommendation citing store policy and Australian Consumer Law, and recommending the appropriate remedy.
+- The portal **Traces** and **Monitor** views show the run, with tool calls (`tool_search` then `call_tool`) flowing through the toolbox via Tool Search.
 
 ## Congratulations 🎉
 

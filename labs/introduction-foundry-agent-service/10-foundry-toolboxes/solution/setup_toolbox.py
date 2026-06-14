@@ -8,7 +8,9 @@ uses through the Microsoft Agent Framework.
 The script:
   1. Creates the acl-remedy-toolbox toolbox version with Web Search, the Retail
      Remedy Operations MCP server, Code Interpreter, and Tool Search enabled.
-  2. Prints the toolbox consumer endpoint URL.
+  2. Promotes the newly created version to the toolbox default so consumers
+     (such as the hosted agent) resolve to it automatically.
+  3. Prints the toolbox consumer endpoint URL.
 
 Prerequisites:
   - MCP server running and publicly accessible via a dev tunnel or port
@@ -80,6 +82,13 @@ def run() -> None:
     )
     print(f'Toolbox created: {toolbox_version.name} (version: {toolbox_version.version})')
 
+    # Promote the new version to the toolbox default. create_version does not change the
+    # default, so without this the consumer endpoint (?api-version=v1) keeps resolving to the
+    # previous default version and the hosted agent would use a stale toolbox.
+    print(f'Setting version {toolbox_version.version} as the default for {toolbox_name} ...')
+    client.beta.toolboxes.update(name=toolbox_name, default_version=toolbox_version.version)
+    print(f'Default version for {toolbox_name} is now {toolbox_version.version}.')
+
     # Derive the consumer endpoint URL the hosted agent builds at runtime.
     toolbox_endpoint = (
         f'{endpoint.rstrip("/")}/toolboxes/{toolbox_name}/mcp?api-version=v1'
@@ -87,7 +96,6 @@ def run() -> None:
     print(f'Toolbox consumer endpoint: {toolbox_endpoint}')
     print()
     print('Next steps:')
-    print('  - Set this toolbox version as the default in the Foundry portal if it is not already.')
     print('  - Run deploy_hosted_agent_code.py to deploy the hosted agent that uses the toolbox.')
 
 
