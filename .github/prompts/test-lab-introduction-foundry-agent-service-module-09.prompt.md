@@ -77,7 +77,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 The hosted agent calls the **Retail Remedy Operations MCP server** from Module 06 over `MCP_SERVER_URL` at runtime. The server must be running and reachable on its public dev-tunnel URL for the deploy verification and invoke steps to succeed.
 
-1. Confirm the MCP server is running locally (Module 06 starts it with `python labs/introduction-foundry-agent-service/06-mcp-tools/src/server.py`).
+1. Confirm the MCP server is running locally (Module 06 starts it with `python shared/mcp-servers/retail-remedy-ops/src/server.py`).
 1. Confirm `MCP_SERVER_URL` points to the **public** dev-tunnel URL (ending in `/mcp`), not a `localhost` address — the hosted agent runs in Foundry's managed compute and cannot reach `localhost`.
 1. Confirm the public endpoint responds:
 

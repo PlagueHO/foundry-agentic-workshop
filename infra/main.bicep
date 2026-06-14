@@ -138,6 +138,9 @@ param foundryCapabilityHosts capabilityHostType[] = []
 ])
 param containerRegistrySku string = 'Basic'
 
+@description('Deploy the shared Azure Container Apps environment and the services that run in it (such as the Module 06 MCP server). Enabled by default; set to false to skip all Container Apps resources.')
+param azureContainerAppsDeploy bool = true
+
 var abbrs = loadJsonContent('./abbreviations.json')
 var modelDeployments = loadJsonContent('./model-deployments.json')
 
@@ -195,6 +198,15 @@ var keyVaultName = take(toLower(replace('${abbrs.keyVaultVaults}${environmentNam
 var cosmosDbAccountName = toLower(replace('${abbrs.cosmosDBAccounts}${environmentName}', '-', ''))
 var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
 var containerRegistryName = take(toLower(replace('${abbrs.containerRegistryRegistries}${environmentName}', '-', '')), 50)
+var containerAppsEnvironmentName = '${abbrs.appManagedEnvironments}${environmentName}'
+var mcpServerContainerAppName = take(toLower('${abbrs.appContainerApps}mcp-${environmentName}'), 32)
+var mcpServerIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}mcp-${environmentName}'
+
+// Principal that runs scripts/deploy-mcp-server.py and therefore needs push access to the shared
+// registry. Prefer an explicit AZURE_PRINCIPAL_ID; otherwise fall back to the principal running
+// the deployment (the signed-in user for an interactive `azd provision`).
+var containerAppsDeployerPrincipalId = !empty(principalId) ? principalId : deployer().objectId
+var containerAppsDeployerPrincipalType = !empty(principalId) ? principalIdType : 'User'
 var aiFoundryName = '${abbrs.aiFoundryAccounts}${environmentName}'
 var aiFoundryCustomSubDomainName = aiFoundryName // toLower(replace(aiFoundryName, '-', ''))
 
@@ -685,6 +697,78 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.12.1' 
   }
 }
 
+// ---------- AZURE CONTAINER APPS ----------
+// Shared Azure Container Apps hosting for workshop services. Enabled by default and gated behind
+// azureContainerAppsDeploy. The managed environment is created once and reused by every service
+// Container App. The Module 06 Retail Remedy Operations MCP server is published here so the
+// cloud-hosted Foundry agent can always reach it over HTTPS when a local dev tunnel is unreachable.
+// Future labs can add more services (MCP or otherwise) into the same environment.
+//
+// Container images are built and pushed by scripts/deploy-mcp-server.py (the shared registry uses
+// AbacRepositoryPermissions mode, which azd's image-push path cannot authenticate against). Bicep
+// provisions each app with a public placeholder image first so provisioning succeeds before the
+// real image exists.
+module containerAppsEnvironment './core/host/container-apps-environment.bicep' = if (azureContainerAppsDeploy) {
+  name: 'container-apps-environment-deployment-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [
+    resourceGroup
+  ]
+  params: {
+    containerAppsEnvironmentName: containerAppsEnvironmentName
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    location: location
+    tags: tags
+  }
+}
+
+// Module 06 Retail Remedy Operations MCP server, published into the shared environment above.
+module mcpServer './core/host/mcp-server.bicep' = if (azureContainerAppsDeploy) {
+  name: 'mcp-server-deployment-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [
+    resourceGroup
+  ]
+  params: {
+    containerAppName: mcpServerContainerAppName
+    #disable-next-line BCP318 // containerAppsEnvironment is gated by the same azureContainerAppsDeploy condition as this module
+    containerAppsEnvironmentResourceId: containerAppsEnvironment.outputs.resourceId
+    userAssignedIdentityName: mcpServerIdentityName
+    containerRegistryLoginServer: containerRegistry.outputs.loginServer
+    location: location
+    tags: tags
+  }
+}
+
+// ACR role assignments for the Container Apps services. Each service's managed identity needs the
+// ABAC-enabled 'Container Registry Repository Reader' role to pull its image (the shared registry
+// uses AbacRepositoryPermissions mode, so legacy AcrPull is not honored). The deploying principal
+// needs 'Container Registry Repository Contributor' so scripts/deploy-mcp-server.py can push the
+// built image to the shared registry.
+module containerAppsAcrRoleAssignments './core/security/role_acr.bicep' = if (azureContainerAppsDeploy) {
+  name: 'container-apps-acr-roles-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [
+    resourceGroup
+  ]
+  params: {
+    containerRegistryName: containerRegistryName
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Container Registry Repository Reader'
+        principalType: 'ServicePrincipal'
+        #disable-next-line BCP318 // mcpServer is gated by the same azureContainerAppsDeploy condition as this module
+        principalId: mcpServer.outputs.userAssignedIdentityPrincipalId
+      }
+      {
+        roleDefinitionIdOrName: 'Container Registry Repository Contributor'
+        principalType: containerAppsDeployerPrincipalType
+        principalId: containerAppsDeployerPrincipalId
+      }
+    ]
+  }
+}
+
 // Create the Microsoft Foundry account with public access and per-attendee projects.
 // Uses the local cognitive-services module to support Foundry features such as RAI policies.
 module aiFoundryAccount './cognitive-services/accounts/main.bicep' = {
@@ -1116,3 +1200,14 @@ output AZURE_CONTAINER_REGISTRY_NAME string = containerRegistry.outputs.name
 
 @description('The login server endpoint of the Azure Container Registry used by hosted agents (Module 09).')
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.loginServer
+
+@description('Whether the shared Azure Container Apps environment and its services were deployed.')
+output AZURE_CONTAINER_APPS_DEPLOY_ENABLED bool = azureContainerAppsDeploy
+
+@description('The name of the Module 06 MCP server Container App. Empty when Container Apps deployment is disabled. Consumed by scripts/deploy-mcp-server.py.')
+#disable-next-line BCP318 // mcpServer output is only dereferenced when azureContainerAppsDeploy is true
+output AZURE_MCP_SERVER_CONTAINER_APP_NAME string = azureContainerAppsDeploy ? mcpServer.outputs.containerAppName : ''
+
+@description('The public HTTPS MCP endpoint (including the /mcp path) for the deployed MCP server. Empty when Container Apps deployment is disabled.')
+#disable-next-line BCP318 // mcpServer output is only dereferenced when azureContainerAppsDeploy is true
+output MCP_SERVER_URL string = azureContainerAppsDeploy ? mcpServer.outputs.mcpEndpoint : ''

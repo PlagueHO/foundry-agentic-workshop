@@ -11,12 +11,12 @@
 > [!IMPORTANT]
 > This capstone module builds on two earlier modules:
 >
-> - [Module 06 — Integrate MCP tools](../06-mcp-tools/README.md): the `retail_remedy_ops` MCP server must be running and publicly exposed on port 8080.
+> - [Module 06 — Integrate MCP tools](../06-mcp-tools/README.md): you need the `retail_remedy_ops` MCP server URL (`MCP_SERVER_URL`) — the shared Azure Container Apps server, or your own tunnel.
 > - [Module 08 — Use Agent Framework for Python](../08-agent-framework-python/README.md): you consume the toolbox from a Python **Microsoft Agent Framework** app, reusing the client and agent patterns introduced there.
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!NOTE]
-> If you could not complete Module 06, start the MCP server and expose port 8080 as described in Module 06, Part 2 before continuing.
+> If you could not complete Module 06, set `MCP_SERVER_URL` to the shared server URL from your organizer (or run and tunnel your own as described in Module 06) before continuing.
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!TIP]
@@ -64,39 +64,22 @@ A toolbox is exposed as an MCP endpoint secured with Microsoft Entra authenticat
 
 ## Steps
 
-### Part 1 — Verify the MCP server is still running
+### Part 1 — Get the MCP server URL
 
-The toolbox wraps the same `retail_remedy_ops` MCP server set up in Module 06. It must be running and publicly accessible before you create the toolbox.
+The toolbox wraps the same `retail_remedy_ops` MCP server from Module 06. You need its public URL (`MCP_SERVER_URL`) to add it to the toolbox.
 
-> [!IMPORTANT]
-> **Check the MCP server is running and publicly tunneled before creating the toolbox.** The toolbox's MCP tool points at the `retail_remedy_ops` MCP server from [Module 06](../06-mcp-tools/README.md), which must still be running locally and exposed on a **Public** port 8080 tunnel, with `MCP_SERVER_URL` set to its URL ending in `/mcp`. Complete the two checks below before continuing.
+#### 1. Confirm your MCP server URL
 
-#### 1. Confirm the server is running
-
-- [ ] Check the MCP server terminal. It should still show:
+- [ ] Open your `.env` file and confirm `MCP_SERVER_URL` is set to the shared server URL your organizer provided, ending in `/mcp`. For example:
 
   ```text
-  Starting Retail Remedy Operations MCP server on http://0.0.0.0:8080/mcp
-  ```
-
-  If not, restart it from a terminal:
-
-  ```bash
-  python labs/introduction-foundry-agent-service/06-mcp-tools/src/server.py
-  ```
-
-#### 2. Confirm port 8080 is publicly exposed
-
-- [ ] In VS Code, click the **PORTS** tab in the bottom panel.
-- [ ] Confirm port `8080` is listed and **Visibility** shows **Public**.
-- [ ] Hover over the forwarded address and copy the tunnel URL.
-- [ ] Append `/mcp` to the copied URL if it is not already present. For example:
-
-  ```text
-  https://abc123-8080.devtunnels.ms/mcp
+  https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp
   ```
 
 - [ ] Save this URL — you will paste it into the toolbox configuration in the next part.
+
+  > [!NOTE]
+  > If you are running your own MCP server instead of the shared one, make sure it is still running with port 8080 set to **Public**, and use its tunnel URL (ending in `/mcp`) as your `MCP_SERVER_URL`. See [Module 06](../06-mcp-tools/README.md), Part 1.
 
 ---
 
@@ -105,7 +88,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server set up in Module 06. I
 > [!NOTE]
 > The Toolboxes portal UI is in preview. The exact navigation path at [ai.azure.com](https://ai.azure.com) may differ from the steps below as the portal evolves. If **Toolboxes** is not visible in your portal navigation, use the [code fallback](#code-fallback--create-the-toolbox-with-python) at the end of this part.
 
-#### 3. Navigate to Toolboxes
+#### 2. Navigate to Toolboxes
 
 - [ ] In a browser, navigate to [Microsoft Foundry](https://ai.azure.com) and sign in.
 - [ ] In the left navigation, click **Build**.
@@ -119,7 +102,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server set up in Module 06. I
 
   </details>
 
-#### 4. Create a new toolbox
+#### 3. Create a new toolbox
 
 - [ ] Click **+ Create** or **+ New toolbox**.
 - [ ] Enter the following details:
@@ -136,7 +119,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server set up in Module 06. I
 
   </details>
 
-#### 5. Add the Web Search tool
+#### 4. Add the Web Search tool
 
 - [ ] In the tool configuration area, click **+ Add tool**.
 - [ ] Select **Web Search** from the tool picker.
@@ -148,7 +131,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server set up in Module 06. I
 
   > This description is used by Tool Search to route queries. Make it specific to what users will ask about.
 
-#### 6. Add the MCP tool
+#### 5. Add the MCP tool
 
 - [ ] Click **+ Add tool** again.
 - [ ] Select **MCP** (or **Model Context Protocol** / **Custom MCP**) from the tool picker.
@@ -157,11 +140,11 @@ The toolbox wraps the same `retail_remedy_ops` MCP server set up in Module 06. I
   | Field | Value |
   |---|---|
   | Label / Server name | `retail_remedy_ops` |
-  | Server URL | Your tunnel URL ending in `/mcp` |
+  | Server URL | Your `MCP_SERVER_URL` (ending in `/mcp`) |
   | Authentication | None / Anonymous |
   | Description | `Retail Remedy Operations tools for looking up purchases, product profiles, store policies, replacement options, and creating remedy cases.` |
 
-- [ ] Confirm the six MCP tools are discovered from the running server: `lookup_purchase`, `get_product_profile`, `search_store_policy`, `find_replacement_options`, `draft_remedy_summary`, `create_remedy_case`.
+- [ ] Confirm the six MCP tools are discovered from the MCP server: `lookup_purchase`, `get_product_profile`, `search_store_policy`, `find_replacement_options`, `draft_remedy_summary`, `create_remedy_case`.
 
   <details>
   <summary>📸 Screenshot: MCP tool added to the toolbox</summary>
@@ -177,7 +160,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server set up in Module 06. I
 
   </details>
 
-#### 7. Add the Code Interpreter tool
+#### 6. Add the Code Interpreter tool
 
 - [ ] Click **+ Add tool** again.
 - [ ] Select **Code Interpreter** from the tool picker.
@@ -200,14 +183,14 @@ The toolbox wraps the same `retail_remedy_ops` MCP server set up in Module 06. I
 
   </details>
 
-#### 8. Enable Tool Search
+#### 7. Enable Tool Search
 
 - [ ] Look for a **Tool search** toggle or checkbox in the toolbox configuration.
 - [ ] Enable it.
 
   > Enabling Tool Search adds the `toolbox_search_preview` configuration to the toolbox version. This hides the individual tools from the initial `tools/list` response and exposes them through `tool_search` instead, keeping the consuming app's active tool context small.
 
-#### 9. Publish the toolbox and set it as the default version
+#### 8. Publish the toolbox and set it as the default version
 
 - [ ] Click **Publish** (or **Save** / **Create**).
 - [ ] Confirm a toolbox named `acl-remedy-toolbox` is created.
@@ -227,7 +210,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server set up in Module 06. I
 
   </details>
 
-#### 10. Copy the toolbox MCP endpoint
+#### 9. Copy the toolbox MCP endpoint
 
 - [ ] After publishing, locate the **Consumer endpoint** URL for `acl-remedy-toolbox`. It has the form:
 
@@ -240,7 +223,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server set up in Module 06. I
 #### Code fallback — Create the toolbox with Python
 
 > [!TIP]
-> If the portal does not expose Toolboxes in your region yet, or you skipped the steps above, run the fallback script to create the toolbox through the Python SDK. The MCP server must be running and `MCP_SERVER_URL` must be set in your `.env` file.
+> If the portal does not expose Toolboxes in your region yet, or you skipped the steps above, run the fallback script to create the toolbox through the Python SDK. `MCP_SERVER_URL` must be set in your `.env` file.
 >
 > ```bash
 > python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py
@@ -254,7 +237,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server set up in Module 06. I
 
 You consume the toolbox from a Python **Microsoft Agent Framework** app. The app builds a `FoundryChatClient` and `Agent` (as in Module 08), but points the agent's tool at the toolbox's MCP endpoint. It supplies the Entra bearer token and the `Foundry-Features: Toolboxes=V1Preview` header on every request, including the connection handshake.
 
-#### 11. Activate the environment and sign in
+#### 10. Activate the environment and sign in
 
 - [ ] Activate the `.venv` virtual environment from the repository root:
 
@@ -267,7 +250,7 @@ You consume the toolbox from a Python **Microsoft Agent Framework** app. The app
   az login
   ```
 
-#### 12. Confirm the required environment variables
+#### 11. Confirm the required environment variables
 
 - [ ] Confirm your `.env` file (or `azd env get-values`) sets:
 
@@ -278,14 +261,14 @@ You consume the toolbox from a Python **Microsoft Agent Framework** app. The app
 
   > The app builds the toolbox MCP endpoint as `{FOUNDRY_PROJECT_ENDPOINT}/toolboxes/{TOOLBOX_NAME}/mcp?api-version=v1`.
 
-#### 13. Review the consumer script
+#### 12. Review the consumer script
 
 - [ ] Open `solution/consume_toolbox.py` and review how it consumes the toolbox:
   - It wraps the toolbox MCP endpoint in an `MCPStreamableHTTPTool`, backed by an `httpx.AsyncClient` that adds the Entra bearer token and the `Foundry-Features` header to every request.
   - It builds a `FoundryChatClient` and an `Agent` whose instructions tell the model to call `tool_search` when a needed tool is not already visible.
   - It retries the connection a few times, because the toolbox endpoint can intermittently drop the first connection attempt on a cold start.
 
-#### 14. Run the consumer script
+#### 13. Run the consumer script
 
 - [ ] Run the script from the repository root:
 
@@ -295,7 +278,7 @@ You consume the toolbox from a Python **Microsoft Agent Framework** app. The app
 
 - [ ] The script sends a built-in Australian Consumer Law scenario for receipt `R-1007` (a laptop battery that has failed early) and prints the agent's remedy recommendation.
 
-#### 15. Confirm Tool Search drove the response
+#### 14. Confirm Tool Search drove the response
 
 - [ ] Confirm the script completes and prints a remedy recommendation that:
   - References the customer's purchase and the relevant store policy retrieved through the `retail_remedy_ops` tools.

@@ -10,6 +10,7 @@ Environment variables:
   AZURE_SEARCH_ADMIN_KEY            Optional admin key; DefaultAzureCredential is used
                                     when not provided.
 """
+# pylint: disable=duplicate-code
 
 from __future__ import annotations
 
@@ -129,6 +130,7 @@ def _ensure_product_index(index_client: SearchIndexClient, index_name: str) -> N
 
 
 def main() -> int:
+    """Seed the retail-product search index with documents from the shared data file."""
     service_name = os.getenv('AZURE_SEARCH_SERVICE_NAME', '').strip()
     if not service_name:
         print('AZURE_SEARCH_SERVICE_NAME is not set. Skipping retail product index seed.')

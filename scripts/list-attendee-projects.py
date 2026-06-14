@@ -6,6 +6,7 @@ import argparse
 
 
 def main() -> None:
+    """List expected attendee project names based on count and prefix."""
     parser = argparse.ArgumentParser()
     parser.add_argument('--count', type=int, default=20)
     parser.add_argument('--prefix', default='attendee')

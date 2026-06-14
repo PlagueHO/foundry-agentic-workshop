@@ -135,7 +135,7 @@ agent is scoped to your own project, so attendees never overwrite each other.
 - [ ] Confirm the Retail Remedy Operations **MCP server from Module 06 is still running and publicly exposed** on port 8080, and that `MCP_SERVER_URL` is set to its public URL ending in `/mcp`. The hosted agent calls this server at runtime, so it must stay reachable while you deploy and invoke the agent. If it is not running, restart it and re-expose the port as described in [Module 06](../06-mcp-tools/README.md), Part 2:
 
    ```bash
-   python labs/introduction-foundry-agent-service/06-mcp-tools/src/server.py
+   python shared/mcp-servers/retail-remedy-ops/src/server.py
    ```
 
 - [ ] Review the agent bundle in `src/agent/` — open `main.py` to see the tools the hosted agent exposes: the live `retail_remedy_ops` **MCP server** (over `MCP_SERVER_URL`) plus the Foundry hosted **web search** and **code interpreter** tools, matching the `acl-remedy-advisor` Prompt Agent from Module 06.

@@ -41,3 +41,7 @@ param containerRegistrySku = readEnvironmentVariable('AZURE_CONTAINER_REGISTRY_S
 param azureAiSearchCapabilityHost = toLower(readEnvironmentVariable('AZURE_AI_SEARCH_CAPABILITY_HOST', 'false')) == 'true'
 param cosmosDbCapabilityHost = toLower(readEnvironmentVariable('AZURE_COSMOS_DB_CAPABILITY_HOST', 'false')) == 'true'
 param azureStorageAccountCapabilityHost = toLower(readEnvironmentVariable('AZURE_STORAGE_ACCOUNT_CAPABILITY_HOST', 'false')) == 'true'
+
+// Azure Container Apps deployment. When true (the default), deploys the shared Container Apps
+// environment and the services that run in it, such as the Module 06 MCP server.
+param azureContainerAppsDeploy = toLower(readEnvironmentVariable('AZURE_CONTAINER_APPS_DEPLOY', 'true')) == 'true'

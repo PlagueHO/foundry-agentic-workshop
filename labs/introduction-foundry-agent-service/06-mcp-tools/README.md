@@ -22,11 +22,10 @@
 
 ## Objectives
 
-- Run a mocked **Retail Remedy Operations** MCP server locally.
-- Expose the server publicly using a dev tunnel so the Azure-hosted agent can reach it.
-- Connect the MCP server to the `acl-remedy-advisor` agent in Agent Builder.
+- Connect the shared **Retail Remedy Operations** MCP server to the `acl-remedy-advisor` agent in Agent Builder.
 - Update the agent instructions to guide when to call the MCP tools.
 - Test the agent end-to-end with a realistic retail scenario.
+- *(Optional)* Run your own copy of the MCP server locally and expose it with a dev tunnel.
 
 ## Concepts
 
@@ -36,7 +35,7 @@ The following diagram shows the architecture you will build in this lab.
 
 ![Architecture diagram: Python Client calls the acl-remedy-advisor Agent Definition inside a Foundry Project inside a Foundry Account. The Agent Definition calls the chat Model Deployment and may invoke the Web Search Tool (which calls the Internet), the Code Interpreter Tool (sandboxed Python), or the MCP Tool — which connects over an HTTPS dev tunnel to a Retail Remedy Operations MCP Server running outside the Foundry Account on the local dev machine.](../../../docs/assets/diagrams/lab-06-mcp-tools-architecture.svg)
 
-This lab adds a **third** tool to `acl-remedy-advisor`. Unlike Web Search and Code Interpreter — which are built-in tools that run inside the **Foundry Account** — the MCP Tool is a connection to a **Retail Remedy Operations MCP Server** that runs on your **local dev machine** (`src/server.py`). Because the agent's reasoning loop runs in the Azure cloud, it cannot reach `localhost` directly; you expose the server through a public **HTTPS dev tunnel**, and the agent calls its six tools over that tunnel. During a turn the agent may combine all three tools: MCP for purchase, policy, and stock facts; Web Search for current ACCC guidance; and Code Interpreter for the pro-rata refund calculation.
+This lab adds a **third** tool to `acl-remedy-advisor`. Unlike Web Search and Code Interpreter — which are built-in tools that run inside the **Foundry Account** — the MCP Tool is a connection to a **Retail Remedy Operations MCP Server** that runs outside the Foundry Account. By default your organizer deploys this server as a shared **Azure Container Apps** service, and the agent calls its six tools over the server's public HTTPS URL (`MCP_SERVER_URL`). You can also run your own copy locally and expose it with a dev tunnel (`shared/mcp-servers/retail-remedy-ops/src/server.py`). During a turn the agent may combine all three tools: MCP for purchase, policy, and stock facts; Web Search for current ACCC guidance; and Code Interpreter for the pro-rata refund calculation.
 
 ### What is MCP?
 
@@ -44,11 +43,11 @@ This lab adds a **third** tool to `acl-remedy-advisor`. Unlike Web Search and Co
 
 ### Why does the agent need a public URL?
 
-The `acl-remedy-advisor` agent runs its reasoning loop in the **Azure cloud**. It cannot reach `localhost` or a port on your laptop. To connect the agent to a locally running MCP server you must expose the server's port through a **public HTTPS tunnel** — VS Code Dev Tunnels or Codespaces port forwarding both work.
+The `acl-remedy-advisor` agent runs its reasoning loop in the **Azure cloud**. It cannot reach `localhost` or a port on your laptop, so the MCP server must be reachable at a **public HTTPS URL**. The shared Azure Container Apps server your organizer deploys already has one. If you run your own server locally instead, you expose it through a public tunnel — VS Code Dev Tunnels or Codespaces port forwarding both work.
 
 ### The Retail Remedy Operations tools
 
-This module uses a mocked server (`src/server.py`) that returns deterministic data from a local JSON file. The six tools are:
+This module uses a mocked server (`shared/mcp-servers/retail-remedy-ops/src/server.py`) that returns deterministic data from a local JSON file. The six tools are:
 
 | Tool | What it returns |
 |---|---|
@@ -63,98 +62,60 @@ The tools return **facts, not verdicts**. The agent combines MCP facts with Web 
 
 ## Steps
 
-### Part 1 — Run the MCP server locally
+### Part 1 — Connect to the shared MCP server
 
-#### 1. Open a dedicated terminal for the server
+By default your organizer deploys a shared **Retail Remedy Operations** MCP server to **Azure Container Apps**, and its
+public HTTPS URL is already in your onboarding file as `MCP_SERVER_URL`. You do not need to run anything locally.
 
-- [ ] In VS Code, open a new terminal panel (**Terminal > New Terminal**, or press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>`</kbd>).
+#### 1. Confirm your MCP server URL
 
-  > Keep this terminal open for the rest of the workshop. The MCP server must continue running while you use the agent in Modules 06 through 10.
-
-#### 2. Start the server
-
-- [ ] Run the following command from the repository root:
-
-  ```bash
-  python labs/introduction-foundry-agent-service/06-mcp-tools/src/server.py
-  ```
-
-  Alternatively, run the **lab06: run mcp server** task: open the Command Palette (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>), type **Run Task**, select **lab06: run mcp server**.
-
-- [ ] Confirm the server prints:
+- [ ] Open your `.env` file and confirm `MCP_SERVER_URL` is set to the shared URL your organizer provided. It ends in
+      `/mcp`, for example:
 
   ```text
-  Starting Retail Remedy Operations MCP server on http://0.0.0.0:8080/mcp
+  https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp
   ```
 
-### Part 2 — Expose the server with a public tunnel
+- [ ] *(Optional)* Confirm the URL is reachable — open it in a browser or run `curl <your MCP_SERVER_URL>`. A healthy
+      server responds rather than failing to connect.
+- [ ] Keep this URL handy. You paste it into Agent Builder in the next part.
 
-The agent runs in the cloud and cannot reach `localhost`. You must expose port 8080 with a **public** URL. The
-mechanism that creates this URL depends on where you are running the workshop:
+<details>
+<summary>Alternative — run your own MCP server locally and expose it with a tunnel</summary>
 
-| Environment | Tunnel mechanism | URL style | Sign-in required |
-|---|---|---|---|
-| Local VS Code or a devcontainer (Dev Containers extension) | [VS Code Dev Tunnels](https://code.visualstudio.com/docs/editor/port-forwarding) | `https://<id>-8080.<region>.devtunnels.ms` (for example `https://5p90rr96-8080.aue.devtunnels.ms`) | GitHub or Microsoft account |
-| GitHub Codespaces | [Codespaces port forwarding](https://docs.github.com/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace) | `https://<codespace-name>-8080.app.github.dev` | GitHub account (already signed in) |
+If your organizer did not deploy the shared server, or you want to run and modify the server yourself, host it locally
+and expose it with a public HTTPS tunnel. The Azure-hosted agent runs in the cloud and cannot reach `localhost`, so the
+port must be **Public**.
 
-> [!NOTE]
-> **Dev Tunnels sign-in.** The first time you forward a port from local VS Code or a devcontainer, VS Code prompts you
-> to sign in to the **Dev Tunnels** service with your **GitHub** or **Microsoft** account. This is required — the
-> `devtunnels.ms` host only issues a public URL to an authenticated session. In Codespaces you are already signed in to
-> GitHub, so no extra sign-in appears.
+1. Start the server from the repository root (or run the **mcp: run retail-remedy-ops server** task):
 
-#### 3. Forward port 8080
+   ```bash
+   python shared/mcp-servers/retail-remedy-ops/src/server.py
+   ```
 
-The MCP server listens on port 8080. VS Code and Codespaces usually **auto-detect** this port and add it to the
-**PORTS** panel as soon as the server starts. If it appears automatically, skip to step 4. To add it manually:
+   Confirm it prints `Starting Retail Remedy Operations MCP server on http://0.0.0.0:8080/mcp`.
 
-- [ ] In the VS Code bottom panel, click the **PORTS** tab. (If you don't see it, run **Ports: Focus on Ports View**
-      from the Command Palette, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.)
-- [ ] Click **Forward a Port** (or the `+` icon) and type `8080`, then press **Enter**.
-- [ ] Confirm port `8080` appears in the ports table.
+1. In the VS Code **PORTS** panel, forward port `8080`, then right-click the row and set **Port Visibility** →
+   **Public**. In a devcontainer or Codespace the default is **Private**, so this step is mandatory — a private port
+   returns a 403 when the Azure-hosted agent calls it.
 
-#### 4. Set visibility to Public
+1. Copy the forwarded address, append `/mcp`, and set `MCP_SERVER_URL` in your `.env` to the full URL. Keep the server
+   running and the port **Public** for the rest of the workshop.
 
-- [ ] Right-click the `8080` row in the PORTS panel.
-- [ ] Select **Port Visibility** → **Public**.
-- [ ] Confirm the **Visibility** column now shows **Public**.
+| Environment | Tunnel mechanism | URL style |
+|---|---|---|
+| Local VS Code or a devcontainer | [VS Code Dev Tunnels](https://code.visualstudio.com/docs/editor/port-forwarding) | `https://<id>-8080.<region>.devtunnels.ms` |
+| GitHub Codespaces | [Codespaces port forwarding](https://docs.github.com/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace) | `https://<codespace-name>-8080.app.github.dev` |
 
-  > [!IMPORTANT]
-  > The port **must** be set to **Public**. A private port returns a 403 when the Azure-hosted agent tries to call it.
-  > In a devcontainer or Codespace the visibility default is **Private**, so this step is mandatory.
+The first time you forward a port from local VS Code, VS Code prompts you to sign in to the **Dev Tunnels** service with
+your GitHub or Microsoft account. Some networks block the cloud-hosted agent from reaching a `devtunnels.ms` tunnel even
+when the port is Public; if tool calls fail intermittently, use the shared Azure Container Apps server instead.
 
-#### 5. Copy the tunnel URL
+</details>
 
-- [ ] In the **Forwarded Address** column, click the copy icon or hover over the URL to copy it.
-- [ ] The URL looks like one of these depending on your environment:
-  - **Local VS Code or devcontainer** (Dev Tunnels): `https://5p90rr96-8080.aue.devtunnels.ms`
-  - **GitHub Codespaces**: `https://<codespace-name>-8080.app.github.dev`
-- [ ] Append `/mcp` to the copied URL. For example:
+### Part 2 — Connect the MCP server to the agent
 
-  ```text
-  https://5p90rr96-8080.aue.devtunnels.ms/mcp
-  ```
-
-- [ ] Save this full URL — you will paste it into Agent Builder in the next part.
-- [ ] Optionally, set `MCP_SERVER_URL` in your `.env` file to this URL.
-
-> [!IMPORTANT]
-> **Keep this MCP server running and tunneled for the rest of the workshop.** Leave the server terminal open and the
-> port 8080 tunnel set to **Public**. The `acl-remedy-advisor` agent reuses these MCP tools in later modules (such as
-> Module 09 — Hosted Agents and Module 10 — Foundry Toolboxes), so do not stop the server or close the tunnel until you
-> finish those modules.
-
-<!-- markdownlint-disable-next-line MD028 -->
-> [!TIP]
-> **Test the tunnel before wiring it to the agent.** Open the `/mcp` URL in a browser or run
-> `curl https://<your-tunnel>-8080.<region>.devtunnels.ms/mcp`. A reachable public tunnel returns a response from the
-> server rather than a 403 or a connection error. For more detail, see the VS Code
-> [port forwarding documentation](https://code.visualstudio.com/docs/editor/port-forwarding) and the GitHub
-> [Codespaces port forwarding guide](https://docs.github.com/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace).
-
-### Part 3 — Connect the MCP server to the agent
-
-#### 6. Open the agent in Agent Builder
+#### 2. Open the agent in Agent Builder
 
 - [ ] Make sure **VS Code Insiders** is open with the **Foundry Toolkit** extension loaded. Click the **Foundry Toolkit** icon in the Activity Bar to show the **MY RESOURCES** panel.
 - [ ] In the **MY RESOURCES** panel, expand **Prompt Agents** → `acl-remedy-advisor` and open the latest version.
@@ -169,7 +130,7 @@ The MCP server listens on port 8080. VS Code and Codespaces usually **auto-detec
 
   </details>
 
-#### 7. Add the MCP tool
+#### 3. Add the MCP tool
 
 - [ ] Scroll to the **TOOL** section and click the **+** button.
 - [ ] In the tool picker, look for an option labelled **MCP**, **Custom MCP**, or **Model Context Protocol**.
@@ -178,7 +139,7 @@ The MCP server listens on port 8080. VS Code and Codespaces usually **auto-detec
   | Field | Value |
   |---|---|
   | Label / Name | `retail-remedy-ops` |
-  | Server URL | The tunnel URL you copied, ending in `/mcp` |
+  | Server URL | Your `MCP_SERVER_URL`, ending in `/mcp` |
   | Authentication | None / Anonymous |
 
   > [!NOTE]
@@ -205,11 +166,11 @@ The MCP server listens on port 8080. VS Code and Codespaces usually **auto-detec
 >
 > Ensure `MCP_SERVER_URL` is set in your `.env` file before running the script.
 
-### Part 4 — Update the agent instructions
+### Part 3 — Update the agent instructions
 
 The agent needs guidance on when to call the MCP tools. Without it the model may answer from general knowledge instead of calling the tools.
 
-#### 8. Add the MCP tool-boundary instruction
+#### 4. Add the MCP tool-boundary instruction
 
 - [ ] Scroll to the **Instructions** field in Agent Builder.
 - [ ] Position your cursor at the very end of the existing instructions.
@@ -227,14 +188,14 @@ The agent needs guidance on when to call the MCP tools. Without it the model may
   warranty, policy, or stock details — call the MCP tools instead.
   ```
 
-#### 9. Save the new version
+#### 5. Save the new version
 
 - [ ] Click **Save to Foundry** in Agent Builder.
 - [ ] Confirm Agent Builder saves a **new version** of the agent. Saving any change — including adding the MCP tool — creates a new version. The exact number depends on how many times the agent has been saved before; for example, an agent created by the Module 05 solution script starts at **Version 1**, so this save produces **Version 2**.
 
-### Part 5 — Test with a realistic scenario
+### Part 4 — Test with a realistic scenario
 
-#### 10. Run the battery-failure test prompt
+#### 6. Run the battery-failure test prompt
 
 - [ ] Open the playground for `acl-remedy-advisor`.
 - [ ] Paste the following prompt and send it:
@@ -259,7 +220,7 @@ The agent needs guidance on when to call the MCP tools. Without it the model may
   > [!NOTE]
   > If the portal playground returns a `missing_required_parameter: tools[1].container` error, this means the Code Interpreter tool needs to be re-added through the Agent Builder UI (the code fallback script does not configure the container automatically). Use `starter.py` from the terminal to test instead, or remove and re-add Code Interpreter through Agent Builder.
 
-#### 11. Approve the MCP tool calls
+#### 7. Approve the MCP tool calls
 
 The first time the agent calls an MCP tool, the playground pauses and shows an **Approve / Deny** prompt. This is the MCP human-in-the-loop approval gate — the agent will not call the tool until you approve it.
 
@@ -276,7 +237,7 @@ The first time the agent calls an MCP tool, the playground pauses and shows an *
 
   </details>
 
-#### 12. Inspect the run trace
+#### 8. Inspect the run trace
 
 - [ ] Open the **Run** trace in the playground or the Runs panel.
 - [ ] Confirm MCP tool calls appear in the trace (e.g., `lookup_purchase`, `get_product_profile`, `search_store_policy`).
@@ -290,11 +251,11 @@ The first time the agent calls an MCP tool, the playground pauses and shows an *
 
   </details>
 
-### Part 7 (extra credit) — Browse the run trace in the Foundry portal
+### Part 5 (extra credit) — Browse the run trace in the Foundry portal
 
 The **Traces** tab in the Foundry portal shows each agent conversation as a structured trace when Application Insights is connected to your Foundry project. This lets you inspect the exact sequence of MCP tool calls, model reasoning steps, and Code Interpreter invocations.
 
-#### 14. Open the agent in the Foundry portal
+#### 9. Open the agent in the Foundry portal
 
 - [ ] In a browser, navigate to [Microsoft Foundry](https://ai.azure.com) and sign in.
 - [ ] In the left navigation, click **Build** → **Agents**.
@@ -307,7 +268,7 @@ The **Traces** tab in the Foundry portal shows each agent conversation as a stru
 
   </details>
 
-#### 15. Open the Traces tab
+#### 10. Open the Traces tab
 
 - [ ] In the agent view, click the **Traces** tab.
 
@@ -321,7 +282,7 @@ The **Traces** tab in the Foundry portal shows each agent conversation as a stru
   > [!NOTE]
   > Trace data requires **Application Insights** to be connected to your Foundry project. If the Traces tab shows a "Connect" banner, click it to link an Application Insights resource. Once connected, future conversations will appear as traces automatically.
 
-#### 16. Inspect the MCP tool call flow
+#### 11. Inspect the MCP tool call flow
 
 - [ ] Under the **Conversations** sub-tab, click any conversation row to expand it.
 - [ ] In the trace timeline, locate the MCP tool call steps — they appear as `mcp_call` entries labelled with the tool name (e.g., `lookup_purchase`, `get_product_profile`).
@@ -332,9 +293,9 @@ The **Traces** tab in the Foundry portal shows each agent conversation as a stru
 
 ### Part 6 (optional) — Verify from code
 
-#### 13. Chat from the terminal
+#### 12. Chat from the terminal
 
-- [ ] In a new terminal (keep the server terminal running), start the chat client:
+- [ ] In a new terminal, start the chat client:
 
   ```bash
   python labs/introduction-foundry-agent-service/06-mcp-tools/src/starter.py
@@ -346,7 +307,7 @@ The **Traces** tab in the Foundry portal shows each agent conversation as a stru
 ---
 
 > [!IMPORTANT]
-> **Keep the MCP server and tunnel running.** Leave the server terminal open and the port 8080 tunnel set to Public. The `acl-remedy-advisor` agent uses these tools in Module 09 (Hosted Agents) and Module 10 (Foundry Toolboxes). If you need to recreate the tunnel, update `MCP_SERVER_URL` in your `.env` file and reconnect the MCP tool in Agent Builder.
+> **The agent reuses these MCP tools in later modules** (Module 09 — Hosted Agents and Module 10 — Foundry Toolboxes). The shared MCP server stays available, so you do not need to do anything to keep it running. If you are running your own local server instead, leave it running with port 8080 set to **Public**, and keep `MCP_SERVER_URL` pointed at it.
 
 ---
 
@@ -356,11 +317,11 @@ The **Traces** tab in the Foundry portal shows each agent conversation as a stru
 - The battery-failure test prompt triggers at least three MCP tool calls visible in the run trace.
 - The run trace also shows Code Interpreter used for the pro-rata calculation.
 - The final response includes a remedy recommendation, a refund or replacement option, and a policy citation.
-- The MCP server terminal shows incoming request logs during the agent run.
+- If you run your own local MCP server, its terminal shows incoming request logs during the agent run.
 
 ## Congratulations 🎉
 
-You connected your agent to live, custom operations. You stood up the `retail_remedy_ops` MCP server, exposed it publicly, and wired its tools into `acl-remedy-advisor` — then watched the agent orchestrate MCP calls, Code Interpreter, and reasoning together to resolve a real battery-failure scenario end to end. Your agent can now act on domain-specific data, not just answer from general knowledge.
+You connected your agent to live, custom operations. You wired the `retail_remedy_ops` MCP server's tools into `acl-remedy-advisor` over its public URL — then watched the agent orchestrate MCP calls, Code Interpreter, and reasoning together to resolve a real battery-failure scenario end to end. Your agent can now act on domain-specific data, not just answer from general knowledge.
 
 > [!TIP]
 > **Next up → [Module 07: Ground the agent with Foundry IQ knowledge bases](../07-foundry-iq/README.md)**

@@ -304,7 +304,7 @@ The agent now has the knowledge base attached, but it needs guidance on *when* t
 > **Check the MCP server is running and publicly tunneled before testing the agent.** The `retail_remedy_ops` MCP server from [Module 06](../06-mcp-tools/README.md) must still be running locally and exposed on a **Public** port 8080 tunnel, with `MCP_SERVER_URL` set to its URL ending in `/mcp`. The agent routes operational lookups (step 12) to this server, so if it stopped, restart it and re-expose the port (see [Module 06](../06-mcp-tools/README.md), Part 2):
 >
 > ```bash
-> python labs/introduction-foundry-agent-service/06-mcp-tools/src/server.py
+> python shared/mcp-servers/retail-remedy-ops/src/server.py
 > ```
 
 #### 11. Run a combined policy query

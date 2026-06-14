@@ -1,11 +1,11 @@
-"""Mocked Retail Remedy Operations MCP server for Module 06.
+"""Mocked Retail Remedy Operations MCP server.
 
 Exposes six tools that the acl-remedy-advisor agent calls during its reasoning
 loop. All data is loaded from a local JSON file — no real POS, CRM, or
 database connections are required.
 
 Usage:
-    python labs/introduction-foundry-agent-service/06-mcp-tools/src/server.py
+    python shared/mcp-servers/retail-remedy-ops/src/server.py
 
 The server listens on http://0.0.0.0:<MCP_SERVER_PORT>/mcp (default port 8080).
 Expose this port via a public dev tunnel or Codespaces port forwarding before
@@ -171,6 +171,7 @@ def create_remedy_case(
 
 
 def main() -> None:
+    """Start the Retail Remedy Operations MCP server."""
     print(f'Starting Retail Remedy Operations MCP server on http://0.0.0.0:{_PORT}/mcp')
     mcp.run(transport='streamable-http')
 

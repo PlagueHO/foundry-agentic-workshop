@@ -24,12 +24,16 @@ Environment variables (azd outputs populated after provisioning):
                                 construct project and OpenAI endpoint URLs.
   AZURE_RESOURCE_GROUP          Resource group name (azd output).
   AZURE_SEARCH_SERVICE_NAME     Azure AI Search service name (azd output).
-  AZURE_CONTAINER_REGISTRY_NAME      Azure Container Registry name for hosted agents (azd output).
+  AZURE_CONTAINER_REGISTRY_NAME      Azure Container Registry name for hosted agents
+                                (azd output).
   AZURE_CONTAINER_REGISTRY_ENDPOINT  Azure Container Registry login server (azd output).
-  AZURE_SUBSCRIPTION_ID         Subscription ID (required; set automatically by azd after provision).
+  MCP_SERVER_URL                Shared MCP server URL (azd output). Empty when the
+                                Container Apps deployment is disabled.
+  AZURE_SUBSCRIPTION_ID         Subscription ID (required; set automatically by azd
+                                after provision).
   AZURE_ENV_NAME                azd environment name (used in the audit CSV filename).
 """
-
+# pylint: disable=duplicate-code
 from __future__ import annotations
 
 import csv
@@ -121,13 +125,12 @@ def _resolve_subscription_id() -> str:
     return os.getenv('AZURE_SUBSCRIPTION_ID', '').strip()
 
 
-def _write_provisioning_summary(
+def _write_provisioning_summary(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals
     resolved: list[dict[str, object]],
     audit_dir: Path,
     env_name: str,
     subscription_id: str,
     resource_group: str,
-    foundry_name: str,
     search_service_name: str,
 ) -> Path:
     """Write the attendee provisioning summary CSV to audit_dir.
@@ -138,16 +141,11 @@ def _write_provisioning_summary(
     timestamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     audit_path = audit_dir / f'attendee-provisioning-{env_name}-{timestamp}.csv'
 
-    account_scope_base = (
-        f'/subscriptions/{subscription_id}/resourceGroups/{resource_group}'
-        f'/providers/Microsoft.CognitiveServices/accounts/{foundry_name}'
-    )
     search_scope = (
         f'/subscriptions/{subscription_id}/resourceGroups/{resource_group}'
         f'/providers/Microsoft.Search/searchServices/{search_service_name}'
         if search_service_name else ''
     )
-    rg_scope = f'/subscriptions/{subscription_id}/resourceGroups/{resource_group}'
 
     fieldnames = [
         'upn', 'object_id', 'role_key', 'role_display_name',
@@ -163,13 +161,11 @@ def _write_provisioning_summary(
         was_resolved = bool(entry.get('resolved', False))
 
         scope_level = ROLE_SCOPE_LEVELS.get(role, 'project')
-        foundry_scope = (
-            f'{account_scope_base}/projects/{project_name}'
-            if scope_level == 'project'
-            else account_scope_base
-        )
         status = 'succeeded' if was_resolved else 'failed'
-        message = '' if was_resolved else 'UPN not resolved to an Entra object ID; role assignment skipped by Bicep.'
+        message = (
+            '' if was_resolved
+            else 'UPN not resolved to an Entra object ID; role assignment skipped by Bicep.'
+        )
 
         # Main Foundry role row.
         rows.append({
@@ -220,7 +216,7 @@ def _write_provisioning_summary(
     return audit_path
 
 
-def _write_attendee_markdowns(
+def _write_attendee_markdowns(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals
     resolved: list[dict[str, object]],
     audit_dir: Path,
     subscription_id: str,
@@ -230,6 +226,7 @@ def _write_attendee_markdowns(
     search_service_name: str,
     container_registry_name: str,
     container_registry_endpoint: str,
+    mcp_server_url: str,
 ) -> list[Path]:
     """Write a per-attendee onboarding markdown file to audit_dir for resolved attendees."""
     written: list[Path] = []
@@ -238,7 +235,7 @@ def _write_attendee_markdowns(
             continue
         upn = str(entry.get('upn', ''))
         project_name = str(entry.get('projectName', ''))
-        upn_local = upn.split('@')[0]
+        upn_local = upn.split('@', maxsplit=1)[0]
         out_path = audit_dir / f'{upn_local}.md'
         search_line = (
             f'AZURE_SEARCH_SERVICE_NAME={search_service_name}'
@@ -255,8 +252,14 @@ def _write_attendee_markdowns(
             if container_registry_endpoint
             else '# AZURE_CONTAINER_REGISTRY_ENDPOINT=  # not configured'
         )
+        mcp_server_url_line = (
+            f'MCP_SERVER_URL={mcp_server_url}'
+            if mcp_server_url
+            else '# MCP_SERVER_URL=  # shared MCP server not deployed; set this if you run your own'
+        )
         project_endpoint = (
-            f'https://{foundry_custom_domain_name}.services.ai.azure.com/api/projects/{project_name}'
+            f'https://{foundry_custom_domain_name}.services.ai.azure.com'
+            f'/api/projects/{project_name}'
         )
         openai_endpoint = f'https://{foundry_custom_domain_name}.openai.azure.com/openai/v1'
         content = (
@@ -292,7 +295,7 @@ def _write_attendee_markdowns(
             f'{registry_name_line}\n'
             f'{registry_endpoint_line}\n'
             f'MCP_SERVER_PORT=8080\n'
-            f'MCP_SERVER_URL=\n'
+            f'{mcp_server_url_line}\n'
             f'MCP_SERVER_LABEL=retail_remedy_ops\n'
             '```\n'
             '\n'
@@ -339,7 +342,8 @@ def _print_summary(resolved: list[dict[str, object]]) -> None:
 
 # ---------- main ----------
 
-def main() -> int:
+def main() -> int:  # pylint: disable=too-many-locals
+    """Generate per-attendee onboarding files and a provisioning summary CSV."""
     raw_resolved = os.getenv('AZURE_ATTENDEE_LIST_RESOLVED', '').strip()
     if not raw_resolved:
         print('AZURE_ATTENDEE_LIST_RESOLVED is not set. Skipping onboarding file generation.')
@@ -363,6 +367,7 @@ def main() -> int:
     search_service_name = os.getenv('AZURE_SEARCH_SERVICE_NAME', '').strip()
     container_registry_name = os.getenv('AZURE_CONTAINER_REGISTRY_NAME', '').strip()
     container_registry_endpoint = os.getenv('AZURE_CONTAINER_REGISTRY_ENDPOINT', '').strip()
+    mcp_server_url = os.getenv('MCP_SERVER_URL', '').strip()
     subscription_id = _resolve_subscription_id()
 
     missing = [
@@ -375,7 +380,10 @@ def main() -> int:
     ]
     if missing:
         print(f'Required environment variable(s) not set: {", ".join(missing)}.')
-        print('These are populated by azd after provisioning. Ensure azd provision completed successfully.')
+        print(
+            'These are populated by azd after provisioning. '
+            'Ensure azd provision completed successfully.'
+        )
         return 1
 
     audit_dir = Path('.azure') / env_name
@@ -391,6 +399,7 @@ def main() -> int:
         search_service_name=search_service_name,
         container_registry_name=container_registry_name,
         container_registry_endpoint=container_registry_endpoint,
+        mcp_server_url=mcp_server_url,
     )
 
     audit_path = _write_provisioning_summary(
@@ -399,7 +408,6 @@ def main() -> int:
         env_name=env_name,
         subscription_id=subscription_id,
         resource_group=resource_group,
-        foundry_name=foundry_name,
         search_service_name=search_service_name,
     )
 

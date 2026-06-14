@@ -18,6 +18,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Ensure Unicode output works on Windows terminals that default to cp1252.
+sys.stdout.reconfigure(encoding='utf-8')
+sys.stderr.reconfigure(encoding='utf-8')
+
 TICK = '\u2705'
 CROSS = '\u274c'
 WARN = '\u26a0\ufe0f'
@@ -32,6 +36,21 @@ REQUIRED_ENV_VARS = [
     'AZURE_SEARCH_SERVICE_NAME',
 ]
 
+# Additional vars required by specific lab modules.  Checked in the same
+# section but failures here do not abort the Azure connectivity checks.
+ADDITIONAL_ENV_VARS = [
+    'AGENT_NAME',
+    'HOSTED_AGENT_NAME_CONTAINER',
+    'HOSTED_AGENT_NAME_CODE',
+    'KNOWLEDGE_BASE_NAME',
+    'TOOLBOX_NAME',
+    'AZURE_CONTAINER_REGISTRY_NAME',
+    'AZURE_CONTAINER_REGISTRY_ENDPOINT',
+    'MCP_SERVER_PORT',
+    'MCP_SERVER_URL',
+    'MCP_SERVER_LABEL',
+]
+
 # Populated by check() as failures accumulate.
 _failures: list[str] = []
 
@@ -40,7 +59,7 @@ _failures: list[str] = []
 
 def _az(cmd: str) -> tuple[int, str, str]:
     """Run an az CLI command and return (returncode, stdout, stderr)."""
-    result = subprocess.run(cmd, shell=True, text=True, capture_output=True)
+    result = subprocess.run(cmd, shell=True, text=True, capture_output=True, check=False)
     return result.returncode, result.stdout.strip(), result.stderr.strip()
 
 
@@ -80,6 +99,7 @@ def _get_token(resource: str) -> str:
 
 
 def check(name: str, passed: bool, detail: str = '') -> bool:
+    """Print a check result and accumulate failures; return whether the check passed."""
     symbol = TICK if passed else CROSS
     line = f'  {symbol}  {name}'
     if detail:
@@ -139,7 +159,10 @@ def _check_docker() -> None:
     stopped Docker daemon is therefore reported as a warning, not a failure, and
     never causes the health check to exit non-zero.
     """
-    only_note = 'only needed for Module 09 Part 1 (container deployment); all other modules run without it'
+    only_note = (
+        'only needed for Module 09 Part 1 (container deployment); '
+        'all other modules run without it'
+    )
 
     rc, out, _ = _az('docker --version')
     if rc != 0:
@@ -151,7 +174,10 @@ def _check_docker() -> None:
     if rc_info == 0:
         check('Docker (optional)', True, docker_ver)
     else:
-        print(f'  {WARN}  Docker (optional)  ({docker_ver}; daemon not running \u2014 start Docker for Module 09 Part 1)')
+        print(
+            f'  {WARN}  Docker (optional)  ({docker_ver}; daemon not running'
+            ' \u2014 start Docker for Module 09 Part 1)'
+        )
 
 
 def _check_env_vars() -> bool:
@@ -159,9 +185,16 @@ def _check_env_vars() -> bool:
     all_ok = True
     for var in REQUIRED_ENV_VARS:
         val = os.getenv(var, '')
-        ok = check(var, bool(val), 'set' if val else 'not set \u2014 copy from your onboarding file')
+        ok = check(
+            var, bool(val), 'set' if val else 'not set \u2014 copy from your onboarding file'
+        )
         if not ok:
             all_ok = False
+    for var in ADDITIONAL_ENV_VARS:
+        val = os.getenv(var, '')
+        check(
+            var, bool(val), 'set' if val else 'not set \u2014 copy from your onboarding file'
+        )
     return all_ok
 
 
@@ -209,7 +242,9 @@ def _check_resources(sub: str, rg: str, foundry: str, project: str) -> None:
         f'/projects/{project}?api-version=2025-04-01-preview'
     )
     ok, data, err = _az_json(f'az rest --method GET --url "{proj_url}" -o json')
-    state = data.get('properties', {}).get('provisioningState', '') if isinstance(data, dict) else ''
+    state = (
+        data.get('properties', {}).get('provisioningState', '') if isinstance(data, dict) else ''
+    )
     check('Foundry project accessible', ok, state or err)
 
     # Model deployments
@@ -238,7 +273,9 @@ def _first_resource_name(sub: str, rg: str, resource_type: str) -> str:
     return out.strip() if rc == 0 else ''
 
 
-def _check_scope_role(label: str, user_id: str, scope: str, sub: str, include_inherited: bool) -> None:
+def _check_scope_role(
+    label: str, user_id: str, scope: str, sub: str, include_inherited: bool,
+) -> None:
     """Verify the signed-in user has at least one role assignment on the given scope."""
     inherited_flag = ' --include-inherited' if include_inherited else ''
     ok, data, err = _az_json(
@@ -270,7 +307,9 @@ def _check_roles(sub: str, rg: str, foundry: str) -> None:
     # granted on their individual project (foundry-user) or via the resource group still
     # register a result here.
     foundry_scope = f'{rg_scope}/providers/Microsoft.CognitiveServices/accounts/{foundry}'
-    _check_scope_role('Role assigned on Foundry account', user_id, foundry_scope, sub, include_inherited=True)
+    _check_scope_role(
+        'Role assigned on Foundry account', user_id, foundry_scope, sub, include_inherited=True,
+    )
 
     # Dependent resources — main.bicep grants each resolved attendee a direct role on these:
     #   AI Search service     -> Search [Service] Contributor + Search Index Data Contributor
@@ -293,7 +332,7 @@ def _check_roles(sub: str, rg: str, foundry: str) -> None:
         _check_scope_role(f'Role assigned on {label}', user_id, scope, sub, include_inherited=False)
 
 
-def _check_endpoints(
+def _check_endpoints(  # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     endpoint: str,
     openai_endpoint: str,
     search_name: str,
@@ -330,8 +369,14 @@ def _check_endpoints(
         except requests.RequestException as exc:
             check('Foundry project endpoint reachable', False, f'URL {probe_url} | {_net_err(exc)}')
     else:
-        probe_url = (endpoint.rstrip('/') + '/connections?api-version=2025-05-15-preview') if endpoint else '<missing>'
-        check('Foundry project endpoint reachable', False, f'URL {probe_url} | missing token or endpoint')
+        probe_url = (
+            (endpoint.rstrip('/') + '/connections?api-version=2025-05-15-preview')
+            if endpoint else '<missing>'
+        )
+        check(
+            'Foundry project endpoint reachable', False,
+            f'URL {probe_url} | missing token or endpoint',
+        )
 
     # Azure OpenAI endpoint — probe GET {endpoint}/models (lists accessible models via v1 API).
     if foundry_token and openai_endpoint:
@@ -347,7 +392,8 @@ def _check_endpoints(
                 check(
                     'Azure OpenAI endpoint reachable',
                     True,
-                    f'URL {probe_url} | {count} model(s): {names}' if count else f'URL {probe_url} | 0 models',
+                    f'URL {probe_url} | {count} model(s): {names}'
+                    if count else f'URL {probe_url} | 0 models',
                 )
             else:
                 check(
@@ -358,8 +404,13 @@ def _check_endpoints(
         except requests.RequestException as exc:
             check('Azure OpenAI endpoint reachable', False, f'URL {probe_url} | {_net_err(exc)}')
     else:
-        probe_url = (openai_endpoint.rstrip('/') + '/models') if openai_endpoint else '<missing>'
-        check('Azure OpenAI endpoint reachable', False, f'URL {probe_url} | missing token or endpoint')
+        probe_url = (
+            (openai_endpoint.rstrip('/') + '/models') if openai_endpoint else '<missing>'
+        )
+        check(
+            'Azure OpenAI endpoint reachable', False,
+            f'URL {probe_url} | missing token or endpoint',
+        )
 
     # AI Search service
     if search_name:
@@ -385,7 +436,8 @@ def _check_endpoints(
                     check(
                         'AI Search indexes seeded',
                         count > 0,
-                        f'{count} index(es): {names}' if count else 'no indexes \u2014 ask your organizer to seed',
+                        f'{count} index(es): {names}'
+                        if count else 'no indexes \u2014 ask your organizer to seed',
                     )
                 else:
                     check('AI Search indexes seeded', False, f'HTTP {resp.status_code}')
@@ -395,9 +447,95 @@ def _check_endpoints(
             check('AI Search indexes seeded', False, 'could not obtain Search access token')
 
 
+def _check_mcp_server(mcp_url: str) -> None:
+    """Validate that the MCP server at *mcp_url* is reachable and exposes tools.
+
+    Sends a JSON-RPC ``initialize`` request followed by a ``tools/list`` request.
+    Both JSON and SSE (text/event-stream) response bodies are handled.
+    """
+    _section('MCP Server')
+
+    if not mcp_url:
+        check(
+            'MCP server reachable',
+            False,
+            'MCP_SERVER_URL not set \u2014 required for Lab 06',
+        )
+        return
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json, text/event-stream',
+    }
+
+    def _parse_jsonrpc(resp: requests.Response) -> dict:
+        """Extract the first JSON-RPC payload from a JSON or SSE response."""
+        content_type = resp.headers.get('Content-Type', '')
+        if 'text/event-stream' in content_type:
+            for line in resp.text.splitlines():
+                if line.startswith('data:'):
+                    try:
+                        return json.loads(line[5:].strip())
+                    except json.JSONDecodeError:
+                        pass
+            return {}
+        try:
+            return resp.json()
+        except (ValueError, AttributeError):
+            return {}
+
+    # ── initialize ────────────────────────────────────────────────────────────
+    init_payload = {
+        'jsonrpc': '2.0',
+        'id': 1,
+        'method': 'initialize',
+        'params': {
+            'protocolVersion': '2024-11-05',
+            'capabilities': {},
+            'clientInfo': {'name': 'health-check', 'version': '1.0.0'},
+        },
+    }
+    try:
+        resp = requests.post(mcp_url, json=init_payload, headers=headers, timeout=10)
+        if not resp.ok:
+            check('MCP server reachable', False, f'{mcp_url} | HTTP {resp.status_code}')
+            return
+
+        data = _parse_jsonrpc(resp)
+        server_info = data.get('result', {}).get('serverInfo', {})
+        server_name = server_info.get('name', '')
+        detail = f'{mcp_url} | server: {server_name}' if server_name else mcp_url
+        check('MCP server reachable', True, detail)
+
+    except requests.RequestException as exc:
+        check('MCP server reachable', False, f'{mcp_url} | {_net_err(exc)}')
+        return
+
+    # ── tools/list ────────────────────────────────────────────────────────────
+    tools_payload = {'jsonrpc': '2.0', 'id': 2, 'method': 'tools/list', 'params': {}}
+    try:
+        tresp = requests.post(mcp_url, json=tools_payload, headers=headers, timeout=10)
+        if not tresp.ok:
+            check('MCP server tools available', False, f'HTTP {tresp.status_code}')
+            return
+
+        tdata = _parse_jsonrpc(tresp)
+        tools = tdata.get('result', {}).get('tools', [])
+        count = len(tools)
+        names = ', '.join(t.get('name', '') for t in tools[:6])
+        check(
+            'MCP server tools available',
+            count > 0,
+            f'{count} tool(s): {names}' if count else 'no tools registered',
+        )
+    except requests.RequestException as exc:
+        check('MCP server tools available', False, _net_err(exc))
+
+
 # ── Entry point ────────────────────────────────────────────────────────────────
 
 def main() -> int:
+    """Run all workshop environment health checks and print a summary."""
     print('Workshop Environment Health Check')
     print('\u2550' * 34)
 
@@ -422,9 +560,11 @@ def main() -> int:
     _check_roles(sub, rg, foundry)
     _check_endpoints(endpoint, openai_endpoint, search_name, rg, sub)
 
+    mcp_url = os.getenv('MCP_SERVER_URL', '').strip()
+    _check_mcp_server(mcp_url)
+
     return _print_summary()
 
 
 if __name__ == '__main__':
     raise SystemExit(main())
-

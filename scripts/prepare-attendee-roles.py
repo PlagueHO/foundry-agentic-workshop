@@ -36,6 +36,7 @@ Environment variables (set via `azd env set`):
 """
 
 from __future__ import annotations
+# pylint: disable=duplicate-code
 
 import csv
 import json
@@ -131,7 +132,7 @@ def _compute_attendee_project_name(
     return f'{prefix}-{sequential_index:02d}'
 
 
-def _compute_resolved_entries(
+def _compute_resolved_entries(  # pylint: disable=too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-branches,too-many-statements
     attendees: list[dict[str, object]],
     default_role: str,
     attendee_prefix: str,
@@ -167,25 +168,33 @@ def _compute_resolved_entries(
         if role == 'facilitator':
             if not use_upn_project_names:
                 fac_count += 1
-            name = _compute_attendee_project_name(attendee, fac_count, facilitator_prefix, use_upn_project_names)
+            name = _compute_attendee_project_name(
+                attendee, fac_count, facilitator_prefix, use_upn_project_names,
+            )
             if name not in facilitator_names:
                 facilitator_names.append(name)
         elif role == 'proctor':
             if not use_upn_project_names:
                 pro_count += 1
-            name = _compute_attendee_project_name(attendee, pro_count, proctor_prefix, use_upn_project_names)
+            name = _compute_attendee_project_name(
+                attendee, pro_count, proctor_prefix, use_upn_project_names,
+            )
             if name not in proctor_names:
                 proctor_names.append(name)
         elif role == 'organizer':
             if not use_upn_project_names:
                 org_count += 1
-            name = _compute_attendee_project_name(attendee, org_count, organizer_prefix, use_upn_project_names)
+            name = _compute_attendee_project_name(
+                attendee, org_count, organizer_prefix, use_upn_project_names,
+            )
             if name not in organizer_names:
                 organizer_names.append(name)
         else:
             if not use_upn_project_names:
                 std_count += 1
-            name = _compute_attendee_project_name(attendee, std_count, attendee_prefix, use_upn_project_names)
+            name = _compute_attendee_project_name(
+                attendee, std_count, attendee_prefix, use_upn_project_names,
+            )
             if name not in standard_names:
                 standard_names.append(name)
 
@@ -210,19 +219,27 @@ def _compute_resolved_entries(
         elif role == 'facilitator':
             if not use_upn_project_names:
                 fac_idx += 1
-            project_name = _compute_attendee_project_name(attendee, fac_idx, facilitator_prefix, use_upn_project_names)
+            project_name = _compute_attendee_project_name(
+                attendee, fac_idx, facilitator_prefix, use_upn_project_names,
+            )
         elif role == 'proctor':
             if not use_upn_project_names:
                 pro_idx += 1
-            project_name = _compute_attendee_project_name(attendee, pro_idx, proctor_prefix, use_upn_project_names)
+            project_name = _compute_attendee_project_name(
+                attendee, pro_idx, proctor_prefix, use_upn_project_names,
+            )
         elif role == 'organizer':
             if not use_upn_project_names:
                 org_idx += 1
-            project_name = _compute_attendee_project_name(attendee, org_idx, organizer_prefix, use_upn_project_names)
+            project_name = _compute_attendee_project_name(
+                attendee, org_idx, organizer_prefix, use_upn_project_names,
+            )
         else:
             if not use_upn_project_names:
                 std_idx += 1
-            project_name = _compute_attendee_project_name(attendee, std_idx, attendee_prefix, use_upn_project_names)
+            project_name = _compute_attendee_project_name(
+                attendee, std_idx, attendee_prefix, use_upn_project_names,
+            )
 
         results.append({
             'upn': upn,
@@ -270,7 +287,9 @@ def _write_resolution_audit(
     """Write a per-attendee resolution audit CSV to audit_dir."""
     timestamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     audit_path = audit_dir / f'attendee-resolution-{env_name}-{timestamp}.csv'
-    fieldnames = ['upn', 'object_id', 'project_name', 'role', 'individual_project', 'resolved', 'message']
+    fieldnames = [
+        'upn', 'object_id', 'project_name', 'role', 'individual_project', 'resolved', 'message',
+    ]
     with audit_path.open('w', encoding='utf-8', newline='') as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
@@ -289,7 +308,8 @@ def _write_resolution_audit(
 
 # ---------- main ----------
 
-def main() -> int:
+def main() -> int:  # pylint: disable=too-many-locals
+    """Resolve attendee UPNs, compute project names, and emit the resolved list to the azd env."""
     if not _check_az_logged_in():
         print('Azure CLI is not authenticated. Run `az login` then re-run the provision.')
         return 1
@@ -302,21 +322,35 @@ def main() -> int:
 
     if not attendees:
         print('AZURE_ATTENDEE_LIST is not set or empty. Skipping UPN resolution.')
-        print('Bicep will use attendeeCount for sequential project names; no role assignments will be created.')
+        print(
+            'Bicep will use attendeeCount for sequential project names; '
+            'no role assignments will be created.'
+        )
         return 0
 
-    default_role = os.getenv('AZURE_ATTENDEE_DEFAULT_ROLE', DEFAULT_ROLE_KEY).strip() or DEFAULT_ROLE_KEY
+    default_role = (
+        os.getenv('AZURE_ATTENDEE_DEFAULT_ROLE', DEFAULT_ROLE_KEY).strip() or DEFAULT_ROLE_KEY
+    )
     if default_role not in ROLE_SCOPE_LEVELS:
         valid = ', '.join(sorted(ROLE_SCOPE_LEVELS))
         print(f"Unknown AZURE_ATTENDEE_DEFAULT_ROLE '{default_role}'. Valid values: {valid}.")
         return 1
 
-    attendee_prefix = os.getenv('AZURE_ATTENDEE_PROJECT_PREFIX', 'attendee').strip() or 'attendee'
-    facilitator_prefix = os.getenv('AZURE_FACILITATOR_PROJECT_PREFIX', 'facilitator').strip() or 'facilitator'
-    proctor_prefix = os.getenv('AZURE_PROCTOR_PROJECT_PREFIX', 'proctor').strip() or 'proctor'
-    organizer_prefix = os.getenv('AZURE_ORGANIZER_PROJECT_PREFIX', 'organizer').strip() or 'organizer'
+    attendee_prefix = (
+        os.getenv('AZURE_ATTENDEE_PROJECT_PREFIX', 'attendee').strip() or 'attendee'
+    )
+    facilitator_prefix = (
+        os.getenv('AZURE_FACILITATOR_PROJECT_PREFIX', 'facilitator').strip() or 'facilitator'
+    )
+    proctor_prefix = (
+        os.getenv('AZURE_PROCTOR_PROJECT_PREFIX', 'proctor').strip() or 'proctor'
+    )
+    organizer_prefix = (
+        os.getenv('AZURE_ORGANIZER_PROJECT_PREFIX', 'organizer').strip() or 'organizer'
+    )
     ensure_facilitator_project = (
-        os.getenv('AZURE_ENSURE_FACILITATOR_PROJECT', 'true').strip().lower() not in ('false', '0', '')
+        os.getenv('AZURE_ENSURE_FACILITATOR_PROJECT', 'true')
+        .strip().lower() not in ('false', '0', '')
     )
     use_upn_project_names = (
         os.getenv('AZURE_USE_UPN_PROJECT_NAMES', 'true').strip().lower() not in ('false', '0', '')
@@ -343,13 +377,22 @@ def main() -> int:
         if object_id:
             entry['objectId'] = object_id
             entry['resolved'] = True
-            print(f'  {upn} -> {object_id} (project: {entry["projectName"]}, role: {entry["role"]})')
+            print(
+                f'  {upn} -> {object_id} '
+                f'(project: {entry["projectName"]}, role: {entry["role"]})'
+            )
         else:
             unresolved_count += 1
-            print(f'  {upn} -> UNRESOLVED (project: {entry["projectName"]} will be created; role assignment skipped)')
+            print(
+                f'  {upn} -> UNRESOLVED '
+                f'(project: {entry["projectName"]} will be created; role assignment skipped)'
+            )
 
     print('')
-    print(f'Resolution complete: {len(resolved) - unresolved_count} resolved, {unresolved_count} unresolved.')
+    print(
+        f'Resolution complete: '
+        f'{len(resolved) - unresolved_count} resolved, {unresolved_count} unresolved.'
+    )
 
     _emit_resolved_list(resolved)
     print('AZURE_ATTENDEE_LIST_RESOLVED written to azd environment.')

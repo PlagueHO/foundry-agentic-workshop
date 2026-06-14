@@ -416,11 +416,11 @@
             }
         },
         {
-            "label": "introduction-foundry-agent-service: lab 06- run mcp server",
+            "label": "mcp: run retail-remedy-ops server",
             "type": "shell",
             "command": "${command:python.interpreterPath}",
             "args": [
-                "labs/introduction-foundry-agent-service/06-mcp-tools/src/server.py"
+                "shared/mcp-servers/retail-remedy-ops/src/server.py"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

@@ -95,7 +95,7 @@ This module requires the `acl-remedy-advisor` agent to already exist with both *
 1. In the new terminal, run:
 
    ```bash
-   python labs/introduction-foundry-agent-service/06-mcp-tools/src/server.py
+   python shared/mcp-servers/retail-remedy-ops/src/server.py
    ```
 
 1. Confirm the server prints the following startup line (take a screenshot):

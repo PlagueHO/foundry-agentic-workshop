@@ -9,6 +9,7 @@ This guide covers standing up and tearing down a shared Microsoft Foundry worksh
    1. To assign roles requires Owner or User Access Administrator on the subscription or resource group.
 1. [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
+1. [Docker](https://www.docker.com/) running locally. Provisioning uses it to build and publish the shared Module 06 MCP server image to Azure Container Apps (only needed when `AZURE_CONTAINER_APPS_DEPLOY` is `true`, the default).
 1. Python 3.13 or later (the pre-provision hook resolves attendee UPNs to Microsoft Entra object IDs before Bicep assigns roles).
 1. [Foundry Model quota](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits) in your target region for the models the labs use.
 1. The Microsoft Entra ID UPN for each attendee, organizer, facilitator and proctor. The organizer, facilitator and proctors are optional.
@@ -77,10 +78,24 @@ azd provision
 > [!NOTE]
 > Every Foundry project's system-assigned managed identity is automatically granted the **Reader** role on the workshop's Application Insights component so the project can read agent traces in the Foundry portal. This assignment is always created for every project and requires no configuration. Without it, the portal reports "Setup incomplete: Assign the Foundry project's managed identity the Reader role on Application Insights to access traces."
 
-The pre-provision hook (`scripts/prepare-attendee-roles.py`) resolves each UPN to a Microsoft Entra object ID, computes project names, and writes a resolution audit CSV to `.azure/<env>/attendee-resolution-<env>-<timestamp>.csv`. Bicep then deploys all Azure resources with role assignments embedded. The post-provision hook (`scripts/generate-attendee-onboarding.py`) writes a per-attendee onboarding markdown file to `.azure/<env>/<upn_local>.md` for each resolved attendee, writes a provisioning summary CSV to `.azure/<env>/attendee-provisioning-<env>-<timestamp>.csv`, and seeds the Azure AI Search indexes. Re-run this command any time you change `AZURE_ATTENDEE_LIST`, `AZURE_ATTENDEE_COUNT`, or the project prefix.
+This single command runs three stages automatically:
 
-> [!NOTE]
-> Screenshot placeholder- *the Foundry account and its projects in the Azure portal after provisioning.* Alt text: "Azure portal resource group showing the Foundry account and one project per attendee."
+1. **Resolve attendees** — `scripts/prepare-attendee-roles.py` (pre-provision) maps each UPN to a Microsoft Entra object ID and computes project names. It writes an audit to `.azure/<env>/attendee-resolution-<env>-<timestamp>.csv`.
+1. **Deploy infrastructure** — Bicep creates all Azure resources with attendee role assignments embedded.
+1. **Onboard and seed** — `scripts/generate-attendee-onboarding.py` (post-provision) writes a per-attendee onboarding file to `.azure/<env>/<upn_local>.md`, a provisioning summary to `.azure/<env>/attendee-provisioning-<env>-<timestamp>.csv`, seeds the Azure AI Search indexes, and publishes the shared MCP server.
+
+Re-run `azd provision` any time you change `AZURE_ATTENDEE_LIST`, `AZURE_ATTENDEE_COUNT`, or the project prefix.
+
+> [!TIP]
+> The shared **Retail Remedy Operations** MCP server for [Module 06](../labs/introduction-foundry-agent-service/06-mcp-tools/README.md) is published for you during provisioning, and its URL is saved into every attendee onboarding file as `MCP_SERVER_URL` — attendees use it without running anything locally. This step needs **Docker** running and a signed-in **Azure CLI**. To skip the shared server and have attendees tunnel their own copy instead, run `azd env set AZURE_CONTAINER_APPS_DEPLOY false` before provisioning.
+
+<details>
+<summary>📸 Screenshot: Azure Portal showing the deploy resources</summary>
+
+![Azure portal resource group showing the Foundry account and one project per attendee.](../../../docs/assets/screenshots/azure-deployed-resources.png)
+  *The Azure portal showing the deployed Foundry account and projects, one per attendee as well as the other supporting resources.*
+
+</details>
 
 ## Validate and share
 
@@ -95,8 +110,13 @@ azd env get-value AZURE_ATTENDEE_PROJECT_NAMES
 
 Open the [Foundry portal](https://ai.azure.com) and confirm the projects and model deployments exist. Optionally sign in as a test attendee to verify the expected capabilities.
 
-> [!NOTE]
-> Screenshot placeholder- *the project list in the Foundry portal.* Alt text: "Microsoft Foundry portal showing one project per attendee."
+<details>
+<summary>📸 Screenshot: The project list in the Foundry portal</summary>
+
+![Foundry Projects list](../../../docs/assets/screenshots/foundry-deployed-projects.png)
+  *The Foundry Projects list showing one project per attendee.*
+
+</details>
 
 ### Share with attendees
 
@@ -104,9 +124,9 @@ After provisioning, hand the per-attendee onboarding files to the facilitator. I
 
 Each file (`.azure/<env>/<upn_local>.md`) contains:
 
-* The attendee's `FOUNDRY_PROJECT_NAME`.
-* All shared `.env` connection values: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_OPENAI_ENDPOINT`, and `AZURE_SEARCH_SERVICE_NAME`.
-* Sign-in commands and a health-check command to validate setup.
+- The attendee's `FOUNDRY_PROJECT_NAME`.
+- All shared `.env` connection values: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_OPENAI_ENDPOINT`, `AZURE_SEARCH_SERVICE_NAME`, and the shared `MCP_SERVER_URL` (when the shared MCP server is deployed).
+- Sign-in commands and a health-check command to validate setup.
 
 > [!TIP]
 > Files are written to `.azure/<env>/<upn_local>.md` where `<env>` is the azd environment name and `<upn_local>` is the local part of the attendee's UPN. For example, `alice.smith@contoso.com` in environment `my-workshop` produces `.azure/my-workshop/alice-smith.md`.

@@ -15,8 +15,7 @@ hooks:
   postprovision:
     posix:
       shell: sh
-      run: python scripts/generate-attendee-onboarding.py && python scripts/seed-product-index.py && python scripts/seed-document-index.py
+      run: python scripts/generate-attendee-onboarding.py && python scripts/seed-product-index.py && python scripts/seed-document-index.py && python scripts/deploy-mcp-server.py
     windows:
       shell: pwsh
-      run: python scripts/generate-attendee-onboarding.py; python scripts/seed-product-index.py; python scripts/seed-document-index.py
-services: {}
+      run: python scripts/generate-attendee-onboarding.py; python scripts/seed-product-index.py; python scripts/seed-document-index.py; python scripts/deploy-mcp-server.py
