@@ -44,9 +44,13 @@ This lab adds a **fourth** connection to `acl-remedy-advisor`: a **Foundry IQ Kn
 
 ### What is Foundry IQ?
 
-**Foundry IQ** is the knowledge layer in Microsoft Foundry. It lets you combine multiple Azure AI Search indexes behind a single, agent-ready retrieval endpoint called a **knowledge base**. Instead of wiring one Azure AI Search index at a time, you create a knowledge base that holds multiple **knowledge sources** and exposes them to agents through a single connection.
+**Foundry IQ** is the knowledge layer in Microsoft Foundry. It lets you combine multiple Azure AI Search indexes, remote data sources and MCP Servers behind a single, agent-ready retrieval endpoint called a **knowledge base**. Instead of wiring one Azure AI Search index, remote data source or MCP Server at a time, you create a knowledge base that holds multiple **knowledge sources** and exposes them to agents through a single connection.
 
 When an agent has a knowledge base attached and the user asks a question, Foundry IQ runs retrieval across all configured knowledge sources, re-ranks the results, and injects the most relevant passages into the model's context. The agent's response is then grounded in your enterprise data — not just in model training knowledge.
+
+You can think of Foundry IQ as a customizable knowledge Agent that lives in your Azure AI Search service and serves up contextual information to your agents on demand. It frees you from hard-coding retrieval logic and gives you a single place to manage all your knowledge sources, configure retrieval behaviour, and monitor usage.
+
+![Diagram showing how Foundry IQ retrieves and ranks information from multiple knowledge sources before returning to your agent.](../../../docs/assets/diagrams/foundry-iq-agentic-retrieval-pipeline.png)
 
 ### Knowledge sources
 
@@ -61,6 +65,23 @@ You could connect each index individually using the **Azure AI Search** tool in 
 1. **Multi-source fusion** — a single knowledge base retrieves across both indexes in one call, re-ranking results from both before injecting context.
 1. **Managed configuration** — retrieval behaviour (reasoning effort, output mode, and retrieval instructions) is configured once in the knowledge base and reused by any agent that attaches it.
 1. **Consistent grounding** — the same retrieval behaviour applies everywhere the knowledge base is used, making evaluations reproducible.
+1. **MCP Server** — Agents connect to the knowledge base as an MCP tool, so you get consistent `mcp://searchindex/...` citations in responses and a single connection point for all your knowledge sources. This also enables Foundry IQ to be used with 3rd party Agents.
+
+### Output modes and retrieval instructions
+
+When you create a knowledge base you choose how it returns results and — when it holds more than one source — how it decides which source to query. Two settings control this, and both depend on the **retrieval reasoning effort** you pick.
+
+The **output mode** determines what the knowledge base hands back to the agent:
+
+- **Extractive data** (used in this lab) returns the highest-ranked passages straight from the search indexes. The agent's own model reads those passages, writes the answer, and adds the `mcp://searchindex/...` citations. This mode adds no extra LLM call inside the knowledge base, so it is the fastest and lowest-cost option — and it is the only mode available when reasoning effort is **Minimal**.
+- **Answer synthesis** asks an LLM *inside the knowledge base* to compose a grounded, natural-language answer with inline citations before returning it. It needs a chat model on the knowledge base and a reasoning effort of **Low** or **Medium**; it is not available with **Minimal** effort.
+
+Both modes ground the agent in your data — they differ in *where* the answer is written. This lab uses **Extractive data** so the `acl-remedy-advisor` agent keeps control of the final wording and tool routing.
+
+> [!NOTE]
+> The **retrieval reasoning effort** sets how much LLM query planning the knowledge base performs. **Minimal** (this lab) disables query planning and always searches every source — predictable, fast, and inexpensive. **Low** (the service default) runs a single pass of LLM query planning and source selection. **Medium** adds an iterative second pass for harder questions.
+
+**Retrieval instructions** are an optional prompt that tells the knowledge base's query-planning LLM *which sources to use for which questions* — for example, route returns and warranty questions to the policies source and catalog questions to the products source. Because they steer the LLM query-planning step, they only take effect at **Low** or **Medium** reasoning effort. With **Minimal** effort there is no query planning and every source is always searched, so this lab leaves **Retrieval instructions** empty. If you raise the effort to **Low** or **Medium** with multiple sources, add retrieval instructions so the engine routes each question to the right source.
 
 ## Prerequisites — the search indexes are already provisioned
 
@@ -188,10 +209,15 @@ This module uses two Azure AI Search indexes that the workshop provisioning scri
     Retail product catalog and store policy knowledge for the ACL Remedy Advisor agent.
     ```
 
-  - **Chat completions model**: leave as **Select model** (not required for extractive retrieval).
-  - **Retrieval reasoning effort**: **Minimal**.
-  - **Output mode**: **Extractive data**.
-  - **Retrieval instructions** (optional): leave empty.
+  - **Chat completions model**: leave as **Select model**. A model is only needed for **Answer synthesis** or for **Low**/**Medium** reasoning effort, neither of which this lab uses.
+  - **Retrieval reasoning effort**: **Minimal**. This searches both sources on every query with the lowest latency and cost, and is the recommended starting point. See [Output modes and retrieval instructions](#output-modes-and-retrieval-instructions) for the alternatives.
+  - **Output mode**: **Extractive data**. The knowledge base returns ranked passages and the agent writes the grounded answer with `mcp://searchindex/...` citations. Extractive data is required when reasoning effort is **Minimal**.
+  - **Retrieval instructions** (optional): leave **empty**. Retrieval instructions steer the LLM query-planning step, which **Minimal** effort disables, so they have no effect here. If you later raise the effort to **Low** or **Medium**, add an instruction such as the following so the engine routes each question to the right source:
+
+    ```text
+    Use the retail-policies source for questions about returns, refunds, warranties, loyalty, and store-brand guarantees. Use the retail-products source for questions about specific products, prices, ratings, and stock.
+    ```
+
 - [ ] Confirm the **Knowledge sources** table lists both `retail-products` and `retail-policies` as type **Azure AI Search Index** with status **Active**.
 
   <details>

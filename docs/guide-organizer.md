@@ -9,7 +9,7 @@ This guide covers standing up and tearing down a shared Microsoft Foundry worksh
    1. To assign roles requires Owner or User Access Administrator on the subscription or resource group.
 1. [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
-1. [Docker](https://www.docker.com/) running locally. Provisioning uses it to build and publish the shared Module 06 MCP server image to Azure Container Apps (only needed when `AZURE_CONTAINER_APPS_DEPLOY` is `true`, the default).
+1. [Docker](https://www.docker.com/) running locally. Provisioning uses it to build and publish the shared MCP server image to Azure Container Apps (only needed when `AZURE_CONTAINER_APPS_DEPLOY` is `true`, the default).
 1. Python 3.13 or later (the pre-provision hook resolves attendee UPNs to Microsoft Entra object IDs before Bicep assigns roles).
 1. [Foundry Model quota](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits) in your target region for the models the labs use.
 1. The Microsoft Entra ID UPN for each attendee, organizer, facilitator and proctor. The organizer, facilitator and proctors are optional.
@@ -87,7 +87,7 @@ This single command runs three stages automatically:
 Re-run `azd provision` any time you change `AZURE_ATTENDEE_LIST`, `AZURE_ATTENDEE_COUNT`, or the project prefix.
 
 > [!TIP]
-> The shared **Retail Remedy Operations** MCP server for [Module 06](./lab-steps/introduction-foundry-agent-service/06-mcp-tools.md) is published for you during provisioning, and its URL is saved into every attendee onboarding file as `MCP_SERVER_URL` — attendees use it without running anything locally. This step needs **Docker** running and a signed-in **Azure CLI**. To skip the shared server and have attendees tunnel their own copy instead, run `azd env set AZURE_CONTAINER_APPS_DEPLOY false` before provisioning.
+> The shared **Retail Remedy Operations** MCP server for [Module 06](./lab-steps/introduction-foundry-agent-service/06-mcp-tools.md) and subsequent modules is published for you during provisioning, and its URL is saved into every attendee onboarding file as `MCP_SERVER_URL` — attendees use it without running anything locally. This step needs **Docker** running and a signed-in **Azure CLI**. To skip the shared server and have attendees tunnel their own copy instead, run `azd env set AZURE_CONTAINER_APPS_DEPLOY false` before provisioning.
 
 <details>
 <summary>📸 Screenshot: Azure Portal showing the deploy resources</summary>
@@ -121,6 +121,14 @@ Open the [Foundry portal](https://ai.azure.com) and confirm the projects and mod
 ### Share with attendees
 
 After provisioning, hand the per-attendee onboarding files to the facilitator. It is the **facilitator's responsibility** to distribute each attendee's file to them before the workshop starts.
+
+<details>
+<summary>📸 Screenshot: Lab provisioning output files</summary>
+
+![Lab provisioning output files](./assets/screenshots/lab-provisioning-outputs.png)
+  *The lab provisioning output files showing one markdown file per attendee (and facilitator, organizer and proctor) and some of the provisioning list reports (CSV).*
+
+</details>
 
 Each file (`.azure/<env>/<upn_local>.md`) contains:
 
