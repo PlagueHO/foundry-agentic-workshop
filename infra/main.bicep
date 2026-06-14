@@ -327,12 +327,14 @@ var attendeeSearchRoleAssignments = flatten(map(resolvedAttendeesWithIds, a =>
   })
 ))
 
-// Azure Container Registry AcrPush role assignments (all resolved attendees). Required so each
-// attendee can build and push their hosted agent image to the shared registry in Module 09. The
-// AcrPush role GUID is 8311e382-0749-4cb8-b61a-304f252e45ec. Per-attendee image tags keep pushes
-// isolated; AcrPush grants push to the whole registry, which is acceptable for a shared lab.
+// Azure Container Registry repository role assignments (all resolved attendees). Required so each
+// attendee can build and push their hosted agent image to the shared registry in Module 09, and
+// browse the registry catalog/repositories in the portal and CLI. The registry uses ABAC repository
+// permissions mode, so the ABAC-enabled 'Container Registry Repository Contributor' role (not legacy
+// AcrPush) grants full repository access: catalog read, pull, push, and delete. Per-attendee image
+// tags keep pushes logically isolated; the role grants registry-wide access, acceptable for a shared lab.
 var attendeeAcrPushRoleAssignments = map(resolvedAttendeesWithIds, a => {
-  roleDefinitionIdOrName: '8311e382-0749-4cb8-b61a-304f252e45ec'
+  roleDefinitionIdOrName: 'Container Registry Repository Contributor'
   principalId: a.objectId
   principalType: 'User'
 })
@@ -424,7 +426,8 @@ var foundryServiceConnections = concat(
   [
     {
       // Container Registry connection so Foundry hosted agents (Module 09) can pull images
-      // from the shared registry using the project managed identity (AcrPull).
+      // from the shared registry using the project managed identity (Container Registry
+      // Repository Reader, granted in projectAcrRoleAssignments).
       category: 'ContainerRegistry'
       connectionProperties: {
         authType: 'AAD'
@@ -661,6 +664,12 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.12.1' 
     location: location
     acrSku: containerRegistrySku
     acrAdminUserEnabled: false
+    // Hosted agent image pulls require the project managed identity to hold the ABAC-enabled
+    // 'Container Registry Repository Reader' role, which is only honored when the registry uses
+    // ABAC repository permissions mode. Legacy AcrPull/AcrPush roles are NOT honored in this mode,
+    // so all ACR role assignments below use the ABAC-enabled equivalents.
+    // See: https://learn.microsoft.com/azure/container-registry/container-registry-rbac-abac-repository-permissions
+    roleAssignmentMode: 'AbacRepositoryPermissions'
     diagnosticSettings: [
       {
         metricCategories: [
@@ -852,14 +861,18 @@ module projectSearchRoleAssignments './core/security/role_aisearch.bicep' = [
   }
 ]
 
-// Per-project managed identity AcrPull role assignments for hosted agent image pulls (Module 09).
-// Each Foundry project's system-assigned managed identity authenticates to the shared Container
-// Registry to pull the hosted agent image when the agent version is created. Without the AcrPull
-// role, hosted agent deployment fails with an image-pull authorization error. A module loop is used
-// (rather than a variable loop) so the per-project principal IDs — only known after the Foundry
-// account deploys — can be referenced in the loop body. The loop count comes from allProjectNames
+// Per-project managed identity Container Registry Repository Reader role assignments for hosted
+// agent image pulls (Module 09). Each Foundry project's system-assigned managed identity
+// authenticates to the shared Container Registry to pull the hosted agent image when the agent
+// version is created. The hosted agent deployment path requires the ABAC-enabled 'Container
+// Registry Repository Reader' role (not legacy AcrPull); without it, deployment fails with
+// image_pull_failed (HTTP 400). This role is only honored because the registry is configured with
+// ABAC repository permissions mode (see containerRegistry above). A module loop is used (rather
+// than a variable loop) so the per-project principal IDs — only known after the Foundry account
+// deploys — can be referenced in the loop body. The loop count comes from allProjectNames
 // (compile-time), and the project array order matches aiFoundryAccount's projects input so IDs are
-// indexed by position. See: https://learn.microsoft.com/azure/ai-foundry/agents/how-to/deploy-hosted-agents
+// indexed by position.
+// See: https://learn.microsoft.com/azure/foundry/agents/how-to/deploy-hosted-agent#required-permissions
 module projectAcrRoleAssignments './core/security/role_acr.bicep' = [
   for (name, i) in allProjectNames: {
     name: 'project-acr-role-${i}-${deploymentId}'
@@ -872,7 +885,7 @@ module projectAcrRoleAssignments './core/security/role_acr.bicep' = [
       containerRegistryName: containerRegistryName
       roleAssignments: [
         {
-          roleDefinitionIdOrName: 'AcrPull'
+          roleDefinitionIdOrName: 'Container Registry Repository Reader'
           principalType: 'ServicePrincipal'
           principalId: aiFoundryAccount.outputs.projectSystemAssignedMIPrincipalIds[i]
         }
@@ -929,11 +942,12 @@ module attendeeAppInsightsRoleAssignments './core/security/role_appinsights.bice
   }
 }
 
-// Per-attendee Azure Container Registry AcrPush role assignments for hosted agent image pushes.
-// Each resolved attendee needs the AcrPush role on the shared Container Registry so they can build
-// and push their hosted agent image in Module 09. Without it, the docker push (or az acr login)
-// step fails with an authorization error.
-// See: https://learn.microsoft.com/azure/ai-foundry/agents/how-to/deploy-hosted-agents
+// Per-attendee Azure Container Registry repository role assignments for hosted agent image pushes.
+// Each resolved attendee needs the ABAC-enabled 'Container Registry Repository Contributor' role on
+// the shared Container Registry so they can browse the registry catalog and build, push, and manage
+// their hosted agent image in Module 09. Without it, the docker push (or az acr login) step fails
+// with an authorization error and the registry catalog appears empty in the portal.
+// See: https://learn.microsoft.com/azure/foundry/agents/how-to/deploy-hosted-agent#required-permissions
 module attendeeAcrRoleAssignments './core/security/role_acr.bicep' = if (!empty(resolvedAttendeesWithIds)) {
   name: 'attendee-acr-roles-${deploymentId}'
   scope: az.resourceGroup(effectiveResourceGroupName)

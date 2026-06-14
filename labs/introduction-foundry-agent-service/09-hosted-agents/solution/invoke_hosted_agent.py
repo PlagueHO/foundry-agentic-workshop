@@ -1,4 +1,4 @@
-"""Invoke the deployed acl-remedy-advisor-hosted agent over the Responses API.
+"""Invoke the deployed acl-remedy-advisor-hosted-code agent over the Responses API.
 
 Creates a session against the latest active version of the hosted agent, routes the
 agent endpoint to that version, then runs a short multi-turn conversation. Sessions only
@@ -34,7 +34,7 @@ def run() -> None:
     load_dotenv()
 
     endpoint = os.environ['FOUNDRY_PROJECT_ENDPOINT']
-    agent_name = os.environ.get('HOSTED_AGENT_NAME', 'acl-remedy-advisor-hosted')
+    agent_name = os.environ.get('HOSTED_AGENT_NAME_CODE', 'acl-remedy-advisor-hosted-code')
 
     with (
         DefaultAzureCredential() as credential,
@@ -69,11 +69,15 @@ def run() -> None:
             previous_response_id: str | None = None
             for prompt in PROMPTS:
                 print(f'\n> {prompt}')
-                response = openai_client.responses.create(
-                    input=prompt,
-                    previous_response_id=previous_response_id,
-                    extra_body={'agent_session_id': session.agent_session_id},
-                )
+                # Only send previous_response_id once a prior turn exists; passing
+                # None serializes to JSON null, which the Responses API rejects.
+                turn_kwargs: dict[str, object] = {
+                    'input': prompt,
+                    'extra_body': {'agent_session_id': session.agent_session_id},
+                }
+                if previous_response_id is not None:
+                    turn_kwargs['previous_response_id'] = previous_response_id
+                response = openai_client.responses.create(**turn_kwargs)
                 previous_response_id = response.id
                 print(response.output_text)
         finally:

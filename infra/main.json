@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "9643819512583586830"
+      "templateHash": "9650024877389486973"
     }
   },
   "definitions": {
@@ -660,9 +660,10 @@
     "attendeeProjectRoleEntries": "[flatten(map(filter(variables('resolvedAttendeesWithIds'), lambda('a', and(and(equals(lambdaVariables('a').role, 'foundry-user'), coalesce(tryGet(lambdaVariables('a'), 'individualProject'), true())), not(empty(lambdaVariables('a').projectName))))), lambda('a', createArray(createObject('projectName', lambdaVariables('a').projectName, 'roleAssignment', createObject('roleDefinitionIdOrName', variables('foundryRoleCatalog')['foundry-user'], 'principalId', lambdaVariables('a').objectId, 'principalType', 'User'))))))]",
     "attendeeFoundryAccountRoleAssignments": "[map(filter(variables('resolvedAttendeesWithIds'), lambda('a', not(equals(lambdaVariables('a').role, 'foundry-user')))), lambda('a', createObject('roleDefinitionIdOrName', variables('foundryRoleCatalog')[lambdaVariables('a').role], 'principalId', lambdaVariables('a').objectId, 'principalType', 'User')))]",
     "attendeeSearchRoleAssignments": "[flatten(map(variables('resolvedAttendeesWithIds'), lambda('a', map(variables('searchRoleCatalog')[lambdaVariables('a').role], lambda('roleId', createObject('roleDefinitionIdOrName', lambdaVariables('roleId'), 'principalId', lambdaVariables('a').objectId, 'principalType', 'User'))))))]",
-    "attendeeAcrPushRoleAssignments": "[map(variables('resolvedAttendeesWithIds'), lambda('a', createObject('roleDefinitionIdOrName', '8311e382-0749-4cb8-b61a-304f252e45ec', 'principalId', lambdaVariables('a').objectId, 'principalType', 'User')))]",
+    "attendeeAcrPushRoleAssignments": "[map(variables('resolvedAttendeesWithIds'), lambda('a', createObject('roleDefinitionIdOrName', 'Container Registry Repository Contributor', 'principalId', lambdaVariables('a').objectId, 'principalType', 'User')))]",
     "attendeeResourceGroupReaderRoleAssignments": "[map(variables('resolvedAttendeesWithIds'), lambda('a', createObject('roleDefinitionIdOrName', 'acdd72a7-3385-48ef-bd42-f606fba81ae7', 'principalId', lambdaVariables('a').objectId, 'principalType', 'User')))]",
     "attendeeAppInsightsLogAnalyticsReaderRoleAssignments": "[map(variables('resolvedAttendeesWithIds'), lambda('a', createObject('roleDefinitionIdOrName', '73c42c96-874c-492b-b04d-ab87d138a893', 'principalId', lambdaVariables('a').objectId, 'principalType', 'User')))]",
+    "attendeeAgentIdentityRbacAdminRoleAssignments": "[map(variables('resolvedAttendeesWithIds'), lambda('a', createObject('roleDefinitionIdOrName', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168', 'principalId', lambdaVariables('a').objectId, 'principalType', 'User', 'description', 'Constrained: assign Foundry User to hosted agent identities only (Module 09).', 'conditionVersion', '2.0', 'condition', format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}})) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{0}}} AND @Request[Microsoft.Authorization/roleAssignments:PrincipalType] StringEqualsIgnoreCase ''ServicePrincipal'')) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}})) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {{{1}}}))', variables('foundryRoleCatalog')['foundry-user'], variables('foundryRoleCatalog')['foundry-user']))))]",
     "aiSearchConnectionName": "[replace(variables('aiSearchName'), '-', '')]",
     "appInsightsConnectionName": "[replace(variables('applicationInsightsName'), '-', '')]",
     "storageConnectionName": "[replace(variables('storageAccounName'), '-', '')]",
@@ -25240,6 +25241,9 @@
           "acrAdminUserEnabled": {
             "value": false
           },
+          "roleAssignmentMode": {
+            "value": "AbacRepositoryPermissions"
+          },
           "diagnosticSettings": {
             "value": [
               {
@@ -37831,7 +37835,7 @@
           "roleAssignments": {
             "value": [
               {
-                "roleDefinitionIdOrName": "AcrPull",
+                "roleDefinitionIdOrName": "Container Registry Repository Reader",
                 "principalType": "ServicePrincipal",
                 "principalId": "[reference('aiFoundryAccount').outputs.projectSystemAssignedMIPrincipalIds.value[copyIndex()]]"
               }
@@ -37846,7 +37850,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.44.1.10279",
-              "templateHash": "4645204310068397302"
+              "templateHash": "3029825757627850904"
             },
             "name": "Container Registry Role Assignments",
             "description": "Creates role assignments on an Azure Container Registry."
@@ -37955,6 +37959,9 @@
               "AcrPull": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]",
               "AcrPush": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8311e382-0749-4cb8-b61a-304f252e45ec')]",
               "AcrDelete": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c2f4ef07-c644-48eb-af81-4b1b4947fb11')]",
+              "Container Registry Repository Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b93aa761-3e63-49ed-ac28-beffa264f7ac')]",
+              "Container Registry Repository Writer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a1e307c-b015-4ebd-883e-5b7698a07328')]",
+              "Container Registry Repository Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2efddaa5-3f1f-4df3-97df-af3f13818f4c')]",
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
@@ -38452,7 +38459,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.44.1.10279",
-              "templateHash": "4645204310068397302"
+              "templateHash": "3029825757627850904"
             },
             "name": "Container Registry Role Assignments",
             "description": "Creates role assignments on an Azure Container Registry."
@@ -38561,6 +38568,9 @@
               "AcrPull": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]",
               "AcrPush": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8311e382-0749-4cb8-b61a-304f252e45ec')]",
               "AcrDelete": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c2f4ef07-c644-48eb-af81-4b1b4947fb11')]",
+              "Container Registry Repository Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b93aa761-3e63-49ed-ac28-beffa264f7ac')]",
+              "Container Registry Repository Writer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a1e307c-b015-4ebd-883e-5b7698a07328')]",
+              "Container Registry Repository Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2efddaa5-3f1f-4df3-97df-af3f13818f4c')]",
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
@@ -38639,7 +38649,7 @@
             "value": "[variables('aiFoundryName')]"
           },
           "roleAssignments": {
-            "value": "[flatten(createArray(if(not(empty(tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'))), createArray(createObject('roleDefinitionIdOrName', 'Cognitive Services Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')), createObject('roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'), ''))), createArray()), if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', 'Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray()), variables('attendeeFoundryAccountRoleAssignments')))]"
+            "value": "[flatten(createArray(if(not(empty(tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'))), createArray(createObject('roleDefinitionIdOrName', 'Cognitive Services Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')), createObject('roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'), ''))), createArray()), if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', 'Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray()), variables('attendeeFoundryAccountRoleAssignments'), variables('attendeeAgentIdentityRbacAdminRoleAssignments')))]"
           }
         },
         "template": {

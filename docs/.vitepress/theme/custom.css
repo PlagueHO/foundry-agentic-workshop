@@ -84,3 +84,92 @@
   /* Respect user system accent colour; browsers handle light/dark automatically */
   accent-color: var(--vp-c-brand-1);
 }
+
+/* ── GFM Alert / Custom Block Visual Enhancement ──────────────────────────
+ * Adds an emoji prefix to each alert title and applies a type-specific
+ * tinted background with a subtle coloured outline.
+ *
+ * Covers both GFM alert names used in this repo (note, tip, important,
+ * warning, caution) and the VitePress container aliases they map to
+ * (info, danger).
+ * ─────────────────────────────────────────────────────────────────────── */
+
+/* Emoji prefixes on alert titles */
+.custom-block.note      .custom-block-title::before,
+.custom-block.info      .custom-block-title::before { content: "ℹ️\00a0\00a0"; }
+.custom-block.tip       .custom-block-title::before { content: "💡\00a0\00a0"; }
+.custom-block.important .custom-block-title::before { content: "⭐\00a0\00a0"; }
+.custom-block.warning   .custom-block-title::before { content: "⚠️\00a0\00a0"; }
+.custom-block.caution   .custom-block-title::before { content: "🚨\00a0\00a0"; }
+.custom-block.danger    .custom-block-title::before { content: "🔥\00a0\00a0"; }
+
+/* note/info title has no colour by default in VitePress — apply blue */
+.custom-block.note .custom-block-title,
+.custom-block.info .custom-block-title { color: oklch(0.45 0.16 245); }
+
+/* ── Light-mode: tinted background + visible coloured outline ── */
+.custom-block.note,
+.custom-block.info {
+  background-color: oklch(0.95 0.018 235);
+  border-color:     oklch(0.60 0.14 240 / 45%);
+}
+
+.custom-block.tip {
+  background-color: oklch(0.95 0.028 145);
+  border-color:     oklch(0.50 0.17 145 / 40%);
+}
+
+.custom-block.important {
+  background-color: oklch(0.95 0.022 295);
+  border-color:     oklch(0.55 0.20 295 / 40%);
+}
+
+.custom-block.warning {
+  background-color: oklch(0.96 0.038 78);
+  border-color:     oklch(0.62 0.17 72  / 40%);
+}
+
+.custom-block.caution {
+  background-color: oklch(0.96 0.030 22);
+  border-color:     oklch(0.58 0.22 22  / 45%);
+}
+
+.custom-block.danger {
+  background-color: oklch(0.96 0.028 15);
+  border-color:     oklch(0.52 0.25 15  / 45%);
+}
+
+/* ── Dark-mode: deeper tinted background + muted coloured outline ── */
+.dark .custom-block.note .custom-block-title,
+.dark .custom-block.info .custom-block-title { color: oklch(0.72 0.14 245); }
+
+.dark .custom-block.note,
+.dark .custom-block.info {
+  background-color: oklch(0.22 0.024 232);
+  border-color:     oklch(0.62 0.14 240 / 22%);
+}
+
+.dark .custom-block.tip {
+  background-color: oklch(0.22 0.028 148);
+  border-color:     oklch(0.65 0.18 145 / 22%);
+}
+
+.dark .custom-block.important {
+  background-color: oklch(0.22 0.024 295);
+  border-color:     oklch(0.70 0.20 295 / 22%);
+}
+
+.dark .custom-block.warning {
+  background-color: oklch(0.23 0.035 78);
+  border-color:     oklch(0.75 0.17 72  / 22%);
+}
+
+.dark .custom-block.caution {
+  background-color: oklch(0.22 0.030 22);
+  border-color:     oklch(0.70 0.22 22  / 25%);
+}
+
+.dark .custom-block.danger {
+  background-color: oklch(0.22 0.028 15);
+  border-color:     oklch(0.68 0.24 15  / 25%);
+}

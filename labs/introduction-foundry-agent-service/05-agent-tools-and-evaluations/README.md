@@ -30,6 +30,14 @@
 
 ## Concepts
 
+### What you are building
+
+The following diagram shows the architecture you will build in this lab.
+
+![Architecture diagram: Python Client calls the acl-remedy-advisor Agent Definition (v2) inside a Foundry Project inside a Foundry Account. The Agent Definition calls the chat Model Deployment for LLM inference and may invoke the Web Search Tool (which calls the Internet) or the Code Interpreter Tool (which runs Python in a local sandbox).](../../../docs/assets/diagrams/lab-05-agent-tools-architecture.svg)
+
+Your **Python Client** (`src/starter.py`) sends a message to **acl-remedy-advisor v2** using `responses.create()`. Inside the **Foundry Project**, the agent calls the **chat** model deployment for every LLM reasoning step. During a turn the model may invoke either of the two built-in tools: **Web Search** retrieves current ACCC guidance from the internet, while **Code Interpreter** runs Python in an isolated sandbox to perform precise calculations — such as pro-rata refund amounts or depreciation. Your client code is unchanged from Module 04; adding tools and saving as v2 is handled entirely inside Agent Builder.
+
 ### Built-in tools
 
 A **tool** is a capability the agent can call during its reasoning loop. Foundry Agent Service provides three categories of tools:

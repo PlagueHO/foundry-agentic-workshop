@@ -34,6 +34,14 @@
 
 ## Concepts
 
+### What you are building
+
+The following diagram shows the architecture you will build in this lab.
+
+![Architecture diagram: Python Client calls the acl-remedy-advisor Agent Definition inside a Foundry Project inside a Foundry Account. The Agent Definition calls the chat Model Deployment and may invoke the Web Search Tool (which calls the Internet), the Code Interpreter Tool (sandboxed Python), the MCP Tool (which connects over an HTTPS dev tunnel to a Retail Remedy Operations MCP Server on the local dev machine), and a Knowledge Base connection — connected as an MCP tool — to a Foundry IQ Knowledge Base in the connected Azure AI Search service. The Knowledge Base contains two Knowledge Sources that read from the retail-products and retail-policies search indexes.](../../../docs/assets/diagrams/lab-07-foundry-iq-architecture.svg)
+
+This lab adds a **fourth** connection to `acl-remedy-advisor`: a **Foundry IQ Knowledge Base**, wired to the agent as an **MCP tool** (its citations resolve to `mcp://searchindex/...` sources) alongside the three tools from earlier modules. The Knowledge Base lives in the connected **Azure AI Search** service and combines two **Knowledge Sources** — each one reads from a pre-seeded search index (`retail-products` and `retail-policies`) using the index's semantic configuration. At query time the agent routes between all four capabilities: the Knowledge Base for grounded product and policy answers, the `retail-remedy-ops` MCP server for operational lookups, Web Search for current ACCC guidance, and Code Interpreter for calculations.
+
 ### What is Foundry IQ?
 
 **Foundry IQ** is the knowledge layer in Microsoft Foundry. It lets you combine multiple Azure AI Search indexes behind a single, agent-ready retrieval endpoint called a **knowledge base**. Instead of wiring one Azure AI Search index at a time, you create a knowledge base that holds multiple **knowledge sources** and exposes them to agents through a single connection.
@@ -384,7 +392,7 @@ At query time the agent authenticates to the knowledge base retrieval endpoint a
     --scope <azure-ai-search-resource-id>
   ```
 
-  Alternatively, re-run `azd provision` to reconcile role assignments.
+  Alternatively, ask your organizer to re-run `azd provision` to reconcile role assignments.
 
 ### Cannot create a knowledge base
 

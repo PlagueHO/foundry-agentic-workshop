@@ -30,6 +30,14 @@
 
 ## Concepts
 
+### What you are building
+
+The following diagram shows the architecture you will build in this lab.
+
+![Architecture diagram: Python Client calls the acl-remedy-advisor Agent Definition inside a Foundry Project inside a Foundry Account. The Agent Definition calls the chat Model Deployment and may invoke the Web Search Tool (which calls the Internet), the Code Interpreter Tool (sandboxed Python), or the MCP Tool — which connects over an HTTPS dev tunnel to a Retail Remedy Operations MCP Server running outside the Foundry Account on the local dev machine.](../../../docs/assets/diagrams/lab-06-mcp-tools-architecture.svg)
+
+This lab adds a **third** tool to `acl-remedy-advisor`. Unlike Web Search and Code Interpreter — which are built-in tools that run inside the **Foundry Account** — the MCP Tool is a connection to a **Retail Remedy Operations MCP Server** that runs on your **local dev machine** (`src/server.py`). Because the agent's reasoning loop runs in the Azure cloud, it cannot reach `localhost` directly; you expose the server through a public **HTTPS dev tunnel**, and the agent calls its six tools over that tunnel. During a turn the agent may combine all three tools: MCP for purchase, policy, and stock facts; Web Search for current ACCC guidance; and Code Interpreter for the pro-rata refund calculation.
+
 ### What is MCP?
 
 **Model Context Protocol (MCP)** is an open standard that lets AI agents call external tools over HTTP. Each MCP server exposes a set of typed functions. When the agent's reasoning loop decides it needs information, it calls the appropriate MCP tool, receives a structured response, and incorporates that response into its answer.

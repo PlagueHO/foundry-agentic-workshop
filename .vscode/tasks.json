@@ -319,6 +319,43 @@
         },
 
         {
+            "label": "lab: seed product index",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["scripts/seed-product-index.py"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "database",
+                "color": "terminal.ansiBlue"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "lab: seed document index",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["scripts/seed-document-index.py"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "database",
+                "color": "terminal.ansiCyan"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+
+        {
             "label": "introduction-foundry-agent-service: lab 04- create agent (solution)",
             "type": "shell",
             "command": "${command:python.interpreterPath}",
@@ -397,6 +434,26 @@
             "presentation": {
                 "reveal": "always",
                 "panel": "dedicated",
+            }
+        },
+        {
+            "label": "introduction-foundry-agent-service: lab 07- create knowledge base agent (solution)",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "labs/introduction-foundry-agent-service/07-foundry-iq/solution/create_knowledge_base_agent.py"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
             }
         },
         {

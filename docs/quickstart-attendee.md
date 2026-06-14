@@ -10,6 +10,7 @@ detailed setup and troubleshooting.
 1. [Python 3.13 or later](https://www.python.org/downloads/).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
+1. [Docker](https://www.docker.com/products/docker-desktop/) (optional) — required only for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which deploys a hosted agent from a container image. Every other module, including Module 09 Part 2 (deploy from source code), runs without it.
 1. Your assigned project information from your organizer.
 
 ## Clone the repository

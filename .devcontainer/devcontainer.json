@@ -25,6 +25,12 @@
         },
         "ghcr.io/devcontainers/features/dotnet:2": {
             "version": "10.0"
+        },
+        // Docker-in-Docker enables building and pushing container images from inside
+        // the dev container / Codespace. Required only for Module 09 Part 1 (deploy a
+        // hosted agent from a container image); all other modules run without it.
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest"
         }
     },
     "customizations": {

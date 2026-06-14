@@ -64,12 +64,12 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm `.env` exists and the required hosted-agent values are populated:
 
    ```bash
-   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|AZURE_SUBSCRIPTION_ID|AZURE_RESOURCE_GROUP|FOUNDRY_RESOURCE_NAME|AZURE_CONTAINER_REGISTRY_NAME|AZURE_CONTAINER_REGISTRY_ENDPOINT|HOSTED_AGENT_NAME|AGENT_MODEL'
+   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|AZURE_SUBSCRIPTION_ID|AZURE_RESOURCE_GROUP|FOUNDRY_RESOURCE_NAME|AZURE_CONTAINER_REGISTRY_NAME|AZURE_CONTAINER_REGISTRY_ENDPOINT|HOSTED_AGENT_NAME_CONTAINER|HOSTED_AGENT_NAME_CODE|AGENT_MODEL'
    ```
 
 1. Confirm `FOUNDRY_PROJECT_ENDPOINT` is set to a non-empty value of the form `https://<resource>.services.ai.azure.com/api/projects/<project>`.
 1. Confirm `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `AZURE_CONTAINER_REGISTRY_NAME`, and `AZURE_CONTAINER_REGISTRY_ENDPOINT` are all set to non-empty values.
-1. Confirm `HOSTED_AGENT_NAME` is either unset (the scripts default to `acl-remedy-advisor-hosted`) or set to `acl-remedy-advisor-hosted`, and that `AGENT_MODEL` is either unset (defaults to `chat`) or set to `chat`.
+1. Confirm `HOSTED_AGENT_NAME_CONTAINER` (defaults to `acl-remedy-advisor-hosted-container`) and `HOSTED_AGENT_NAME_CODE` (defaults to `acl-remedy-advisor-hosted-code`) are either unset or set to their defaults, and that `AGENT_MODEL` is either unset (defaults to `chat`) or set to `chat`.
 
    **Check:** If `.env` does not exist, confirm with the user that Module 01 has been completed, then copy `shared/.env.example` to `.env` and populate the values from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`.
 
@@ -95,13 +95,13 @@ The deploy scripts assign the hosted agent's own Microsoft Entra identity the **
 
 1. Use the already-open `open_browser_page` on `https://ai.azure.com` and confirm the signed-in account matches `${input:attendeeUpn}`.
 1. If a login dialog appears, pause and ask the user to sign in. Do not enter credentials automatically.
-1. Navigate to the attendee's Foundry project and confirm the **Agents** list loads. Note whether `acl-remedy-advisor-hosted` already exists (from a prior run) so you can distinguish a fresh deployment later.
+1. Navigate to the attendee's Foundry project and confirm the **Agents** list loads. Note whether `acl-remedy-advisor-hosted-container` or `acl-remedy-advisor-hosted-code` already exist (from a prior run) so you can distinguish a fresh deployment later.
 
 ---
 
 ## Part 1 — Deploy from a container image (optional, needs Docker)
 
-This part needs **Docker** and the **Azure CLI**. If Docker is not available, skip to **Part 2** — it deploys the same agent without Docker.
+This part needs **Docker** and the **Azure CLI**. If Docker is not available, skip to **Part 2** — it deploys a separate hosted agent without Docker.
 
 ### Step 1 — Check for Docker
 
@@ -122,7 +122,7 @@ This part needs **Docker** and the **Azure CLI**. If Docker is not available, sk
    ```
 
 1. Watch the status messages: the script builds for `linux/amd64`, logs in to the shared registry, pushes the image under the project-specific tag, creates the hosted agent version, waits for it to become active, and assigns the agent identity the Foundry User role.
-1. Confirm the script prints `Hosted agent acl-remedy-advisor-hosted is active.`
+1. Confirm the script prints `Hosted agent acl-remedy-advisor-hosted-container is active.`
 
    **Check:** If a role-assignment error appears, note it for Troubleshooting (Check 5). The version may still be active even if the role takes a moment to propagate.
 
@@ -187,7 +187,7 @@ This is the primary deployment path. Foundry zips `src/agent/`, builds the image
    python labs/introduction-foundry-agent-service/09-hosted-agents/src/starter.py
    ```
 
-1. Confirm the output includes `Built code archive from ...`, then `Created hosted agent acl-remedy-advisor-hosted version <n>; Foundry is building it.`, and finally `Hosted agent acl-remedy-advisor-hosted is active.`.
+1. Confirm the output includes `Built code archive from ...`, then `Created hosted agent acl-remedy-advisor-hosted-code version <n>; Foundry is building it.`, and finally `Hosted agent acl-remedy-advisor-hosted-code is active.`.
 1. Confirm the script exits cleanly with no traceback.
 
    **Check:** If the starter raises `NameError` or `ImportError`, confirm the TODO 1-3 snippets were applied and that the support helpers are imported (Step 3).
@@ -212,14 +212,14 @@ This is the primary deployment path. Foundry zips `src/agent/`, builds the image
    python labs/introduction-foundry-agent-service/09-hosted-agents/solution/invoke_hosted_agent.py
    ```
 
-1. Confirm the script prints `Using hosted agent acl-remedy-advisor-hosted version <n>.` and `Session created (...)`.
+1. Confirm the script prints `Using hosted agent acl-remedy-advisor-hosted-code version <n>.` and `Session created (...)`.
 1. Confirm the first prompt (a laptop on receipt `R-1007` with dead pixels after 14 months) returns a grounded remedy answer under the Australian Consumer Law that references the receipt/purchase rather than answering generically.
 1. Confirm the second prompt (the follow-up about the original box and charger) produces a context-aware answer that builds on the first turn.
 1. Confirm the script prints `Session deleted (...)` and exits cleanly with no traceback.
 
    **Check:** If the invoke fails with a 403 at runtime, the Foundry User role may still be propagating to the new agent identity. Wait a minute and retry.
 
-   **Check:** If the agent is reported not found, confirm a deploy completed successfully (Part 1 or Part 2) and that `HOSTED_AGENT_NAME` matches in `.env`.
+   **Check:** If the agent is reported not found, confirm Part 2 completed successfully and that `HOSTED_AGENT_NAME_CODE` matches in `.env`.
 
 ---
 
@@ -230,13 +230,13 @@ Use the already-open, authenticated `open_browser_page` on `https://ai.azure.com
 ### Step 6 — Confirm the hosted agent appears with an active version
 
 1. In the portal, open the attendee's Foundry project and select **Agents**.
-1. Confirm `acl-remedy-advisor-hosted` appears in the list with an **active** version.
+1. Confirm `acl-remedy-advisor-hosted-code` (and `acl-remedy-advisor-hosted-container` if Part 1 ran) appears in the list with an **active** version.
 1. Open the agent and confirm it is a hosted agent (not a Prompt Agent) and that the version created during this test is active.
 1. Take a screenshot of the agent's overview showing the active version.
 
 ### Step 7 — Inspect the hosted agent's metrics
 
-1. In the agent view, open the **Metrics** (or **Monitoring** / **Observability**) area for `acl-remedy-advisor-hosted`.
+1. In the agent view, open the **Metrics** (or **Monitoring** / **Observability**) area for `acl-remedy-advisor-hosted-code`.
 1. Confirm metrics reflect the invocation from Step 5 — for example request count, latency, or session activity recorded during this test.
 1. If a **Traces** tab is available, confirm one or more traces from the invoke run appear, and that the hosted agent called its retail tools (for example looking up receipt `R-1007`) rather than answering generically.
 1. Take a screenshot of the metrics (and traces, if shown) for the hosted agent.
@@ -249,9 +249,9 @@ Use the already-open, authenticated `open_browser_page` on `https://ai.azure.com
 
 Work through each item in the lab's Validation section and confirm:
 
-1. The deploy step (Part 2, or Part 1 if Docker was available) prints `Hosted agent acl-remedy-advisor-hosted is active.`.
+1. The deploy step prints `Hosted agent acl-remedy-advisor-hosted-code is active.` (Part 2), and `Hosted agent acl-remedy-advisor-hosted-container is active.` if Docker was available for Part 1.
 1. `invoke_hosted_agent.py` prints a grounded remedy answer for the first prompt and a context-aware answer for the follow-up.
-1. `acl-remedy-advisor-hosted` appears in the **Agents** list in the Foundry portal with an active version.
+1. `acl-remedy-advisor-hosted-code` (and `acl-remedy-advisor-hosted-container` if Part 1 ran) appears in the **Agents** list in the Foundry portal with an active version.
 1. The hosted agent calls its retail tools (for example receipt `R-1007`) rather than answering generically.
 1. The Foundry portal shows metrics (and, if available, traces) for the hosted agent reflecting this test's invocation.
 

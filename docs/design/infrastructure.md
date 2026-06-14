@@ -19,7 +19,7 @@ Every hosted agent gets its own Microsoft Entra agent identity at deploy time, a
 
 ### Avoiding attendee collisions
 
-All attendees share one registry. The Part 1 deploy script tags each image with the attendee's project name (`acl-remedy-advisor-hosted:<project>`), and every hosted agent is scoped to its own project, so attendees never overwrite each other's images or agents.
+All attendees share one registry. The Part 1 deploy script tags each image with the attendee's project name (`acl-remedy-advisor-hosted-container:<project>`), and every hosted agent is scoped to its own project, so attendees never overwrite each other's images or agents.
 
 ### Customise the registry SKU
 

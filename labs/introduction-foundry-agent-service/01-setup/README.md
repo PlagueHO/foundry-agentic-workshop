@@ -32,9 +32,10 @@ Install the following before continuing:
 1. [Python 3.13 or later](https://www.python.org/downloads/).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
+1. [Docker](https://www.docker.com/products/docker-desktop/) (optional) — required only for [Module 09](../09-hosted-agents/README.md) Part 1, which deploys a hosted agent from a container image. Every other module, including Module 09 Part 2 (deploy from source code), runs without it.
 
 > [!NOTE]
-> GitHub Codespaces and local dev containers are fully supported and install all prerequisites automatically. See the [Attendee Guide](../../../docs/guide-attendee.md) for setup steps.
+> Docker is only needed for the container-image deployment path in Module 09. You can complete the rest of the workshop without it. GitHub Codespaces and local dev containers are fully supported, include Docker, and install all other prerequisites automatically. See the [Attendee Guide](../../../docs/guide-attendee.md) for setup steps.
 
 ## Steps
 

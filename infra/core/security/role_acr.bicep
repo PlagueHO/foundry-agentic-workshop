@@ -15,6 +15,18 @@ var builtInRoleNames = {
   AcrPull: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
   AcrPush: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8311e382-0749-4cb8-b61a-304f252e45ec')
   AcrDelete: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c2f4ef07-c644-48eb-af81-4b1b4947fb11')
+  'Container Registry Repository Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'b93aa761-3e63-49ed-ac28-beffa264f7ac'
+  )
+  'Container Registry Repository Writer': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '2a1e307c-b015-4ebd-883e-5b7698a07328'
+  )
+  'Container Registry Repository Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '2efddaa5-3f1f-4df3-97df-af3f13818f4c'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')

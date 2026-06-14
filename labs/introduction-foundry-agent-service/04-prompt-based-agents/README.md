@@ -37,6 +37,14 @@ Every time you **Save to Foundry**, Foundry Agent Service stores an immutable sn
 
 The version your code calls is controlled by the `agent_reference` you pass in each request. Referencing an agent by **name** always routes to the **latest** saved version. This means you can iterate and improve the agent in Agent Builder without changing any code — the next time your script runs, it picks up the latest version automatically.
 
+### What you are building
+
+The following diagram shows the architecture you will build in this lab.
+
+![Architecture diagram: Python Client calls the acl-remedy-advisor Agent Definition inside a Foundry Project inside a Foundry Account. The Agent Definition calls the Web Search Tool, which calls out to the Internet.](../../../docs/assets/diagrams/lab-04-prompt-agent-architecture.svg)
+
+Your **Python Client** (`src/starter.py`) sends a message to the **Agent Definition** (`acl-remedy-advisor`) using `responses.create()`. The Agent Definition lives inside your **Foundry Project**, which is itself inside your **Foundry Account** deployed into an Azure Region. Each time you save changes in Agent Builder a new immutable version (`v1`, `v2`, ...) is recorded — referencing the agent by name always resolves to the latest. During a turn the agent may invoke the **Web Search Tool** (a built-in tool provisioned inside the project), which calls out to the internet to retrieve current ACCC guidance. The service returns the finished response directly to your client; your code never sees the intermediate tool-call steps.
+
 ### Agent Builder vs code creation
 
 There are two ways to create a Prompt Agent:

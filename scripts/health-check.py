@@ -20,6 +20,7 @@ load_dotenv()
 
 TICK = '\u2705'
 CROSS = '\u274c'
+WARN = '\u26a0\ufe0f'
 
 REQUIRED_ENV_VARS = [
     'AZURE_SUBSCRIPTION_ID',
@@ -124,7 +125,33 @@ def _check_prerequisites() -> bool:
     az_ver = out.splitlines()[0] if rc == 0 else ''
     az_ok = check('Azure CLI installed', rc == 0, az_ver)
 
+    _check_docker()
+
     return py_ok and az_ok
+
+
+def _check_docker() -> None:
+    """Check for Docker as an optional prerequisite.
+
+    Docker is required only for Module 09 Part 1 (deploy a hosted agent from a
+    container image). Every other module — including Module 09 Part 2, which
+    deploys the same agent from source code — runs without it. A missing or
+    stopped Docker daemon is therefore reported as a warning, not a failure, and
+    never causes the health check to exit non-zero.
+    """
+    only_note = 'only needed for Module 09 Part 1 (container deployment); all other modules run without it'
+
+    rc, out, _ = _az('docker --version')
+    if rc != 0:
+        print(f'  {WARN}  Docker (optional)  (not installed \u2014 {only_note})')
+        return
+
+    docker_ver = out.splitlines()[0]
+    rc_info, _, _ = _az('docker info')
+    if rc_info == 0:
+        check('Docker (optional)', True, docker_ver)
+    else:
+        print(f'  {WARN}  Docker (optional)  ({docker_ver}; daemon not running \u2014 start Docker for Module 09 Part 1)')
 
 
 def _check_env_vars() -> bool:
@@ -202,30 +229,68 @@ def _check_resources(sub: str, rg: str, foundry: str, project: str) -> None:
         check('Model deployments exist', False, err)
 
 
+def _first_resource_name(sub: str, rg: str, resource_type: str) -> str:
+    """Return the name of the first resource of the given type in the resource group."""
+    rc, out, _ = _az(
+        f'az resource list --resource-group {rg} --resource-type {resource_type} '
+        f'--subscription {sub} --query "[0].name" -o tsv'
+    )
+    return out.strip() if rc == 0 else ''
+
+
+def _check_scope_role(label: str, user_id: str, scope: str, sub: str, include_inherited: bool) -> None:
+    """Verify the signed-in user has at least one role assignment on the given scope."""
+    inherited_flag = ' --include-inherited' if include_inherited else ''
+    ok, data, err = _az_json(
+        f'az role assignment list --assignee {user_id} --scope "{scope}"{inherited_flag} '
+        f'--subscription {sub} -o json'
+    )
+    if ok and isinstance(data, list):
+        names = ', '.join(sorted({r.get('roleDefinitionName', '') for r in data}))
+        check(
+            label,
+            len(data) > 0,
+            names if names else 'no role assignments found \u2014 ask your organizer',
+        )
+    else:
+        check(label, False, err)
+
+
 def _check_roles(sub: str, rg: str, foundry: str) -> None:
     _section('Role assignments')
 
     rc, user_id, err = _az('az ad signed-in-user show --query id -o tsv')
     if not check('Resolved signed-in user identity', rc == 0, err.splitlines()[0] if err else ''):
         return
+    user_id = user_id.strip()
 
-    scope = (
-        f'/subscriptions/{sub}/resourceGroups/{rg}'
-        f'/providers/Microsoft.CognitiveServices/accounts/{foundry}'
-    )
-    ok, data, err = _az_json(
-        f'az role assignment list --assignee {user_id.strip()} --scope "{scope}" '
-        f'--subscription {sub} --include-inherited -o json'
-    )
-    if ok and isinstance(data, list):
-        names = ', '.join(sorted({r.get('roleDefinitionName', '') for r in data}))
-        check(
-            'Role assigned on Foundry account',
-            len(data) > 0,
-            names if names else 'no role assignments found \u2014 ask your organizer',
-        )
-    else:
-        check('Role assigned on Foundry account', False, err)
+    rg_scope = f'/subscriptions/{sub}/resourceGroups/{rg}'
+
+    # Foundry account — include inherited assignments so attendees whose Foundry role is
+    # granted on their individual project (foundry-user) or via the resource group still
+    # register a result here.
+    foundry_scope = f'{rg_scope}/providers/Microsoft.CognitiveServices/accounts/{foundry}'
+    _check_scope_role('Role assigned on Foundry account', user_id, foundry_scope, sub, include_inherited=True)
+
+    # Dependent resources — main.bicep grants each resolved attendee a direct role on these:
+    #   AI Search service     -> Search [Service] Contributor + Search Index Data Contributor
+    #   Container Registry    -> AcrPush (Module 09 image push)
+    #   Application Insights  -> Log Analytics Reader (trace querying)
+    # Direct (non-inherited) assignments are verified so the specific grant is confirmed,
+    # not an inherited resource-group role. Resource names are discovered from the resource
+    # group so the check works without extra environment variables.
+    dependent_resources = [
+        ('AI Search service', 'Microsoft.Search/searchServices'),
+        ('Container Registry', 'Microsoft.ContainerRegistry/registries'),
+        ('Application Insights', 'Microsoft.Insights/components'),
+    ]
+    for label, resource_type in dependent_resources:
+        name = _first_resource_name(sub, rg, resource_type)
+        if not name:
+            check(f'Role assigned on {label}', False, 'resource not found in resource group')
+            continue
+        scope = f'{rg_scope}/providers/{resource_type}/{name}'
+        _check_scope_role(f'Role assigned on {label}', user_id, scope, sub, include_inherited=False)
 
 
 def _check_endpoints(

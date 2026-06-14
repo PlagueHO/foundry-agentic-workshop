@@ -5,8 +5,16 @@ it over the Foundry hosted-agent contract using ``ResponsesHostServer``. Foundry
 this container, sends requests to the OpenAI Responses endpoint on port 8088, and
 probes ``/readiness`` automatically.
 
-The six retail tools are bundled in-process (see ``retail_tools.py``), so the agent is
-fully self-contained — there is no MCP server to run or dev tunnel to expose.
+The six retail tools are bundled in-process (see ``retail_tools.py``) — no MCP server to
+run or dev tunnel to expose. The agent also enables the Foundry hosted **web search** and
+**code interpreter** tools, matching the tool set of the ``acl-remedy-advisor`` Prompt Agent
+from Modules 05-06.
+
+Unlike the Module 07 Prompt Agent, this hosted agent does not call the Foundry IQ knowledge
+base. A hosted agent runs as its own Microsoft Entra identity, which cannot be granted
+data-plane access to the RBAC-only Azure AI Search service in this preview — so product and
+policy lookups are bundled in-process (``get_product_profile`` and ``search_store_policy``)
+instead.
 
 Environment variables (provided by Foundry at runtime, and by your ``.env`` locally):
     FOUNDRY_PROJECT_ENDPOINT        The Foundry project endpoint.
@@ -44,6 +52,13 @@ INSTRUCTIONS = (
     'lifespan, the price paid, how long the customer has had the product, and what\n'
     'a reasonable consumer would expect.\n'
     '\n'
+    'Use web search to ground your guidance in current ACCC guidance at\n'
+    'accc.gov.au and always cite your sources with links.\n'
+    '\n'
+    'When asked to calculate refund amounts, depreciation, pro-rata warranty\n'
+    'values, or compare prices, use code interpreter to perform the calculation\n'
+    'precisely and show your working.\n'
+    '\n'
     'Always state clearly that you provide general guidance, not legal advice, and\n'
     'that "no refund" signs are unlawful under the ACL.\n'
     '\n'
@@ -64,7 +79,14 @@ def build_agent() -> Agent:
         client=client,
         name='acl-remedy-advisor-hosted',
         instructions=INSTRUCTIONS,
-        tools=RETAIL_TOOLS,
+        # Modules 05-06 tool set: the six in-process retail tools plus the Foundry hosted
+        # web search and code interpreter tools (served by the model). The Module 07 Foundry
+        # IQ knowledge base is replaced by the in-process product and policy lookups above.
+        tools=[
+            *RETAIL_TOOLS,
+            client.get_web_search_tool(),
+            client.get_code_interpreter_tool(),
+        ],
         # Foundry hosted agents are stateless at the model layer; conversation state is
         # managed by the Responses host, so the chat client must not persist responses.
         default_options={'store': False},

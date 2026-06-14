@@ -1,4 +1,4 @@
-"""Shared helpers for deploying and operating the hosted acl-remedy-advisor-hosted agent.
+"""Shared helpers for deploying and operating the Module 09 hosted agents.
 
 These helpers are used by both deployment scripts (``deploy_hosted_agent_code.py`` and
 ``deploy_hosted_agent_container.py``) and the invocation script

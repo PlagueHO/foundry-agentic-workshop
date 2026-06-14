@@ -1,4 +1,4 @@
-"""Starter: deploy the acl-remedy-advisor-hosted agent from source code (Part 2).
+"""Starter: deploy the acl-remedy-advisor-hosted-code agent from source code (Part 2).
 
 Fill in the numbered TODOs to deploy the agent bundle in ``src/agent/`` as a hosted agent.
 The completed reference implementation lives in
@@ -11,6 +11,7 @@ Usage:
 import hashlib
 import io
 import os
+import sys
 import zipfile
 from pathlib import Path
 
@@ -25,6 +26,16 @@ from azure.ai.projects.models import (
 )
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
+
+# The shared polling and agent-identity RBAC helpers live with the solution scripts so the
+# lab keeps a single source of truth. Add that folder to the import path so this starter can
+# reuse them, then import the two helpers TODO 3 calls.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'solution'))
+
+from hosted_agent_support import (  # noqa: E402, F401
+    ensure_agent_identity_rbac,
+    wait_for_agent_version_active,
+)
 
 # The agent bundle lives next to this file under agent/. Everything in that folder is
 # zipped flat so Foundry's remote build finds main.py and requirements.txt at the root.
@@ -51,7 +62,7 @@ def run() -> None:
     load_dotenv()
 
     endpoint = os.environ['FOUNDRY_PROJECT_ENDPOINT']
-    agent_name = os.environ.get('HOSTED_AGENT_NAME', 'acl-remedy-advisor-hosted')
+    agent_name = os.environ.get('HOSTED_AGENT_NAME_CODE', 'acl-remedy-advisor-hosted-code')
     model_deployment = os.environ.get('AGENT_MODEL', 'chat')
 
     zip_bytes, zip_sha256 = build_code_zip(AGENT_DIR)
@@ -79,7 +90,8 @@ def run() -> None:
         #   )
 
         # TODO 3: Poll until the version is active, then grant the agent identity the
-        #   Foundry User role. The helpers in solution/hosted_agent_support.py do both:
+        #   Foundry User role. The two helpers imported at the top of this file (from
+        #   solution/hosted_agent_support.py) do both:
         #       wait_for_agent_version_active(client, agent_name, created.version)
         #       ensure_agent_identity_rbac(created, credential)
         raise NotImplementedError('Complete TODO 1-3 to deploy the hosted agent.')

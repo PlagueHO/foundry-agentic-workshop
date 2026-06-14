@@ -31,6 +31,7 @@ cd foundry-agentic-workshop
 1. Install [Python 3.13 or later](https://www.python.org/downloads/).
 1. Install the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. Install the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
+1. *(Optional)* Install [Docker](https://www.docker.com/products/docker-desktop/). Docker is required only for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which deploys a hosted agent from a container image. Every other module, including Module 09 Part 2 (deploy from source code), runs without it.
 1. Create a Python virtual environment in the repository root:
 
    ```bash
@@ -56,6 +57,10 @@ cd foundry-agentic-workshop
    python -m pip install -r shared/requirements.txt
    ```
 
+> [!NOTE]
+> Docker is optional. You only need it for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which builds a hosted agent locally and pushes it to the workshop container registry. If Docker is not available, you can still complete every other module — including Module 09 Part 2, which deploys the same agent from source code without Docker. The GitHub Codespaces and dev container environments include Docker automatically.
+
+<!-- markdownlint-disable-next-line MD028 -->
 > [!NOTE]
 > *Foundry Toolkit for VS Code on the Visual Studio Marketplace.*
 

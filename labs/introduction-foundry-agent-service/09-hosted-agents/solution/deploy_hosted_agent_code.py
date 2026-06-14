@@ -1,4 +1,4 @@
-"""Deploy the acl-remedy-advisor-hosted agent from source code (Part 2, preview).
+"""Deploy the acl-remedy-advisor-hosted-code agent from source code (Part 2, preview).
 
 This is the primary deployment path for Module 09. It zips the agent bundle in
 ``src/agent/`` and uploads it to Foundry, which builds the container image remotely and
@@ -55,7 +55,7 @@ def run() -> None:
     load_dotenv()
 
     endpoint = os.environ['FOUNDRY_PROJECT_ENDPOINT']
-    agent_name = os.environ.get('HOSTED_AGENT_NAME', 'acl-remedy-advisor-hosted')
+    agent_name = os.environ.get('HOSTED_AGENT_NAME_CODE', 'acl-remedy-advisor-hosted-code')
     model_deployment = os.environ.get('AGENT_MODEL', 'chat')
 
     zip_bytes, zip_sha256 = build_code_zip(AGENT_DIR)

@@ -1,9 +1,10 @@
 # Solution — Module 09: Hosted agents
 
-This folder contains the reference implementation for deploying the
-`acl-remedy-advisor-hosted` agent to Microsoft Foundry hosted agents. Run scripts from the
-repository root after activating the workshop virtual environment and populating
-`shared/.env` from `shared/.env.example`.
+This folder contains the reference implementation for deploying the ACL Remedy Advisor
+agent to Microsoft Foundry hosted agents as two separate deployments —
+`acl-remedy-advisor-hosted-container` (Part 1) and `acl-remedy-advisor-hosted-code`
+(Part 2). Run scripts from the repository root after activating the workshop virtual
+environment and populating `shared/.env` from `shared/.env.example`.
 
 ## hosted_agent_support.py
 
@@ -25,8 +26,9 @@ python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_
 ## deploy_hosted_agent_container.py
 
 **Part 1 (optional).** Builds the image with Docker, pushes it to the shared workshop Azure
-Container Registry under a project-specific tag (`acl-remedy-advisor-hosted:<project>`), then
-deploys the agent from that image. Requires Docker and the Azure CLI.
+Container Registry under a project-specific tag (`acl-remedy-advisor-hosted-container:<project>`),
+then deploys the `acl-remedy-advisor-hosted-container` agent from that image. Requires Docker
+and the Azure CLI.
 
 ```bash
 python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_container.py
@@ -34,8 +36,9 @@ python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_
 
 ## invoke_hosted_agent.py
 
-Creates a session against the latest active version, routes the agent endpoint to it, and
-runs a short multi-turn conversation over the Responses API.
+Creates a session against the latest active version of `acl-remedy-advisor-hosted-code`,
+routes the agent endpoint to it, and runs a short multi-turn conversation over the
+Responses API.
 
 ```bash
 python labs/introduction-foundry-agent-service/09-hosted-agents/solution/invoke_hosted_agent.py
