@@ -8,7 +8,7 @@ This repository contains **L200–L400 hands-on labs** for building agentic solu
 
 - Software engineers, architects, and technical roles building or designing AI solutions in Azure
 - Comfortable with Azure basics; mostly new to Microsoft Foundry and agentic development
-- Delivered as an facilitator-led session (3–4 hours) or completed independently
+- Delivered as a facilitator-led session (3–4 hours) or completed independently
 
 ## Roles
 
@@ -39,6 +39,7 @@ The organizer deploys a shared Foundry account in their Azure subscription and c
 - Azure subscription with [Foundry model quota](https://learn.microsoft.com/azure/foundry/foundry-models/quotas-limits) in your target region
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (required to build and publish the shared MCP server image during provisioning)
 - Python 3.13
 
 ### Clone this repo
@@ -46,7 +47,7 @@ The organizer deploys a shared Foundry account in their Azure subscription and c
 The first step is to clone this repository and navigate into it:
 
 ```bash
-git clone https://github.com/your-repo/foundry-agentic-workshop.git
+git clone https://github.com/PlagueHO/foundry-agentic-workshop.git
 cd foundry-agentic-workshop
 ```
 
@@ -71,7 +72,7 @@ azd env set AZURE_ATTENDEE_LIST '[{"upn":"alice@contoso.com"},{"upn":"bob@contos
 ```
 
 > [!NOTE]
-> During the provisioning process, the script `scripts/assign-roles.py` reads `AZURE_ATTENDEE_LIST`, and looks up each user in Entra ID and assigns them the specified role to the assigned project and Azure AI Search. The default role is `foundry-user`, which allows them to build agents and use pre-deployed models but not manage resources or access other attendees' projects.
+> During the provisioning process, the script `scripts/prepare-attendee-roles.py` reads `AZURE_ATTENDEE_LIST`, looks up each user in Entra ID, and assigns them the specified role to the assigned project and Azure AI Search. The default role is `foundry-user`, which allows them to build agents and use pre-deployed models but not manage resources or access other attendees' projects.
 
 ### Provision
 
@@ -86,7 +87,10 @@ For more details, see the [Organizer Guide](./docs/guide-organizer.md) for role 
 After provisioning, give each attendee:
 
 - Their `FOUNDRY_PROJECT_NAME` (for example `attendee-01`)
-- The shared values: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `AZURE_SEARCH_SERVICE_NAME`
+- The shared values: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `AZURE_SEARCH_SERVICE_NAME`, `MCP_SERVER_URL`
+
+> [!TIP]
+> The `scripts/generate-attendee-onboarding.py` postprovision hook creates a per-attendee `.env` file with all required values pre-filled. Share the generated file instead of copying values manually.
 
 ### Cost
 
@@ -159,7 +163,7 @@ See the [Attendee Quickstart](./docs/quickstart-attendee.md) for the full flow.
 
 ## Infrastructure
 
-The lab infrastructure is defined in [Bicep](https://learn.microsoft.com/azure/azure-resource-manager/bicep/overview) using [Azure Verified Modules](https://aka.ms/avm) for Foundry account, Azure AI Search, Storage, and supporting services. Deployments are driven by the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/) (`azd`).
+The lab infrastructure is defined in [Bicep](https://learn.microsoft.com/azure/azure-resource-manager/bicep/overview) using [Azure Verified Modules](https://aka.ms/avm) for Foundry account, Azure AI Search, Azure Container Registry, Azure Container Apps, Storage, and supporting services. Deployments are driven by the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/) (`azd`).
 
 ## Repository layout
 
@@ -171,4 +175,4 @@ The lab infrastructure is defined in [Bicep](https://learn.microsoft.com/azure/a
 | `infra/` | Bicep IaC using Azure Verified Modules |
 | `labs/` | Lab series, each with numbered modules containing `src/` starters and `solution/` |
 | `scripts/` | Helper scripts for health checks, role assignment, and index seeding |
-| `shared/` | Reusable Python utilities, common dependencies, and sample data |
+| `shared/` | Reusable Python utilities, common dependencies, sample data, and shared MCP server source (`shared/mcp-servers/`) |

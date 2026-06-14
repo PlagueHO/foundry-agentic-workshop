@@ -9,6 +9,12 @@ ms.topic: overview
 
 Build and deliver a 3–4 hour, facilitator-led workshop for agentic applications with [Microsoft Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-foundry).
 
+## Available labs
+
+Labs are organized by series. Work through each lab in sequence within a series; every lab is independently runnable so you can resume at any point.
+
+- [Introduction to Foundry Agent Service](./labs/introduction-foundry-agent-service.md)
+
 ## Roles
 
 Each workshop delivery involves up to four roles. Only the organizer and attendee are required.
@@ -39,9 +45,3 @@ Pick the path that matches your role.
 | Attendee | Yes | [Attendee Quickstart](./quickstart-attendee.md) | [Attendee Guide](./guide-attendee.md) |
 | Facilitator | No | [Facilitator Quickstart](./quickstart-facilitator.md) | [Facilitator Guide](./guide-facilitator.md) |
 | Proctor | No | [Proctor Guide](./guide-proctor.md) | — |
-
-## Available labs
-
-Labs are organized by series. Work through each lab in sequence within a series; every lab is independently runnable so you can resume at any point.
-
-- [Introduction to Foundry Agent Service](./labs/introduction-foundry-agent-service.md)

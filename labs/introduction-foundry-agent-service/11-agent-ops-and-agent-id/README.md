@@ -8,7 +8,7 @@
 ## Objectives
 
 - Locate the **Entra Agent Identity** and **agent identity blueprint** for an agent, and understand what they are used for.
-- Inspect per-agent operations on the **Traces** and **Monitor** tabs for both the `acl-remedy-advisor` prompt agent and your hosted agent.
+- Inspect per-agent operations on the **Traces** and **Monitor** tabs for both the `acl-remedy-advisor` prompt agent and your hosted agents `acl-remedy-advisor-hosted-*`.
 - Understand why **continuous evaluation** and **red team** scans matter, and where they are configured.
 - Use the **Operate** control plane to monitor agents across your project.
 - Open the **Agents** view in Application Insights to see agent telemetry in Azure Monitor.
@@ -18,9 +18,13 @@
 
 ### Agent identity and the agent identity blueprint
 
-An **agent identity** is a specialized identity type in [Microsoft Entra ID](https://learn.microsoft.com/entra/fundamentals/what-is-entra) designed specifically for AI agents. It is a special service principal that represents the agent at runtime, with stable identifiers (object ID and app ID) that you can use for authentication and authorization decisions. Agent identities have no credentials of their own.
+An **agent identity** is a specialized identity type in [Microsoft Entra ID](https://learn.microsoft.com/entra/fundamentals/what-is-entra) designed specifically for AI agents. It is a special [service principal](https://learn.microsoft.com/entra/identity-platform/app-objects-and-service-principals) that represents the agent at runtime, with stable identifiers (object ID and app ID) that you can use for authentication and authorization decisions. Agent identities have no credentials of their own.
 
-An **agent identity blueprint** is the Entra ID object that governs a class of agent identities and holds the OAuth credentials (federated identity credentials, certificates, or client secrets) used for lifecycle operations and runtime token exchange.
+![Agent identity anatomy — each identity has a unique Agent ID, a display name, a human Sponsor, and a link to its governing Blueprint.](../../../docs/assets/diagrams/agent-identity-anatomy.png)
+
+An [**agent identity blueprint**](https://learn.microsoft.com/entra/agent-id/agent-blueprint) is the Entra ID object that governs a class of agent identities and holds the OAuth credentials ([federated identity credentials](https://learn.microsoft.com/entra/workload-id/workload-identity-federation), certificates, or client secrets) used for lifecycle operations and runtime token exchange.
+
+![Agent identity blueprint — composed of an Agent Blueprint Application and Service Principal, a single blueprint creates and impersonates multiple agent identities in a 1:M pattern.](../../../docs/assets/diagrams/agent-identity-blueprint.png)
 
 Foundry provisions and manages these for you automatically:
 
@@ -29,21 +33,23 @@ Foundry provisions and manages these for you automatically:
 | Before publishing | All agents in a project share a **default project agent identity** and a default blueprint. This simplifies permission management while you build and test. |
 | After publishing | Each published or hosted agent receives a **distinct agent identity blueprint and agent identity**, tied to the agent application resource for isolation and granular access control. |
 
+![Agent identity details — from agent builder (Microsoft Foundry, Security Copilot, Copilot Studio) through the blueprint and its shared credentials to multiple agent identities, each paired with a digital worker (agent user) in a 1:1 relationship.](../../../docs/assets/diagrams/agent-identity-details.png)
+
 Agent identities serve two related needs:
 
-1. **Management and governance** — give administrators a consistent way to inventory agents, apply Conditional Access and Identity Protection policies, and audit activity in the [Microsoft Entra admin center](https://entra.microsoft.com).
-1. **Tool authentication** — let an agent authenticate to downstream systems (Azure Storage, MCP servers, Agent-to-Agent endpoints) through an automatic OAuth 2.0 token exchange, without embedding secrets in prompts, code, or connection strings. This works in both *attended* (on-behalf-of a user) and *unattended* (application-only) flows.
+1. **Management and governance** — give administrators a consistent way to inventory agents, apply [Conditional Access](https://learn.microsoft.com/entra/identity/conditional-access/overview) and [Identity Protection](https://learn.microsoft.com/entra/id-protection/overview-identity-protection) policies, and audit activity in the [Microsoft Entra admin center](https://entra.microsoft.com).
+1. **Tool authentication** — let an agent authenticate to downstream systems (Azure Storage, MCP servers, Agent-to-Agent endpoints) through an automatic [OAuth 2.0 token exchange](https://learn.microsoft.com/entra/identity-platform/v2-oauth2-on-behalf-of-flow), without embedding secrets in prompts, code, or connection strings. This works in both *attended* (on-behalf-of a user) and *unattended* (application-only) flows.
 
 > [!NOTE]
-> Learn more in [Agent identity concepts in Microsoft Foundry](https://learn.microsoft.com/azure/ai-foundry/agents/concepts/agent-identity) and [Governing agent identities](https://learn.microsoft.com/entra/id-governance/agent-id-governance-overview).
+> Learn more in [Agent identity concepts in Microsoft Foundry](https://learn.microsoft.com/azure/ai-foundry/agents/concepts/agent-identity), [Agent identity blueprints](https://learn.microsoft.com/entra/agent-id/agent-blueprint), [Microsoft Entra Agent ID overview](https://learn.microsoft.com/entra/agent-id/overview), and [Governing agent identities](https://learn.microsoft.com/entra/id-governance/agent-id-governance-overview).
 
 ### Agent observability
 
 Foundry gives you three lenses on a running agent:
 
-1. **Traces** — the execution path of each conversation and response (model calls, tool calls, durations, tokens, cost). Trace data flows to the Application Insights resource connected to your project.
+1. **Traces** — the execution path of each conversation and response (model calls, tool calls, durations, tokens, cost). Trace data flows to the [Application Insights](https://learn.microsoft.com/azure/azure-monitor/app/app-insights-overview) resource connected to your project.
 1. **Monitor** — a dashboard of operational metrics (token usage, latency, run success rate) plus evaluation and red-team scores over a time range.
-1. **Evaluation** — runs evaluators against datasets or sampled traffic to measure quality, safety, and task adherence.
+1. **Evaluation** — runs [evaluators](https://learn.microsoft.com/azure/ai-foundry/concepts/evaluation-evaluators-metrics) against datasets or sampled traffic to measure quality, safety, and task adherence.
 
 > [!NOTE]
 > This module is a guided tour. It reuses the `acl-remedy-advisor` agent from earlier modules and your hosted agent from [Module 09](../09-hosted-agents/README.md). Telemetry requires the project's Application Insights connection (provisioned by the workshop infrastructure) and at least one prior agent run.
@@ -56,7 +62,7 @@ Foundry gives you three lenses on a running agent:
 - [ ] Select **Build** in the top navigation, then open the `acl-remedy-advisor` agent.
 - [ ] Select the **Details** tab (marked **Preview**).
 - [ ] Locate the **Entra Agent Identity** for the agent. Note that, because this agent is not yet published, it uses the **shared default project agent identity** described above.
-- [ ] Note the associated **agent identity blueprint**. The blueprint is what Foundry authenticates as during the runtime token exchange when the agent calls a tool.
+- [ ] Note the associated [**agent identity blueprint**](https://learn.microsoft.com/entra/agent-id/agent-blueprint). The blueprint is what Foundry authenticates as during the runtime token exchange when the agent calls a tool.
 - [ ] Discuss what the identity is used for: governance (inventory, policy, audit) and secret-free tool authentication to downstream services.
 
   > [!TIP]
@@ -90,7 +96,7 @@ Foundry gives you three lenses on a running agent:
 - [ ] Call out that **continuous evaluation** and **red team** scans are important operational safeguards and can be set up here (the gear icon opens **Monitor settings**). You configure them in the [extra-credit section](#part-7-extra-credit--configure-evaluations-scheduled-evaluations-and-red-teaming) below.
 
   > [!NOTE]
-  > Continuous evaluation provides near real-time quality and safety scores on sampled traffic and links results back to traces for root-cause analysis. Red team scans use the [AI Red Teaming Agent](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-red-teaming-agent) (built on Microsoft's PyRIT framework) to simulate adversarial probing and surface safety risks such as data leakage or prohibited actions.
+  > [Continuous evaluation](https://learn.microsoft.com/azure/ai-foundry/concepts/evaluation-evaluators-metrics) provides near real-time quality and safety scores on sampled traffic and links results back to traces for root-cause analysis. Red team scans use the [AI Red Teaming Agent](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-red-teaming-agent) (built on Microsoft's [PyRIT](https://github.com/Azure/PyRIT) framework) to simulate adversarial probing and surface safety risks such as data leakage or prohibited actions.
 
 ### Part 4 — Repeat for the hosted agent
 
@@ -98,7 +104,7 @@ Foundry gives you three lenses on a running agent:
 > Use the hosted agent you built in [Module 09](../09-hosted-agents/README.md). Its name is **to be confirmed** in this workshop revision; substitute your hosted agent's name wherever this module refers to `<your-hosted-agent>`.
 
 - [ ] Open `<your-hosted-agent>` under **Build → Agents**.
-- [ ] On the **Details** tab, locate its **Entra Agent Identity**. Because a hosted agent has its own application resource, it has a **distinct agent identity and blueprint** rather than the shared project identity — confirm this differs from `acl-remedy-advisor`.
+- [ ] On the **Details** tab, locate its **Entra Agent Identity**. Because a hosted agent has its own application resource, it has a [**distinct agent identity and blueprint**](https://learn.microsoft.com/entra/agent-id/agent-blueprint) rather than the shared project identity — confirm this differs from `acl-remedy-advisor`.
 - [ ] On the **Traces** tab, review its conversations and responses the same way as in Part 2.
 - [ ] On the **Monitor** tab, review its operational metrics and evaluation scores the same way as in Part 3.
 - [ ] Note how the distinct identity isolates the hosted agent's permissions, auditability, and telemetry from the in-development agents in the project.
@@ -135,9 +141,9 @@ Foundry gives you three lenses on a running agent:
 
   | Setting | Purpose | Options |
   |---|---|---|
-  | Continuous evaluation | Runs evaluators on sampled agent responses in near real time. | Enable/disable, add evaluators, set the sample rate. |
-  | Scheduled evaluations (preview) | Runs evaluations on a schedule to validate performance against benchmarks. | Enable/disable, select an evaluation template and run, set a schedule. |
-  | Red team scans (preview) | Runs adversarial tests to detect risks such as data leakage or prohibited actions. | Enable/disable, select an evaluation template and run, set a schedule. |
+  | [Continuous evaluation](https://learn.microsoft.com/azure/ai-foundry/concepts/evaluation-evaluators-metrics) | Runs evaluators on sampled agent responses in near real time. | Enable/disable, add evaluators, set the sample rate. |
+  | [Scheduled evaluations](https://learn.microsoft.com/azure/ai-foundry/how-to/online-evaluation) (preview) | Runs evaluations on a schedule to validate performance against benchmarks. | Enable/disable, select an evaluation template and run, set a schedule. |
+  | [Red team scans](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-red-teaming-agent) (preview) | Runs adversarial tests to detect risks such as data leakage or prohibited actions. | Enable/disable, select an evaluation template and run, set a schedule. |
   | Alerts (preview) | Detects performance anomalies, evaluation failures, and security risks. | Configure alerts for latency, token usage, evaluation scores, or red-team findings. |
 
 - [ ] Enable **continuous evaluation**, add one or more evaluators, and set a modest sample rate so the **Monitor** and **Traces** tabs begin showing evaluation scores.
