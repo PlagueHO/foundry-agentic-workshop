@@ -4,7 +4,7 @@ The architecture of the workshop is designed to provide a scalable and efficient
 
 ## Azure architecture
 
-All workshop resources are provisioned into a single Azure resource group by [infra/main.bicep](../../infra/main.bicep). A shared Microsoft Foundry account hosts a dedicated Foundry project per attendee, the model deployments, and the agent connections, while a small set of shared platform services back the labs.
+All workshop resources are provisioned into a single Azure resource group by [infra/main.bicep](https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/infra/main.bicep). A shared Microsoft Foundry account hosts a dedicated Foundry project per attendee, the model deployments, and the agent connections, while a small set of shared platform services back the labs.
 
 ![Azure architecture for the Microsoft Foundry agentic workshop, showing a single resource group containing the Foundry account with per-attendee projects, model deployments and connections, alongside Azure AI Search, Cosmos DB, Storage, Key Vault, Container Registry, a Container Apps environment running the Module 06 MCP server, Application Insights and a Log Analytics workspace.](../assets/diagrams/workshop-azure-architecture.svg)
 
