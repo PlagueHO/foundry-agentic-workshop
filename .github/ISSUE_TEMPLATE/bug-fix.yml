@@ -1,0 +1,135 @@
+name: Bug or Fix
+description: Report a defect, inaccuracy, or broken step in existing lab content, scripts, or infrastructure.
+title: "bug: <short description>"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to report a bug, broken step, inaccurate instruction, or script failure in an existing lab module or supporting file. For new lab ideas use the **New Lab** or **New Module** template.
+
+  - type: dropdown
+    id: lab
+    attributes:
+      label: Lab series
+      description: Which lab series does this affect?
+      options:
+        - "introduction-foundry-agent-service"
+        - "Other / repository-wide"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Module
+      description: Which module is affected? Select all that apply.
+      multiple: true
+      options:
+        - "01 — Setup"
+        - "02 — Foundry Portal Walkthrough"
+        - "03 — Foundry Toolkit for VS Code"
+        - "04 — Prompt Agents"
+        - "05 — Agent Tools and Evaluations"
+        - "06 — MCP Tools"
+        - "07 — Foundry IQ"
+        - "08 — Agent Framework Python"
+        - "09 — Hosted Agents"
+        - "10 — Foundry Toolboxes"
+        - "11 — Agent Ops and Agent ID"
+        - "12 — Publishing Agents"
+        - "Not module-specific"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      description: What type of content is broken?
+      options:
+        - "README / lab instructions"
+        - "Starter file (src/starter.py)"
+        - "Solution file"
+        - "Script (scripts/)"
+        - "Infrastructure (infra/ Bicep)"
+        - "Shared utilities (shared/)"
+        - "MCP server (shared/mcp-servers/)"
+        - "Documentation site (docs/)"
+        - "CI / GitHub Actions workflow"
+        - "Other"
+    validations:
+      required: true
+
+  - type: input
+    id: file
+    attributes:
+      label: File path (if known)
+      description: Repo-relative path to the affected file, e.g. `labs/introduction-foundry-agent-service/06-mcp-tools/README.md`
+      placeholder: "labs/introduction-foundry-agent-service/…"
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is wrong? Be specific — copy the incorrect instruction or paste the error message.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps an attendee or facilitator can follow to hit this bug.
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happens? Include any error messages, portal errors, or script output.
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Fill in what is relevant.
+      value: |
+        - OS:
+        - Python version:
+        - Azure region:
+        - Foundry portal environment (Foundry new / classic):
+        - Run context (GitHub Codespace / local / devcontainer):
+    validations:
+      required: false
+
+  - type: textarea
+    id: proposed-fix
+    attributes:
+      label: Proposed fix (optional)
+      description: If you know what the correct instruction, code, or configuration should be, describe it here.
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues and this is not a duplicate.
+          required: true
+        - label: I reproduced this using the latest content on the `main` branch.
+          required: false

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Microsoft Foundry documentation
+    url: https://learn.microsoft.com/azure/ai-foundry/
+    about: Official Microsoft Foundry and Agent Service documentation on Microsoft Learn.
+  - name: Azure AI Foundry feedback
+    url: https://aka.ms/foundry-feedback
+    about: Share product feedback directly with the Microsoft Foundry team.

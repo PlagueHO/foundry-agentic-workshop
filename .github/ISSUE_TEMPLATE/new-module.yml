@@ -1,0 +1,134 @@
+name: New Module Proposal
+description: Propose a new module to be added within an existing lab series.
+title: "new-module: <lab series> — <module title>"
+labels: ["new-module", "proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to propose a **new module** (a new numbered section) within an existing lab series such as `introduction-foundry-agent-service`. To propose a brand-new lab series, use the **New Lab** template instead.
+
+  - type: dropdown
+    id: lab
+    attributes:
+      label: Target lab series
+      description: Which existing lab series should this module be added to?
+      options:
+        - "introduction-foundry-agent-service"
+        - "Other (describe in the title and body)"
+    validations:
+      required: true
+
+  - type: input
+    id: module-title
+    attributes:
+      label: Proposed module title
+      description: A concise title for the new module, matching the naming pattern of existing modules (e.g. "Semantic Kernel Integration").
+      placeholder: "e.g. Prompt Flow Integration"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: position
+    attributes:
+      label: Suggested position in the sequence
+      description: Where would this module fit best in the existing flow?
+      options:
+        - "Before Module 01 (Setup)"
+        - "After Module 01 — Setup"
+        - "After Module 02 — Foundry Portal Walkthrough"
+        - "After Module 03 — Foundry Toolkit for VS Code"
+        - "After Module 04 — Prompt Agents"
+        - "After Module 05 — Agent Tools and Evaluations"
+        - "After Module 06 — MCP Tools"
+        - "After Module 07 — Foundry IQ"
+        - "After Module 08 — Agent Framework Python"
+        - "After Module 09 — Hosted Agents"
+        - "After Module 10 — Foundry Toolboxes"
+        - "After Module 11 — Agent Ops and Agent ID"
+        - "After Module 12 — Publishing Agents (at end)"
+        - "Flexible / discuss in comments"
+    validations:
+      required: true
+
+  - type: textarea
+    id: objectives
+    attributes:
+      label: Learning objectives
+      description: What will attendees be able to do after completing this module? Use bullet points.
+      placeholder: |
+        - Attendees will be able to…
+        - Attendees will understand…
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Module description
+      description: Describe what the module covers — the scenario, the Foundry/Azure features used, and the end state an attendee should reach.
+    validations:
+      required: true
+
+  - type: textarea
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Which existing modules, tools, or Azure resources must be in place before starting this module?
+      placeholder: |
+        - Completed Module 04 (Prompt Agents)
+        - Azure OpenAI resource deployed
+    validations:
+      required: false
+
+  - type: input
+    id: estimated-time
+    attributes:
+      label: Estimated time
+      description: Approximate time for an attendee to complete the module (e.g. "20 min", "45 min").
+      placeholder: "e.g. 30 min"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: required
+    attributes:
+      label: Should this module be required?
+      description: Would this module be mandatory in the standard workshop flow, or optional?
+      options:
+        - "Required (every attendee must complete it)"
+        - "Optional (attendees can skip)"
+        - "Undecided"
+    validations:
+      required: true
+
+  - type: textarea
+    id: azure-resources
+    attributes:
+      label: Azure resources or services involved
+      description: List any new Azure services or Foundry features this module would introduce or depend on.
+      placeholder: |
+        - Azure AI Foundry Prompt Flow
+        - Azure Container Apps
+
+  - type: textarea
+    id: infra-changes
+    attributes:
+      label: Infrastructure changes (if any)
+      description: Would this module require changes to the Bicep infrastructure (`infra/`)? Describe what would need to be provisioned or modified.
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Links to Microsoft Learn docs, existing code samples, or any other supporting material.
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues and this is not a duplicate.
+          required: true
+        - label: This module fits within the scope of the existing lab series.
+          required: false

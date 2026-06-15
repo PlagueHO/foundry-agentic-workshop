@@ -1,0 +1,141 @@
+name: New Lab Proposal
+description: Propose an entirely new lab series for the workshop.
+title: "new-lab: <lab series title>"
+labels: ["new-lab", "proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to propose a **brand-new lab series** (a new top-level folder under `labs/`). To add a module to the existing `introduction-foundry-agent-service` series, use the **New Module** template instead.
+
+  - type: input
+    id: lab-title
+    attributes:
+      label: Proposed lab series title
+      description: A concise, descriptive title following the naming pattern of existing labs (e.g. "Advanced Multi-Agent Orchestration with Foundry").
+      placeholder: "e.g. Building RAG Applications with Azure AI Foundry"
+    validations:
+      required: true
+
+  - type: input
+    id: lab-slug
+    attributes:
+      label: Suggested folder name / slug
+      description: Kebab-case name for the `labs/<slug>/` folder (e.g. `advanced-multi-agent-orchestration`).
+      placeholder: "e.g. building-rag-applications-foundry"
+    validations:
+      required: false
+
+  - type: textarea
+    id: overview
+    attributes:
+      label: Lab series overview
+      description: A short paragraph describing the lab series — the audience, the scenario, and what Foundry features it covers.
+    validations:
+      required: true
+
+  - type: textarea
+    id: objectives
+    attributes:
+      label: High-level learning objectives
+      description: What will attendees be able to do after completing this lab series? Use bullet points.
+      placeholder: |
+        - Attendees will be able to…
+        - Attendees will understand…
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-modules
+    attributes:
+      label: Proposed module outline
+      description: List the planned modules in order. Include a one-line description for each. This does not need to be final.
+      placeholder: |
+        1. Setup — configure the environment
+        2. Module Title — what it covers
+        3. …
+    validations:
+      required: true
+
+  - type: input
+    id: estimated-total-time
+    attributes:
+      label: Estimated total time
+      description: Approximate total duration for an attendee (e.g. "2–3 hours").
+      placeholder: "e.g. 2–3 hours"
+
+  - type: dropdown
+    id: audience
+    attributes:
+      label: Target audience
+      description: Who is this lab series primarily designed for?
+      multiple: true
+      options:
+        - "Developers (beginner)"
+        - "Developers (intermediate)"
+        - "Developers (advanced)"
+        - "Solutions Architects"
+        - "Data Scientists / ML Engineers"
+        - "DevOps / Platform Engineers"
+        - "General technical audience"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: delivery
+    attributes:
+      label: Intended delivery format
+      description: How would this lab be delivered?
+      multiple: true
+      options:
+        - "Facilitator-led workshop (in-person)"
+        - "Facilitator-led workshop (virtual)"
+        - "Self-paced"
+        - "Hackathon"
+    validations:
+      required: false
+
+  - type: textarea
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: What prior knowledge or completed labs are expected before starting this series?
+
+  - type: textarea
+    id: azure-services
+    attributes:
+      label: Azure services and Foundry features used
+      description: List the key Azure services and Microsoft Foundry features this lab series would introduce or rely on.
+      placeholder: |
+        - Azure AI Foundry Agent Service
+        - Azure AI Search
+        - Azure Container Apps
+        - …
+
+  - type: textarea
+    id: infra-changes
+    attributes:
+      label: Infrastructure changes (if any)
+      description: Would this lab require new or modified Bicep resources in `infra/`? Describe at a high level.
+
+  - type: textarea
+    id: relationship
+    attributes:
+      label: Relationship to existing labs
+      description: Is this lab intended to run independently, as a follow-on to an existing series, or in parallel? Are any modules shared?
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Links to relevant Microsoft Learn documentation, reference implementations, or prior art.
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues and this is not a duplicate.
+          required: true
+        - label: This lab series is distinct from the existing `introduction-foundry-agent-service` lab.
+          required: false

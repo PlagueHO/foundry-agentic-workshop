@@ -1,0 +1,86 @@
+name: Question
+description: Ask a question about workshop content, facilitation, provisioning, or the agent service.
+title: "question: <short question>"
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for questions about the workshop content, facilitation, infrastructure setup, or the underlying Microsoft Foundry / Agent Service features. For bugs use the **Bug or Fix** template; for new ideas use **Lab Improvement**, **New Module**, or **New Lab**.
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Question category
+      description: What is your question about?
+      options:
+        - "Lab content (instructions, concepts, steps)"
+        - "Lab scripts or starter / solution files"
+        - "Infrastructure and provisioning"
+        - "Facilitator or proctor guidance"
+        - "Attendee onboarding or environment setup"
+        - "Microsoft Foundry / Agent Service feature"
+        - "MCP tools or MCP server"
+        - "Agent Framework (Python SDK)"
+        - "Evaluations"
+        - "Agent Identity and security"
+        - "Toolboxes"
+        - "Other"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Related module (if applicable)
+      description: Which module does your question relate to?
+      multiple: true
+      options:
+        - "01 — Setup"
+        - "02 — Foundry Portal Walkthrough"
+        - "03 — Foundry Toolkit for VS Code"
+        - "04 — Prompt Agents"
+        - "05 — Agent Tools and Evaluations"
+        - "06 — MCP Tools"
+        - "07 — Foundry IQ"
+        - "08 — Agent Framework Python"
+        - "09 — Hosted Agents"
+        - "10 — Foundry Toolboxes"
+        - "11 — Agent Ops and Agent ID"
+        - "12 — Publishing Agents"
+        - "Not module-specific"
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What do you want to know? Be as specific as possible.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Include any relevant details — what you have already tried, the error or output you received, or why you are asking.
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment (if relevant)
+      description: Fill in what applies.
+      value: |
+        - OS:
+        - Python version:
+        - Azure region:
+        - Run context (GitHub Codespace / local / devcontainer):
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Checklist
+      options:
+        - label: I have read the relevant lab README and troubleshooting section.
+          required: false
+        - label: I have searched existing issues and did not find an answer.
+          required: true
