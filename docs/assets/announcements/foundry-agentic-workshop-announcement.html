@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Microsoft Foundry Agentic Workshop — Team Announcement</title>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #3D52CC;
+      --cp-accent-hover: #3347B8;
+      --cp-accent-soft: rgba(61, 82, 204, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(61, 82, 204, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #7B90FF;
+      --cp-accent-hover: #6A7FEF;
+      --cp-accent-soft: rgba(123, 144, 255, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(123, 144, 255, 0.12);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--cp-bg);
+      color: var(--cp-text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Layout ─────────────────────────────────── */
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    /* ── Hero ────────────────────────────────────── */
+    .hero {
+      background: var(--cp-surface);
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+    }
+
+    .hero-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .hero-body {
+      padding: 2.5rem 2.5rem 2rem;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--cp-accent);
+      margin-bottom: 1rem;
+    }
+
+    .hero-eyebrow svg {
+      flex-shrink: 0;
+    }
+
+    .hero-title {
+      font-size: clamp(1.6rem, 4vw, 2.25rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--cp-text);
+      margin-bottom: 1rem;
+    }
+
+    .hero-title span {
+      color: var(--cp-accent);
+    }
+
+    .hero-subtitle {
+      font-size: 1.05rem;
+      color: var(--cp-text-muted);
+      max-width: 660px;
+      margin-bottom: 1.75rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.6rem 1.25rem;
+      border-radius: 0.625rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+      border: 1px solid transparent;
+    }
+    .btn-primary:hover { background: var(--cp-accent-hover); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--cp-accent);
+      border: 1px solid var(--cp-accent);
+    }
+    .btn-secondary:hover { background: var(--cp-accent-soft); }
+
+    /* ── Badge row ───────────────────────────────── */
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding: 1rem 2.5rem;
+      border-top: 1px solid var(--cp-border);
+      background: var(--cp-surface-soft);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--cp-accent-soft);
+      color: var(--cp-accent);
+      border: 1px solid var(--cp-highlight);
+    }
+
+    /* ── Section headings ────────────────────────── */
+    .section-heading {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--cp-text);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-heading::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--cp-border);
+    }
+
+    /* ── Cards ───────────────────────────────────── */
+    .card {
+      background: var(--cp-surface);
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+    }
+
+    .card + .card, .card + .module-grid, .module-grid + .card, .section-heading + .card {
+      margin-top: 1rem;
+    }
+
+    /* ── How it works ────────────────────────────── */
+    .how-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .how-card {
+      background: var(--cp-surface);
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      padding: 1.5rem 1.25rem;
+      box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .how-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--cp-accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--cp-accent);
+      font-size: 1.3rem;
+    }
+
+    .how-role {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--cp-accent);
+    }
+
+    .how-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--cp-text);
+    }
+
+    .how-desc {
+      font-size: 0.85rem;
+      color: var(--cp-text-muted);
+      line-height: 1.5;
+    }
+
+    .arrow-sep {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      align-self: center;
+      color: var(--cp-border-strong);
+      font-size: 1.4rem;
+    }
+
+    a.how-card {
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s;
+    }
+    a.how-card:hover {
+      border-color: var(--cp-accent);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1), 0 0 0 1px var(--cp-accent);
+      transform: translateY(-2px);
+    }
+    a.how-card:focus-visible {
+      outline: 2px solid var(--cp-accent);
+      outline-offset: 2px;
+    }
+
+    a.module-row {
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    a.module-row:hover {
+      border-color: var(--cp-accent);
+      background: var(--cp-accent-soft);
+    }
+    a.module-row:focus-visible {
+      outline: 2px solid var(--cp-accent);
+      outline-offset: 2px;
+    }
+
+    /* ── Shared Resources ────────────────────────── */
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .resource-item {
+      background: var(--cp-surface-soft);
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+    }
+
+    .resource-icon {
+      font-size: 1.2rem;
+      line-height: 1;
+      margin-top: 0.05rem;
+    }
+
+    .resource-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--cp-text);
+    }
+
+    .resource-sub {
+      font-size: 0.75rem;
+      color: var(--cp-text-muted);
+    }
+
+    /* ── Module table ────────────────────────────── */
+    .module-grid {
+      display: grid;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .module-row {
+      background: var(--cp-surface);
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      display: grid;
+      grid-template-columns: 2.5rem 1fr auto;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 0 1px rgba(0,0,0,0.06);
+    }
+
+    .module-row.planned {
+      opacity: 0.7;
+      border-style: dashed;
+    }
+
+    .module-num {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.5rem;
+      background: var(--cp-accent-soft);
+      color: var(--cp-accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .module-row.planned .module-num {
+      background: var(--cp-surface-soft);
+      color: var(--cp-text-muted);
+    }
+
+    .module-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--cp-text);
+    }
+
+    .module-tag {
+      font-size: 0.7rem;
+      color: var(--cp-text-soft);
+      font-weight: 400;
+    }
+
+    .module-chip {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .chip-new {
+      background: rgba(22, 163, 74, 0.12);
+      color: var(--cp-success);
+      border: 1px solid rgba(22, 163, 74, 0.2);
+    }
+
+    .chip-build {
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--cp-warning);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .chip-planned {
+      background: var(--cp-surface-soft);
+      color: var(--cp-text-muted);
+      border: 1px solid var(--cp-border);
+    }
+
+    /* ── Callout ─────────────────────────────────── */
+    .callout {
+      border-left: 3px solid var(--cp-accent);
+      background: var(--cp-accent-soft);
+      border-radius: 0 0.625rem 0.625rem 0;
+      padding: 0.9rem 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    .callout-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--cp-accent);
+      margin-bottom: 0.25rem;
+    }
+
+    .callout-body {
+      font-size: 0.875rem;
+      color: var(--cp-text-muted);
+    }
+
+    /* ── Footer ──────────────────────────────────── */
+    .footer {
+      text-align: center;
+      padding-top: 2rem;
+      font-size: 0.8rem;
+      color: var(--cp-text-muted);
+      border-top: 1px solid var(--cp-border);
+    }
+
+    .footer a {
+      color: var(--cp-link);
+      text-decoration: none;
+    }
+
+    .footer a:hover { text-decoration: underline; }
+
+    /* ── Section spacing ─────────────────────────── */
+    .section {
+      margin-bottom: 2.25rem;
+    }
+
+    /* ── Responsive ──────────────────────────────── */
+    @media (max-width: 600px) {
+      .hero-body { padding: 1.5rem 1.25rem 1.25rem; }
+      .badge-row { padding: 0.75rem 1.25rem; }
+      .how-grid { grid-template-columns: 1fr; }
+      .how-grid .arrow-sep { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── HERO ─────────────────────────────────────── -->
+  <div class="hero">
+    <img src="../banners/microsoft-foundry-agentic-workshop.png" alt="Microsoft Foundry Agentic Workshop" class="hero-img" />
+    <div class="hero-body">
+      <div class="hero-eyebrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Announcing · Hands-on Lab
+      </div>
+      <h1 class="hero-title">
+        Microsoft Foundry<br/><span>Agentic Workshop</span>
+      </h1>
+      <p class="hero-subtitle">
+        A partner-ready, facilitator-led hands-on lab that takes engineers from zero to production on the latest Microsoft Foundry Agent Service capabilities — including features announced at <strong>Build 2026</strong>.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://danielscottraynsford.com/foundry-agentic-workshop/" target="_blank" rel="noopener">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          View Documentation
+        </a>
+        <a class="btn btn-secondary" href="https://github.com/PlagueHO/foundry-agentic-workshop" target="_blank" rel="noopener">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          GitHub Repository
+        </a>
+      </div>
+    </div>
+    <div class="badge-row" role="list" aria-label="Lab highlights">
+      <span class="badge" role="listitem">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg>
+        3–4 Hours End-to-End
+      </span>
+      <span class="badge" role="listitem">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg>
+        12 Modules
+      </span>
+      <span class="badge" role="listitem">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg>
+        Build 2026 Features
+      </span>
+      <span class="badge" role="listitem">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg>
+        Partner Ready
+      </span>
+      <span class="badge" role="listitem">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg>
+        Python + Azure Developer CLI
+      </span>
+    </div>
+  </div>
+
+  <!-- ── INTRO CALLOUT ─────────────────────────────── -->
+  <div class="callout" role="note">
+    <div class="callout-title">Why this lab, why now?</div>
+    <div class="callout-body">
+      Microsoft Foundry Agent Service shipped a significant wave of capabilities at Build 2026 — Hosted Agents deployed from source code, Foundry Toolboxes, Foundry IQ knowledge bases, and MCP tool integration. This lab gives you a structured, repeatable way to take partners through every capability hands-on in a shared Azure environment, in a single session.
+    </div>
+  </div>
+
+  <!-- ── HOW IT WORKS ──────────────────────────────── -->
+  <section class="section" aria-labelledby="how-heading">
+    <h2 class="section-heading" id="how-heading">How the lab works</h2>
+    <div class="how-grid" role="list">
+      <a class="how-card" role="listitem" href="https://danielscottraynsford.com/foundry-agentic-workshop/quickstart-organizer.html" target="_blank" rel="noopener">
+        <div class="how-icon" aria-hidden="true">🏗️</div>
+        <div class="how-role">Organizer</div>
+        <div class="how-title">Deploy the shared environment</div>
+        <div class="how-desc">
+          Run <code>azd provision</code> to stand up a shared Foundry account, AI Search, Azure Container Apps MCP server, and Application Insights — all in a sandbox subscription. One command, one environment, zero manual portal work.
+        </div>
+      </a>
+
+      <div class="arrow-sep" aria-hidden="true">→</div>
+
+      <a class="how-card" role="listitem" href="https://danielscottraynsford.com/foundry-agentic-workshop/quickstart-facilitator.html" target="_blank" rel="noopener">
+        <div class="how-icon" aria-hidden="true">🎤</div>
+        <div class="how-role">Facilitator</div>
+        <div class="how-title">Present &amp; guide attendees</div>
+        <div class="how-desc">
+          Walk the group through each module using the facilitator guide. Attendees follow along in their own Foundry project — the facilitator keeps the room in sync, calls on proctors, and paces the session.
+        </div>
+      </a>
+
+      <div class="arrow-sep" aria-hidden="true">→</div>
+
+      <a class="how-card" role="listitem" href="https://danielscottraynsford.com/foundry-agentic-workshop/quickstart-attendee.html" target="_blank" rel="noopener">
+        <div class="how-icon" aria-hidden="true">🧑‍💻</div>
+        <div class="how-role">Attendees</div>
+        <div class="how-title">Build in their own project</div>
+        <div class="how-desc">
+          Each attendee gets a dedicated Foundry project pre-configured with their identity. They build agents, wire tools, and run code — with no risk of stepping on each other's work.
+        </div>
+      </a>
+    </div>
+
+    <!-- Shared Resources -->
+    <div class="card" role="region" aria-labelledby="shared-resources-heading">
+      <h3 id="shared-resources-heading" style="font-size:0.9rem;font-weight:700;color:var(--cp-text);margin-bottom:0.85rem;">
+        Shared resources — provisioned once, used by all attendees
+      </h3>
+      <div class="resource-grid" role="list">
+        <div class="resource-item" role="listitem">
+          <div class="resource-icon" aria-hidden="true">🔍</div>
+          <div>
+            <div class="resource-label">Foundry IQ / AI Search</div>
+            <div class="resource-sub">Pre-seeded retail product &amp; policy knowledge base</div>
+          </div>
+        </div>
+        <div class="resource-item" role="listitem">
+          <div class="resource-icon" aria-hidden="true">🔌</div>
+          <div>
+            <div class="resource-label">MCP Server</div>
+            <div class="resource-sub">Retail Remedy Ops — hosted on Azure Container Apps</div>
+          </div>
+        </div>
+        <div class="resource-item" role="listitem">
+          <div class="resource-icon" aria-hidden="true">📊</div>
+          <div>
+            <div class="resource-label">Application Insights</div>
+            <div class="resource-sub">Shared telemetry for agent traces &amp; evaluations</div>
+          </div>
+        </div>
+        <div class="resource-item" role="listitem">
+          <div class="resource-icon" aria-hidden="true">🤖</div>
+          <div>
+            <div class="resource-label">Shared Model Deployments</div>
+            <div class="resource-sub">GPT-4o &amp; other models pre-deployed for all projects</div>
+          </div>
+        </div>
+        <div class="resource-item" role="listitem">
+          <div class="resource-icon" aria-hidden="true">📦</div>
+          <div>
+            <div class="resource-label">Azure Container Registry</div>
+            <div class="resource-sub">Hosted agent container images for Module 09</div>
+          </div>
+        </div>
+        <div class="resource-item" role="listitem">
+          <div class="resource-icon" aria-hidden="true">🗂️</div>
+          <div>
+            <div class="resource-label">Per-attendee Foundry Project</div>
+            <div class="resource-sub">Isolated workspace — no cross-contamination</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MODULES ───────────────────────────────────── -->
+  <section class="section" aria-labelledby="modules-heading">
+    <h2 class="section-heading" id="modules-heading">Lab modules</h2>
+    <div class="module-grid" role="list" aria-label="Lab modules">
+
+      <a class="module-row" role="listitem" href="https://danielscottraynsford.com/foundry-agentic-workshop/lab-steps/introduction-foundry-agent-service/01-setup.html" target="_blank" rel="noopener">
+        <div class="module-num" aria-hidden="true">01</div>
+        <div>
+          <div class="module-name">Setup &amp; Environment Verification</div>
+          <div class="module-tag">15 min · Prerequisites, .env, health-check</div>
+        </div>
+        <span class="module-chip" aria-label="Required"></span>
+      </a>
+
+      <a class="module-row" role="listitem" href="https://danielscottraynsford.com/foundry-agentic-workshop/lab-steps/introduction-foundry-agent-service/02-foundry-portal-walkthrough.html" target="_blank" rel="noopener">
+        <div class="module-num" aria-hidden="true">02</div>
+        <div>
+          <div class="module-name">Foundry Portal Walkthrough</div>
+          <div class="module-tag">10 min · Navigation, projects, models</div>
+        </div>
+        <span class="module-chip" aria-label="Required"></span>
+      </a>
+
+      <a class="module-row" role="listitem" href="https://danielscottraynsford.com/foundry-agentic-workshop/lab-steps/introduction-foundry-agent-service/03-foundry-toolkit-vscode.html" target="_blank" rel="noopener">
+        <div class="module-num" aria-hidden="true">03</div>
+        <div>
+          <div class="module-name">Foundry Toolkit for VS Code</div>
+          <div class="module-tag">15 min · Extension setup, project connection</div>
+        </div>
+        <span class="module-chip" aria-label="Required"></span>
+      </a>
+
+      <a class="module-row" role="listitem" href="https://danielscottraynsford.com/foundry-agentic-workshop/lab-steps/introduction-foundry-agent-service/04-prompt-based-agents.html" target="_blank" rel="noopener">
+        <div class="module-num" aria-hidden="true">04</div>
+        <div>
+          <div class="module-name">Prompt-Based Agents</div>
+          <div class="module-tag">20 min · Create acl-remedy-advisor, playground chat</div>
+        </div>
+        <span class="module-chip" aria-label="Required"></span>
+      </a>
+
+      <a class="module-row" role="listitem" href="https://danielscottraynsford.com/foundry-agentic-workshop/lab-steps/introduction-foundry-agent-service/05-agent-tools-and-evaluations.html" target="_blank" rel="noopener">
+        <div class="module-num" aria-hidden="true">05</div>
+        <div>
+          <div class="module-name">Agent Tools &amp; Evaluations</div>
+          <div class="module-tag">30 min · Web search, Code Interpreter, evaluation runs</div>
+        </div>
+        <span class="module-chip" aria-label="Required"></span>
+      </a>
+
+      <a class="module-row" role="listitem" href="https://danielscottraynsford.com/foundry-agentic-workshop/lab-steps/introduction-foundry-agent-service/06-mcp-tools.html" target="_blank" rel="noopener">
+        <div class="module-num" aria-hidden="true">06</div>
+        <div>
+          <div class="module-name">MCP Tools</div>
+          <div class="module-tag">30 min · Model Context Protocol, retail-remedy-ops server</div>
+        </div>
+        <span class="module-chip" aria-label="Required"></span>
+      </a>
+
+      <a class="module-row" role="listitem" href="https://danielscottraynsford.com/foundry-agentic-workshop/lab-steps/introduction-foundry-agent-service/07-foundry-iq.html" target="_blank" rel="noopener">
+        <div class="module-num" aria-hidden="true">07</div>
+        <div>
+          <div class="module-name">Foundry IQ — Knowledge Bases</div>
+          <div class="module-tag">25 min · AI Search grounding, multi-source retrieval</div>
+        </div>
+        <span class="module-chip" aria-label="Required"></span>
+      </a>
+
+      <a class="module-row" role="listitem" href="https://danielscottraynsford.com/foundry-agentic-workshop/lab-steps/introduction-foundry-agent-service/08-agent-framework-python.html" target="_blank" rel="noopener">
+        <div class="module-num" aria-hidden="true">08</div>
+        <div>
+          <div class="module-name">Agent Framework Python</div>
+          <div class="module-tag">25 min · Drive server-side agents from Python code</div>
+        </div>
+        <span class="module-chip" aria-label="Required"></span>
+      </a>
+
+      <a class="module-row" role="listitem" href="https://danielscottraynsford.com/foundry-agentic-workshop/lab-steps/introduction-foundry-agent-service/09-hosted-agents.html" target="_blank" rel="noopener">
+        <div class="module-num" aria-hidden="true">09</div>
+        <div>
+          <div class="module-name">Hosted Agents</div>
+          <div class="module-tag">35 min · Deploy from source code · Build 2026</div>
+        </div>
+        <span class="module-chip chip-build" aria-label="New at Build 2026">🏗 Build 2026</span>
+      </a>
+
+      <a class="module-row" role="listitem" href="https://danielscottraynsford.com/foundry-agentic-workshop/lab-steps/introduction-foundry-agent-service/10-foundry-toolboxes.html" target="_blank" rel="noopener">
+        <div class="module-num" aria-hidden="true">10</div>
+        <div>
+          <div class="module-name">Foundry Toolboxes</div>
+          <div class="module-tag">30 min · Reusable tool collections, capstone module · Build 2026</div>
+        </div>
+        <span class="module-chip chip-build" aria-label="New at Build 2026">🏗 Build 2026</span>
+      </a>
+
+      <a class="module-row" role="listitem" href="https://danielscottraynsford.com/foundry-agentic-workshop/lab-steps/introduction-foundry-agent-service/11-agent-ops-and-agent-id.html" target="_blank" rel="noopener">
+        <div class="module-num" aria-hidden="true">11</div>
+        <div>
+          <div class="module-name">Agent Ops &amp; Agent Identity</div>
+          <div class="module-tag">Agent monitoring, Traces, Operate dashboard, Entra Agent ID</div>
+        </div>
+        <span class="module-chip chip-new" aria-label="In progress">In Progress</span>
+      </a>
+
+      <a class="module-row planned" role="listitem" aria-label="Planned module" href="https://danielscottraynsford.com/foundry-agentic-workshop/lab-steps/introduction-foundry-agent-service/12-publishing-agents.html" target="_blank" rel="noopener">
+        <div class="module-num" aria-hidden="true">12</div>
+        <div>
+          <div class="module-name">Publishing Agents</div>
+          <div class="module-tag">Publish to Microsoft 365 Copilot &amp; Teams</div>
+        </div>
+        <span class="module-chip chip-planned" aria-label="Planned">Planned</span>
+      </a>
+
+    </div>
+
+    <!-- Coming Soon -->
+    <div class="card" role="region" aria-labelledby="planned-heading">
+      <h3 id="planned-heading" style="font-size:0.9rem;font-weight:700;color:var(--cp-text);margin-bottom:0.75rem;">
+        Further modules in planning
+      </h3>
+      <p style="font-size:0.875rem;color:var(--cp-text-muted);margin-bottom:0.75rem;">
+        The following deep-dive modules are being developed to extend the lab into advanced agentic patterns:
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;" role="list" aria-label="Planned modules">
+        <span class="badge" role="listitem">📐 Rubric-based Evaluations</span>
+        <span class="badge" role="listitem">🔄 Routines</span>
+        <span class="badge" role="listitem">🛠 Skills</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WHO IS THIS FOR ───────────────────────────── -->
+  <section class="section" aria-labelledby="audience-heading">
+    <h2 class="section-heading" id="audience-heading">Who should run this?</h2>
+    <div class="card">
+      <p style="font-size:0.9rem;color:var(--cp-text-muted);margin-bottom:1rem;">
+        This lab is designed to be run with <strong>partner technical teams</strong> — SIs, ISVs, and enterprise engineering groups — who are evaluating or building on Microsoft Foundry. It assumes working familiarity with Python and Azure, but no prior Foundry experience is required.
+      </p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.75rem;" role="list" aria-label="Ideal audiences">
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;" role="listitem">
+          <span style="font-size:1.1rem;margin-top:0.05rem;" aria-hidden="true">🤝</span>
+          <div>
+            <div style="font-size:0.85rem;font-weight:600;color:var(--cp-text);">Partner Engineering Teams</div>
+            <div style="font-size:0.78rem;color:var(--cp-text-muted);">ISVs and SIs building on Foundry</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;" role="listitem">
+          <span style="font-size:1.1rem;margin-top:0.05rem;" aria-hidden="true">🏢</span>
+          <div>
+            <div style="font-size:0.85rem;font-weight:600;color:var(--cp-text);">Enterprise Dev Teams</div>
+            <div style="font-size:0.78rem;color:var(--cp-text-muted);">Internal upskilling for agentic AI</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;" role="listitem">
+          <span style="font-size:1.1rem;margin-top:0.05rem;" aria-hidden="true">📐</span>
+          <div>
+            <div style="font-size:0.85rem;font-weight:600;color:var(--cp-text);">Solution Architects</div>
+            <div style="font-size:0.78rem;color:var(--cp-text-muted);">Evaluating Foundry architecture patterns</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.6rem;" role="listitem">
+          <span style="font-size:1.1rem;margin-top:0.05rem;" aria-hidden="true">🎓</span>
+          <div>
+            <div style="font-size:0.85rem;font-weight:600;color:var(--cp-text);">Technical Upskilling Events</div>
+            <div style="font-size:0.78rem;color:var(--cp-text-muted);">Hackathons, workshops, enablement days</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GET STARTED ───────────────────────────────── -->
+  <section class="section" aria-labelledby="getstarted-heading">
+    <h2 class="section-heading" id="getstarted-heading">Get started</h2>
+    <div class="card" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;">
+      <div>
+        <div style="font-size:1rem;font-weight:700;color:var(--cp-text);margin-bottom:0.3rem;">Ready to run this with your partners?</div>
+        <div style="font-size:0.875rem;color:var(--cp-text-muted);">
+          Review the Organizer Guide to understand provisioning, attendee onboarding, and facilitation. One <code style="font-family:Consolas,'Courier New',monospace;font-size:0.85em;background:var(--cp-surface-soft);padding:0.1em 0.4em;border-radius:4px;border:1px solid var(--cp-border);">azd provision</code> command stands up the full shared environment.
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.6rem;flex-shrink:0;">
+        <a class="btn btn-primary" href="https://danielscottraynsford.com/foundry-agentic-workshop/" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Organizer Guide
+        </a>
+        <a class="btn btn-secondary" href="https://github.com/PlagueHO/foundry-agentic-workshop" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          GitHub Repo
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ────────────────────────────────────── -->
+  <footer class="footer">
+    <p>
+      <a href="https://danielscottraynsford.com/foundry-agentic-workshop/" target="_blank" rel="noopener">Documentation</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/PlagueHO/foundry-agentic-workshop" target="_blank" rel="noopener">GitHub: PlagueHO/foundry-agentic-workshop</a>
+    </p>
+    <p style="margin-top:0.4rem;">Built with ♥ on Microsoft Foundry Agent Service &nbsp;|&nbsp; June 2026</p>
+  </footer>
+
+</div>
+</body>
+</html>

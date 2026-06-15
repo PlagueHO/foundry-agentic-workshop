@@ -71,6 +71,7 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Organizer Quickstart', link: '/quickstart-organizer' },
+      { text: 'Organizer Quickstart w/ GitHub Copilot', link: '/quickstart-organizer-github-copilot' },
       { text: 'Attendee Quickstart', link: '/quickstart-attendee' },
       { text: 'Facilitator Quickstart', link: '/quickstart-facilitator' },
       { text: 'Proctor Guide', link: '/guide-proctor' },
@@ -92,13 +93,15 @@ export default defineConfig({
           { text: 'Attendee Guide', link: '/guide-attendee' },
           { text: 'Facilitator Guide', link: '/guide-facilitator' },
           { text: 'Proctor Guide', link: '/guide-proctor' },
-          { text: 'Architecture Diagram', link: '/architecture-diagram' },
         ],
       },
       {
         text: 'Design',
         items: [
+          { text: 'Architecture', link: '/design/architecture' },
+          { text: 'Infrastructure', link: '/design/infrastructure' },
           { text: 'CI/CD Pipeline', link: '/design/cicd' },
+          { text: 'Testing', link: '/design/testing' },
         ],
       },
       {
