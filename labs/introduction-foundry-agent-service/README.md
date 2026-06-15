@@ -27,7 +27,7 @@ The module pages are generated automatically during docs build and preview from 
 | 8  | [Agent Framework Python](./08-agent-framework-python/README.md) | 25 min | ✅ | A Python Agent Framework app driving the agent. |
 | 9  | [Hosted Agents](./09-hosted-agents/README.md) | 35 min | ✅ | A hosted agent deployed in your Foundry project as a container and as source code. |
 | 10 | [Foundry Toolboxes](./10-foundry-toolboxes/README.md) | 30 min | ✅ | An `acl-remedy-toolbox` consumed from a Python Agent Framework app. |
-| 11 | [Agent Ops and Agent ID (Incomplete)](./11-agent-ops-and-agent-id/README.md) | TBD | | Agent identity and operational monitoring configured. |
+| 11 | [Agent Ops and Agent ID](./11-agent-ops-and-agent-id/README.md) | 30 min | ✅ | Agent identity and operational monitoring configured. |
 | 12 | [Publishing Agents (Planned)](./12-publishing-agents/README.md) | TBD | | Publishing an Agent to M365 Copilot and Teams. |
 
 Total time: ~3-4 hours, depending on how many modules you complete and your familiarity with the concepts. Each module builds on the previous ones, so we recommend following them in order.
