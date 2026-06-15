@@ -8,6 +8,8 @@ This repository contains **L200–L400 hands-on labs** for building agentic solu
 
 [Foundry Agentic Workshop](https://danielscottraynsford.com/foundry-agentic-workshop/)
 
+The workshop guide walks through all L200–L400 labs in this repository, providing facilitator notes, attendee instructions, and lab-by-lab objectives. Use it as your primary reference when delivering or completing the workshop.
+
 ## Who is this for
 
 - Software engineers, architects, and technical roles building or designing AI solutions in Azure
