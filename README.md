@@ -5,7 +5,8 @@
 This repository contains **L200–L400 hands-on labs** for building agentic solutions on [Microsoft Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-foundry) using [Microsoft Foundry Agent Service](https://learn.microsoft.com/azure/ai-foundry/agents/overview), [Foundry IQ](https://learn.microsoft.com/azure/ai-foundry/foundry-iq/overview), and the [Microsoft Agent Framework](https://learn.microsoft.com/azure/ai-foundry/agents/agent-framework).
 
 ## Link to Workshop
-[Click here](https://danielscottraynsford.com/foundry-agentic-workshop/)
+
+[Foundry Agentic Workshop](https://danielscottraynsford.com/foundry-agentic-workshop/)
 
 ## Who is this for
 
