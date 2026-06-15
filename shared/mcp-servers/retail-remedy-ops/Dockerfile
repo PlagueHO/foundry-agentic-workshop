@@ -2,7 +2,7 @@
 # Built and published to its Azure Container App by `scripts/deploy-mcp-server.py`.
 # The Container App is provisioned by default (AZURE_CONTAINER_APPS_DEPLOY). See the
 # Module 06 README for details.
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 WORKDIR /app
 
