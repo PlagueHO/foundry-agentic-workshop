@@ -6,7 +6,7 @@ This repository contains **L200–L400 hands-on labs** for building agentic solu
 
 ## Link to Workshop
 
-[Foundry Agentic Workshop](https://danielscottraynsford.com/foundry-agentic-workshop/) *(Maintained by [@sinannar](https://github.com/sinannar), the repository owner — not an official Microsoft resource)*
+[Foundry Agentic Workshop](https://danielscottraynsford.com/foundry-agentic-workshop/) *(Maintained by [@PlagueHO](https://github.com/PlagueHO) — not an official Microsoft resource)*
 
 The workshop guide walks through all L200–L400 labs in this repository, providing facilitator notes, attendee instructions, and lab-by-lab objectives. Use it as your primary reference when delivering or completing the workshop.
 
