@@ -22,10 +22,17 @@ detailed steps, the RBAC model, and troubleshooting.
    cd foundry-agentic-workshop
    ```
 
-1. Confirm an Azure subscription with sufficient model quota in your target region.
+1. Confirm an Azure subscription where you hold **Owner or Contributor** to create resources
+   and **Owner or User Access Administrator** to assign roles, with sufficient
+   [Foundry model quota](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits)
+   in your target region.
 1. Install [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
    and [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
-1. Collect the attendee user principal names (UPNs) you will grant access to.
+1. Install [Python 3.13 or later](https://www.python.org/downloads/) (used by the pre-provision hook to
+   resolve attendee UPNs to Microsoft Entra object IDs).
+1. Install and start [Docker](https://www.docker.com/) (used to build and publish the shared MCP server
+   image to Azure Container Apps; only required when `AZURE_CONTAINER_APPS_DEPLOY` is `true`, the default).
+1. Collect the Microsoft Entra ID UPN for each attendee, organizer, facilitator, and proctor.
 1. Decide the default Foundry role for attendees (see [Attendee access](#attendee-access)).
 
 ## Deploy
