@@ -559,6 +559,17 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.1' = {
       containerDeleteRetentionPolicyEnabled: false
       deleteRetentionPolicyEnabled: false
       lastAccessTimeTrackingPolicyEnabled: true
+      containers: [
+        // This container is used to store information about Lab setup
+        {
+            name: 'lab-info'
+            publicAccess: 'None'
+        }
+        {
+          name: 'retail-products'
+          publicAccess: 'None'
+        }
+      ]
     }
     diagnosticSettings: [
       {

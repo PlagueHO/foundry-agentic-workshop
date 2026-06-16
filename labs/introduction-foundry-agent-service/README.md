@@ -13,6 +13,10 @@ In this Lab, you will learn how to:
 
 The module pages are generated automatically during docs build and preview from source README files in the lab directories under `labs/introduction-foundry-agent-service`.
 
+## Scenario
+
+Throughout the lab, you will build a single production-grade agent called `acl-remedy-advisor` — an Australian Consumer Law (ACL) Remedy Advisor designed to help retail staff determine the correct remedy when a customer reports a product problem. Starting with a simple prompt-based agent in Microsoft Foundry Agent Builder, the agent is incrementally enriched across twelve modules: web search and Code Interpreter tools are added for live ACCC guidance and pro-rata refund calculations; a custom Model Context Protocol (MCP) server called `retail-remedy-ops` is wired in to look up real purchase records, product profiles, store policies, and replacement stock; a Foundry IQ knowledge base grounds the agent in the retailer's own policy documents; the agent is driven programmatically via the Python Agent Framework; and finally it is packaged as a containerised hosted agent and consumed through a Foundry Toolbox — all the way through to agent identity, operational monitoring, and publishing.
+
 ## Modules
 
 | #  | Module | Estimated Time | Required | End State |

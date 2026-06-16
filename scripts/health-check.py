@@ -8,8 +8,10 @@ on failure. Exits 0 only when all checks pass.
 
 from __future__ import annotations
 
+import importlib
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -141,13 +143,110 @@ def _check_prerequisites() -> bool:
         f'{py.major}.{py.minor}.{py.micro}',
     )
 
+    _check_venv()
+    _check_python_dependencies()
+
     rc, out, _ = _az('az --version')
     az_ver = out.splitlines()[0] if rc == 0 else ''
     az_ok = check('Azure CLI installed', rc == 0, az_ver)
 
+    _check_azd()
     _check_docker()
 
     return py_ok and az_ok
+
+
+def _check_venv() -> None:
+    """Check that a Python virtual environment is active.
+
+    The Attendee Guide requires attendees to create and activate a .venv
+    virtual environment before running lab scripts so workshop packages are
+    isolated from the system Python.
+    """
+    in_venv = sys.prefix != sys.base_prefix
+    if in_venv:
+        check('Python virtual environment active', True, sys.prefix)
+    else:
+        if sys.platform == 'win32':
+            activate_cmd = r'.venv\Scripts\Activate.ps1  (PowerShell)  or  .venv\Scripts\activate.bat  (cmd)'
+        else:
+            activate_cmd = 'source .venv/bin/activate'
+        check(
+            'Python virtual environment active',
+            False,
+            f'not active \u2014 activate with: {activate_cmd}',
+        )
+
+
+def _check_python_dependencies() -> None:
+    """Check that the workshop Python packages from shared/requirements.txt are installed.
+
+    Verifies that each package listed in the requirements file can be imported
+    or is present in the active Python environment, without requiring pip to be
+    invoked at runtime.
+    """
+    req_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        'shared', 'requirements.txt',
+    )
+    if not os.path.exists(req_path):
+        check('Workshop Python dependencies installed', False, f'{req_path} not found')
+        return
+
+    # Map requirement names to importable module names where they differ.
+    _import_map: dict[str, str] = {
+        'azure-ai-projects': 'azure.ai.projects',
+        'azure-identity': 'azure.identity',
+        'azure-mgmt-authorization': 'azure.mgmt.authorization',
+        'azure-search-documents': 'azure.search.documents',
+        'python-dotenv': 'dotenv',
+        'agent-framework': 'agent_framework',
+        'agent-framework-foundry-hosting': 'agent_framework_foundry_hosting',
+        'mcp': 'mcp',
+        'requests': 'requests',
+    }
+
+    with open(req_path, encoding='utf-8') as fh:
+        raw_lines = [ln.strip() for ln in fh if ln.strip() and not ln.startswith('#')]
+
+    # Strip version specifiers (e.g. '>=2.2.0') to get bare package names.
+    pkg_names = [re.split(r'[>=<!]', ln)[0].strip() for ln in raw_lines]
+
+    missing: list[str] = []
+    for pkg in pkg_names:
+        module_name = _import_map.get(pkg, pkg.replace('-', '_'))
+        try:
+            importlib.import_module(module_name)
+        except ImportError:
+            missing.append(pkg)
+
+    if missing:
+        check(
+            'Workshop Python dependencies installed',
+            False,
+            f'missing: {", ".join(missing)} \u2014 run: python -m pip install -r shared/requirements.txt',
+        )
+    else:
+        check(
+            'Workshop Python dependencies installed',
+            True,
+            f'{len(pkg_names)} package(s) from shared/requirements.txt',
+        )
+
+
+def _check_azd() -> None:
+    """Check that the Azure Developer CLI (azd) is installed.
+
+    azd is required by the Attendee Guide for provisioning and environment
+    management. It is a separate install from the Azure CLI.
+    """
+    rc, out, _ = _az('azd version')
+    azd_ver = out.splitlines()[0] if rc == 0 else ''
+    check(
+        'Azure Developer CLI (azd) installed',
+        rc == 0,
+        azd_ver if azd_ver else 'not found \u2014 install from https://aka.ms/azd',
+    )
 
 
 def _check_docker() -> None:
@@ -201,14 +300,35 @@ def _check_env_vars() -> bool:
 def _check_auth(sub: str) -> bool:
     _section('Azure authentication')
 
-    rc, active_sub, err = _az('az account show --query id -o tsv')
+    ok, account, err = _az_json('az account show -o json')
     signed_in = check(
         'Signed in to Azure CLI',
-        rc == 0,
-        '' if rc == 0 else (err.splitlines()[0] if err else 'run az login'),
+        ok,
+        '' if ok else (err if err else 'run az login'),
     )
     if not signed_in:
         return False
+
+    user_info = account.get('user', {})
+    user_name = user_info.get('name', '') or user_info.get('assignedIdentityInfo', '')
+    user_type = user_info.get('type', '')
+    active_sub = account.get('id', '')
+    sub_name = account.get('name', '')
+    tenant_id = account.get('tenantId', '')
+
+    user_detail = user_name
+    if user_type and user_type != 'user':
+        user_detail = f'{user_name} ({user_type})'
+    check(
+        'Signed-in user',
+        bool(user_name),
+        user_detail if user_detail else 'unknown',
+    )
+    check(
+        'Active subscription',
+        True,
+        f'{sub_name}  [{active_sub}]  tenant={tenant_id}',
+    )
 
     match = active_sub == sub
     check(
