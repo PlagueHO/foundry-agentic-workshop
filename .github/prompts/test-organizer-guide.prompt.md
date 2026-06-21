@@ -1,6 +1,13 @@
 ---
-description: "Test the organizer guide end-to-end: provision, RBAC, AI Search, and output validation for the foundry-hol3 environment"
+description: "Test the organizer guide end-to-end: provision, RBAC, AI Search, and output validation"
+argument-hint: "azureLocation=... resourceGroup=... environmentName=..."
 ---
+
+## Inputs
+
+* ${input:azureLocation}: (Required) Azure region to deploy to (e.g., `AustraliaEast`).
+* ${input:resourceGroup}: (Required) Azure resource group name (e.g., `rg-foundry-hol`).
+* ${input:environmentName}: (Required) azd environment name (e.g., `foundry-hol`).
 
 You must test the steps in the #file:docs/guide-organizer.md.
 
@@ -10,7 +17,7 @@ The list of UPNs to use are:
 [{"upn":"lab.attendee.1@MngEnvMCAP199525.onmicrosoft.com"},{"upn":"lab.attendee.2@MngEnvMCAP199525.onmicrosoft.com"},{"upn":"lab.attendee.3@MngEnvMCAP199525.onmicrosoft.com"},{"upn":"lab.facilitator.1@MngEnvMCAP199525.onmicrosoft.com","role":"facilitator"},{"upn":"lab.organizer.1@MngEnvMCAP199525.onmicrosoft.com","role":"organizer"},{"upn":"lab.proctor.1@MngEnvMCAP199525.onmicrosoft.com","role":"proctor"}]
 ```
 
-The Azure Location should be `AustraliaEast`. The default role should be `foundry-project-manager`. The resource group should be `rg-foundry-hol8`. The environment name should be `foundry-hol8`. I have already authenticated to az and azd. The provisioning will take some time.
+The Azure Location should be `${input:azureLocation}`. The default role should be `foundry-project-manager`. The resource group should be `${input:resourceGroup}`. The environment name should be `${input:environmentName}`. I have already authenticated to az and azd. The provisioning will take some time.
 
 You must validate that:
 

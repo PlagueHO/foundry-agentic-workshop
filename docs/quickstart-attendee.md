@@ -37,6 +37,12 @@ python -m pip install -r shared/requirements.txt
 
 ## Configure your environment file
 
+If your organizer provided an **Attendee Portal URL**, visit it and sign in with your lab
+Microsoft account to see your personal `.env` values.
+
+Otherwise, copy the values from the onboarding file or card your organizer or facilitator
+sent you:
+
 1. Copy `shared/.env.example` to `.env`.
 1. Populate these values from your assignment:
    - `AZURE_SUBSCRIPTION_ID`

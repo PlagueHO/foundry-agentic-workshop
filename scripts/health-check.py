@@ -199,6 +199,7 @@ def _check_python_dependencies() -> None:
         'azure-identity': 'azure.identity',
         'azure-mgmt-authorization': 'azure.mgmt.authorization',
         'azure-search-documents': 'azure.search.documents',
+        'azure-storage-blob': 'azure.storage.blob',
         'python-dotenv': 'dotenv',
         'agent-framework': 'agent_framework',
         'agent-framework-foundry-hosting': 'agent_framework_foundry_hosting',

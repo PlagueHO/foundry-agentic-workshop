@@ -201,6 +201,8 @@ var containerRegistryName = take(toLower(replace('${abbrs.containerRegistryRegis
 var containerAppsEnvironmentName = '${abbrs.appManagedEnvironments}${environmentName}'
 var mcpServerContainerAppName = take(toLower('${abbrs.appContainerApps}mcp-${environmentName}'), 32)
 var mcpServerIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}mcp-${environmentName}'
+var attendeePortalContainerAppName = take(toLower('${abbrs.appContainerApps}portal-${environmentName}'), 32)
+var attendeePortalIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}portal-${environmentName}'
 
 // Principal that runs scripts/deploy-mcp-server.py and therefore needs push access to the shared
 // registry. Prefer an explicit AZURE_PRINCIPAL_ID; otherwise fall back to the principal running
@@ -560,10 +562,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.1' = {
       deleteRetentionPolicyEnabled: false
       lastAccessTimeTrackingPolicyEnabled: true
       containers: [
-        // This container is used to store information about Lab setup
+        // This container holds the attendee onboarding index served by the Attendee Portal.
         {
-            name: 'lab-info'
-            publicAccess: 'None'
+          name: 'attendee-onboarding'
+          publicAccess: 'None'
         }
         {
           name: 'retail-products'
@@ -751,11 +753,33 @@ module mcpServer './core/host/mcp-server.bicep' = if (azureContainerAppsDeploy) 
   }
 }
 
+// Attendee Onboarding Portal deployed into the same shared Container Apps environment.
+// Attendees visit the portal URL, sign in with their lab Entra ID account, and see their
+// personal .env configuration. EasyAuth is wired by scripts/deploy-attendee-portal.py after
+// the image is built and pushed.
+module attendeePortal './core/host/attendee-portal.bicep' = if (azureContainerAppsDeploy) {
+  name: 'attendee-portal-deployment-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [
+    resourceGroup
+  ]
+  params: {
+    containerAppName: attendeePortalContainerAppName
+    #disable-next-line BCP318 // containerAppsEnvironment is gated by the same azureContainerAppsDeploy condition
+    containerAppsEnvironmentResourceId: containerAppsEnvironment.outputs.resourceId
+    userAssignedIdentityName: attendeePortalIdentityName
+    containerRegistryLoginServer: containerRegistry.outputs.loginServer
+    storageAccountName: storageAccounName
+    location: location
+    tags: tags
+  }
+}
+
 // ACR role assignments for the Container Apps services. Each service's managed identity needs the
 // ABAC-enabled 'Container Registry Repository Reader' role to pull its image (the shared registry
 // uses AbacRepositoryPermissions mode, so legacy AcrPull is not honored). The deploying principal
-// needs 'Container Registry Repository Contributor' so scripts/deploy-mcp-server.py can push the
-// built image to the shared registry.
+// needs 'Container Registry Repository Contributor' so scripts/deploy-mcp-server.py and
+// scripts/deploy-attendee-portal.py can push built images to the shared registry.
 module containerAppsAcrRoleAssignments './core/security/role_acr.bicep' = if (azureContainerAppsDeploy) {
   name: 'container-apps-acr-roles-${deploymentId}'
   scope: az.resourceGroup(effectiveResourceGroupName)
@@ -772,7 +796,55 @@ module containerAppsAcrRoleAssignments './core/security/role_acr.bicep' = if (az
         principalId: mcpServer.outputs.userAssignedIdentityPrincipalId
       }
       {
+        roleDefinitionIdOrName: 'Container Registry Repository Reader'
+        principalType: 'ServicePrincipal'
+        #disable-next-line BCP318 // attendeePortal is gated by the same azureContainerAppsDeploy condition as this module
+        principalId: attendeePortal.outputs.userAssignedIdentityPrincipalId
+      }
+      {
         roleDefinitionIdOrName: 'Container Registry Repository Contributor'
+        principalType: containerAppsDeployerPrincipalType
+        principalId: containerAppsDeployerPrincipalId
+      }
+    ]
+  }
+}
+
+// Storage Blob role assignments for the Container Apps services. The portal's managed identity
+// needs Storage Blob Data Reader to download the attendee onboarding index.
+module containerAppsStorageRoleAssignments './core/security/role_storage.bicep' = if (azureContainerAppsDeploy) {
+  name: 'container-apps-storage-roles-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [
+    resourceGroup
+  ]
+  params: {
+    storageAccountName: storageAccounName
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Reader'
+        principalType: 'ServicePrincipal'
+        #disable-next-line BCP318 // attendeePortal is gated by the same azureContainerAppsDeploy condition as this module
+        principalId: attendeePortal.outputs.userAssignedIdentityPrincipalId
+      }
+    ]
+  }
+}
+
+// Storage Blob Data Contributor for the deployer principal — always assigned so
+// scripts/generate-attendee-onboarding.py can upload the attendee onboarding index
+// even when Container Apps are not deployed (azureContainerAppsDeploy=false).
+module deployerStorageRoleAssignment './core/security/role_storage.bicep' = {
+  name: 'deployer-storage-roles-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [
+    resourceGroup
+  ]
+  params: {
+    storageAccountName: storageAccounName
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         principalType: containerAppsDeployerPrincipalType
         principalId: containerAppsDeployerPrincipalId
       }
@@ -1222,3 +1294,11 @@ output AZURE_MCP_SERVER_CONTAINER_APP_NAME string = azureContainerAppsDeploy ? m
 @description('The public HTTPS MCP endpoint (including the /mcp path) for the deployed MCP server. Empty when Container Apps deployment is disabled.')
 #disable-next-line BCP318 // mcpServer output is only dereferenced when azureContainerAppsDeploy is true
 output MCP_SERVER_URL string = azureContainerAppsDeploy ? mcpServer.outputs.mcpEndpoint : ''
+
+@description('The name of the Attendee Onboarding Portal Container App. Empty when Container Apps deployment is disabled. Consumed by scripts/deploy-attendee-portal.py.')
+#disable-next-line BCP318 // attendeePortal output is only dereferenced when azureContainerAppsDeploy is true
+output AZURE_ATTENDEE_PORTAL_CONTAINER_APP_NAME string = azureContainerAppsDeploy ? attendeePortal.outputs.containerAppName : ''
+
+@description('The public HTTPS URL of the Attendee Onboarding Portal. Empty when Container Apps deployment is disabled. Included in every attendee onboarding file.')
+#disable-next-line BCP318 // attendeePortal output is only dereferenced when azureContainerAppsDeploy is true
+output ATTENDEE_PORTAL_URL string = azureContainerAppsDeploy ? attendeePortal.outputs.portalUrl : ''

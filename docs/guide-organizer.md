@@ -120,24 +120,42 @@ Open the [Foundry portal](https://ai.azure.com) and confirm the projects and mod
 
 ### Share with attendees
 
-After provisioning, hand the per-attendee onboarding files to the facilitator. It is the **facilitator's responsibility** to distribute each attendee's file to them before the workshop starts.
+After provisioning, share the **Attendee Portal URL** with all attendees.
 
-<details>
-<summary>📸 Screenshot: Lab provisioning output files</summary>
+```bash
+azd env get-value ATTENDEE_PORTAL_URL
+```
 
-![Lab provisioning output files](./assets/screenshots/lab-provisioning-outputs.png)
-  *The lab provisioning output files showing one markdown file per attendee (and facilitator, organizer and proctor) and some of the provisioning list reports (CSV).*
+Attendees visit the portal URL, sign in with their lab Microsoft account, and immediately see their personal `.env` configuration and a **Download .env** button — no file distribution required. A single URL covers all attendees.
 
-</details>
+#### How the portal works
 
-Each file (`.azure/<env>/<upn_local>.md`) contains:
+The portal is an authenticated Azure Container Apps web application backed by Container Apps built-in EasyAuth (Entra ID). On every request, EasyAuth injects the signed-in user's UPN as the `X-MS-CLIENT-PRINCIPAL-NAME` HTTP header. The portal uses that UPN to look up the attendee's record in the `index.json` blob stored in the shared Azure Storage account and renders a personalised page containing:
 
-- The attendee's `FOUNDRY_PROJECT_NAME`.
-- All shared `.env` connection values: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_OPENAI_ENDPOINT`, `AZURE_SEARCH_SERVICE_NAME`, and the shared `MCP_SERVER_URL` (when the shared MCP server is deployed).
-- Sign-in commands and a health-check command to validate setup.
+- The attendee's Foundry project name and role badge.
+- All `.env` connection variables, copyable and downloadable as a `.env` file.
+- Azure CLI sign-in commands pre-populated with the subscription ID.
+- A health-check command to validate setup.
+- Links to the Attendee Quickstart, lab modules, and Microsoft Foundry documentation.
+- A **Sign out** button.
+
+The `index.json` blob is written by `scripts/generate-attendee-onboarding.py` during the post-provision step. Each record includes the attendee's `envBlock`, `markdownContent`, `roleDisplayName`, and a `resolved` flag. A `_meta` key records the generation timestamp and total/resolved counts.
+
+#### Portal troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---------|-------------|-----|
+| Portal shows "No configuration found" | `index.json` not yet uploaded | Re-run `azd provision` or run `python scripts/generate-attendee-onboarding.py` manually after setting required env vars. |
+| Portal redirects to login then returns 401 | EasyAuth misconfigured | Run `python scripts/deploy-attendee-portal.py` to re-apply the EasyAuth configuration. |
+| Portal shows a role badge of blank | `index.json` predates the `roleDisplayName` field | Re-run `azd provision` to regenerate `index.json`. |
+| Attendee sees another attendee's config | UPN key collision | Unlikely — keys are derived from the local part of the UPN. File a bug if seen. |
+
+#### Markdown backups
+
+Per-attendee markdown files are written locally to `.azure/<env>/<upn_local>.md` **and** uploaded as backup blobs to `backups/<upn_local>.md` in the `attendee-onboarding` Storage container. Use them as a fallback if the portal is unavailable, for offline distribution, or for audit purposes.
 
 > [!TIP]
-> Files are written to `.azure/<env>/<upn_local>.md` where `<env>` is the azd environment name and `<upn_local>` is the local part of the attendee's UPN. For example, `alice.smith@contoso.com` in environment `my-workshop` produces `.azure/my-workshop/alice-smith.md`.
+> Files are written to `.azure/<env>/<upn_local>.md` where `<env>` is the azd environment name and `<upn_local>` is the local part of the attendee's UPN. For example, `alice.smith@contoso.com` in environment `my-workshop` produces `.azure/my-workshop/alice-smith.md` and the blob `backups/alice.smith.md`.
 
 Refer attendees to the [Attendee Quickstart](./quickstart-attendee.md) for setup instructions.
 

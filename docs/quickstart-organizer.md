@@ -82,13 +82,31 @@ full role model and the provisioning audit CSVs.
 
 ## Share assignments
 
-After provisioning, confirm project names and hand the per-attendee onboarding files to the facilitator.
+After provisioning, share the portal URL with attendees.
 
 ```bash
-azd env get-value AZURE_ATTENDEE_PROJECT_NAMES
+azd env get-value ATTENDEE_PORTAL_URL
 ```
 
-The post-provision hook writes a per-attendee onboarding file to `.azure/<env>/<upn_local>.md` for each resolved attendee (for example `.azure/hol-shared/alice-smith.md`). Each file contains the attendee's `FOUNDRY_PROJECT_NAME` and all shared `.env` values pre-populated. It is the **facilitator's responsibility** to distribute each attendee's file to them before the workshop starts. Refer attendees to the [Attendee Quickstart](./quickstart-attendee.md) for setup instructions.
+Attendees visit the portal, sign in with their lab Microsoft account, and see their personal
+`.env` values immediately. The page includes:
+
+- A **Download .env** button to save the file directly.
+- Azure CLI sign-in commands pre-populated with the subscription ID.
+- A health-check command to validate setup.
+- Links to the Attendee Quickstart, lab modules, and Microsoft Foundry documentation.
+- A **Sign out** button.
+
+Per-attendee markdown files are also written locally to `.azure/<env>/<upn_local>.md` and
+uploaded as backup blobs to the `attendee-onboarding` Storage container under `backups/`.
+Use them for offline distribution or if the portal is unavailable.
+
+> [!TIP]
+> If an attendee sees "No configuration found", the `index.json` blob may not have been
+> uploaded yet. Re-run `azd provision` or run `python scripts/generate-attendee-onboarding.py`
+> manually with the required environment variables set.
+
+Refer attendees to the [Attendee Quickstart](./quickstart-attendee.md) for setup instructions.
 
 ## Teardown
 
