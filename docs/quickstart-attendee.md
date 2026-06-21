@@ -35,13 +35,16 @@ Activate the virtual environment:
 python -m pip install -r shared/requirements.txt
 ```
 
-## Configure your environment file
+## Get your environment configuration
 
-If your organizer provided an **Attendee Portal URL**, visit it and sign in with your lab
-Microsoft account to see your personal `.env` values.
+Your organizer provides an **Attendee Portal URL**. Visit it, sign in with your lab
+Microsoft account, and follow the instructions on the page. The portal shows:
 
-Otherwise, copy the values from the onboarding file or card your organizer or facilitator
-sent you:
+- Your personal `.env` values in a copyable code block, plus a **Download .env** button to save the file directly.
+- Pre-populated `az login` and `az account set` commands for the workshop subscription.
+- The `python scripts/health-check.py` validation command.
+
+If the portal is unavailable, copy the values from the onboarding file your organizer sent:
 
 1. Copy `shared/.env.example` to `.env`.
 1. Populate these values from your assignment:

@@ -88,13 +88,14 @@ After provisioning, share the portal URL with attendees.
 azd env get-value ATTENDEE_PORTAL_URL
 ```
 
-Attendees visit the portal, sign in with their lab Microsoft account, and see their personal
-`.env` values immediately. The page includes:
+Attendees visit the portal, sign in with their lab Microsoft account, and immediately see
+their personal onboarding page. The page includes:
 
-- A **Download .env** button to save the file directly.
-- Azure CLI sign-in commands pre-populated with the subscription ID.
-- A health-check command to validate setup.
-- Links to the Attendee Quickstart, lab modules, and Microsoft Foundry documentation.
+- **Your environment variables** — all `.env` values in a copyable code block, plus a **Download .env** button to save the file directly.
+- **Sign in to Azure** — `az login` and `az account set` commands pre-populated with the subscription ID.
+- **Validate setup** — the `python scripts/health-check.py` command ready to copy.
+- **Next steps** and **Workshop Resources** — links to the Attendee Quickstart, lab modules, and Microsoft Foundry documentation.
+- A role badge showing the attendee's assigned Foundry role.
 - A **Sign out** button.
 
 Per-attendee markdown files are also written locally to `.azure/<env>/<upn_local>.md` and

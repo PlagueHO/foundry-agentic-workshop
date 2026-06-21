@@ -16,6 +16,7 @@
 
 Your organizer provisions the shared Foundry environment and assigns you a project. Before you start, you should have received:
 
+- **Attendee Portal URL** — sign in with your lab Microsoft account to get your personal `.env` values.
 - `FOUNDRY_PROJECT_NAME` - for example, `attendee-01`.
 - Shared values: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_OPENAI_ENDPOINT`, and `AZURE_SEARCH_SERVICE_NAME`.
 
@@ -62,7 +63,11 @@ Install the following before continuing:
    python -m pip install -r shared/requirements.txt
    ```
 
-- [ ] Copy `shared/.env.example` to `.env` in the repository root and populate the values your organizer provided:
+- [ ] Get your environment variables from the **Attendee Portal URL** your organizer shared. Sign in with your lab Microsoft account, then copy the values or click **Download .env** to save the file directly.
+
+  If the portal is unavailable, copy the values from the onboarding file your organizer sent.
+
+  In either case, copy `shared/.env.example` to `.env` in the repository root and populate:
 
   - `AZURE_SUBSCRIPTION_ID`
   - `AZURE_RESOURCE_GROUP`

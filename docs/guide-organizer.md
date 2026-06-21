@@ -126,20 +126,28 @@ After provisioning, share the **Attendee Portal URL** with all attendees.
 azd env get-value ATTENDEE_PORTAL_URL
 ```
 
-Attendees visit the portal URL, sign in with their lab Microsoft account, and immediately see their personal `.env` configuration and a **Download .env** button — no file distribution required. A single URL covers all attendees.
+Attendees visit the portal URL, sign in with their lab Microsoft account, and immediately see their personal `.env` configuration, sign-in commands, and validation steps — no file distribution required. A single URL covers all attendees.
+
+<details>
+<summary>📸 Screenshot: Attendee portal showing environment variables and setup steps</summary>
+
+![Attendee portal showing environment variables and setup steps](./assets/screenshots/attendee-portal.png)
+
+</details>
 
 #### How the portal works
 
-The portal is an authenticated Azure Container Apps web application backed by Container Apps built-in EasyAuth (Entra ID). On every request, EasyAuth injects the signed-in user's UPN as the `X-MS-CLIENT-PRINCIPAL-NAME` HTTP header. The portal uses that UPN to look up the attendee's record in the `index.json` blob stored in the shared Azure Storage account and renders a personalised page containing:
+The portal is an authenticated Azure Container Apps web application backed by Container Apps built-in EasyAuth (Entra ID single-tenant). On sign-in, EasyAuth validates the attendee's Entra ID token and injects identity claims into each request. The portal reads the attendee's UPN from those claims to look up their record in the `index.json` blob stored in the shared Azure Storage account and renders a personalised page containing:
 
-- The attendee's Foundry project name and role badge.
-- All `.env` connection variables, copyable and downloadable as a `.env` file.
-- Azure CLI sign-in commands pre-populated with the subscription ID.
-- A health-check command to validate setup.
-- Links to the Attendee Quickstart, lab modules, and Microsoft Foundry documentation.
+- **Your environment variables** — all `.env` values in a copyable code block, plus a **Download .env** button to save the file directly.
+- **Sign in to Azure** — `az login` and `az account set` commands pre-populated with the workshop subscription ID.
+- **Validate setup** — the `python scripts/health-check.py` command ready to copy.
+- **Next steps** — a link to the Attendee Quickstart to complete setup.
+- **Workshop Resources** — links to the GitHub repo, lab modules, and Microsoft Foundry documentation.
+- A role badge showing the attendee's assigned Foundry role.
 - A **Sign out** button.
 
-The `index.json` blob is written by `scripts/generate-attendee-onboarding.py` during the post-provision step. Each record includes the attendee's `envBlock`, `markdownContent`, `roleDisplayName`, and a `resolved` flag. A `_meta` key records the generation timestamp and total/resolved counts.
+The `index.json` blob is written by `scripts/generate-attendee-onboarding.py` during the post-provision step. Each record includes the attendee's env vars as a key-value map, `roleDisplayName`, and a `resolved` flag. A `_meta` key records the generation timestamp and total/resolved counts.
 
 #### Portal troubleshooting
 
