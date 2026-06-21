@@ -2,8 +2,10 @@
 
 Serves per-attendee workshop environment configuration from a JSON index stored in
 Azure Blob Storage. Authentication is handled by Azure Container Apps built-in EasyAuth
-(Entra ID single-tenant), which sets the ``X-MS-CLIENT-PRINCIPAL-NAME`` header on every
-authenticated request before it reaches this application.
+(Entra ID single-tenant). EasyAuth sets ``X-MS-CLIENT-PRINCIPAL-NAME`` from the token's
+``name`` claim (display name). The portal extracts the actual UPN from
+``X-MS-CLIENT-PRINCIPAL`` claims (``preferred_username`` / ``emailaddress``) so the
+correct attendee record can be found in the index.
 
 All user-derived values embedded in the HTML response are escaped with ``html.escape()``
 to prevent cross-site scripting. The ``/healthz`` endpoint responds without authentication
@@ -14,6 +16,7 @@ function in ``scripts/generate-attendee-onboarding.py``.
 """
 from __future__ import annotations
 
+import base64
 import html
 import json
 import logging
@@ -198,6 +201,40 @@ def _render_page(head_suffix: str, h1_suffix: str, subtitle: str, body: str, upn
     )
 
 
+def _extract_upn(request: Request) -> str:
+    """Extract the authenticated user's UPN from EasyAuth headers.
+
+    Container Apps EasyAuth sets ``X-MS-CLIENT-PRINCIPAL-NAME`` from the
+    token's ``name`` claim, which is the display name (e.g. "Azure Lab Attendee 1"),
+    NOT the UPN.  The ``X-MS-CLIENT-PRINCIPAL`` header contains the full claims
+    blob (base64-encoded JSON), where ``preferred_username`` and the WS-Federation
+    ``emailaddress`` claim reliably hold the UPN/email used to key the index.
+    """
+    principal_b64 = request.headers.get('X-MS-CLIENT-PRINCIPAL', '')
+    if principal_b64:
+        try:
+            principal = json.loads(base64.b64decode(principal_b64 + '=='))
+            claims: dict[str, str] = {
+                c.get('typ', ''): c.get('val', '')
+                for c in principal.get('claims', [])
+                if c.get('val')
+            }
+            upn = (
+                claims.get('preferred_username')
+                or claims.get(
+                    'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
+                )
+                or claims.get('email')
+                or ''
+            )
+            if upn:
+                return upn.strip()
+        except Exception:  # pylint: disable=broad-except
+            pass
+    # Fallback: may be display name rather than UPN in some EasyAuth configurations.
+    return request.headers.get('X-MS-CLIENT-PRINCIPAL-NAME', '').strip()
+
+
 def _copy_btn(btn_id: str, code_id: str, label: str) -> str:
     """Render an accessible copy-to-clipboard button."""
     safe_label = html.escape(f'Copy {label} to clipboard')
@@ -281,7 +318,7 @@ async def healthz() -> Response:
 @app.get('/', response_class=HTMLResponse)
 async def portal(request: Request) -> HTMLResponse:
     """Serve the attendee personal onboarding configuration page."""
-    upn = request.headers.get('X-MS-CLIENT-PRINCIPAL-NAME', '').strip()
+    upn = _extract_upn(request)
 
     if not upn:
         # EasyAuth redirects unauthenticated requests before reaching here.
@@ -297,8 +334,10 @@ async def portal(request: Request) -> HTMLResponse:
             status_code=401,
         )
 
+    key = _upn_key(upn)
+    _log.info('Portal request: upn=%s key=%s', upn, key)
     index = _load_index()
-    record = index.get(_upn_key(upn))
+    record = index.get(key)
 
     if record is None:
         upn_safe = html.escape(upn)
@@ -405,7 +444,7 @@ async def portal(request: Request) -> HTMLResponse:
 @app.get('/download-env', include_in_schema=False)
 async def download_env(request: Request) -> Response:
     """Download the attendee .env file as an attachment."""
-    upn = request.headers.get('X-MS-CLIENT-PRINCIPAL-NAME', '').strip()
+    upn = _extract_upn(request)
     if not upn:
         return Response(status_code=401, content='Not authenticated.')
     index = _load_index()
