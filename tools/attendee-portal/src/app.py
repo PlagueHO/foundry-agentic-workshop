@@ -18,6 +18,7 @@ import html
 import json
 import logging
 import os
+import time
 
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient
@@ -32,6 +33,13 @@ _BLOB_NAME = 'index.json'
 # user-assigned managed identity. Container Apps injects this env var automatically
 # when a single user-assigned MI is attached (set via the Bicep module).
 _CLIENT_ID = os.environ.get('AZURE_CLIENT_ID', '') or None
+
+# Cache the index in memory for this many seconds before re-downloading from blob storage.
+# Short enough that re-running generate-attendee-onboarding.py is reflected quickly;
+# long enough to avoid hammering storage when many attendees load the portal concurrently.
+_INDEX_CACHE_TTL: int = int(os.environ.get('INDEX_CACHE_TTL', '60'))
+_index_cache: dict[str, dict] = {}
+_index_cache_ts: float = 0.0
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 _log = logging.getLogger(__name__)
@@ -227,7 +235,17 @@ def _credential() -> DefaultAzureCredential:
 
 
 def _load_index() -> dict[str, dict]:
-    """Download and return the attendee onboarding index from blob storage."""
+    """Return the attendee onboarding index, using an in-process TTL cache.
+
+    The index is re-downloaded from blob storage at most once per
+    ``_INDEX_CACHE_TTL`` seconds so that concurrent requests do not each
+    issue a separate blob read, while still picking up updates written by
+    ``scripts/generate-attendee-onboarding.py`` within a reasonable window.
+    """
+    global _index_cache, _index_cache_ts  # noqa: PLW0603
+    now = time.monotonic()
+    if _index_cache and (now - _index_cache_ts) < _INDEX_CACHE_TTL:
+        return _index_cache
     if not _STORAGE_ACCOUNT_NAME:
         _log.warning('AZURE_STORAGE_ACCOUNT_NAME not set; portal will return no data.')
         return {}
@@ -237,10 +255,12 @@ def _load_index() -> dict[str, dict]:
             credential=_credential(),
         )
         blob = client.get_blob_client(container=_CONTAINER_NAME, blob=_BLOB_NAME)
-        return json.loads(blob.download_blob().readall())
+        _index_cache = json.loads(blob.download_blob().readall())
+        _index_cache_ts = now
+        return _index_cache
     except Exception as exc:  # pylint: disable=broad-except
         _log.error('Failed to load onboarding index: %s', exc)
-        return {}
+        return _index_cache  # return stale cache rather than empty on transient errors
 
 
 def _upn_key(upn: str) -> str:

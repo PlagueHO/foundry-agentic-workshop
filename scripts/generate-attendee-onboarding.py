@@ -5,7 +5,7 @@ This is the azd postprovision hook for the Microsoft Foundry workshop. It:
   2. Reads azd provisioning outputs (Foundry resource name, resource group, etc.).
   3. Writes a per-attendee onboarding markdown file to .azure/<env>/<upn_local>.md.
   4. Writes a provisioning summary CSV to .azure/<env>/attendee-provisioning-<env>-<ts>.csv.
-  5. Writes the attendee onboarding index to .azure/<env>/attendee-onboarding-index.json.
+  5. Writes the attendee onboarding index to .azure/<env>/index.json.
   6. Uploads the onboarding index and markdown backups to Azure Blob Storage.
 
 Role assignments for the deployer principal are handled by Bicep during provisioning.
@@ -416,9 +416,9 @@ def _upload_onboarding_markdowns(
 ) -> None:
     """Upload per-attendee markdown files from audit_dir as backup blobs.
 
-    Files are uploaded to the ``backups/`` prefix within the onboarding container
-    so that organizers can download them directly from storage even when the portal
-    is not deployed. Skips gracefully when the storage account is not set or the
+    Files are uploaded to the root of the onboarding container, mirroring the
+    filenames in .azure/<env>/, so the storage layout matches the local layout.
+    Skips gracefully when the storage account is not set or the
     azure-storage-blob library is not installed.
     """
     if not _BLOB_UPLOAD_AVAILABLE:
@@ -438,7 +438,7 @@ def _upload_onboarding_markdowns(
         )
         uploaded = 0
         for md_path in md_files:
-            blob_name = f'backups/{md_path.name}'
+            blob_name = md_path.name
             blob = client.get_blob_client(container=onboarding_container, blob=blob_name)
             blob.upload_blob(
                 md_path.read_bytes(),
@@ -450,7 +450,7 @@ def _upload_onboarding_markdowns(
             uploaded += 1
         print(
             f'Onboarding markdown backups uploaded: {uploaded} file(s) '
-            f'-> {account_url}/{onboarding_container}/backups/'
+            f'-> {account_url}/{onboarding_container}/'
         )
     except Exception as exc:  # pylint: disable=broad-except
         print(f'Warning: could not upload onboarding markdown backups: {exc}', file=sys.stderr)
@@ -686,7 +686,7 @@ def main() -> int:  # pylint: disable=too-many-locals
         attendee_portal_url=attendee_portal_url,
     )
 
-    index_path = audit_dir / 'attendee-onboarding-index.json'
+    index_path = audit_dir / 'index.json'
     index_path.write_text(json.dumps(index, ensure_ascii=False, indent=2), encoding='utf-8')
     print(f'Onboarding index written to {index_path}')
 

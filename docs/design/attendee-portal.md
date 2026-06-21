@@ -31,7 +31,7 @@ identity.
                                          │  Azure Storage Account      │
                                          │  Container: attendee-onboard│
                                          │  Blob: index.json           │
-                                         │  Blobs: backups/<upn>.md    │
+                                         │  Blobs: <upn>.md            │
                                          └────────────────────────────┘
 ```
 
@@ -43,7 +43,7 @@ identity.
 | **Container Apps EasyAuth** | Authenticates attendees via Entra ID (single-tenant). Injects the signed-in UPN as `X-MS-CLIENT-PRINCIPAL-NAME` on every proxied request. |
 | **FastAPI application** (`tools/attendee-portal/src/app.py`) | Reads the EasyAuth UPN header, looks up the attendee record in `index.json`, and renders the personalised onboarding page. |
 | **Azure Storage blob (`index.json`)** | The single source of truth for all attendee configuration. Written by `scripts/generate-attendee-onboarding.py` during post-provision. |
-| **Azure Storage blobs (`backups/<upn>.md`)** | Per-attendee markdown backup files uploaded alongside `index.json`. Used for offline distribution or when the portal is unavailable. |
+| **Azure Storage blobs (`<upn>.md`)** | Per-attendee markdown backup files uploaded alongside `index.json`. Used for offline distribution or when the portal is unavailable. |
 | **User-assigned managed identity** | Authenticates the Container App to the Storage Account with the Storage Blob Data Reader role. Also used to pull the portal image from the shared Azure Container Registry. |
 | **Entra app registration** | Created by `scripts/deploy-attendee-portal.py`. Provides the client credentials that EasyAuth uses to validate tokens. |
 
@@ -54,7 +54,7 @@ azd provision
   └─► scripts/generate-attendee-onboarding.py (post-provision hook)
         ├─► writes .azure/<env>/<upn_local>.md          (local audit files)
         ├─► uploads attendee-onboarding/index.json      (portal source data)
-        └─► uploads attendee-onboarding/backups/*.md    (markdown backup blobs)
+        └─► uploads attendee-onboarding/*.md            (markdown backup blobs)
 
 Attendee visits portal URL
   └─► Container Apps EasyAuth intercepts, redirects to Entra ID login

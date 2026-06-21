@@ -152,10 +152,10 @@ The `index.json` blob is written by `scripts/generate-attendee-onboarding.py` du
 
 #### Markdown backups
 
-Per-attendee markdown files are written locally to `.azure/<env>/<upn_local>.md` **and** uploaded as backup blobs to `backups/<upn_local>.md` in the `attendee-onboarding` Storage container. Use them as a fallback if the portal is unavailable, for offline distribution, or for audit purposes.
+Per-attendee markdown files are written locally to `.azure/<env>/<upn_local>.md` **and** uploaded as backup blobs to `<upn_local>.md` in the `attendee-onboarding` Storage container. Use them as a fallback if the portal is unavailable, for offline distribution, or for audit purposes.
 
 > [!TIP]
-> Files are written to `.azure/<env>/<upn_local>.md` where `<env>` is the azd environment name and `<upn_local>` is the local part of the attendee's UPN. For example, `alice.smith@contoso.com` in environment `my-workshop` produces `.azure/my-workshop/alice-smith.md` and the blob `backups/alice.smith.md`.
+> Files are written to `.azure/<env>/<upn_local>.md` where `<env>` is the azd environment name and `<upn_local>` is the local part of the attendee's UPN. For example, `alice.smith@contoso.com` in environment `my-workshop` produces `.azure/my-workshop/alice-smith.md` and the blob `alice-smith.md`.
 
 Refer attendees to the [Attendee Quickstart](./quickstart-attendee.md) for setup instructions.
 

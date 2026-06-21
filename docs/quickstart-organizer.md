@@ -98,7 +98,7 @@ Attendees visit the portal, sign in with their lab Microsoft account, and see th
 - A **Sign out** button.
 
 Per-attendee markdown files are also written locally to `.azure/<env>/<upn_local>.md` and
-uploaded as backup blobs to the `attendee-onboarding` Storage container under `backups/`.
+uploaded as backup blobs to the root of the `attendee-onboarding` Storage container.
 Use them for offline distribution or if the portal is unavailable.
 
 > [!TIP]
