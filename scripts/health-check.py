@@ -335,7 +335,7 @@ def _check_auth(sub: str) -> bool:
     check(
         'Active subscription matches AZURE_SUBSCRIPTION_ID',
         match,
-        '' if match else f'active={active_sub}  \u2192  run: az account set --subscription {sub}',
+        '' if match else f'active={active_sub} -> run: az account set --subscription {sub}',
     )
     return match
 

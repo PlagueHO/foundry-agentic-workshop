@@ -392,7 +392,7 @@ def _upload_onboarding_index(
         print(
             f'Onboarding index uploaded: {total_count} entr{"y" if total_count == 1 else "ies"} '
             f'({resolved_count} resolved) '
-            f'\u2192 {account_url}/{onboarding_container}/index.json'
+            f'-> {account_url}/{onboarding_container}/index.json'
         )
     except Exception as exc:  # pylint: disable=broad-except
         print(f'Warning: could not upload onboarding index: {exc}', file=sys.stderr)
@@ -450,7 +450,7 @@ def _upload_onboarding_markdowns(
             uploaded += 1
         print(
             f'Onboarding markdown backups uploaded: {uploaded} file(s) '
-            f'\u2192 {account_url}/{onboarding_container}/backups/'
+            f'-> {account_url}/{onboarding_container}/backups/'
         )
     except Exception as exc:  # pylint: disable=broad-except
         print(f'Warning: could not upload onboarding markdown backups: {exc}', file=sys.stderr)
