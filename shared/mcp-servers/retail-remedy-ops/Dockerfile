@@ -1,5 +1,5 @@
 # Container image for the Retail Remedy Operations MCP server.
-# Built and published to its Azure Container App by `scripts/deploy-mcp-server.py`.
+# Built and published to its Azure Container App by `scripts/deploy-retail-remedy-ops-mcp-server.py`.
 # The Container App is provisioned by default (AZURE_CONTAINER_APPS_DEPLOY). See the
 # Module 06 README for details.
 FROM python:3.13-slim
@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
 
 # The MCP server listens on this port; Azure Container Apps ingress targets it.
-ENV MCP_SERVER_PORT=8080
+ENV RETAIL_REMEDY_OPS_MCP_SERVER_PORT=8080
 EXPOSE 8080
 
 CMD ["python", "src/server.py"]

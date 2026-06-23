@@ -100,8 +100,8 @@ def main() -> int:  # pylint: disable=too-many-return-statements
     registry_name = env.get('AZURE_CONTAINER_REGISTRY_NAME', '')
     login_server = env.get('AZURE_CONTAINER_REGISTRY_ENDPOINT', '')
     resource_group = env.get('AZURE_RESOURCE_GROUP', '')
-    container_app_name = env.get('AZURE_MCP_SERVER_CONTAINER_APP_NAME', '')
-    mcp_server_url = env.get('MCP_SERVER_URL', '')
+    container_app_name = env.get('AZURE_RETAIL_REMEDY_OPS_MCP_SERVER_CONTAINER_APP_NAME', '')
+    mcp_server_url = env.get('RETAIL_REMEDY_OPS_MCP_SERVER_URL', '')
 
     if not container_app_name:
         return _fail(

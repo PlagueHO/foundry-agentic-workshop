@@ -6,7 +6,7 @@ this container, sends requests to the OpenAI Responses endpoint on port 8088, an
 probes ``/readiness`` automatically.
 
 The agent calls the live **Retail Remedy Operations MCP server** from Module 06 over
-``MCP_SERVER_URL`` (the same public dev-tunnel endpoint you used there), and also enables
+``RETAIL_REMEDY_OPS_MCP_SERVER_URL`` (the same public dev-tunnel endpoint you used there), and also enables
 the Foundry hosted **web search** and **code interpreter** tools — matching the tool set of
 the ``acl-remedy-advisor`` Prompt Agent from Module 06.
 
@@ -19,9 +19,9 @@ tunnel changes you must redeploy the agent.
 Environment variables (provided by Foundry at runtime, and by your ``.env`` locally):
     FOUNDRY_PROJECT_ENDPOINT        The Foundry project endpoint.
     AZURE_AI_MODEL_DEPLOYMENT_NAME  The chat model deployment name (for example "chat").
-    MCP_SERVER_URL                  Public URL of the Retail Remedy Operations MCP server,
+    RETAIL_REMEDY_OPS_MCP_SERVER_URL   Public URL of the Retail Remedy Operations MCP server,
                                     ending in ``/mcp`` (from Module 06).
-    MCP_SERVER_LABEL                Tool name for the MCP server (default "retail_remedy_ops").
+    RETAIL_REMEDY_OPS_MCP_SERVER_LABEL  Tool name for the MCP server (default "retail_remedy_ops").
 """
 
 import os
@@ -70,13 +70,13 @@ INSTRUCTIONS = (
 
 def build_agent() -> Agent:
     """Create the ACL Remedy Advisor agent wired to the live Module 06 MCP server."""
-    mcp_server_url = os.environ.get('MCP_SERVER_URL', '').strip()
+    mcp_server_url = os.environ.get('RETAIL_REMEDY_OPS_MCP_SERVER_URL', '').strip()
     if not mcp_server_url:
         raise ValueError(
-            'MCP_SERVER_URL is not set. Start the Retail Remedy Operations MCP server '
-            '(Module 06, server.py), expose it via a dev tunnel, then set MCP_SERVER_URL to '
+            'RETAIL_REMEDY_OPS_MCP_SERVER_URL is not set. Start the Retail Remedy Operations MCP server '
+            '(Module 06, server.py), expose it via a dev tunnel, then set RETAIL_REMEDY_OPS_MCP_SERVER_URL to '
             'the public URL plus /mcp. Example: '
-            'MCP_SERVER_URL=https://abc123-8080.devtunnels.ms/mcp'
+            'RETAIL_REMEDY_OPS_MCP_SERVER_URL=https://abc123-8080.devtunnels.ms/mcp'
         )
 
     client = FoundryChatClient(
@@ -89,7 +89,7 @@ def build_agent() -> Agent:
     # search and code interpreter tools (served by the model). The MCP server is anonymous,
     # so the hosted agent only needs outbound access to the public tunnel URL — no RBAC.
     retail_remedy_ops = MCPStreamableHTTPTool(
-        name=os.environ.get('MCP_SERVER_LABEL', 'retail_remedy_ops'),
+        name=os.environ.get('RETAIL_REMEDY_OPS_MCP_SERVER_LABEL', 'retail_remedy_ops'),
         url=mcp_server_url,
         load_prompts=False,
         approval_mode='never_require',

@@ -8,7 +8,7 @@ Code fallback script for attendees who cannot add the MCP tool through the
 Agent Builder UI (for example when port forwarding is not available from the
 UI context).
 
-Before running, set `MCP_SERVER_URL` in `shared/.env` to the full tunnel URL
+Before running, set `RETAIL_REMEDY_OPS_MCP_SERVER_URL` in `shared/.env` to the full tunnel URL
 including the `/mcp` path suffix.
 
 ```bash

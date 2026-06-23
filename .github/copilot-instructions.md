@@ -2,7 +2,7 @@
 title: Copilot Instructions for Microsoft Foundry Workshop
 description: Repository-specific code authoring and review guidance for Copilot interactions.
 author: Foundry Agentic Workshop Maintainers
-ms.date: 2026-06-06
+ms.date: 2026-06-24
 ms.topic: reference
 ---
 
@@ -28,12 +28,7 @@ Apply these instructions to generated code, Markdown edits, and PRs.
 
 ## Lab Content Rules
 
-- Each lab README must follow the section order: **Objectives → Steps → Validation → Troubleshooting**.
-- Write Steps as numbered, concrete instructions an attendee can follow without ambiguity.
-- Write Validation as observable outcomes the attendee can verify (commands, UI states, printed output).
-- **Verify technical accuracy against Microsoft Learn (`learn.microsoft.com/azure/ai-foundry/`) before adding or changing steps.**
-- Keep tone encouraging and approachable; attendees range from beginner to expert.
-- Use real, working example prompts in lab steps; avoid placeholder text such as "enter some text here".
+Lab module README structure, step formatting, callout conventions, and content rules are defined in `.github/instructions/lab-module-readme.instructions.md`, which is scoped to `labs/**/*.md` and applied automatically when editing lab files.
 
 ## Python Authoring Rules
 

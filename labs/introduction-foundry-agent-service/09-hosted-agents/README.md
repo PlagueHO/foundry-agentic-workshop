@@ -5,7 +5,7 @@
 > [!IMPORTANT]
 > This module builds on two earlier modules:
 >
-> - [Module 06 — Integrate MCP tools](../06-mcp-tools/README.md): the `retail_remedy_ops` MCP server must be running and publicly exposed on port 8080. The hosted agent calls it over `MCP_SERVER_URL` at runtime.
+> - [Module 06 — Integrate MCP tools](../06-mcp-tools/README.md): the `retail_remedy_ops` MCP server must be running and publicly exposed on port 8080. The hosted agent calls it over `RETAIL_REMEDY_OPS_MCP_SERVER_URL` at runtime.
 > - [Module 08 — Use Agent Framework for Python](../08-agent-framework-python/README.md): you package a **code-first Agent Framework agent** and deploy it as a **hosted agent** that runs fully managed inside your Foundry project.
 
 <!-- markdownlint-disable-next-line MD028 -->
@@ -67,7 +67,7 @@ in this preview.
 
 Because the MCP server is anonymous, the hosted agent needs no extra permissions to reach
 it; it only needs outbound network access to the public tunnel URL. The dev-tunnel URL is
-baked into the deploy as the `MCP_SERVER_URL` environment variable, so if the tunnel changes
+baked into the deploy as the `RETAIL_REMEDY_OPS_MCP_SERVER_URL` environment variable, so if the tunnel changes
 you must **redeploy** the agent.
 
 ### Two ways to deploy
@@ -130,15 +130,15 @@ agent is scoped to your own project, so attendees never overwrite each other.
    ```
 
    > [!NOTE]
-   > Confirm your `.env` file sets `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `AZURE_CONTAINER_REGISTRY_NAME`, `AZURE_CONTAINER_REGISTRY_ENDPOINT`, and `MCP_SERVER_URL` (the public URL of your Module 06 MCP server, ending in `/mcp`). `HOSTED_AGENT_NAME_CONTAINER` defaults to `acl-remedy-advisor-hosted-container`, `HOSTED_AGENT_NAME_CODE` defaults to `acl-remedy-advisor-hosted-code`, `AGENT_MODEL` defaults to `chat`, and `MCP_SERVER_LABEL` defaults to `retail_remedy_ops`.
+   > Confirm your `.env` file sets `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `AZURE_CONTAINER_REGISTRY_NAME`, `AZURE_CONTAINER_REGISTRY_ENDPOINT`, and `RETAIL_REMEDY_OPS_MCP_SERVER_URL` (the public URL of your Module 06 MCP server, ending in `/mcp`). `HOSTED_AGENT_NAME_CONTAINER` defaults to `acl-remedy-advisor-hosted-container`, `HOSTED_AGENT_NAME_CODE` defaults to `acl-remedy-advisor-hosted-code`, `AGENT_MODEL` defaults to `chat`, and `RETAIL_REMEDY_OPS_MCP_SERVER_LABEL` defaults to `retail_remedy_ops`.
 
-- [ ] Confirm the Retail Remedy Operations **MCP server from Module 06 is still running and publicly exposed** on port 8080, and that `MCP_SERVER_URL` is set to its public URL ending in `/mcp`. The hosted agent calls this server at runtime, so it must stay reachable while you deploy and invoke the agent. If it is not running, restart it and re-expose the port as described in [Module 06](../06-mcp-tools/README.md), Part 2:
+- [ ] Confirm the Retail Remedy Operations **MCP server from Module 06 is still running and publicly exposed** on port 8080, and that `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set to its public URL ending in `/mcp`. The hosted agent calls this server at runtime, so it must stay reachable while you deploy and invoke the agent. If it is not running, restart it and re-expose the port as described in [Module 06](../06-mcp-tools/README.md), Part 2:
 
    ```bash
    python shared/mcp-servers/retail-remedy-ops/src/server.py
    ```
 
-- [ ] Review the agent bundle in `src/agent/` — open `main.py` to see the tools the hosted agent exposes: the live `retail_remedy_ops` **MCP server** (over `MCP_SERVER_URL`) plus the Foundry hosted **web search** and **code interpreter** tools, matching the `acl-remedy-advisor` Prompt Agent from Module 06.
+- [ ] Review the agent bundle in `src/agent/` — open `main.py` to see the tools the hosted agent exposes: the live `retail_remedy_ops` **MCP server** (over `RETAIL_REMEDY_OPS_MCP_SERVER_URL`) plus the Foundry hosted **web search** and **code interpreter** tools, matching the `acl-remedy-advisor` Prompt Agent from Module 06.
 
 ### Part 1 — deploy from a container image (skip for now)
 
@@ -155,7 +155,7 @@ agent is scoped to your own project, so attendees never overwrite each other.
 
 ### Part 2 — deploy from source code (preview, recommended)
 
-You complete [`src/starter.py`](https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/09-hosted-agents/src/starter.py) to deploy the `src/agent/` bundle as a hosted agent. The starter already zips the bundle into `zip_bytes` / `zip_sha256`, opens an `AIProjectClient`, reads `MCP_SERVER_URL` / `MCP_SERVER_LABEL`, and imports the two shared deploy helpers — you fill in **three TODOs** inside the `with AIProjectClient(...) as client:` block. The code for each is below so you can complete the lab without leaving this page; the full reference is in [`solution/deploy_hosted_agent_code.py`](https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_code.py).
+You complete [`src/starter.py`](https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/09-hosted-agents/src/starter.py) to deploy the `src/agent/` bundle as a hosted agent. The starter already zips the bundle into `zip_bytes` / `zip_sha256`, opens an `AIProjectClient`, reads `RETAIL_REMEDY_OPS_MCP_SERVER_URL` / `RETAIL_REMEDY_OPS_MCP_SERVER_LABEL`, and imports the two shared deploy helpers — you fill in **three TODOs** inside the `with AIProjectClient(...) as client:` block. The code for each is below so you can complete the lab without leaving this page; the full reference is in [`solution/deploy_hosted_agent_code.py`](https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_code.py).
 
 - [ ] **TODO 1 — describe the hosted agent.** Build a `CreateAgentVersionFromCodeContent` that hands Foundry your zipped bundle and tells it how to build and run the image — 1 vCPU, 2 GiB of memory, a remote Python 3.13 build, and the **Responses** protocol:
 
@@ -168,8 +168,8 @@ You complete [`src/starter.py`](https://github.com/PlagueHO/foundry-agentic-work
                memory=MEMORY,
                environment_variables={
                    'AZURE_AI_MODEL_DEPLOYMENT_NAME': model_deployment,
-                   'MCP_SERVER_URL': mcp_server_url,
-                   'MCP_SERVER_LABEL': mcp_server_label,
+                   'RETAIL_REMEDY_OPS_MCP_SERVER_URL': mcp_server_url,
+                   'RETAIL_REMEDY_OPS_MCP_SERVER_LABEL': mcp_server_label,
                },
                code_configuration=CodeConfiguration(
                    runtime=RUNTIME,
@@ -286,7 +286,7 @@ serverless runtime.
 
 - **Authentication fails** — the scripts use `DefaultAzureCredential`, which relies on your Azure CLI session. Run `az login` in the terminal to re-authenticate, then retry.
 - **The agent identity cannot call the model (403 at runtime)** — the Foundry User role can take a minute to propagate after deployment. Wait and retry the invoke. The deploy script already retries the assignment while the new identity propagates to Microsoft Entra ID.
-- **The hosted agent cannot reach the MCP server / retail tools fail at runtime** — the agent calls the public `MCP_SERVER_URL` from inside Foundry's managed compute. Confirm the Module 06 MCP server is still running and the dev tunnel is **publicly** exposed, and that `MCP_SERVER_URL` (ending in `/mcp`) was set **before** you deployed — the URL is baked into the agent at deploy time, so if the tunnel changed you must **redeploy**. If the server is reachable from your laptop but the agent still cannot call it, the hosted runtime may be blocking outbound egress to the tunnel; report it to your facilitator.
+- **The hosted agent cannot reach the MCP server / retail tools fail at runtime** — the agent calls the public `RETAIL_REMEDY_OPS_MCP_SERVER_URL` from inside Foundry's managed compute. Confirm the Module 06 MCP server is still running and the dev tunnel is **publicly** exposed, and that `RETAIL_REMEDY_OPS_MCP_SERVER_URL` (ending in `/mcp`) was set **before** you deployed — the URL is baked into the agent at deploy time, so if the tunnel changed you must **redeploy**. If the server is reachable from your laptop but the agent still cannot call it, the hosted runtime may be blocking outbound egress to the tunnel; report it to your facilitator.
 - **`PrincipalNotFound` or a role-assignment error during deploy** — confirm your project was provisioned with the constrained Role Based Access Control Administrator role (Part 1 and Part 2 require it). Ask your facilitator if the role is missing.
 - **`docker: command not found` (Part 1)** — Docker is not available in your environment. Use Part 2 (source-code deploy) instead.
 - **The version never becomes active** — open the agent in the Foundry portal and check the version's build logs. A failed remote build usually means a dependency in `src/agent/requirements.txt` could not be installed.

@@ -354,6 +354,24 @@
                 "panel": "shared"
             }
         },
+        {
+            "label": "lab: seed passenger-rights index",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["scripts/seed-passenger-rights-index.py"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "database",
+                "color": "terminal.ansiMagenta"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
 
         {
             "label": "introduction-foundry-agent-service: lab 04- create agent (solution)",
@@ -430,6 +448,27 @@
             "icon": {
                 "id": "plug",
                 "color": "terminal.ansiCyan"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+            }
+        },
+        {
+            "label": "mcp: run flight-ops server",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "shared/mcp-servers/flight-ops/src/server.py"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "isBackground": true,
+            "icon": {
+                "id": "plug",
+                "color": "terminal.ansiBlue"
             },
             "presentation": {
                 "reveal": "always",
@@ -525,6 +564,204 @@
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "agent-framework-dotnet: module 02- first agent (solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/02-first-agent/solution"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "agent-framework-dotnet: module 03- multi-turn (solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/03-multi-turn/solution"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "agent-framework-dotnet: module 04- function tools (solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/04-function-tools/solution"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "agent-framework-dotnet: module 05- mcp tools (solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/05-mcp-tools/solution"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "agent-framework-dotnet: module 06- knowledge bases (solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/06-knowledge-bases/solution"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "agent-framework-dotnet: module 07- memory (solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/07-memory/solution"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "agent-framework-dotnet: module 08- chat history (solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/08-chat-history/solution"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "agent-framework-dotnet: module 09- multi-agent (solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/09-multi-agent/solution"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "agent-framework-dotnet: module 10- hosted agents (solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/10-hosted-agents/solution"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "agent-framework-dotnet: module 11- agent auth (solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/11-agent-auth/solution"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "agent-framework-dotnet: module 12- observability (solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/12-observability/solution"
             },
             "problemMatcher": [],
             "icon": {

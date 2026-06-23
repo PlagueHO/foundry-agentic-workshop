@@ -1,7 +1,7 @@
 """Build and deploy the Attendee Onboarding Portal image and configure EasyAuth.
 
 The shared Azure Container Registry uses ABAC repository permissions. This script
-follows the same identity-based flow used by deploy-mcp-server.py:
+follows the same identity-based flow used by deploy-retail-remedy-ops-mcp-server.py:
 
   1. az acr login                     (token exchange using the signed-in identity)
   2. docker build                     (build the portal image locally)
@@ -164,6 +164,75 @@ def _reset_credential(app_id: str) -> str | None:
         return None
 
 
+def _ensure_storage_blob_reader(
+    resource_group: str,
+    container_app_name: str,
+    storage_account_name: str,
+    subscription_id: str,
+) -> int:
+    """Ensure the portal managed identity has Storage Blob Data Reader on the storage account.
+
+    The Bicep template grants this role, but only when ``azureContainerAppsDeploy=true``
+    at provision time. Running the deploy script independently (without re-running
+    ``azd provision``) can leave the assignment absent. This step is idempotent.
+    """
+    ca_data = _run_json([
+        _AZ_CMD, 'containerapp', 'show',
+        '--name', container_app_name,
+        '--resource-group', resource_group,
+        '--output', 'json',
+    ])
+    if not ca_data or not isinstance(ca_data, dict):
+        print(f'{CROSS} Could not retrieve Container App details for role check.', file=sys.stderr)
+        return 1
+
+    user_identities: dict = (
+        ca_data.get('identity') or {}
+    ).get('userAssignedIdentities') or {}
+    if not user_identities:
+        print(
+            f'{CROSS} No user-assigned identities found on Container App '
+            f'{container_app_name!r}.',
+            file=sys.stderr,
+        )
+        return 1
+
+    identity_resource_id = next(iter(user_identities))
+    principal_id: str = user_identities[identity_resource_id].get('principalId', '')
+    if not principal_id:
+        print(
+            f'{CROSS} Could not read principalId from identity {identity_resource_id!r}.',
+            file=sys.stderr,
+        )
+        return 1
+
+    scope = (
+        f'/subscriptions/{subscription_id}/resourceGroups/{resource_group}'
+        f'/providers/Microsoft.Storage/storageAccounts/{storage_account_name}'
+    )
+    # Well-known GUID for the built-in "Storage Blob Data Reader" role.
+    _STORAGE_BLOB_DATA_READER = '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+
+    existing = _run_json([
+        _AZ_CMD, 'role', 'assignment', 'list',
+        '--assignee', principal_id,
+        '--role', _STORAGE_BLOB_DATA_READER,
+        '--scope', scope,
+        '--output', 'json',
+    ])
+    if existing and isinstance(existing, list) and existing:
+        print(f'{TICK} Storage Blob Data Reader already assigned to portal managed identity.')
+        return 0
+
+    print('Assigning Storage Blob Data Reader to portal managed identity...')
+    return _run([
+        _AZ_CMD, 'role', 'assignment', 'create',
+        '--assignee', principal_id,
+        '--role', _STORAGE_BLOB_DATA_READER,
+        '--scope', scope,
+    ])
+
+
 def _configure_easyauth(
     resource_group: str,
     container_app_name: str,
@@ -222,9 +291,11 @@ def main() -> int:  # pylint: disable=too-many-return-statements
     registry_name = env.get('AZURE_CONTAINER_REGISTRY_NAME', '')
     login_server = env.get('AZURE_CONTAINER_REGISTRY_ENDPOINT', '')
     resource_group = env.get('AZURE_RESOURCE_GROUP', '')
+    subscription_id = env.get('AZURE_SUBSCRIPTION_ID', '')
     container_app_name = env.get('AZURE_ATTENDEE_PORTAL_CONTAINER_APP_NAME', '')
     portal_url = env.get('ATTENDEE_PORTAL_URL', '')
     tenant_id = env.get('AZURE_TENANT_ID', '')
+    storage_account_name = env.get('AZURE_STORAGE_ACCOUNT_NAME', '')
 
     if not container_app_name:
         return _fail(
@@ -236,6 +307,10 @@ def main() -> int:  # pylint: disable=too-many-return-statements
         return _fail('Missing required registry or resource group values in the azd environment.')
     if not tenant_id:
         return _fail('Missing AZURE_TENANT_ID in the azd environment.')
+    if not subscription_id:
+        return _fail('Missing AZURE_SUBSCRIPTION_ID in the azd environment.')
+    if not storage_account_name:
+        return _fail('Missing AZURE_STORAGE_ACCOUNT_NAME in the azd environment.')
 
     tag = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
     image = f'{login_server}/attendee-portal:{tag}'
@@ -263,7 +338,14 @@ def main() -> int:  # pylint: disable=too-many-return-statements
         if _run(step) != 0:
             return _fail(f'Command failed: {" ".join(step)}')
 
-    print(f'{TICK} Portal image deployed. Configuring EasyAuth...')
+    print(f'{TICK} Portal image deployed. Ensuring Storage Blob Data Reader role...')
+
+    if _ensure_storage_blob_reader(
+        resource_group, container_app_name, storage_account_name, subscription_id,
+    ) != 0:
+        return _fail('Failed to ensure Storage Blob Data Reader role for portal managed identity.')
+
+    print(f'{TICK} Storage role confirmed. Configuring EasyAuth...')
 
     # Entra app registration for EasyAuth.
     app_display_name = f'{container_app_name}-easyauth'

@@ -199,12 +199,14 @@ var cosmosDbAccountName = toLower(replace('${abbrs.cosmosDBAccounts}${environmen
 var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
 var containerRegistryName = take(toLower(replace('${abbrs.containerRegistryRegistries}${environmentName}', '-', '')), 50)
 var containerAppsEnvironmentName = '${abbrs.appManagedEnvironments}${environmentName}'
-var mcpServerContainerAppName = take(toLower('${abbrs.appContainerApps}mcp-${environmentName}'), 32)
-var mcpServerIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}mcp-${environmentName}'
+var retailRemedyOpsMcpServerContainerAppName = take(toLower('${abbrs.appContainerApps}retail-remedy-ops-${environmentName}'), 32)
+var retailRemedyOpsMcpServerIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}retail-remedy-ops-${environmentName}'
+var flightOpsMcpServerContainerAppName = take(toLower('${abbrs.appContainerApps}flight-ops-${environmentName}'), 32)
+var flightOpsMcpServerIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}flight-ops-${environmentName}'
 var attendeePortalContainerAppName = take(toLower('${abbrs.appContainerApps}portal-${environmentName}'), 32)
 var attendeePortalIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}portal-${environmentName}'
 
-// Principal that runs scripts/deploy-mcp-server.py and therefore needs push access to the shared
+// Principal that runs scripts/deploy-retail-remedy-ops-mcp-server.py and therefore needs push access to the shared
 // registry. Prefer an explicit AZURE_PRINCIPAL_ID; otherwise fall back to the principal running
 // the deployment (the signed-in user for an interactive `azd provision`).
 var containerAppsDeployerPrincipalId = !empty(principalId) ? principalId : deployer().objectId
@@ -592,6 +594,14 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.1' = {
     managedIdentities: {
       systemAssigned: true
     }
+    // Allow access from all networks so the Attendee Portal (Container Apps) and
+    // the onboarding upload scripts can reach blob storage via managed identity.
+    // AVM storage-account:0.32.1 defaults networkAcls.defaultAction to Deny, which
+    // blocks all traffic including OAuth-authenticated Container Apps requests.
+    networkAcls: {
+      defaultAction: 'Allow'
+      bypass: 'AzureServices'
+    }
     sasExpirationPeriod: '180.00:00:00'
     skuName: 'Standard_LRS'
     tags: tags
@@ -713,11 +723,11 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.12.1' 
 // ---------- AZURE CONTAINER APPS ----------
 // Shared Azure Container Apps hosting for workshop services. Enabled by default and gated behind
 // azureContainerAppsDeploy. The managed environment is created once and reused by every service
-// Container App. The Module 06 Retail Remedy Operations MCP server is published here so the
-// cloud-hosted Foundry agent can always reach it over HTTPS when a local dev tunnel is unreachable.
-// Future labs can add more services (MCP or otherwise) into the same environment.
+// Container App. The Module 06 Retail Remedy Operations MCP server and the agent-framework-dotnet
+// Flight Operations MCP server are published here so cloud-hosted agents can always reach them
+// over HTTPS when a local dev tunnel is unreachable.
 //
-// Container images are built and pushed by scripts/deploy-mcp-server.py (the shared registry uses
+// Container images are built and pushed by scripts/deploy-retail-remedy-ops-mcp-server.py (the shared registry uses
 // AbacRepositoryPermissions mode, which azd's image-push path cannot authenticate against). Bicep
 // provisions each app with a public placeholder image first so provisioning succeeds before the
 // real image exists.
@@ -736,20 +746,43 @@ module containerAppsEnvironment './core/host/container-apps-environment.bicep' =
 }
 
 // Module 06 Retail Remedy Operations MCP server, published into the shared environment above.
-module mcpServer './core/host/mcp-server.bicep' = if (azureContainerAppsDeploy) {
-  name: 'mcp-server-deployment-${deploymentId}'
+module retailRemedyOpsMcpServer './core/host/mcp-server.bicep' = if (azureContainerAppsDeploy) {
+  name: 'retail-remedy-ops-mcp-server-deployment-${deploymentId}'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
     resourceGroup
   ]
   params: {
-    containerAppName: mcpServerContainerAppName
+    containerAppName: retailRemedyOpsMcpServerContainerAppName
     #disable-next-line BCP318 // containerAppsEnvironment is gated by the same azureContainerAppsDeploy condition as this module
     containerAppsEnvironmentResourceId: containerAppsEnvironment.outputs.resourceId
-    userAssignedIdentityName: mcpServerIdentityName
+    userAssignedIdentityName: retailRemedyOpsMcpServerIdentityName
     containerRegistryLoginServer: containerRegistry.outputs.loginServer
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     location: location
     tags: tags
+    portEnvVarName: 'RETAIL_REMEDY_OPS_MCP_SERVER_PORT'
+  }
+}
+
+// Module agent-framework-dotnet Flight Operations MCP server, published into the shared environment.
+// Provides flight-status, rebooking-options, and compensation-claim tools used by the .NET lab.
+module flightOpsMcpServer './core/host/mcp-server.bicep' = if (azureContainerAppsDeploy) {
+  name: 'flight-ops-mcp-server-deployment-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [
+    resourceGroup
+  ]
+  params: {
+    containerAppName: flightOpsMcpServerContainerAppName
+    #disable-next-line BCP318 // containerAppsEnvironment is gated by the same azureContainerAppsDeploy condition as this module
+    containerAppsEnvironmentResourceId: containerAppsEnvironment.outputs.resourceId
+    userAssignedIdentityName: flightOpsMcpServerIdentityName
+    containerRegistryLoginServer: containerRegistry.outputs.loginServer
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    location: location
+    tags: tags
+    portEnvVarName: 'PORT'
   }
 }
 
@@ -770,6 +803,7 @@ module attendeePortal './core/host/attendee-portal.bicep' = if (azureContainerAp
     userAssignedIdentityName: attendeePortalIdentityName
     containerRegistryLoginServer: containerRegistry.outputs.loginServer
     storageAccountName: storageAccounName
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     location: location
     tags: tags
   }
@@ -778,7 +812,7 @@ module attendeePortal './core/host/attendee-portal.bicep' = if (azureContainerAp
 // ACR role assignments for the Container Apps services. Each service's managed identity needs the
 // ABAC-enabled 'Container Registry Repository Reader' role to pull its image (the shared registry
 // uses AbacRepositoryPermissions mode, so legacy AcrPull is not honored). The deploying principal
-// needs 'Container Registry Repository Contributor' so scripts/deploy-mcp-server.py and
+// needs 'Container Registry Repository Contributor' so scripts/deploy-retail-remedy-ops-mcp-server.py and
 // scripts/deploy-attendee-portal.py can push built images to the shared registry.
 module containerAppsAcrRoleAssignments './core/security/role_acr.bicep' = if (azureContainerAppsDeploy) {
   name: 'container-apps-acr-roles-${deploymentId}'
@@ -792,8 +826,14 @@ module containerAppsAcrRoleAssignments './core/security/role_acr.bicep' = if (az
       {
         roleDefinitionIdOrName: 'Container Registry Repository Reader'
         principalType: 'ServicePrincipal'
-        #disable-next-line BCP318 // mcpServer is gated by the same azureContainerAppsDeploy condition as this module
-        principalId: mcpServer.outputs.userAssignedIdentityPrincipalId
+        #disable-next-line BCP318 // retailRemedyOpsMcpServer is gated by the same azureContainerAppsDeploy condition as this module
+        principalId: retailRemedyOpsMcpServer.outputs.userAssignedIdentityPrincipalId
+      }
+      {
+        roleDefinitionIdOrName: 'Container Registry Repository Reader'
+        principalType: 'ServicePrincipal'
+        #disable-next-line BCP318 // flightOpsMcpServer is gated by the same azureContainerAppsDeploy condition as this module
+        principalId: flightOpsMcpServer.outputs.userAssignedIdentityPrincipalId
       }
       {
         roleDefinitionIdOrName: 'Container Registry Repository Reader'
@@ -1287,13 +1327,21 @@ output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.logi
 @description('Whether the shared Azure Container Apps environment and its services were deployed.')
 output AZURE_CONTAINER_APPS_DEPLOY_ENABLED bool = azureContainerAppsDeploy
 
-@description('The name of the Module 06 MCP server Container App. Empty when Container Apps deployment is disabled. Consumed by scripts/deploy-mcp-server.py.')
-#disable-next-line BCP318 // mcpServer output is only dereferenced when azureContainerAppsDeploy is true
-output AZURE_MCP_SERVER_CONTAINER_APP_NAME string = azureContainerAppsDeploy ? mcpServer.outputs.containerAppName : ''
+@description('The name of the Module 06 Retail Remedy Operations MCP server Container App. Empty when Container Apps deployment is disabled. Consumed by scripts/deploy-retail-remedy-ops-mcp-server.py.')
+#disable-next-line BCP318 // retailRemedyOpsMcpServer output is only dereferenced when azureContainerAppsDeploy is true
+output AZURE_RETAIL_REMEDY_OPS_MCP_SERVER_CONTAINER_APP_NAME string = azureContainerAppsDeploy ? retailRemedyOpsMcpServer.outputs.containerAppName : ''
 
-@description('The public HTTPS MCP endpoint (including the /mcp path) for the deployed MCP server. Empty when Container Apps deployment is disabled.')
-#disable-next-line BCP318 // mcpServer output is only dereferenced when azureContainerAppsDeploy is true
-output MCP_SERVER_URL string = azureContainerAppsDeploy ? mcpServer.outputs.mcpEndpoint : ''
+@description('The public HTTPS Retail Remedy Operations MCP endpoint (including the /mcp path) for the deployed server. Empty when Container Apps deployment is disabled.')
+#disable-next-line BCP318 // retailRemedyOpsMcpServer output is only dereferenced when azureContainerAppsDeploy is true
+output RETAIL_REMEDY_OPS_MCP_SERVER_URL string = azureContainerAppsDeploy ? retailRemedyOpsMcpServer.outputs.mcpEndpoint : ''
+
+@description('The name of the Flight Operations MCP server Container App. Empty when Container Apps deployment is disabled. Consumed by scripts/deploy-flight-ops-mcp-server.py.')
+#disable-next-line BCP318 // flightOpsMcpServer output is only dereferenced when azureContainerAppsDeploy is true
+output AZURE_FLIGHT_OPS_MCP_SERVER_CONTAINER_APP_NAME string = azureContainerAppsDeploy ? flightOpsMcpServer.outputs.containerAppName : ''
+
+@description('The public HTTPS Flight Operations MCP endpoint (including the /mcp path) for the deployed server. Empty when Container Apps deployment is disabled.')
+#disable-next-line BCP318 // flightOpsMcpServer output is only dereferenced when azureContainerAppsDeploy is true
+output FLIGHT_OPS_MCP_SERVER_URL string = azureContainerAppsDeploy ? flightOpsMcpServer.outputs.mcpEndpoint : ''
 
 @description('The name of the Attendee Onboarding Portal Container App. Empty when Container Apps deployment is disabled. Consumed by scripts/deploy-attendee-portal.py.')
 #disable-next-line BCP318 // attendeePortal output is only dereferenced when azureContainerAppsDeploy is true

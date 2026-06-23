@@ -12,7 +12,7 @@ Your organizer provisions the shared Foundry environment and assigns you a proje
 you start, you should have:
 
 - Your `FOUNDRY_PROJECT_NAME` (for example, `attendee-01`).
-- The shared values: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_OPENAI_ENDPOINT`, `AZURE_SEARCH_SERVICE_NAME`, and `MCP_SERVER_URL` (the shared MCP server used from Module 06 onward).
+- The shared values: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_OPENAI_ENDPOINT`, `AZURE_SEARCH_SERVICE_NAME`, and `RETAIL_REMEDY_OPS_MCP_SERVER_URL` (the shared MCP server used from Module 06 onward).
 
 With the default `foundry-user` role you can build agents and use the models your organizer
 pre-deployed. You do not deploy models yourself.
@@ -32,6 +32,7 @@ cd foundry-agentic-workshop
 1. Install the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. Install the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
 1. *(Optional)* Install [Docker](https://www.docker.com/products/docker-desktop/). Docker is required only for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which deploys a hosted agent from a container image. Every other module, including Module 09 Part 2 (deploy from source code), runs without it.
+1. *(Optional)* Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0). Required only for the [Agent Framework for .NET](../labs/agent-framework-dotnet/) lab series. All Python-based labs (`introduction-foundry-agent-service`) run without it.
 1. Create a Python virtual environment in the repository root:
 
    ```bash
@@ -75,7 +76,7 @@ cd foundry-agentic-workshop
    - `FOUNDRY_PROJECT_ENDPOINT` — derived as `https://<FOUNDRY_RESOURCE_NAME>.services.ai.azure.com/api/projects/<FOUNDRY_PROJECT_NAME>`. Your organizer's onboarding file contains the exact value.
    - `AZURE_OPENAI_ENDPOINT` — derived as `https://<FOUNDRY_RESOURCE_NAME>.openai.azure.com/openai/v1`. Your organizer's onboarding file contains the exact value.
    - `AZURE_SEARCH_SERVICE_NAME`
-   - `MCP_SERVER_URL` — the shared MCP server URL (ending in `/mcp`) used from [Module 06](./labs/introduction-foundry-agent-service) onward. See [MCP server for Module 06](#mcp-server-for-module-06).
+   - `RETAIL_REMEDY_OPS_MCP_SERVER_URL` — the shared MCP server URL (ending in `/mcp`) used from [Module 06](./labs/introduction-foundry-agent-service) onward. See [MCP server for Module 06](#mcp-server-for-module-06).
 1. Leave the attendee RBAC and `AZURE_SEARCH_ADMIN_KEY` values blank; those are for
    organizers.
 
@@ -129,10 +130,10 @@ From [Module 06](./labs/introduction-foundry-agent-service) onward, your agent c
 
 ### Use the shared MCP server (default)
 
-Your organizer deploys a shared MCP server to **Azure Container Apps** and includes its URL in your onboarding file as `MCP_SERVER_URL`. Confirm that value is set in your `.env`:
+Your organizer deploys a shared MCP server to **Azure Container Apps** and includes its URL in your onboarding file as `RETAIL_REMEDY_OPS_MCP_SERVER_URL`. Confirm that value is set in your `.env`:
 
 ```env
-MCP_SERVER_URL=https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp
+RETAIL_REMEDY_OPS_MCP_SERVER_URL=https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp
 ```
 
 That is all you need — the cloud-hosted agent reaches the shared server directly, so you do not run anything locally.
@@ -148,7 +149,7 @@ If your organizer did not deploy the shared server, or you want to run and modif
    ```
 
 1. In the VS Code **PORTS** panel, forward port `8080` and set its **Visibility** to **Public**. The Azure-hosted agent runs in the cloud and cannot reach `localhost`, so a private port returns a 403.
-1. Copy the forwarded address, append `/mcp`, and set `MCP_SERVER_URL` in your `.env` to the full URL. Keep the server running and the port **Public** while you work through Modules 06, 08, and 10.
+1. Copy the forwarded address, append `/mcp`, and set `RETAIL_REMEDY_OPS_MCP_SERVER_URL` in your `.env` to the full URL. Keep the server running and the port **Public** while you work through Modules 06, 08, and 10.
 
 > [!IMPORTANT]
 > Some networks block the cloud-hosted agent from reaching a `devtunnels.ms` tunnel even when the port is **Public**, while GitHub Codespaces port forwarding works. If MCP tool calls fail intermittently, use the shared Azure Container Apps server instead. Module 06 covers both paths in detail.

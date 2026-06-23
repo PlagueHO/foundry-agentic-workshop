@@ -32,6 +32,9 @@ param containerImage string = 'mcr.microsoft.com/k8se/quickstart:latest'
 @description('Optional. Port the portal listens on inside the container.')
 param targetPort int = 8000
 
+@description('Required. Resource ID of the Log Analytics workspace to send diagnostic logs and metrics to.')
+param logAnalyticsWorkspaceResourceId string
+
 // User-assigned managed identity used by the Container App to pull the image from the shared
 // Container Registry and to authenticate against blob storage with DefaultAzureCredential.
 // The caller (main.bicep) assigns the matching ACR Reader and Storage Blob Data Reader roles.
@@ -59,6 +62,11 @@ module containerApp 'br/public:avm/res/app/container-app:0.22.1' = {
     ingressExternal: true
     ingressTargetPort: targetPort
     ingressAllowInsecure: false
+    diagnosticSettings: [
+      {
+        workspaceResourceId: logAnalyticsWorkspaceResourceId
+      }
+    ]
     scaleSettings: {
       // Zero minimum allows provisioning to succeed with the placeholder image (which
       // listens on port 80, not 8000). The Container App scales up from zero on the first

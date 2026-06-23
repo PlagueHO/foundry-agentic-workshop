@@ -20,7 +20,7 @@ Before running:
 
 - Start the MCP server (`server.py`) and expose port 8080 as a public tunnel, or
   use the shared Azure Container Apps server (see Module 06 README, Part 2).
-- Set `MCP_SERVER_URL` in `shared/.env` to the public URL including the `/mcp` suffix.
+- Set `RETAIL_REMEDY_OPS_MCP_SERVER_URL` in `shared/.env` to the public URL including the `/mcp` suffix.
 
 ```bash
 python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py

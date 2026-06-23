@@ -11,9 +11,13 @@ const docsLabsRoot = path.join(docsRoot, 'labs')
 const labsSidebarPath = path.join(docsRoot, '.vitepress', 'labs-sidebar.ts')
 
 const STEP_DIR_PATTERN = /^\d{2}-/
-const TRACK_ORDER = ['introduction-foundry-agent-service']
+const TRACK_ORDER = [
+  'introduction-foundry-agent-service',
+  'agent-framework-dotnet',
+]
 const TRACK_TITLES = {
   'introduction-foundry-agent-service': 'Introduction to Foundry Agent Service',
+  'agent-framework-dotnet': 'Introduction to Microsoft Agent Framework (.NET)',
 }
 
 async function directoryExists(targetPath) {

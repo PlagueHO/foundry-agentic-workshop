@@ -1,5 +1,5 @@
 ---
-description: "Test lab module 10 (Build and consume a Foundry Toolbox) end-to-end from a local terminal and the Foundry portal, verifying every step carefully. Requires a provisioned lab environment, the repository checked out locally, a configured .env with FOUNDRY_PROJECT_ENDPOINT and MCP_SERVER_URL, and an authenticated Azure CLI session signed in as the lab attendee. Opens the ai.azure.com portal using open_browser_page."
+description: "Test lab module 10 (Build and consume a Foundry Toolbox) end-to-end from a local terminal and the Foundry portal, verifying every step carefully. Requires a provisioned lab environment, the repository checked out locally, a configured .env with FOUNDRY_PROJECT_ENDPOINT and RETAIL_REMEDY_OPS_MCP_SERVER_URL, and an authenticated Azure CLI session signed in as the lab attendee. Opens the ai.azure.com portal using open_browser_page."
 ---
 
 ## Inputs
@@ -59,11 +59,11 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm `.env` exists and the required toolbox values are populated:
 
    ```bash
-   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|MCP_SERVER_URL|TOOLBOX_NAME'
+   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|RETAIL_REMEDY_OPS_MCP_SERVER_URL|TOOLBOX_NAME'
    ```
 
 1. Confirm `FOUNDRY_PROJECT_ENDPOINT` is set to a non-empty value of the form `https://<resource>.services.ai.azure.com/api/projects/<project>`.
-1. Confirm `MCP_SERVER_URL` is set to a non-empty public URL ending in `/mcp` (the Module 06 MCP server endpoint).
+1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set to a non-empty public URL ending in `/mcp` (the Module 06 MCP server endpoint).
 1. Confirm `TOOLBOX_NAME` is either unset (defaults to `acl-remedy-toolbox`) or set to `acl-remedy-toolbox`.
 
    **Check:** If `.env` does not exist, confirm with the user that Module 01 has been completed, then copy `shared/.env.example` to `.env` and populate the values from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`.
@@ -72,14 +72,14 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It must be running and reachable on its public URL for toolbox creation and the consumer script to succeed.
 
-1. Confirm `MCP_SERVER_URL` points to a **public** URL (ending in `/mcp`), not a `localhost` address — the toolbox endpoint runs in Foundry's managed infrastructure and cannot reach `localhost`.
+1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` points to a **public** URL (ending in `/mcp`), not a `localhost` address — the toolbox endpoint runs in Foundry's managed infrastructure and cannot reach `localhost`.
 1. Confirm the public endpoint responds:
 
    ```bash
-   curl -i -X POST "$MCP_SERVER_URL" -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+   curl -i -X POST "$RETAIL_REMEDY_OPS_MCP_SERVER_URL" -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
    ```
 
-   **Check:** Expect an HTTP `200` with a JSON-RPC response listing the `retail_remedy_ops` tools: `lookup_purchase`, `get_product_profile`, `search_store_policy`, `find_replacement_options`, `draft_remedy_summary`, `create_remedy_case`. If the request fails or times out, restart the Module 06 server, re-expose the dev tunnel publicly, and update `MCP_SERVER_URL` before continuing.
+   **Check:** Expect an HTTP `200` with a JSON-RPC response listing the `retail_remedy_ops` tools: `lookup_purchase`, `get_product_profile`, `search_store_policy`, `find_replacement_options`, `draft_remedy_summary`, `create_remedy_case`. If the request fails or times out, restart the Module 06 server, re-expose the dev tunnel publicly, and update `RETAIL_REMEDY_OPS_MCP_SERVER_URL` before continuing.
 
 ### Check 5 — Confirm Azure authentication
 
@@ -103,9 +103,9 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
 ## Part 1 — Confirm the MCP server URL
 
-### Step 1 — Verify MCP_SERVER_URL in .env
+### Step 1 — Verify RETAIL_REMEDY_OPS_MCP_SERVER_URL in .env
 
-1. Open the `.env` file and confirm `MCP_SERVER_URL` is set to the shared server URL ending in `/mcp`. For example:
+1. Open the `.env` file and confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set to the shared server URL ending in `/mcp`. For example:
 
    ```text
    https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp
@@ -113,7 +113,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
 1. Save this URL — it is pasted into the toolbox configuration in Part 2.
 
-   > **Note:** If you are running your own MCP server instead of the shared one, confirm it is still running with port 8080 set to **Public** and use its tunnel URL as your `MCP_SERVER_URL`. See Module 06, Part 1.
+   > **Note:** If you are running your own MCP server instead of the shared one, confirm it is still running with port 8080 set to **Public** and use its tunnel URL as your `RETAIL_REMEDY_OPS_MCP_SERVER_URL`. See Module 06, Part 1.
 
 ---
 
@@ -164,14 +164,14 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
    | Field | Value |
    |---|---|
    | Label / Server name | `retail_remedy_ops` |
-   | Server URL | Your `MCP_SERVER_URL` (ending in `/mcp`) |
+   | Server URL | Your `RETAIL_REMEDY_OPS_MCP_SERVER_URL` (ending in `/mcp`) |
    | Authentication | None / Anonymous |
    | Description | `Retail Remedy Operations tools for looking up purchases, product profiles, store policies, replacement options, and creating remedy cases.` |
 
 1. Confirm the six MCP tools are discovered from the server: `lookup_purchase`, `get_product_profile`, `search_store_policy`, `find_replacement_options`, `draft_remedy_summary`, `create_remedy_case`.
 1. Take a screenshot showing the MCP tool added with its discovered tools listed.
 
-   **Check:** If the MCP tools are not discovered, confirm the MCP server is still running and `MCP_SERVER_URL` is publicly accessible. Restart the server and re-expose the tunnel if needed, then retry tool discovery.
+   **Check:** If the MCP tools are not discovered, confirm the MCP server is still running and `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is publicly accessible. Restart the server and re-expose the tunnel if needed, then retry tool discovery.
 
 ### Step 6 — Add the Code Interpreter tool
 
@@ -209,7 +209,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
 #### Code fallback — Create the toolbox with Python
 
-> If the portal does not expose Toolboxes in your region, or you skipped the portal steps above, run the fallback script to create the toolbox through the Python SDK. `MCP_SERVER_URL` must be set in your `.env` file.
+> If the portal does not expose Toolboxes in your region, or you skipped the portal steps above, run the fallback script to create the toolbox through the Python SDK. `RETAIL_REMEDY_OPS_MCP_SERVER_URL` must be set in your `.env` file.
 >
 > ```bash
 > python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py

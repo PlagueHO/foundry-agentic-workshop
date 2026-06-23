@@ -48,13 +48,19 @@ ADDITIONAL_ENV_VARS = [
     'TOOLBOX_NAME',
     'AZURE_CONTAINER_REGISTRY_NAME',
     'AZURE_CONTAINER_REGISTRY_ENDPOINT',
-    'MCP_SERVER_PORT',
-    'MCP_SERVER_URL',
-    'MCP_SERVER_LABEL',
+    'RETAIL_REMEDY_OPS_MCP_SERVER_PORT',
+    'RETAIL_REMEDY_OPS_MCP_SERVER_URL',
+    'RETAIL_REMEDY_OPS_MCP_SERVER_LABEL',
+    'FLIGHT_OPS_MCP_SERVER_URL',
+    'FLIGHT_OPS_MCP_SERVER_LABEL',
+    'AZURE_SEARCH_PASSENGER_RIGHTS_INDEX_NAME',
 ]
 
 # Populated by check() as failures accumulate.
 _failures: list[str] = []
+
+# Populated by check_optional() for per-lab optional check results.
+_opt_failures: list[str] = []
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -112,23 +118,63 @@ def check(name: str, passed: bool, detail: str = '') -> bool:
     return passed
 
 
+def check_optional(name: str, passed: bool, detail: str = '') -> bool:
+    """Print a check result for an optional lab requirement.
+
+    Failures are accumulated in *_opt_failures* and shown in the summary as
+    warnings, but do not cause the health check to exit with a non-zero code.
+    """
+    symbol = TICK if passed else WARN
+    line = f'  {symbol}  {name}'
+    if detail:
+        line += f'  ({detail})'
+    if not passed:
+        _opt_failures.append(name)
+    print(line)
+    return passed
+
+
 def _section(title: str) -> None:
     print(f'\n{title}')
     print('\u2500' * len(title))
 
 
+def _banner(title: str) -> None:
+    """Print a prominent banner to separate major check groups."""
+    width = max(len(title) + 4, 52)
+    bar = '\u2550' * width
+    print(f'\n{bar}')
+    print(f'  {title}')
+    print(bar)
+
+
 def _print_summary() -> int:
     print()
+    exit_code = 0
+
     if _failures:
-        print(f'{CROSS}  {len(_failures)} check(s) failed:')
+        print(f'{CROSS}  {len(_failures)} core check(s) failed:')
         for name in _failures:
             print(f'     \u2022 {name}')
         print()
         print('Resolve the failures above before starting the labs.')
         print('See the Attendee Guide for troubleshooting steps.')
-        return 1
-    print(f'{TICK}  All checks passed. You are ready to start the labs.')
-    return 0
+        exit_code = 1
+    else:
+        print(f'{TICK}  All core checks passed.')
+
+    if _opt_failures:
+        print()
+        print(f'{WARN}  {len(_opt_failures)} optional lab check(s) did not pass:')
+        for name in _opt_failures:
+            print(f'     \u2022 {name}')
+        print()
+        print('These are only required for the specific lab(s) listed above.')
+        print('They do not block core lab progress.')
+    elif not _failures:
+        print(f'{TICK}  All optional lab checks passed. You are ready for all labs.')
+
+    return exit_code
 
 
 # ── Check groups ───────────────────────────────────────────────────────────────
@@ -253,14 +299,15 @@ def _check_azd() -> None:
 def _check_docker() -> None:
     """Check for Docker as an optional prerequisite.
 
-    Docker is required only for Module 09 Part 1 (deploy a hosted agent from a
-    container image). Every other module — including Module 09 Part 2, which
-    deploys the same agent from source code — runs without it. A missing or
-    stopped Docker daemon is therefore reported as a warning, not a failure, and
-    never causes the health check to exit non-zero.
+    Docker is required for:
+    - introduction-foundry-agent-service Module 09 Part 1 (container deployment)
+    - agent-framework-dotnet Module 12 (Aspire Dashboard observability)
+    A missing or stopped Docker daemon is reported as a warning, not a failure,
+    and never causes the health check to exit non-zero.
     """
     only_note = (
-        'only needed for Module 09 Part 1 (container deployment); '
+        'needed for introduction-foundry-agent-service Module 09 Part 1 '
+        'and agent-framework-dotnet Module 12 (Aspire Dashboard); '
         'all other modules run without it'
     )
 
@@ -276,7 +323,8 @@ def _check_docker() -> None:
     else:
         print(
             f'  {WARN}  Docker (optional)  ({docker_ver}; daemon not running'
-            ' \u2014 start Docker for Module 09 Part 1)'
+            ' \u2014 start Docker for introduction-foundry-agent-service Module 09 Part 1'
+            ' or agent-framework-dotnet Module 12)'
         )
 
 
@@ -560,6 +608,19 @@ def _check_endpoints(  # pylint: disable=too-many-locals,too-many-branches,too-m
                         f'{count} index(es): {names}'
                         if count else 'no indexes \u2014 ask your organizer to seed',
                     )
+                    if count > 0:
+                        present = {i.get('name', '') for i in indexes}
+                        for index_name in [
+                            os.getenv('AZURE_SEARCH_PRODUCT_INDEX_NAME', 'retail-products').strip() or 'retail-products',
+                            os.getenv('AZURE_SEARCH_DOCUMENT_INDEX_NAME', 'retail-policies').strip() or 'retail-policies',
+                            os.getenv('AZURE_SEARCH_PASSENGER_RIGHTS_INDEX_NAME', 'passenger-rights').strip() or 'passenger-rights',
+                        ]:
+                            check(
+                                f'AI Search index: {index_name}',
+                                index_name in present,
+                                'present' if index_name in present
+                                else f'missing \u2014 run the seed script for {index_name}',
+                            )
                 else:
                     check('AI Search indexes seeded', False, f'HTTP {resp.status_code}')
             except requests.RequestException as exc:
@@ -568,19 +629,19 @@ def _check_endpoints(  # pylint: disable=too-many-locals,too-many-branches,too-m
             check('AI Search indexes seeded', False, 'could not obtain Search access token')
 
 
-def _check_mcp_server(mcp_url: str) -> None:
+def _check_mcp_server(mcp_url: str, label: str = 'MCP Server') -> None:
     """Validate that the MCP server at *mcp_url* is reachable and exposes tools.
 
     Sends a JSON-RPC ``initialize`` request followed by a ``tools/list`` request.
     Both JSON and SSE (text/event-stream) response bodies are handled.
     """
-    _section('MCP Server')
+    _section(label)
 
     if not mcp_url:
         check(
             'MCP server reachable',
             False,
-            'MCP_SERVER_URL not set \u2014 required for Lab 06',
+            'MCP server URL not set',
         )
         return
 
@@ -672,6 +733,88 @@ def _check_mcp_server(mcp_url: str) -> None:
         check('MCP server tools available', False, _net_err(exc))
 
 
+# ── Optional lab checks ────────────────────────────────────────────────────────
+
+def _check_dotnet() -> bool:
+    """Check that the .NET 10 SDK is installed.
+
+    .NET 10 is required by all modules in the agent-framework-dotnet lab.
+    Returns True only when a 10.x SDK is found.
+    """
+    rc, out, _ = _az('dotnet --version')
+    if rc != 0:
+        check_optional(
+            '.NET 10 SDK installed',
+            False,
+            'not found \u2014 install from https://dot.net/download',
+        )
+        return False
+    version = out.strip().splitlines()[0]
+    is_v10 = version.startswith('10.')
+    check_optional(
+        '.NET 10 SDK installed',
+        is_v10,
+        version if is_v10
+        else f'{version} (need 10.x \u2014 install from https://dot.net/download)',
+    )
+    return is_v10
+
+
+def _check_dotnet_restore() -> None:
+    """Verify that NuGet packages for the agent-framework-dotnet lab can be restored.
+
+    Probes the Module 02 starter project as a representative of the whole lab.
+    A successful restore confirms the SDK can reach NuGet and resolve the
+    Microsoft Agent Framework packages referenced by Directory.Packages.props.
+    """
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    probe_proj = os.path.join(
+        repo_root,
+        'labs', 'agent-framework-dotnet', '02-first-agent', 'src',
+        'TripConcierge.FirstAgent.csproj',
+    )
+    if not os.path.exists(probe_proj):
+        check_optional(
+            '.NET packages restorable',
+            False,
+            f'project not found: {probe_proj}',
+        )
+        return
+    result = subprocess.run(
+        ['dotnet', 'restore', probe_proj, '--nologo'],
+        capture_output=True, text=True, check=False,
+    )
+    if result.returncode == 0:
+        check_optional('.NET packages restorable', True, 'TripConcierge.FirstAgent restored')
+    else:
+        err_lines = (result.stderr or result.stdout).strip().splitlines()
+        err_line = err_lines[0] if err_lines else 'restore failed'
+        check_optional('.NET packages restorable', False, err_line)
+
+
+def _check_lab_agent_framework_dotnet() -> None:
+    """Run optional health checks for the agent-framework-dotnet lab.
+
+    These checks are only required when attending the .NET agent lab modules.
+    Failures are reported as warnings and do not affect the core exit code.
+    """
+    _banner('Optional Lab: agent-framework-dotnet')
+    _section('.NET prerequisites')
+    dotnet_ok = _check_dotnet()
+    if dotnet_ok:
+        _check_dotnet_restore()
+    else:
+        check_optional(
+            '.NET packages restorable',
+            False,
+            'skipped \u2014 requires .NET 10 SDK',
+        )
+    print(
+        f'\n  {WARN}  Docker (optional for Module 12 \u2014 Aspire Dashboard)'
+        '  (see Core Prerequisites above)'
+    )
+
+
 # ── Entry point ────────────────────────────────────────────────────────────────
 
 def main() -> int:
@@ -679,10 +822,13 @@ def main() -> int:
     print('Workshop Environment Health Check')
     print('\u2550' * 34)
 
+    _banner('Core Requirements')
+
     az_ok = _check_prerequisites()
     env_ok = _check_env_vars()
 
     if not env_ok or not az_ok:
+        _check_lab_agent_framework_dotnet()
         return _print_summary()
 
     sub = os.getenv('AZURE_SUBSCRIPTION_ID', '').strip()
@@ -694,14 +840,20 @@ def main() -> int:
     search_name = os.getenv('AZURE_SEARCH_SERVICE_NAME', '').strip()
 
     if not _check_auth(sub):
+        _check_lab_agent_framework_dotnet()
         return _print_summary()
 
     _check_resources(sub, rg, foundry, project)
     _check_roles(sub, rg, foundry)
     _check_endpoints(endpoint, openai_endpoint, search_name, rg, sub)
 
-    mcp_url = os.getenv('MCP_SERVER_URL', '').strip()
-    _check_mcp_server(mcp_url)
+    retail_remedy_ops_mcp_url = os.getenv('RETAIL_REMEDY_OPS_MCP_SERVER_URL', '').strip()
+    _check_mcp_server(retail_remedy_ops_mcp_url, 'MCP Server (retail-remedy-ops)')
+
+    flight_ops_mcp_url = os.getenv('FLIGHT_OPS_MCP_SERVER_URL', '').strip()
+    _check_mcp_server(flight_ops_mcp_url, 'MCP Server (flight-ops)')
+
+    _check_lab_agent_framework_dotnet()
 
     return _print_summary()
 

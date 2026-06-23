@@ -63,29 +63,29 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm `.env` exists and the required hosted-agent values are populated:
 
    ```bash
-   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|AZURE_SUBSCRIPTION_ID|AZURE_RESOURCE_GROUP|FOUNDRY_RESOURCE_NAME|AZURE_CONTAINER_REGISTRY_NAME|AZURE_CONTAINER_REGISTRY_ENDPOINT|HOSTED_AGENT_NAME_CONTAINER|HOSTED_AGENT_NAME_CODE|AGENT_MODEL|MCP_SERVER_URL|MCP_SERVER_LABEL'
+   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|AZURE_SUBSCRIPTION_ID|AZURE_RESOURCE_GROUP|FOUNDRY_RESOURCE_NAME|AZURE_CONTAINER_REGISTRY_NAME|AZURE_CONTAINER_REGISTRY_ENDPOINT|HOSTED_AGENT_NAME_CONTAINER|HOSTED_AGENT_NAME_CODE|AGENT_MODEL|RETAIL_REMEDY_OPS_MCP_SERVER_URL|RETAIL_REMEDY_OPS_MCP_SERVER_LABEL'
    ```
 
 1. Confirm `FOUNDRY_PROJECT_ENDPOINT` is set to a non-empty value of the form `https://<resource>.services.ai.azure.com/api/projects/<project>`.
 1. Confirm `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `AZURE_CONTAINER_REGISTRY_NAME`, and `AZURE_CONTAINER_REGISTRY_ENDPOINT` are all set to non-empty values.
-1. Confirm `MCP_SERVER_URL` is set to a non-empty public URL ending in `/mcp` (the Module 06 MCP server endpoint), and that `MCP_SERVER_LABEL` is either unset (defaults to `retail_remedy_ops`) or set to `retail_remedy_ops`.
+1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set to a non-empty public URL ending in `/mcp` (the Module 06 MCP server endpoint), and that `RETAIL_REMEDY_OPS_MCP_SERVER_LABEL` is either unset (defaults to `retail_remedy_ops`) or set to `retail_remedy_ops`.
 1. Confirm `HOSTED_AGENT_NAME_CONTAINER` (defaults to `acl-remedy-advisor-hosted-container`) and `HOSTED_AGENT_NAME_CODE` (defaults to `acl-remedy-advisor-hosted-code`) are either unset or set to their defaults, and that `AGENT_MODEL` is either unset (defaults to `chat`) or set to `chat`.
 
    **Check:** If `.env` does not exist, confirm with the user that Module 01 has been completed, then copy `shared/.env.example` to `.env` and populate the values from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`.
 
 ### Check 4 — Confirm the Module 06 MCP server is running and publicly exposed
 
-The hosted agent calls the **Retail Remedy Operations MCP server** from Module 06 over `MCP_SERVER_URL` at runtime. The server must be running and reachable on its public dev-tunnel URL for the deploy verification and invoke steps to succeed.
+The hosted agent calls the **Retail Remedy Operations MCP server** from Module 06 over `RETAIL_REMEDY_OPS_MCP_SERVER_URL` at runtime. The server must be running and reachable on its public dev-tunnel URL for the deploy verification and invoke steps to succeed.
 
 1. Confirm the MCP server is running locally (Module 06 starts it with `python shared/mcp-servers/retail-remedy-ops/src/server.py`).
-1. Confirm `MCP_SERVER_URL` points to the **public** dev-tunnel URL (ending in `/mcp`), not a `localhost` address — the hosted agent runs in Foundry's managed compute and cannot reach `localhost`.
+1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` points to the **public** dev-tunnel URL (ending in `/mcp`), not a `localhost` address — the hosted agent runs in Foundry's managed compute and cannot reach `localhost`.
 1. Confirm the public endpoint responds:
 
    ```bash
-   curl -i -X POST "$MCP_SERVER_URL" -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+   curl -i -X POST "$RETAIL_REMEDY_OPS_MCP_SERVER_URL" -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
    ```
 
-   **Check:** Expect an HTTP `200` with a JSON-RPC response listing the `retail_remedy_ops` tools. If the request fails or times out, restart the Module 06 server, re-expose the dev tunnel publicly, and update `MCP_SERVER_URL` before continuing. If you change the URL after deploying, you must redeploy the agent.
+   **Check:** Expect an HTTP `200` with a JSON-RPC response listing the `retail_remedy_ops` tools. If the request fails or times out, restart the Module 06 server, re-expose the dev tunnel publicly, and update `RETAIL_REMEDY_OPS_MCP_SERVER_URL` before continuing. If you change the URL after deploying, you must redeploy the agent.
 
 ### Check 5 — Confirm Azure authentication
 

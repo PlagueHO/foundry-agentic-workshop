@@ -87,7 +87,7 @@ This single command runs three stages automatically:
 Re-run `azd provision` any time you change `AZURE_ATTENDEE_LIST`, `AZURE_ATTENDEE_COUNT`, or the project prefix.
 
 > [!TIP]
-> The shared **Retail Remedy Operations** MCP server for [Module 06](./lab-steps/introduction-foundry-agent-service/06-mcp-tools.md) and subsequent modules is published for you during provisioning, and its URL is saved into every attendee onboarding file as `MCP_SERVER_URL` — attendees use it without running anything locally. This step needs **Docker** running and a signed-in **Azure CLI**. To skip the shared server and have attendees tunnel their own copy instead, run `azd env set AZURE_CONTAINER_APPS_DEPLOY false` before provisioning.
+> The shared **Retail Remedy Operations** MCP server for [Module 06](./lab-steps/introduction-foundry-agent-service/06-mcp-tools.md) and subsequent modules is published for you during provisioning, and its URL is saved into every attendee onboarding file as `RETAIL_REMEDY_OPS_MCP_SERVER_URL` — attendees use it without running anything locally. This step needs **Docker** running and a signed-in **Azure CLI**. To skip the shared server and have attendees tunnel their own copy instead, run `azd env set AZURE_CONTAINER_APPS_DEPLOY false` before provisioning.
 
 <details>
 <summary>📸 Screenshot: Azure Portal showing the deploy resources</summary>

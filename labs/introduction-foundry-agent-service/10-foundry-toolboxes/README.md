@@ -11,13 +11,13 @@
 > [!IMPORTANT]
 > This capstone module builds on three earlier modules:
 >
-> - [Module 06 — Integrate MCP tools](../06-mcp-tools/README.md): you need the `retail_remedy_ops` MCP server URL (`MCP_SERVER_URL`) — the shared Azure Container Apps server, or your own tunnel.
+> - [Module 06 — Integrate MCP tools](../06-mcp-tools/README.md): you need the `retail_remedy_ops` MCP server URL (`RETAIL_REMEDY_OPS_MCP_SERVER_URL`) — the shared Azure Container Apps server, or your own tunnel.
 > - [Module 08 — Use Agent Framework for Python](../08-agent-framework-python/README.md): the hosted agent is a Python **Microsoft Agent Framework** app, reusing the client and agent patterns introduced there.
 > - [Module 09 — Deploy hosted agents](../09-hosted-agents/README.md): you publish the agent as a hosted agent from **source code**, exactly as in Module 09, Part 2 — this module replaces its tools with the toolbox.
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!NOTE]
-> If you could not complete Module 06, set `MCP_SERVER_URL` to the shared server URL from your organizer (or run and tunnel your own as described in Module 06) before continuing.
+> If you could not complete Module 06, set `RETAIL_REMEDY_OPS_MCP_SERVER_URL` to the shared server URL from your organizer (or run and tunnel your own as described in Module 06) before continuing.
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!TIP]
@@ -72,11 +72,11 @@ This is the capstone pattern: **one managed agent, one toolbox endpoint, every t
 
 ### Part 1 — Get the MCP server URL
 
-The toolbox wraps the same `retail_remedy_ops` MCP server from Module 06. You need its public URL (`MCP_SERVER_URL`) to add it to the toolbox.
+The toolbox wraps the same `retail_remedy_ops` MCP server from Module 06. You need its public URL (`RETAIL_REMEDY_OPS_MCP_SERVER_URL`) to add it to the toolbox.
 
 #### 1. Confirm your MCP server URL
 
-- [ ] Open your `.env` file and confirm `MCP_SERVER_URL` is set to the shared server URL your organizer provided, ending in `/mcp`. For example:
+- [ ] Open your `.env` file and confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set to the shared server URL your organizer provided, ending in `/mcp`. For example:
 
   ```text
   https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp
@@ -85,7 +85,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server from Module 06. You ne
 - [ ] Save this URL — you will paste it into the toolbox configuration in the next part.
 
   > [!NOTE]
-  > If you are running your own MCP server instead of the shared one, make sure it is still running with port 8080 set to **Public**, and use its tunnel URL (ending in `/mcp`) as your `MCP_SERVER_URL`. See [Module 06](../06-mcp-tools/README.md), Part 1.
+  > If you are running your own MCP server instead of the shared one, make sure it is still running with port 8080 set to **Public**, and use its tunnel URL (ending in `/mcp`) as your `RETAIL_REMEDY_OPS_MCP_SERVER_URL`. See [Module 06](../06-mcp-tools/README.md), Part 1.
 
 ---
 
@@ -146,7 +146,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server from Module 06. You ne
   | Field | Value |
   |---|---|
   | Label / Server name | `retail_remedy_ops` |
-  | Server URL | Your `MCP_SERVER_URL` (ending in `/mcp`) |
+  | Server URL | Your `RETAIL_REMEDY_OPS_MCP_SERVER_URL` (ending in `/mcp`) |
   | Authentication | None / Anonymous |
   | Description | `Retail Remedy Operations tools for looking up purchases, product profiles, store policies, replacement options, and creating remedy cases.` |
 
@@ -229,7 +229,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server from Module 06. You ne
 #### Code fallback — Create the toolbox with Python
 
 > [!TIP]
-> If the portal does not expose Toolboxes in your region yet, or you skipped the steps above, run the fallback script to create the toolbox through the Python SDK. `MCP_SERVER_URL` must be set in your `.env` file.
+> If the portal does not expose Toolboxes in your region yet, or you skipped the steps above, run the fallback script to create the toolbox through the Python SDK. `RETAIL_REMEDY_OPS_MCP_SERVER_URL` must be set in your `.env` file.
 >
 > ```bash
 > python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py
