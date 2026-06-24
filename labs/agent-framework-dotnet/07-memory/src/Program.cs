@@ -42,6 +42,7 @@ var projectClient = new AIProjectClient(new Uri(endpoint), credential);
 // {
 //     ChatOptions = new()
 //     {
+//         ModelId = model,
 //         Instructions =
 //             "You are the Trip Disruption Concierge. " +
 //             "You help passengers who have experienced flight disruptions. " +

@@ -24,7 +24,7 @@ across all modules so attendees build a single coherent system.
 
 ---
 
-## Module Plan (15 modules total)
+## Module Plan (17 modules total)
 
 ### Phase 0 — Demo (completed)
 
@@ -48,14 +48,20 @@ across all modules so attendees build a single coherent system.
 | M10 | `10-hosted-agents` | Hosted Agents (Foundry) | ✅ Done |
 | M11 | `11-agent-auth` | Agent Identity & Auth | ✅ Done |
 
-### Phase 2 — Extension (not started)
+### Phase 2 — Harness (in progress)
 
 | # | Slug | Title | Status |
 |---|---|---|---|
-| M13 | `13-evaluation` | Evaluation & Quality | ❌ Todo |
-| M14 | `14-agent-to-agent` | Agent-to-Agent (A2A) | ❌ Todo |
-| M15 | `15-ag-ui` | Making your agent interactive through AG-UI | ❌ Todo |
-| M16 | `16-capstone` | Capstone — Full System | ❌ Todo |
+| M13 | `13-concierge-claw` | ConciergeClaw — Agent Harness | ❌ Todo |
+
+### Phase 3 — Extension (not started)
+
+| # | Slug | Title | Status |
+|---|---|---|---|
+| M14 | `14-evaluation` | Evaluation & Quality | ❌ Todo |
+| M15 | `15-agent-to-agent` | Agent-to-Agent (A2A) | ❌ Todo |
+| M16 | `16-ag-ui` | Making your agent interactive through AG-UI | ❌ Todo |
+| M17 | `17-capstone` | Capstone — Full System | ❌ Todo |
 
 ---
 
@@ -115,7 +121,70 @@ var result = await agent.RunAsync(query, session: session);
 | Mode | Loop Location | How to recognise |
 |---|---|---|
 | `ChatClientAgent` | **Local** — your code | Your code controls the turn cycle, tools execute in-process |
+| `HarnessAgent` | **Local** — harness loop | Framework manages tool calling, planning, memory, approvals; you supply instructions + tools |
 | `Foundry Hosted Agent` | **Remote** — Agent Service | Service manages the loop; you just call and await |
+
+---
+
+## Module Design Details
+
+### M13 — ConciergeClaw: Agent Harness
+
+The `ConciergeClaw` wraps a `ChatClientAgent` in the AF Harness to produce a
+batteries-included Trip Disruption Concierge. Attendees replace the bare agent
+from earlier modules with one that has planning, memory, file access, and
+concurrent sub-agent delegation — all by calling `AsHarnessAgent()`.
+
+#### Learning objectives
+
+- Understand the difference between a bare `ChatClientAgent` and a `HarnessAgent`
+- Use `AsHarnessAgent()` with `HarnessAgentOptions` to compose harness features
+- Navigate plan/execute modes with `TodoProvider` and `AgentModeProvider`
+- Persist a passenger profile across sessions with `FileMemoryProvider`
+- Access passenger-rights policy files with `FileAccessProvider`
+- Delegate to specialist sub-agents concurrently via `BackgroundAgentsProvider`
+- Wrap the harness with `LoopAgent` to drive resolution until all todos are cleared
+- Use `HarnessConsole` as an interactive TUI and understand it as a customisable starting point
+- Export and resume a disruption case with `SerializeSessionAsync` / `DeserializeSessionAsync`
+
+#### Harness features used
+
+| Feature | Provider / API | Role in the scenario |
+|---|---|---|
+| Planning | `TodoProvider` + `AgentModeProvider` | Structure multi-step resolution: rebook → accommodate → compensate |
+| File memory | `FileMemoryProvider` | Persist passenger profile and disruption state across sessions |
+| File access | `FileAccessProvider` | Read passenger-rights policy CSV from `shared/data/` |
+| Background agents | `BackgroundAgentsProvider` | Delegate to rebooking/accommodation/compensation specialists concurrently |
+| Web search | Built-in hosted tool | Look up live airline news and policy announcements |
+| Loop | `LoopAgent` decorator | Re-invoke the harness until all todos are cleared |
+| Session I/O | `SerializeSessionAsync` / `DeserializeSessionAsync` | Export and resume a disruption case |
+
+#### Harness API pattern
+
+```csharp
+IChatClient chatClient =
+    new AIProjectClient(new Uri(endpoint), new DefaultAzureCredential())
+        .GetProjectOpenAIClient()
+        .GetResponsesClient()
+        .AsIChatClient(deploymentName);
+
+AIAgent agent = chatClient.AsHarnessAgent(new HarnessAgentOptions
+{
+    ChatOptions = new ChatOptions
+    {
+        Instructions = ConciergeClaw.Instructions,
+        Tools = [FlightTools.CreateGetFlightStatusTool()],
+    },
+});
+
+await HarnessConsole.RunAgentAsync(
+    agent,
+    userPrompt: "Flight AU123 AKL\u2192SYD has been cancelled. How can I help you?");
+```
+
+#### Project slug
+
+`TripConcierge.ConciergeClaw` in `13-concierge-claw/`
 
 ---
 
@@ -157,6 +226,10 @@ var result = await agent.RunAsync(query, session: session);
 - [x] Phase 1: Create `scripts/deploy-flight-ops-mcp-server.py`
 - [x] Phase 1: Update `shared/.env.example` with all Phase 1 env vars
 - [x] Phase 1: Add `azure.yaml` postprovision hooks for new scripts
+- [ ] Phase 2 (M13): Scaffold `13-concierge-claw/` project — starter + solution
+- [ ] Phase 2 (M13): Write README with `ConciergeClaw` steps (plan → execute → loop)
+- [ ] Phase 2 (M13): Add `HarnessConsole` shared console reference project to `shared/`
+- [ ] Phase 2 (M13): Verify `AsHarnessAgent` / `HarnessAgentOptions` API signatures against published release
 - [ ] Phase 2: Evaluate A2A protocol support in AF .NET
 - [ ] Phase 2: Add capstone lab wiring all modules together
 - [ ] All: Verify exact AF API method signatures against published release (APIs are prerelease)
@@ -175,6 +248,9 @@ var result = await agent.RunAsync(query, session: session);
 - MCP tools: <https://learn.microsoft.com/en-us/agent-framework/agents/tools/local-mcp-tools>
 - Foundry provider: <https://learn.microsoft.com/en-us/agent-framework/agents/providers/microsoft-foundry>
 - Aspire Dashboard standalone: <https://learn.microsoft.com/dotnet/aspire/fundamentals/dashboard/standalone>
+- Harness overview (blog): <https://devblogs.microsoft.com/agent-framework/build-your-own-claw-and-agent-harness-with-microsoft-agent-framework/>
+- Harness Part 1 — Meet your claw (blog): <https://devblogs.microsoft.com/agent-framework/meet-your-agent-harness-and-claw/>
+- Harness samples: <https://github.com/microsoft/agent-framework/tree/main/dotnet/samples/02-agents/Harness>
 - AF GitHub repo: <https://github.com/microsoft/agent-framework>
 - .NET samples: <https://github.com/microsoft/agent-framework/tree/main/dotnet/samples>
 - Getting started samples: <https://github.com/microsoft/agent-framework/tree/main/dotnet/samples/01-get-started>

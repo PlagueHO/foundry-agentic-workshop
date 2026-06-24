@@ -111,7 +111,7 @@ Install the following before continuing:
 - [ ] Confirm all environment variables and Azure connectivity are working:
 
   ```bash
-  python scripts/health-check.py
+  python labs/agent-framework-dotnet/shared/health-check.py
   ```
 
 ## Validation
@@ -119,7 +119,7 @@ Install the following before continuing:
 - `az login` succeeds and the active subscription matches the workshop subscription.
 - All required `.env` values are populated.
 - `dotnet --version` outputs `10.x.x`.
-- `python scripts/health-check.py` reports a healthy environment.
+- `python labs/agent-framework-dotnet/shared/health-check.py` reports a healthy environment.
 
 ## Congratulations 🎉
 

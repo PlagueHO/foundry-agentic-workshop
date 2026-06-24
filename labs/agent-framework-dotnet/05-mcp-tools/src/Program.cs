@@ -1,8 +1,9 @@
 using Azure.Identity;
 using Azure.AI.Projects;
 using DotNetEnv;
-using Microsoft.Agents.AI.Foundry;
-using Microsoft.Agents.AI.Mcp;
+using Microsoft.Agents.AI;
+using Microsoft.Extensions.AI;
+using ModelContextProtocol.Client;
 
 Env.TraversePath().Load();
 
@@ -30,18 +31,20 @@ Console.WriteLine();
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── TODO 2 ───────────────────────────────────────────────────────────────────
-// Create an McpServer instance pointing at the running Python server.
+// Connect to the flight-ops MCP server and discover its tools.
 //
-// var mcpServer = new McpServer(new Uri(mcpUrl));
+// await using var mcpClient = await McpClient.CreateAsync(
+//     new HttpClientTransport(new() { Endpoint = new Uri(mcpUrl), Name = "flight-ops" }));
+// IList<McpClientTool> mcpTools = await mcpClient.ListToolsAsync();
 //
 // Console.ForegroundColor = ConsoleColor.DarkGray;
-// Console.WriteLine("[Loop] Connecting to flight-ops MCP server...");
+// Console.WriteLine($"[Loop] MCP tools discovered: {string.Join(", ", mcpTools.Select(t => t.Name))}");
 // Console.ResetColor();
 //
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── TODO 3 ───────────────────────────────────────────────────────────────────
-// Create the agent and attach the MCP server with .WithMcpTools().
+// Create the agent, passing the MCP tools via the tools: parameter.
 //
 // var credential = new AzureCliCredential();
 // var client = new AIProjectClient(new Uri(endpoint), credential);
@@ -52,15 +55,15 @@ Console.WriteLine();
 //             "You are the Trip Disruption Concierge. You have access to the " +
 //             "flight operations system. When passengers ask about flight status " +
 //             "or rebooking, call the appropriate MCP tool to get live data " +
-//             "before responding.")
-//     .WithMcpTools(mcpServer);
+//             "before responding.",
+//         tools: [.. mcpTools.Cast<AITool>()]);
 //
 // Console.ForegroundColor = ConsoleColor.DarkGray;
 // Console.WriteLine("[Loop] Agent ready — MCP tools loaded from server.");
 // Console.ResetColor();
 // Console.WriteLine();
-//
-// ─────────────────────────────────────────────────────────────────────────────
+//// var session = await agent.CreateSessionAsync();
+//// ─────────────────────────────────────────────────────────────────────────────
 
 // ── TODO 4 ───────────────────────────────────────────────────────────────────
 // Run the agent. It should call get_flight_status then get_rebooking_options.
@@ -79,7 +82,7 @@ Console.WriteLine();
 // Console.ResetColor();
 // Console.WriteLine();
 //
-// var result = await agent.RunAsync(query);
+// var result = await agent.RunAsync(query, session: session);
 //
 // Console.ForegroundColor = ConsoleColor.Green;
 // Console.WriteLine($"[Agent] {result.Text}");

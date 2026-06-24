@@ -42,6 +42,7 @@ AIAgent agent = chatClient.AsAIAgent(new ChatClientAgentOptions
 {
     ChatOptions = new()
     {
+        ModelId = model,
         Instructions =
             "You are the Trip Disruption Concierge. " +
             "You help passengers who have experienced flight disruptions. " +

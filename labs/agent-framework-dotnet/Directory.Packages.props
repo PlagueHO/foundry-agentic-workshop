@@ -10,7 +10,7 @@
     <PackageVersion Include="Microsoft.Agents.AI" Version="*-*" />
     <PackageVersion Include="Microsoft.Agents.AI.Foundry" Version="*-*" />
     <PackageVersion Include="Microsoft.Agents.AI.Foundry.Hosting" Version="*-*" />
-    <PackageVersion Include="Microsoft.Agents.AI.Mcp" Version="*-*" />
+    <PackageVersion Include="ModelContextProtocol" Version="*" />
     <PackageVersion Include="Microsoft.Agents.AI.Harness" Version="*-*" />
     <!-- Azure -->
     <PackageVersion Include="Azure.Identity" Version="*" />
