@@ -275,10 +275,6 @@ LoopAgentOptions   = new LoopAgentOptions { MaxIterations = 5 },
 
 You built the ConciergeClaw — a full Agent Framework harness agent that combines planning, file memory, tool invocation, and loop-driven execution in a single `AsHarnessAgent()` call. You also demonstrated portable session state with `SerializeSessionAsync` and `DeserializeSessionAsync`.
 
-> [!TIP]
-> **Next up → [Module 14: Evaluation & Quality](../14-evaluation/README.md)**
-> Measure and improve your agent's output quality with structured evaluations.
-
 ## Troubleshooting
 
 | Symptom | Fix |
