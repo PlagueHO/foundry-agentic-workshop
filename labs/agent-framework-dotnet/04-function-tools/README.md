@@ -14,7 +14,7 @@
 ## Objectives
 
 - Create a typed C# function and register it as an agent tool with `AIFunctionFactory.Create()`.
-- Pass tools to an agent via `.WithFunction()`.
+- Pass tools to an agent via the `tools:` parameter in `AsAIAgent()`.
 - Observe the `[Tool]` log lines that show when the agent invokes the tool.
 
 ## Concepts
@@ -45,12 +45,11 @@ Use `[Description]` attributes on parameters to guide the model when choosing ar
 
 ### Attaching tools to an agent
 
-Call `.WithFunction()` on the agent builder chain:
+Pass tools via the `tools:` parameter when calling `AsAIAgent()`:
 
 ```csharp
 var agent = client
-    .AsAIAgent(model: model, instructions: "...")
-    .WithFunction(myTool);
+    .AsAIAgent(model: model, instructions: "...", tools: [myTool]);
 ```
 
 The agent will automatically call `myTool` when the model decides it is needed.
@@ -111,7 +110,7 @@ The agent will automatically call `myTool` when the model decides it is needed.
 - [ ] Locate `// ── TODO 2` and replace the commented-out block with:
 
   ```csharp
-  var credential = new DefaultAzureCredential();
+  var credential = new AzureCliCredential();
   var client = new AIProjectClient(new Uri(endpoint), credential);
   var agent = client
       .AsAIAgent(
@@ -120,8 +119,8 @@ The agent will automatically call `myTool` when the model decides it is needed.
               "You are the Trip Disruption Concierge. When a passenger asks " +
               "about compensation, always call the calculate_compensation tool " +
               "with the actual delay hours and ticket price before answering. " +
-              "State the calculated amount clearly in your response.")
-      .WithFunction(calculateCompensation);
+              "State the calculated amount clearly in your response.",
+          tools: [calculateCompensation]);
   ```
 
 #### 4. Run a prompt that triggers the tool (TODO 3)

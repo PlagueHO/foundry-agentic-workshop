@@ -2,7 +2,7 @@ using System.ComponentModel;
 using Azure.Identity;
 using Azure.AI.Projects;
 using DotNetEnv;
-using Microsoft.Agents.AI.Foundry;
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 
 Env.TraversePath().Load();
@@ -57,7 +57,7 @@ Console.WriteLine();
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── TODO 2 ───────────────────────────────────────────────────────────────────
-// Create the AIAgent and register the function tool with .WithFunction().
+// Create the AIAgent and pass the function tool via the tools: parameter.
 //
 // var credential = new AzureCliCredential();
 // var client = new AIProjectClient(new Uri(endpoint), credential);
@@ -68,8 +68,8 @@ Console.WriteLine();
 //             "You are the Trip Disruption Concierge. When a passenger asks " +
 //             "about compensation, always call the calculate_compensation tool " +
 //             "with the actual delay hours and ticket price before answering. " +
-//             "State the calculated amount clearly in your response.")
-//     .WithFunction(calculateCompensation);
+//             "State the calculated amount clearly in your response.",
+//         tools: [calculateCompensation]);
 //
 // ─────────────────────────────────────────────────────────────────────────────
 

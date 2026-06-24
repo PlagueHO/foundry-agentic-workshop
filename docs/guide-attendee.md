@@ -32,7 +32,7 @@ cd foundry-agentic-workshop
 1. Install the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. Install the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
 1. *(Optional)* Install [Docker](https://www.docker.com/products/docker-desktop/). Docker is required only for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which deploys a hosted agent from a container image. Every other module, including Module 09 Part 2 (deploy from source code), runs without it.
-1. *(Optional)* Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0). Required only for the [Agent Framework for .NET](../labs/agent-framework-dotnet/) lab series. All Python-based labs (`introduction-foundry-agent-service`) run without it.
+1. *(Optional)* Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0). Required only for the [Agent Framework for .NET](./labs/agent-framework-dotnet) lab series. All Python-based labs (`introduction-foundry-agent-service`) run without it.
 1. Create a Python virtual environment in the repository root:
 
    ```bash

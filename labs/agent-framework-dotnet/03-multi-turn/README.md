@@ -41,7 +41,10 @@ The session ID is stable and unique. If you print it, you can correlate turns in
 
 ### What the session stores
 
-The session accumulates every user and assistant message in order. Context providers (introduced in Module 07) can also attach state to the session, such as a passenger profile. The session is an in-memory object — it does not automatically persist across application restarts. Module 08 covers serialisation and restore.
+The session accumulates every user and assistant message in order. Context providers (introduced in Module 07) can also attach state to the session, such as a passenger profile.
+
+> [!WARNING]
+> The session is an **in-memory object**. It is lost when the process stops, and it is not shared between service instances. This is fine for a local demo but unsuitable for production services that restart, scale out, or need durable conversation history. See the [Extra Credit](#extra-credit--session-persistence) section for durable alternatives, and [Module 08](../08-chat-history/README.md) for a full walkthrough of serialisation and restore.
 
 ## Steps
 
@@ -140,3 +143,67 @@ You held a persistent multi-turn conversation using an `AgentSession`. The agent
 | Agent forgets earlier turns | Confirm you are passing the **same** `session` object to every `RunAsync` call |
 | `CreateSessionAsync` not found | Confirm the `Microsoft.Agents.AI.Foundry` package restored correctly |
 | `NotImplementedException` | A TODO is still incomplete |
+
+## Extra Credit — Session Persistence
+
+The `AgentSession` in this module lives entirely in process memory. If the application restarts, the session is gone and the next conversation starts from scratch. The following approaches address this at increasing levels of production-readiness.
+
+### Option 1 — Serialize and restore (manual persistence)
+
+The Agent Framework provides `SerializeSessionAsync` / `DeserializeSessionAsync` to export the full session state to a portable `JsonElement` that you can write to any storage medium:
+
+```csharp
+// Capture the session after a conversation
+JsonElement snapshot = await agent.SerializeSessionAsync(session);
+
+// Write to disk, Redis, SQL, or any store
+File.WriteAllText("session.json", JsonSerializer.Serialize(snapshot));
+
+// ── On the next application start ────────────────────────────────────────────
+
+var stored = JsonSerializer.Deserialize<JsonElement>(
+    File.ReadAllText("session.json"));
+
+// Restore on a brand-new agent instance
+var restored = await agent.DeserializeSessionAsync(stored);
+
+// Continue — the agent remembers everything from before the restart
+var result = await agent.RunAsync("So, where were we?", session: restored);
+```
+
+A complete working example is in the Agent Framework repository:
+[Agent_Step03_PersistedConversations](https://github.com/microsoft/agent-framework/tree/main/dotnet/samples/02-agents/Agents/Agent_Step03_PersistedConversations)
+
+[Module 08](../08-chat-history/README.md) of this workshop walks through this pattern end-to-end.
+
+> [!NOTE]
+> Manual serialization pushes every production concern onto your code — concurrent writers can overwrite each other's snapshot, a crash mid-write corrupts the store, and every service replica must reach the same storage. This approach is appropriate for single-instance tools and local development, not for scaled-out services.
+
+### Option 2 — Foundry Agent Service (server-managed threads)
+
+When you target [Foundry Agent Service](https://learn.microsoft.com/azure/ai-foundry/agents/overview) using `AIProjectClient`, thread storage is managed server-side automatically. The session ID is durable across restarts and scales horizontally without any extra code:
+
+```csharp
+// AIProjectClient routes to Foundry Agent Service — threads are persisted in Azure
+var client = new AIProjectClient(new Uri(endpoint), credential);
+var agent = client.AsAIAgent(model: model, instructions: "...");
+
+// Session ID is stable across process restarts — no serialization needed
+var session = await agent.CreateSessionAsync();
+```
+
+This is exactly what the solution code in this module already does. The `AIProjectClient` routes all thread state to Azure, so you get cloud-durable sessions with no extra plumbing.
+
+### Option 3 — Custom `ChatHistoryProvider` (bring your own store)
+
+For self-hosted or multi-cloud deployments, you can plug in any storage backend by implementing a `ChatHistoryProvider`. The framework passes a session state bag to your provider on every turn; you read and write history against your own store. The session pointer (a key or ID into your store) round-trips automatically through session serialization.
+
+A [reference implementation using an in-process vector store](https://github.com/microsoft/agent-framework/tree/main/dotnet/samples/02-agents/Agents/Agent_Step04_3rdPartyChatHistoryStorage) is available in the Agent Framework sample repository. Swap `InMemoryVectorStore` for a cloud connector such as `AzureCosmosDBNoSQLVectorStore` to get a fully durable, horizontally scalable conversation store.
+
+### Choosing the right option
+
+| Option | Managed by | Best for |
+|---|---|---|
+| Serialize / restore to file or DB | Your code | Single-instance tools, local development |
+| Foundry Agent Service (server threads) | Azure | Cloud-hosted agents deployed to Foundry |
+| Custom `ChatHistoryProvider` + Cosmos DB | Your code + Azure | Self-hosted or multi-cloud services |

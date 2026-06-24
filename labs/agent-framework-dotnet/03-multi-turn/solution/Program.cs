@@ -41,7 +41,7 @@ Console.ResetColor();
 var session = await agent.CreateSessionAsync();
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine($"[Loop] Session ready — ID: {session.Id}");
+Console.WriteLine("[Loop] Session ready.");
 Console.ResetColor();
 Console.WriteLine();
 
@@ -61,7 +61,7 @@ async Task TurnAsync(string userInput)
     Console.WriteLine();
 
     Console.ForegroundColor = ConsoleColor.DarkGray;
-    Console.Write($"[Loop] Turn {turnNumber} — RunAsync (session: {session.Id[..8]}...)...");
+    Console.Write($"[Loop] Turn {turnNumber} — RunAsync...");
     Console.ResetColor();
 
     var sw = Stopwatch.StartNew();
@@ -98,7 +98,7 @@ await TurnAsync(
 
 // ── Summary ───────────────────────────────────────────────────────────────────
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine($"[Loop] Session complete — {turnNumber} turns, session ID: {session.Id}");
+Console.WriteLine($"[Loop] Session complete — {turnNumber} turns.");
 Console.ResetColor();
 Console.WriteLine();
 

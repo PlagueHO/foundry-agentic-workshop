@@ -3,7 +3,7 @@ using System.Diagnostics;
 using Azure.Identity;
 using Azure.AI.Projects;
 using DotNetEnv;
-using Microsoft.Agents.AI.Foundry;
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 
 Env.TraversePath().Load();
@@ -78,8 +78,8 @@ var agent = client
             "You are the Trip Disruption Concierge. When a passenger asks " +
             "about compensation, always call the calculate_compensation tool " +
             "with the exact delay hours and ticket price before responding. " +
-            "Quote the calculated amount clearly in your answer.")
-    .WithFunction(calculateCompensation);
+            "Quote the calculated amount clearly in your answer.",
+        tools: [calculateCompensation]);
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine("[Loop] Agent ready — tool will execute locally when called.");

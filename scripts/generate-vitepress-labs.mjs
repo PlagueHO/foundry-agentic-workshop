@@ -76,6 +76,11 @@ function rewriteStepLinks(markdown, trackName) {
     /\]\(\.\.\/([\d]{2}-[^/]+)\/README\.md\)/g,
     `](./$1.md)`,
   )
+  // Rewrite ../../other-track/XX-step-name/README.md links to ../other-track/XX-step-name.md
+  result = result.replace(
+    /\]\(\.\.\/\.\.\/([^/]+)\/([\d]{2}-[^/]+)\/README\.md\)/g,
+    `](../$1/$2.md)`,
+  )
   // Rewrite ../README.md to the VitePress track index page
   result = result.replace(
     /\]\(\.\.\/README\.md\)/g,
