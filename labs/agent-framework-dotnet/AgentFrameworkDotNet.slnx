@@ -87,4 +87,12 @@
       <Project Path="12-observability/solution/TripConcierge.Observability.csproj" />
     </Folder>
   </Folder>
+  <Folder Name="13-concierge-claw">
+    <Folder Name="src">
+      <Project Path="13-concierge-claw/src/TripConcierge.ConciergeClaw.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="13-concierge-claw/solution/TripConcierge.ConciergeClaw.csproj" />
+    </Folder>
+  </Folder>
 </Solution>

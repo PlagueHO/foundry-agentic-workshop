@@ -93,7 +93,7 @@ Console.WriteLine();
 Console.WriteLine("════════ Phase 3 — Restore and continue ═══════════════════════════");
 Console.WriteLine();
 
-IAgentSession restoredSession = await agent.DeserializeSessionAsync(snapshot);
+AgentSession restoredSession = await agent.DeserializeSessionAsync(snapshot);
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine("[Session] Session restored. Conversation history is intact.");

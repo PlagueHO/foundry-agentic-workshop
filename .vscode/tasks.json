@@ -772,6 +772,24 @@
                 "reveal": "always",
                 "panel": "shared"
             }
+        },
+        {
+            "label": "agent-framework-dotnet: module 13- concierge claw (solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/13-concierge-claw/solution"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
         }
     ]
 }

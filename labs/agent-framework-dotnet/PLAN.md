@@ -52,7 +52,7 @@ across all modules so attendees build a single coherent system.
 
 | # | Slug | Title | Status |
 |---|---|---|---|
-| M13 | `13-concierge-claw` | ConciergeClaw — Agent Harness | ❌ Todo |
+| M13 | `13-concierge-claw` | ConciergeClaw — Agent Harness | ✅ Done |
 
 ### Phase 3 — Extension (not started)
 
@@ -226,10 +226,10 @@ await HarnessConsole.RunAgentAsync(
 - [x] Phase 1: Create `scripts/deploy-flight-ops-mcp-server.py`
 - [x] Phase 1: Update `shared/.env.example` with all Phase 1 env vars
 - [x] Phase 1: Add `azure.yaml` postprovision hooks for new scripts
-- [ ] Phase 2 (M13): Scaffold `13-concierge-claw/` project — starter + solution
-- [ ] Phase 2 (M13): Write README with `ConciergeClaw` steps (plan → execute → loop)
-- [ ] Phase 2 (M13): Add `HarnessConsole` shared console reference project to `shared/`
-- [ ] Phase 2 (M13): Verify `AsHarnessAgent` / `HarnessAgentOptions` API signatures against published release
+- [x] Phase 2 (M13): Scaffold `13-concierge-claw/` project — starter + solution
+- [x] Phase 2 (M13): Write README with `ConciergeClaw` steps (plan → execute → loop)
+- [ ] Phase 2 (M13): Add `HarnessConsole` shared console reference project to `shared/` (deferred — console TUI is sample-only; no NuGet package available)
+- [x] Phase 2 (M13): Verify `AsHarnessAgent` / `HarnessAgentOptions` API signatures against published release
 - [ ] Phase 2: Evaluate A2A protocol support in AF .NET
 - [ ] Phase 2: Add capstone lab wiring all modules together
 - [ ] All: Verify exact AF API method signatures against published release (APIs are prerelease)
