@@ -119,7 +119,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
 ## Part 2 - Create the toolbox in the Foundry portal
 
-> **Note:** The Toolboxes portal UI is in preview. If **Toolboxes** is not visible in the portal navigation, skip to the [code fallback](#code-fallback--create-the-toolbox-with-python) at the end of this part.
+> **Note:** The Toolboxes portal UI is in preview. If **Toolboxes** is not visible in the portal navigation, skip to the [code fallback](#code-fallback---create-the-toolbox-with-python) at the end of this part.
 
 ### Step 2 - Navigate to Toolboxes
 

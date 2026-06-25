@@ -124,7 +124,7 @@ Foundry gives you three lenses on a running agent:
   | **Error rate** | Share of runs that failed; a rising error rate warrants investigating failed runs. |
   | **Evaluation chart** | Scores produced by evaluators on sampled outputs (populated once continuous evaluation is enabled). |
 
-- [ ] Call out that **continuous evaluation** and **red team** scans are important operational safeguards and can be set up here (the **Settings** button opens **Monitor settings**). You configure them in the [extra-credit section](#part-7-extra-credit--configure-evaluations-scheduled-evaluations-and-red-teaming) below.
+- [ ] Call out that **continuous evaluation** and **red team** scans are important operational safeguards and can be set up here (the **Settings** button opens **Monitor settings**). You configure them in the [extra-credit section](#part-7-extra-credit---configure-evaluations-scheduled-evaluations-and-red-teaming) below.
 
   > [!NOTE]
   > [Continuous evaluation](https://learn.microsoft.com/azure/ai-foundry/concepts/evaluation-evaluators-metrics) provides near real-time quality and safety scores on sampled traffic and links results back to traces for root-cause analysis. Red team scans use the [AI Red Teaming Agent](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-red-teaming-agent) (built on Microsoft's [PyRIT](https://github.com/Azure/PyRIT) framework) to simulate adversarial probing and surface safety risks such as data leakage or prohibited actions.

@@ -81,7 +81,7 @@ current preview** (see the note in Part 1):
   the image with Docker, push it to the shared workshop **Azure Container Registry
   (ACR)**, and point Foundry at the image. This shows exactly what is happening under
   the hood. **This path is skipped in the current preview** - see the note in
-  [Part 1](#part-1--deploy-from-a-container-image-skip-for-now).
+  [Part 1](#part-1---deploy-from-a-container-image-skip-for-now).
 - **Part 2 - from source code (preview)** → `acl-remedy-advisor-hosted-code`. You hand
   Foundry a zip of `src/agent/` and it builds the image _remotely_ - no local Docker
   required. This is the recommended path for this workshop.

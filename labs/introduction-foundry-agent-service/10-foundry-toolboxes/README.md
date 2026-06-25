@@ -92,7 +92,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server from Module 06. You ne
 ### Part 2 - Create the toolbox in the Foundry portal
 
 > [!NOTE]
-> The Toolboxes portal UI is in preview. The exact navigation path at [ai.azure.com](https://ai.azure.com) may differ from the steps below as the portal evolves. If **Toolboxes** is not visible in your portal navigation, use the [code fallback](#code-fallback--create-the-toolbox-with-python) at the end of this part.
+> The Toolboxes portal UI is in preview. The exact navigation path at [ai.azure.com](https://ai.azure.com) may differ from the steps below as the portal evolves. If **Toolboxes** is not visible in your portal navigation, use the [code fallback](#code-fallback---create-the-toolbox-with-python) at the end of this part.
 
 #### 2. Navigate to Toolboxes
 

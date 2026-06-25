@@ -44,7 +44,7 @@ The session maps server-side to a durable Foundry thread. You can correlate conv
 The session accumulates every user and assistant message in order. Context providers (introduced in Module 07) can also attach state to the session, such as a passenger profile.
 
 > [!WARNING]
-> The session is an **in-memory object**. It is lost when the process stops, and it is not shared between service instances. This is fine for a local demo but unsuitable for production services that restart, scale out, or need durable conversation history. See the [Extra Credit](#extra-credit--session-persistence) section for durable alternatives, and [Module 08](../08-chat-history/README.md) for a full walkthrough of serialisation and restore.
+> The session is an **in-memory object**. It is lost when the process stops, and it is not shared between service instances. This is fine for a local demo but unsuitable for production services that restart, scale out, or need durable conversation history. See the [Extra Credit](#extra-credit---session-persistence) section for durable alternatives, and [Module 08](../08-chat-history/README.md) for a full walkthrough of serialisation and restore.
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!NOTE]
