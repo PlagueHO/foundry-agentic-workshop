@@ -32,6 +32,7 @@ Start with the path that matches your role.
 | Role | Start with | Then read |
 |------|------------|-----------|
 | Organizer | [Organizer Quickstart](./docs/quickstart-organizer.md) | [Organizer Guide](./docs/guide-organizer.md) |
+| Individual learner | [Individual Quickstart](./docs/quickstart-individual.md) | [Individual Guide](./docs/guide-individual.md) |
 | Attendee | [Attendee Quickstart](./docs/quickstart-attendee.md) | [Attendee Guide](./docs/guide-attendee.md) |
 | Facilitator | [Facilitator Quickstart](./docs/quickstart-facilitator.md) | [Facilitator Guide](./docs/guide-facilitator.md) |
 | Proctor | [Proctor Guide](./docs/guide-proctor.md) | - |

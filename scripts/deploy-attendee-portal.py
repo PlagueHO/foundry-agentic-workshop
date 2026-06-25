@@ -277,6 +277,10 @@ def main() -> int:  # pylint: disable=too-many-return-statements
     if not env:
         return _fail("Could not read the azd environment. Run 'azd provision' first.")
 
+    if _is_truthy(env.get('AZURE_INDIVIDUAL_MODE', '')):
+        print(f'{TICK} Individual mode enabled. Skipping attendee portal deploy.')
+        return 0
+
     deploy_enabled = env.get(
         'AZURE_CONTAINER_APPS_DEPLOY_ENABLED',
         env.get('AZURE_CONTAINER_APPS_DEPLOY', 'true'),

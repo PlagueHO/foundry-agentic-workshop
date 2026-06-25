@@ -4,6 +4,10 @@ Use this quickstart when you provision one shared Microsoft Foundry environment 
 attendees. It is the high-level flow; see the [Organizer Guide](./guide-organizer.md) for
 detailed steps, the RBAC model, and troubleshooting.
 
+> [!TIP]
+> **Learning solo?** If you are completing the labs on your own with no attendees, use
+> individual mode instead. See the [Individual Quickstart](./quickstart-individual.md).
+
 ## Who does what
 
 | Role | Responsibility |

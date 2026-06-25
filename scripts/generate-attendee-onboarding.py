@@ -124,6 +124,10 @@ SEARCH_ROLES: dict[str, list[tuple[str, str]]] = {
 _AZD_CMD = 'azd'
 
 
+def _is_truthy(value: object) -> bool:
+    return str(value).strip().lower() not in ('', 'false', '0', 'no', 'off')
+
+
 def _load_azd_env() -> dict[str, str]:
     """Load all azd environment values as a fallback for variables not in os.environ.
 
@@ -652,6 +656,8 @@ def main() -> int:  # pylint: disable=too-many-locals
         print('AZURE_ATTENDEE_LIST_RESOLVED is empty. Nothing to generate.')
         return 0
 
+    individual_mode = _is_truthy(_env('AZURE_INDIVIDUAL_MODE'))
+
     env_name = _env('AZURE_ENV_NAME', 'workshop').strip() or 'workshop'
     foundry_name = _env('FOUNDRY_RESOURCE_NAME').strip()
     foundry_custom_domain_name = _env('FOUNDRY_CUSTOM_DOMAIN_NAME').strip()
@@ -718,17 +724,17 @@ def main() -> int:  # pylint: disable=too-many-locals
         attendee_portal_url=attendee_portal_url,
     )
 
-    _upload_onboarding_markdowns(
-        audit_dir=audit_dir,
-        storage_account_name=storage_account_name,
-        onboarding_container=onboarding_container,
-    )
-
-    _upload_onboarding_index(
-        index=index,
-        storage_account_name=storage_account_name,
-        onboarding_container=onboarding_container,
-    )
+    if not individual_mode:
+        _upload_onboarding_markdowns(
+            audit_dir=audit_dir,
+            storage_account_name=storage_account_name,
+            onboarding_container=onboarding_container,
+        )
+        _upload_onboarding_index(
+            index=index,
+            storage_account_name=storage_account_name,
+            onboarding_container=onboarding_container,
+        )
 
     audit_path = _write_provisioning_summary(
         resolved=resolved,
@@ -755,6 +761,25 @@ def main() -> int:  # pylint: disable=too-many-locals
             f'\nWarning: {unresolved_count} attendee(s) were not resolved during preprovision. '
             'No RBAC role assignments were created for those attendees by Bicep.'
         )
+
+    if individual_mode and len(resolved) == 1:
+        resolved_entry = resolved[0]
+        env_dict = _build_attendee_env_dict(
+            project_name=str(resolved_entry.get('projectName', '')),
+            subscription_id=subscription_id,
+            resource_group=resource_group,
+            foundry_name=foundry_name,
+            foundry_custom_domain_name=foundry_custom_domain_name,
+            search_service_name=search_service_name,
+            container_registry_name=container_registry_name,
+            container_registry_endpoint=container_registry_endpoint,
+            mcp_server_url=mcp_server_url,
+            flight_ops_mcp_server_url=flight_ops_mcp_server_url,
+        )
+        env_path = Path(__file__).resolve().parent.parent / 'shared' / '.env'
+        env_path.write_text(_env_dict_to_str(env_dict) + '\n', encoding='utf-8')
+        print(f'\n\u2705 Individual mode: environment written to {env_path}')
+        print('  Review shared/.env and run: python scripts/health-check.py')
 
     return 0
 

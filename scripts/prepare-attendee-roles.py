@@ -32,6 +32,11 @@ Environment variables (set via `azd env set`):
   AZURE_USE_UPN_PROJECT_NAMES       When true (default), project names are derived from
                                     the attendee UPN local part (before @, with '.' and '_'
                                     replaced by '-') instead of sequential prefix-NN names.
+  AZURE_INDIVIDUAL_MODE            When 'true', activate individual mode: the deploying
+                                    user (AZURE_PRINCIPAL_ID) becomes the sole attendee.
+                                    AZURE_ATTENDEE_LIST is not required. The Foundry project
+                                    name is derived from the signed-in UPN local part.
+                                    Defaults to 'false'.
   AZURE_ENV_NAME                    azd environment name (used in the audit CSV filename).
 """
 
@@ -306,6 +311,66 @@ def _write_resolution_audit(
     return audit_path
 
 
+def _is_truthy(value: object) -> bool:
+    return str(value).strip().lower() not in ('', 'false', '0', 'no', 'off')
+
+
+def _get_current_upn() -> str:
+    """Return the UPN of the signed-in Azure CLI user, or '' on failure."""
+    result = _run_az(['account', 'show', '--query', 'user.name', '-o', 'tsv'])
+    if result.returncode != 0:
+        return ''
+    return result.stdout.strip()
+
+
+def _run_individual_mode(
+    attendee_prefix: str,
+    default_role: str,
+    env_name: str,
+) -> int:
+    """Synthesise a single resolved-attendee entry for individual (solo) mode.
+
+    The deploying user (AZURE_PRINCIPAL_ID) becomes the sole attendee. Their UPN
+    is derived from `az account show` and used for project name derivation, matching
+    the UPN-derived name logic used in multi-attendee mode.
+    """
+    principal_id = os.getenv('AZURE_PRINCIPAL_ID', '').strip()
+    if not principal_id:
+        print(
+            'AZURE_INDIVIDUAL_MODE is enabled but AZURE_PRINCIPAL_ID is not set. '
+            'Run `azd auth login` then re-run `azd provision`.'
+        )
+        return 1
+
+    upn = _get_current_upn()
+    project_name = _upn_to_project_name(upn) if upn else f'{attendee_prefix}-01'
+    display_name = upn or principal_id
+
+    print(
+        f'Individual mode: provisioning as {display_name} '
+        f'(project: {project_name}, role: {default_role})'
+    )
+
+    entry: dict[str, object] = {
+        'upn': upn or principal_id,
+        'objectId': principal_id,
+        'projectName': project_name,
+        'role': default_role,
+        'individualProject': True,
+        'resolved': True,
+    }
+
+    _emit_resolved_list([entry])
+    print('AZURE_ATTENDEE_LIST_RESOLVED written to azd environment.')
+
+    audit_dir = Path('.azure') / env_name
+    audit_dir.mkdir(parents=True, exist_ok=True)
+    audit_path = _write_resolution_audit([entry], audit_dir, env_name)
+    print(f'Resolution audit written to {audit_path}.')
+
+    return 0
+
+
 # ---------- main ----------
 
 def main() -> int:  # pylint: disable=too-many-locals
@@ -321,6 +386,20 @@ def main() -> int:  # pylint: disable=too-many-locals
         return 1
 
     if not attendees:
+        if _is_truthy(os.getenv('AZURE_INDIVIDUAL_MODE', '')):
+            attendee_prefix = (
+                os.getenv('AZURE_ATTENDEE_PROJECT_PREFIX', 'attendee').strip() or 'attendee'
+            )
+            default_role = (
+                os.getenv('AZURE_ATTENDEE_DEFAULT_ROLE', DEFAULT_ROLE_KEY).strip()
+                or DEFAULT_ROLE_KEY
+            )
+            env_name = os.getenv('AZURE_ENV_NAME', 'workshop').strip() or 'workshop'
+            return _run_individual_mode(
+                attendee_prefix=attendee_prefix,
+                default_role=default_role,
+                env_name=env_name,
+            )
         print('AZURE_ATTENDEE_LIST is not set or empty. Skipping UPN resolution.')
         print(
             'Bicep will use attendeeCount for sequential project names; '

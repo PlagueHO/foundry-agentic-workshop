@@ -14,6 +14,7 @@ Build and deliver a 3–4 hour, facilitator-led workshop for agentic application
 Not sure where to start? Pick your situation:
 
 * 🏗️ **Organizing a lab for your team?** You need to provision the shared Azure environment before anyone can attend. Start with the [Organizer Quickstart](./quickstart-organizer.md).
+* 🧑‍💻 **Learning solo (no team, no attendee list)?** Use individual mode to provision your own environment with a single command. Start with the [Individual Quickstart](./quickstart-individual.md).
 * 🎓 **Attending a lab someone has set up for you?** Your organizer will send you connection details. Start with the [Attendee Quickstart](./quickstart-attendee.md).
 * 🎤 **Delivering the session live as a facilitator?** Start with the [Facilitator Quickstart](./quickstart-facilitator.md).
 * 🔍 **Not sure which lab to do?** Browse [Available labs](#available-labs) below and pick a series that matches your goals.
@@ -52,8 +53,9 @@ Proctors provide 1:1 floor support during delivery so the facilitator can keep t
 Pick the path that matches your role.
 
 | Role | Required | Start with | Then read |
-|------|----------|------------|-----------|
+|------|----------|------------|----------|
 | Organizer | Yes | [Organizer Quickstart](./quickstart-organizer.md) | [Organizer Guide](./guide-organizer.md) |
+| Individual learner | — | [Individual Quickstart](./quickstart-individual.md) | [Individual Guide](./guide-individual.md) |
 | Attendee | Yes | [Attendee Quickstart](./quickstart-attendee.md) | [Attendee Guide](./guide-attendee.md) |
 | Facilitator | No | [Facilitator Quickstart](./quickstart-facilitator.md) | [Facilitator Guide](./guide-facilitator.md) |
-| Proctor | No | [Proctor Guide](./guide-proctor.md) | - |
+| Proctor | No | [Proctor Guide](./guide-proctor.md) | — |
