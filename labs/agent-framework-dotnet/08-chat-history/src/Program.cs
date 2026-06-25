@@ -45,10 +45,10 @@ var credential = new AzureCliCredential();
 // Console.WriteLine();
 //
 // Console.ForegroundColor = ConsoleColor.Green;
-// Console.WriteLine($"[Agent] {await agent.RunAsync(
-//     "My name is Emma Chen. Flight AU123 AKL→SYD was cancelled with only 3 hours' notice. " +
+// Console.WriteLine($"[Agent] {(await agent.RunAsync(
+//     "My name is Emma Chen. Flight AU123 AKL\u2192SYD was cancelled with only 3 hours' notice. " +
 //     "What should I do first?",
-//     session: session)}");
+//     session: session)).Text}");
 // Console.ResetColor();
 // Console.WriteLine();
 //
@@ -58,9 +58,9 @@ var credential = new AzureCliCredential();
 // Console.WriteLine();
 //
 // Console.ForegroundColor = ConsoleColor.Green;
-// Console.WriteLine($"[Agent] {await agent.RunAsync(
+// Console.WriteLine($"[Agent] {(await agent.RunAsync(
 //     "What is the standard compensation for a short-notice cancellation like mine?",
-//     session: session)}");
+//     session: session)).Text}");
 // Console.ResetColor();
 // Console.WriteLine();
 //
@@ -93,9 +93,9 @@ var credential = new AzureCliCredential();
 // Console.WriteLine();
 //
 // Console.ForegroundColor = ConsoleColor.Green;
-// Console.WriteLine($"[Agent] {await agent.RunAsync(
+// Console.WriteLine($"[Agent] {(await agent.RunAsync(
 //     "Sorry, what was my flight number again?",
-//     session: restoredSession)}");
+//     session: restoredSession)).Text}");
 // Console.ResetColor();
 // Console.WriteLine();
 //

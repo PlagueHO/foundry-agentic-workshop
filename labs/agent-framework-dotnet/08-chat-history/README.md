@@ -28,11 +28,11 @@ Every `AIAgent` session is a lightweight object that contains the conversation h
 // Capture
 JsonElement snapshot = await agent.SerializeSessionAsync(session);
 
-// Restore (can be done on a completely new AIAgent instance)
-IAgentSession restored = await agent.DeserializeSessionAsync(snapshot);
+// Restore — the same agent instance can be reused
+AgentSession restored = await agent.DeserializeSessionAsync(snapshot);
 ```
 
-This is the foundation for persistent chat history, resumable workflows, and stateful Foundry Hosted Agents.
+This is the foundation for persistent chat history, resumable workflows, and stateful Foundry Hosted Agents. For more details, see the [Microsoft Agent Framework documentation](https://learn.microsoft.com/en-us/agent-framework/overview/).
 
 ### What is preserved
 
@@ -88,7 +88,7 @@ This is the foundation for persistent chat history, resumable workflows, and sta
 - [ ] Locate `// ── TODO 4` and replace the commented-out block with the restore and recall code already commented out there.
 
   > [!NOTE]
-  > Create a **fresh** `AIAgent` instance before calling `DeserializeSessionAsync`. This simulates a real application restart, where the original agent object no longer exists.
+  > The existing `AIAgent` instance can be reused — the agent is stateless; only the session holds conversation history. In a real application you would reload the JSON snapshot from a database or file before calling `DeserializeSessionAsync`.
 
 ### Part 2 — Run and verify
 
@@ -102,12 +102,12 @@ This is the foundation for persistent chat history, resumable workflows, and sta
 
 ## Validation
 
-- The console shows `[Session] State serialised.` then `[Session] Simulating restart...`.
+- The console shows `[Session] State serialised. Simulating app restart...`.
 - After the simulated restart, the agent correctly answers `"My flight AU123"` when asked to recall the flight number from the original conversation.
 
 ## Congratulations 🎉
 
-You captured a full session snapshot and restored it into a brand-new agent instance. The restored agent recalled the flight number and passenger name from before the simulated restart — exactly what a real-world resumable support portal would need.
+You captured a full session snapshot and restored it into a new `AgentSession`. The restored session recalled the flight number from before the simulated restart — exactly what a real-world resumable support portal would need.
 
 > [!TIP]
 > **Next up → [Module 09: Multi-agent Orchestration](../09-multi-agent/README.md)**
@@ -119,4 +119,5 @@ You captured a full session snapshot and restored it into a brand-new agent inst
 |---|---|
 | Restored agent does not remember the flight | Ensure you pass the same `session` object to both turns before serialising |
 | `JsonException` on deserialise | The snapshot must be the raw `JsonElement` returned by `SerializeSessionAsync` |
+| `AuthenticationFailedException` | Run `az login` and confirm you have the Foundry User role on the project |
 | `NotImplementedException` | A TODO is still incomplete |

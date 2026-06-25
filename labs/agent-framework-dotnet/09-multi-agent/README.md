@@ -2,7 +2,7 @@
 
 **Estimated time:** 25 minutes
 
-![Microsoft Agent Framework multi-agent architecture diagram: an orchestrating agent receives a user request and delegates to specialist agents. Each specialist agent has its own instructions, tools, and knowledge, and returns a result to the orchestrator, which composes the final response.](../../../docs/assets/diagrams/agent-framework-agent-systems.png)
+![Diagram showing an orchestrating concierge agent routing queries to three specialist agents — rebooking, accommodation, and compensation — using the connected-agents pattern](../../../docs/assets/diagrams/multi-agent-orchestration-patterns.png)
 
 > [!IMPORTANT]
 > This module builds on [Module 02](../02-first-agent/README.md). You should be comfortable creating `AIAgent` instances before continuing.
@@ -26,20 +26,57 @@ A single agent with broad instructions often produces inconsistent results. The 
 
 This improves quality because each agent's instructions are shorter and more focused, and reduces the risk of one concern interfering with another.
 
-### WithAgentSkill
+### Orchestration patterns
 
-`.WithAgentSkill()` registers an `AIAgent` as a callable skill on the orchestrator. The orchestrator treats the skill like a tool: it calls it with a natural-language description of the task, receives a response, and incorporates the result into its own reply:
+The [Azure Architecture Center](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns) defines five proven patterns for coordinating multiple agents. Each is optimised for a different type of coordination requirement.
+
+| Pattern | Also known as | How it works | Best for |
+|---|---|---|---|
+| **Sequential** | Pipeline, prompt chaining | Agents run in a defined linear order; each receives the previous agent's output | Step-by-step workflows with clear stage dependencies |
+| **Concurrent** | Parallel, fan-out/fan-in | Multiple agents process the same input simultaneously; results are aggregated | Independent analysis from multiple perspectives |
+| **Group chat** | Roundtable, collaborative | Agents contribute to a shared conversation thread managed by a chat manager | Consensus-building, brainstorming, and maker-checker validation |
+| **Handoff** | Routing, triage, dispatch | One agent at a time; each can assess a task and transfer control to a more appropriate agent | Tasks where the right specialist only emerges during processing |
+| **Magentic** | Dynamic orchestration | A manager agent builds and refines a task ledger dynamically | Open-ended problems with no predetermined solution path |
+
+This module demonstrates the **handoff** pattern: the Trip Disruption Concierge determines which domain a query belongs to and delegates to the appropriate specialist. The routing is non-deterministic — the model decides which specialist to invoke — and the concierge incorporates the specialist's result into its own final response.
+
+> [!NOTE]
+> Before adopting multi-agent orchestration, evaluate whether a single agent with well-configured tools would suffice. The Azure Architecture Center guidance recommends using the lowest level of complexity that reliably meets your requirements — each additional agent introduces coordination overhead, latency, and failure modes.
+
+### Agents as function tools
+
+The Agent Framework exposes a connected agent to an orchestrator by wrapping it as a callable tool with `.AsAIFunction()`. The orchestrator receives each specialist as an entry in its `tools:` collection — the same parameter used for regular C# function tools:
 
 ```csharp
-var concierge = client
-    .AsAIAgent(model: model, instructions: "...")
-    .WithAgentSkill(
-        rebookingSpecialist,
-        "RebookFlight",
-        "Find alternative flight options for a disrupted passenger.");
+var concierge = client.AsAIAgent(
+    model: model,
+    instructions: "...",
+    tools:
+    [
+        rebookingSpecialist.AsAIFunction(),
+        accommodationSpecialist.AsAIFunction(),
+        compensationSpecialist.AsAIFunction(),
+    ]);
 ```
 
-When the concierge's instructions tell it to call `RebookFlight`, the framework routes the request to `rebookingSpecialist` and returns the result.
+When the model decides to delegate, the framework invokes the matching specialist and returns its response to the concierge.
+
+> [!NOTE]
+> `.AsAIFunction()` is available via the `Microsoft.Agents.AI` namespace, which is transitively available when you reference `Microsoft.Agents.AI.Foundry`.
+
+### Implementation considerations
+
+The [Azure Architecture Center guidance](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns) highlights several factors that directly affect routing quality and system reliability in multi-agent systems.
+
+**Accurate, distinct tool descriptions** — the concierge uses each specialist's description (passed to `.AsAIFunction()`) to decide where to route a query. Vague or overlapping descriptions cause misrouting. Name the domain explicitly and make each description different from the others.
+
+**Instruction clarity** — each specialist must be told in its instructions that it covers exactly one domain and must not handle other topics. Without this, the model may try to answer everything itself rather than respecting boundaries.
+
+**Context and state management** — every agent call adds its own reasoning and results to the context window. For this module's simple three-query flow, the default context passing is appropriate. For longer pipelines or many agents, plan for context compaction to stay within model limits and avoid quality degradation.
+
+**Reliability** — surface errors rather than hiding them so that the orchestrator can respond appropriately. Validate agent output before passing it downstream. For production systems, add timeout and retry logic and consider circuit-breaker patterns for agent dependencies.
+
+**Avoid unnecessary agents** — a common pitfall is adding agents that do not provide meaningful specialisation. If a single agent with three function tools can produce the same quality of responses, that is a simpler and faster solution. Add separate agents when specialisation genuinely improves quality, when security boundaries require it, or when agents are reused across multiple orchestrations.
 
 ## Steps
 
@@ -153,6 +190,6 @@ You built a multi-agent system where a concierge orchestrates three specialist a
 
 | Symptom | Fix |
 |---|---|
-| Concierge answers without calling specialists | Strengthen the routing instructions in the concierge system prompt |
-| `WithAgentSkill` not found | Confirm `Microsoft.Agents.AI.Foundry` prerelease package is restored |
-| `NotImplementedException` | A TODO is still incomplete |
+| Concierge answers without calling specialists | Strengthen the routing instructions in the concierge system prompt using directive language (`NEVER`, `ALWAYS`) |
+| `AuthenticationFailedException` | Run `az login` and confirm your account has the Foundry User role on the project |
+| `NotImplementedException` | A TODO is still incomplete — check the starter code |
