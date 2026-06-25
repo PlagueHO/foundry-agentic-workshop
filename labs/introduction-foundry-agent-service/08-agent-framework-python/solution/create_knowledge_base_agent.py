@@ -48,9 +48,9 @@ Optional environment variables:
   AZURE_SEARCH_ADMIN_KEY     If set, used instead of DefaultAzureCredential for
                              search control-plane calls.
   KNOWLEDGE_BASE_CONNECTION_NAME     Default: <KNOWLEDGE_BASE_NAME>-mcp
-  MCP_SERVER_URL             retail-remedy-ops MCP URL (Module 06). When set, the
+  RETAIL_REMEDY_OPS_MCP_SERVER_URL  retail-remedy-ops MCP URL (Module 06). When set, the
                              agent also gets the retail-remedy-ops tool.
-  MCP_SERVER_LABEL           Default: retail_remedy_ops
+  RETAIL_REMEDY_OPS_MCP_SERVER_LABEL  Default: retail_remedy_ops
   FOUNDRY_PROJECT_RESOURCE_ID         Override the constructed ARM resource ID.
   FOUNDRY_CONNECTION_API_VERSION      Default: 2025-10-01-preview
   KB_MCP_API_VERSION         Default: 2026-05-01-preview
@@ -319,8 +319,8 @@ def run() -> None:
         ),
     ]
 
-    mcp_server_url = os.environ.get('MCP_SERVER_URL', '').strip()
-    mcp_server_label = os.environ.get('MCP_SERVER_LABEL', 'retail_remedy_ops')
+    mcp_server_url = os.environ.get('RETAIL_REMEDY_OPS_MCP_SERVER_URL', '').strip()
+    mcp_server_label = os.environ.get('RETAIL_REMEDY_OPS_MCP_SERVER_LABEL', 'retail_remedy_ops')
     if mcp_server_url:
         tools.append(
             MCPTool(
@@ -332,8 +332,8 @@ def run() -> None:
         print(f'Including retail-remedy-ops MCP tool: {mcp_server_label} at {mcp_server_url}')
     else:
         print(
-            'MCP_SERVER_URL is not set — creating the agent without the retail-remedy-ops tool. '
-            'Set MCP_SERVER_URL (Module 06) and re-run to include it.'
+            'RETAIL_REMEDY_OPS_MCP_SERVER_URL is not set — creating the agent without the retail-remedy-ops tool. '
+            'Set RETAIL_REMEDY_OPS_MCP_SERVER_URL (Module 06) and re-run to include it.'
         )
 
     client = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())

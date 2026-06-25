@@ -16,7 +16,7 @@ project to a known-good state. It performs the same work as the UI:
    that targets the knowledge base MCP endpoint.
 1. Creates a new **version** of the `acl-remedy-advisor` Prompt Agent that
    attaches the knowledge base as an MCP tool alongside Web search, Code
-   Interpreter, and (when `MCP_SERVER_URL` is set) the `retail-remedy-ops` MCP
+   Interpreter, and (when `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set) the `retail-remedy-ops` MCP
    server, with the tool-routing instructions from Part 5.
 
 ## Idempotency
@@ -51,7 +51,7 @@ Required: `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_SEARCH_SERVICE_NAME`,
 
 Optional: `AGENT_NAME`, `AGENT_MODEL`, `AZURE_SEARCH_PRODUCT_INDEX_NAME`,
 `AZURE_SEARCH_DOCUMENT_INDEX_NAME`, `AZURE_SEARCH_ADMIN_KEY`,
-`KNOWLEDGE_BASE_CONNECTION_NAME`, `MCP_SERVER_URL`, `MCP_SERVER_LABEL`,
+`KNOWLEDGE_BASE_CONNECTION_NAME`, `RETAIL_REMEDY_OPS_MCP_SERVER_URL`, `RETAIL_REMEDY_OPS_MCP_SERVER_LABEL`,
 `FOUNDRY_CONNECTION_API_VERSION`, `KB_MCP_API_VERSION`, `SKIP_PROJECT_CONNECTION`.
 
 See the script docstring for the full description of each variable. If the

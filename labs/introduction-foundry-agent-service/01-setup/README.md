@@ -87,7 +87,7 @@ Install the following before continuing:
 - [ ] Run the health check to validate your environment:
 
    ```bash
-   python scripts/health-check.py
+   python labs/introduction-foundry-agent-service/shared/health-check.py
    ```
 
 - [ ] Sign in to the [Foundry portal](https://ai.azure.com).
@@ -119,7 +119,7 @@ Install the following before continuing:
 
 - `az login` succeeds and the active subscription matches the workshop subscription.
 - All required `.env` values are populated.
-- `python scripts/health-check.py` reports a healthy environment.
+- `python labs/introduction-foundry-agent-service/shared/health-check.py` reports a healthy environment.
 - Your assigned project is visible in the [Foundry portal](https://ai.azure.com).
 
 ## Congratulations 🎉

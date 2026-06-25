@@ -45,6 +45,15 @@ node_modules/
 .DS_Store
 Thumbs.db
 
+# .NET / C#
+bin/
+obj/
+.vs/
+*.user
+TestResults/
+*.nupkg
+*.snupkg
+
 # Editor/IDE local files
 *.swp
 *.swo

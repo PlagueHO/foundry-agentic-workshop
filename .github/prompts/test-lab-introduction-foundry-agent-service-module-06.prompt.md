@@ -49,13 +49,13 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. In the Codespace terminal, run:
 
    ```bash
-   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|AGENT_NAME|MCP_SERVER_URL'
+   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|AGENT_NAME|RETAIL_REMEDY_OPS_MCP_SERVER_URL'
    ```
 
 1. Confirm `FOUNDRY_PROJECT_ENDPOINT` is populated with a non-empty value.
 1. Confirm `AGENT_NAME` is set to `acl-remedy-advisor`.
-1. Confirm `MCP_SERVER_URL` is populated with the shared **Azure Container Apps** MCP server URL the organizer deployed. It ends in `/mcp` and the host looks like `https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp`.
-1. If `.env` does not exist, confirm with the user that module 01 has been completed, then copy `shared/.env.example` to `.env` and populate `FOUNDRY_PROJECT_ENDPOINT` and `MCP_SERVER_URL` from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`).
+1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is populated with the shared **Azure Container Apps** MCP server URL the organizer deployed. It ends in `/mcp` and the host looks like `https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp`.
+1. If `.env` does not exist, confirm with the user that module 01 has been completed, then copy `shared/.env.example` to `.env` and populate `FOUNDRY_PROJECT_ENDPOINT` and `RETAIL_REMEDY_OPS_MCP_SERVER_URL` from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`).
 
 ### Check 5 — Confirm the `acl-remedy-advisor` agent exists at the end state of module 05
 
@@ -84,30 +84,30 @@ This module requires the `acl-remedy-advisor` agent to already exist with both *
 
 ## Part 1 — Confirm the deployed MCP server
 
-By default the organizer deploys the shared **Retail Remedy Operations** MCP server to **Azure Container Apps**, and its public HTTPS URL is already in the attendee's `.env` file as `MCP_SERVER_URL`. Nothing needs to run locally — the agent calls the deployed server directly, and this URL must always be present in `.env`.
+By default the organizer deploys the shared **Retail Remedy Operations** MCP server to **Azure Container Apps**, and its public HTTPS URL is already in the attendee's `.env` file as `RETAIL_REMEDY_OPS_MCP_SERVER_URL`. Nothing needs to run locally — the agent calls the deployed server directly, and this URL must always be present in `.env`.
 
 ### Step 1 — Confirm the deployed MCP server URL
 
 1. In the Codespace terminal, print the configured URL:
 
    ```bash
-   grep '^MCP_SERVER_URL=' .env
+   grep '^RETAIL_REMEDY_OPS_MCP_SERVER_URL=' .env
    ```
 
-1. Confirm `MCP_SERVER_URL` is set to the shared Azure Container Apps URL. It ends in `/mcp` and the host looks like:
+1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set to the shared Azure Container Apps URL. It ends in `/mcp` and the host looks like:
 
    ```text
    https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp
    ```
 
-   **Check:** If `MCP_SERVER_URL` is empty, populate it from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`. The `.env` file must always contain this value before continuing.
+   **Check:** If `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is empty, populate it from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`. The `.env` file must always contain this value before continuing.
 
 ### Step 2 — Verify the deployed server is reachable
 
 1. Confirm the deployed endpoint responds by running:
 
    ```bash
-   curl -s -o /dev/null -w "%{http_code}" "$(grep '^MCP_SERVER_URL=' .env | cut -d= -f2-)"
+   curl -s -o /dev/null -w "%{http_code}" "$(grep '^RETAIL_REMEDY_OPS_MCP_SERVER_URL=' .env | cut -d= -f2-)"
    ```
 
 1. Confirm the HTTP status code is `200`, `405`, or `406` (a non-connection response confirms the endpoint is reachable).
@@ -129,10 +129,10 @@ If the shared Azure Container Apps server is unavailable, or you want to run and
    Confirm it prints `Starting Retail Remedy Operations MCP server on http://0.0.0.0:8080/mcp`.
 
 1. In the VS Code **PORTS** panel, forward port `8080`, then right-click the row and set **Port Visibility** → **Public**. A private port returns `403` to the Azure-hosted agent.
-1. Copy the forwarded address, append `/mcp`, and set `MCP_SERVER_URL` in `.env` to the full tunnel URL:
+1. Copy the forwarded address, append `/mcp`, and set `RETAIL_REMEDY_OPS_MCP_SERVER_URL` in `.env` to the full tunnel URL:
 
    ```bash
-   echo "MCP_SERVER_URL=<tunnel-url>" >> .env
+   echo "RETAIL_REMEDY_OPS_MCP_SERVER_URL=<tunnel-url>" >> .env
    ```
 
 1. Verify reachability with the same `curl` command from Step 2.
@@ -157,7 +157,7 @@ If the shared Azure Container Apps server is unavailable, or you want to run and
    | Field | Value |
    |---|---|
    | Label / Name | `retail_remedy_ops` |
-   | Server URL | Your `MCP_SERVER_URL` from `.env`, ending in `/mcp` |
+   | Server URL | Your `RETAIL_REMEDY_OPS_MCP_SERVER_URL` from `.env`, ending in `/mcp` |
    | Authentication | None / Anonymous |
 
 1. Confirm and save the MCP tool connection. Agent Builder discovers the tools from the server's `/mcp` endpoint.
@@ -175,7 +175,7 @@ If the shared Azure Container Apps server is unavailable, or you want to run and
    python labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py
    ```
 
-   Confirm `MCP_SERVER_URL` is set in `.env` before running. After the script completes, re-open `acl-remedy-advisor` in Agent Builder and verify the six tools are listed.
+   Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set in `.env` before running. After the script completes, re-open `acl-remedy-advisor` in Agent Builder and verify the six tools are listed.
 
    **Check:** If only some tools appear (fewer than six), the deployed server may be unhealthy. Re-run the `curl` reachability check from Step 2, and if it fails ask the user to confirm the shared MCP server status with the organizer.
 
@@ -252,7 +252,7 @@ If the shared Azure Container Apps server is unavailable, or you want to run and
 1. Confirm the final response includes a clear remedy recommendation.
 1. Take a screenshot of the run trace showing the MCP tool calls and Code Interpreter call.
 
-   **Check:** If MCP tool calls do not appear in the trace, confirm the MCP tool instructions were saved (Step 6) and the MCP tool shows in the TOOL section of Agent Builder. Also confirm `MCP_SERVER_URL` still points at the deployed server and that the `curl` reachability check from Step 2 succeeds.
+   **Check:** If MCP tool calls do not appear in the trace, confirm the MCP tool instructions were saved (Step 6) and the MCP tool shows in the TOOL section of Agent Builder. Also confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` still points at the deployed server and that the `curl` reachability check from Step 2 succeeds.
 
    **Check:** If Code Interpreter does not appear in the trace, the calculation may have been answered from general knowledge. Try adding the phrase *"Show your working using code."* to the prompt to force Code Interpreter.
 
@@ -290,7 +290,7 @@ If the shared Azure Container Apps server is unavailable, or you want to run and
 
 Work through each item in the lab's Validation section and confirm:
 
-1. `MCP_SERVER_URL` in `.env` is set to the shared Azure Container Apps URL ending in `/mcp`.
+1. `RETAIL_REMEDY_OPS_MCP_SERVER_URL` in `.env` is set to the shared Azure Container Apps URL ending in `/mcp`.
 1. The deployed MCP server responds to the `curl` reachability check (status `200`, `405`, or `406`).
 1. `acl-remedy-advisor` in Agent Builder shows all six MCP tool names (`lookup_purchase`, `get_product_profile`, `search_store_policy`, `find_replacement_options`, `draft_remedy_summary`, `create_remedy_case`) in its tool list.
 1. The Agent Builder header shows `acl-remedy-advisor | Microsoft Foundry | v3` after saving.

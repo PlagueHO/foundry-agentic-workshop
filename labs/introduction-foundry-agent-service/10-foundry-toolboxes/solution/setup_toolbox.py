@@ -15,8 +15,8 @@ The script:
 Prerequisites:
   - MCP server running and publicly accessible via a dev tunnel or port
     forwarding (see Module 06 README, Part 2).
-  - MCP_SERVER_URL set in your .env file to the public tunnel URL plus /mcp.
-    Example: MCP_SERVER_URL=https://abc123-8080.devtunnels.ms/mcp
+  - RETAIL_REMEDY_OPS_MCP_SERVER_URL set in your .env file to the public tunnel URL plus /mcp.
+    Example: RETAIL_REMEDY_OPS_MCP_SERVER_URL=https://abc123-8080.devtunnels.ms/mcp
 
 Usage:
     python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py
@@ -52,13 +52,13 @@ def run() -> None:
 
     endpoint = os.environ['FOUNDRY_PROJECT_ENDPOINT']
     toolbox_name = os.environ.get('TOOLBOX_NAME', 'acl-remedy-toolbox')
-    mcp_server_url = os.environ.get('MCP_SERVER_URL', '').strip()
+    mcp_server_url = os.environ.get('RETAIL_REMEDY_OPS_MCP_SERVER_URL', '').strip()
 
     if not mcp_server_url:
         raise ValueError(
-            'MCP_SERVER_URL is not set. Start the MCP server (server.py), expose it via a dev '
-            'tunnel or port forward, then set MCP_SERVER_URL to the public URL plus /mcp in your '
-            '.env file. Example: MCP_SERVER_URL=https://abc123-8080.devtunnels.ms/mcp'
+            'RETAIL_REMEDY_OPS_MCP_SERVER_URL is not set. Start the MCP server (server.py), expose it via a dev '
+            'tunnel or port forward, then set RETAIL_REMEDY_OPS_MCP_SERVER_URL to the public URL plus /mcp in your '
+            '.env file. Example: RETAIL_REMEDY_OPS_MCP_SERVER_URL=https://abc123-8080.devtunnels.ms/mcp'
         )
 
     client = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())

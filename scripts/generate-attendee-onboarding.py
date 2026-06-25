@@ -29,8 +29,10 @@ Environment variables (azd outputs populated after provisioning):
   AZURE_CONTAINER_REGISTRY_NAME      Azure Container Registry name for hosted agents
                                 (azd output).
   AZURE_CONTAINER_REGISTRY_ENDPOINT  Azure Container Registry login server (azd output).
-  MCP_SERVER_URL                Shared MCP server URL (azd output). Empty when the
+  RETAIL_REMEDY_OPS_MCP_SERVER_URL  Shared MCP server URL (azd output). Empty when the
                                 Container Apps deployment is disabled.
+  FLIGHT_OPS_MCP_SERVER_URL     Flight operations MCP server URL (azd output). Empty
+                                when the Container Apps deployment is disabled.
   AZURE_SUBSCRIPTION_ID         Subscription ID (required; set automatically by azd
                                 after provision).
   AZURE_ENV_NAME                azd environment name (used in the audit CSV filename).
@@ -154,10 +156,11 @@ def _build_attendee_env_dict(  # pylint: disable=too-many-arguments,too-many-pos
     container_registry_name: str,
     container_registry_endpoint: str,
     mcp_server_url: str,
+    flight_ops_mcp_server_url: str,
 ) -> dict[str, str]:
     """Build the .env key/value dict for an attendee.
 
-    Optional keys (search service, container registry, MCP server URL) are omitted
+    Optional keys (search service, container registry, MCP server URLs) are omitted
     when not configured so consumers can distinguish "not set" from an empty string.
     Single source of truth for env content — used by both the onboarding index and
     the per-attendee markdown files.
@@ -186,10 +189,14 @@ def _build_attendee_env_dict(  # pylint: disable=too-many-arguments,too-many-pos
         env['AZURE_CONTAINER_REGISTRY_NAME'] = container_registry_name
     if container_registry_endpoint:
         env['AZURE_CONTAINER_REGISTRY_ENDPOINT'] = container_registry_endpoint
-    env['MCP_SERVER_PORT'] = '8080'
+    env['RETAIL_REMEDY_OPS_MCP_SERVER_PORT'] = '8080'
     if mcp_server_url:
-        env['MCP_SERVER_URL'] = mcp_server_url
-    env['MCP_SERVER_LABEL'] = 'retail_remedy_ops'
+        env['RETAIL_REMEDY_OPS_MCP_SERVER_URL'] = mcp_server_url
+    env['RETAIL_REMEDY_OPS_MCP_SERVER_LABEL'] = 'retail_remedy_ops'
+    if flight_ops_mcp_server_url:
+        env['FLIGHT_OPS_MCP_SERVER_URL'] = flight_ops_mcp_server_url
+    env['FLIGHT_OPS_MCP_SERVER_LABEL'] = 'flight_ops'
+    env['AZURE_SEARCH_PASSENGER_RIGHTS_INDEX_NAME'] = 'passenger-rights'
     return env
 
 
@@ -295,6 +302,7 @@ def _build_onboarding_index(  # pylint: disable=too-many-arguments,too-many-posi
     container_registry_name: str,
     container_registry_endpoint: str,
     mcp_server_url: str,
+    flight_ops_mcp_server_url: str,
     attendee_portal_url: str,
 ) -> dict[str, object]:
     """Build the attendee onboarding index dict.
@@ -325,6 +333,7 @@ def _build_onboarding_index(  # pylint: disable=too-many-arguments,too-many-posi
             container_registry_name=container_registry_name,
             container_registry_endpoint=container_registry_endpoint,
             mcp_server_url=mcp_server_url,
+            flight_ops_mcp_server_url=flight_ops_mcp_server_url,
         )
         markdown_content = _build_attendee_markdown_content(
             upn_local=upn_local,
@@ -563,6 +572,7 @@ def _write_attendee_markdowns(  # pylint: disable=too-many-arguments,too-many-po
     container_registry_name: str,
     container_registry_endpoint: str,
     mcp_server_url: str,
+    flight_ops_mcp_server_url: str,
     attendee_portal_url: str = '',
 ) -> list[Path]:
     """Write a per-attendee onboarding markdown file to audit_dir for resolved attendees."""
@@ -584,6 +594,7 @@ def _write_attendee_markdowns(  # pylint: disable=too-many-arguments,too-many-po
             container_registry_name=container_registry_name,
             container_registry_endpoint=container_registry_endpoint,
             mcp_server_url=mcp_server_url,
+            flight_ops_mcp_server_url=flight_ops_mcp_server_url,
         )
         content = _build_attendee_markdown_content(
             upn_local=upn_local,
@@ -648,7 +659,8 @@ def main() -> int:  # pylint: disable=too-many-locals
     search_service_name = _env('AZURE_SEARCH_SERVICE_NAME').strip()
     container_registry_name = _env('AZURE_CONTAINER_REGISTRY_NAME').strip()
     container_registry_endpoint = _env('AZURE_CONTAINER_REGISTRY_ENDPOINT').strip()
-    mcp_server_url = _env('MCP_SERVER_URL').strip()
+    mcp_server_url = _env('RETAIL_REMEDY_OPS_MCP_SERVER_URL').strip()
+    flight_ops_mcp_server_url = _env('FLIGHT_OPS_MCP_SERVER_URL').strip()
     attendee_portal_url = _env('ATTENDEE_PORTAL_URL').strip()
     storage_account_name = _env('AZURE_STORAGE_ACCOUNT_NAME').strip()
     onboarding_container = _env('ATTENDEE_ONBOARDING_CONTAINER', 'attendee-onboarding').strip()
@@ -683,6 +695,7 @@ def main() -> int:  # pylint: disable=too-many-locals
         container_registry_name=container_registry_name,
         container_registry_endpoint=container_registry_endpoint,
         mcp_server_url=mcp_server_url,
+        flight_ops_mcp_server_url=flight_ops_mcp_server_url,
         attendee_portal_url=attendee_portal_url,
     )
 
@@ -701,6 +714,7 @@ def main() -> int:  # pylint: disable=too-many-locals
         container_registry_name=container_registry_name,
         container_registry_endpoint=container_registry_endpoint,
         mcp_server_url=mcp_server_url,
+        flight_ops_mcp_server_url=flight_ops_mcp_server_url,
         attendee_portal_url=attendee_portal_url,
     )
 

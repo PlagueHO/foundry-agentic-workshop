@@ -1,0 +1,98 @@
+<Solution>
+  <Folder Name="02-first-agent">
+    <Folder Name="src">
+      <Project Path="02-first-agent/src/TripConcierge.FirstAgent.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="02-first-agent/solution/TripConcierge.FirstAgent.csproj" />
+    </Folder>
+  </Folder>
+  <Folder Name="03-multi-turn">
+    <Folder Name="src">
+      <Project Path="03-multi-turn/src/TripConcierge.MultiTurn.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="03-multi-turn/solution/TripConcierge.MultiTurn.csproj" />
+    </Folder>
+  </Folder>
+  <Folder Name="04-function-tools">
+    <Folder Name="src">
+      <Project Path="04-function-tools/src/TripConcierge.FunctionTools.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="04-function-tools/solution/TripConcierge.FunctionTools.csproj" />
+    </Folder>
+  </Folder>
+  <Folder Name="05-mcp-tools">
+    <Folder Name="src">
+      <Project Path="05-mcp-tools/src/TripConcierge.McpTools.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="05-mcp-tools/solution/TripConcierge.McpTools.csproj" />
+    </Folder>
+  </Folder>
+  <Folder Name="06-knowledge-bases">
+    <Folder Name="src">
+      <Project Path="06-knowledge-bases/src/TripConcierge.KnowledgeBases.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="06-knowledge-bases/solution/TripConcierge.KnowledgeBases.csproj" />
+    </Folder>
+  </Folder>
+  <Folder Name="07-memory">
+    <Folder Name="src">
+      <Project Path="07-memory/src/TripConcierge.Memory.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="07-memory/solution/TripConcierge.Memory.csproj" />
+    </Folder>
+  </Folder>
+  <Folder Name="08-chat-history">
+    <Folder Name="src">
+      <Project Path="08-chat-history/src/TripConcierge.ChatHistory.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="08-chat-history/solution/TripConcierge.ChatHistory.csproj" />
+    </Folder>
+  </Folder>
+  <Folder Name="09-multi-agent">
+    <Folder Name="src">
+      <Project Path="09-multi-agent/src/TripConcierge.MultiAgent.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="09-multi-agent/solution/TripConcierge.MultiAgent.csproj" />
+    </Folder>
+  </Folder>
+  <Folder Name="10-hosted-agents">
+    <Folder Name="src">
+      <Project Path="10-hosted-agents/src/TripConcierge.HostedAgent.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="10-hosted-agents/solution/TripConcierge.HostedAgent.csproj" />
+    </Folder>
+  </Folder>
+  <Folder Name="11-agent-auth">
+    <Folder Name="src">
+      <Project Path="11-agent-auth/src/TripConcierge.AgentAuth.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="11-agent-auth/solution/TripConcierge.AgentAuth.csproj" />
+    </Folder>
+  </Folder>
+  <Folder Name="12-observability">
+    <Folder Name="src">
+      <Project Path="12-observability/src/TripConcierge.Observability.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="12-observability/solution/TripConcierge.Observability.csproj" />
+    </Folder>
+  </Folder>
+  <Folder Name="13-concierge-claw">
+    <Folder Name="src">
+      <Project Path="13-concierge-claw/src/TripConcierge.ConciergeClaw.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="13-concierge-claw/solution/TripConcierge.ConciergeClaw.csproj" />
+    </Folder>
+  </Folder>
+</Solution>

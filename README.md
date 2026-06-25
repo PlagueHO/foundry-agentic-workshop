@@ -93,7 +93,7 @@ For more details, see the [Organizer Guide](./docs/guide-organizer.md) for role 
 After provisioning, give each attendee:
 
 - Their `FOUNDRY_PROJECT_NAME` (for example `attendee-01`)
-- The shared values: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `AZURE_SEARCH_SERVICE_NAME`, `MCP_SERVER_URL`
+- The shared values: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `AZURE_SEARCH_SERVICE_NAME`, `RETAIL_REMEDY_OPS_MCP_SERVER_URL`
 
 > [!TIP]
 > The `scripts/generate-attendee-onboarding.py` postprovision hook creates a per-attendee `.env` file with all required values pre-filled. Share the generated file instead of copying values manually.

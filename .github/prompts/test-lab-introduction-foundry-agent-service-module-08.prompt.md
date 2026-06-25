@@ -58,15 +58,15 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm `.env` exists and the required values are populated:
 
    ```bash
-   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|AGENT_NAME|AGENT_VERSION|MCP_SERVER_URL'
+   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|AGENT_NAME|AGENT_VERSION|RETAIL_REMEDY_OPS_MCP_SERVER_URL'
    ```
 
 1. Confirm `FOUNDRY_PROJECT_ENDPOINT` is set to a non-empty value of the form `https://<resource>.services.ai.azure.com/api/projects/<project>`.
 1. Confirm `AGENT_NAME` is either unset (the script defaults to `acl-remedy-advisor`) or set to `acl-remedy-advisor`.
 1. Confirm `AGENT_VERSION` is either unset or empty (the script uses the latest published version when it is empty).
-1. Confirm `MCP_SERVER_URL` is set to the shared **Azure Container Apps** MCP server URL the organizer deployed. It ends in `/mcp` and the host looks like `https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp`. The grounded `acl-remedy-advisor` agent calls this deployed server when its MCP tools fire during a run, so it must be present and reachable — no local server or tunnel is required.
+1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set to the shared **Azure Container Apps** MCP server URL the organizer deployed. It ends in `/mcp` and the host looks like `https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp`. The grounded `acl-remedy-advisor` agent calls this deployed server when its MCP tools fire during a run, so it must be present and reachable — no local server or tunnel is required.
 
-   **Check:** If `.env` does not exist, confirm with the user that Module 01 has been completed, then copy `shared/.env.example` to `.env` and populate `FOUNDRY_PROJECT_ENDPOINT` and `MCP_SERVER_URL` from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`.
+   **Check:** If `.env` does not exist, confirm with the user that Module 01 has been completed, then copy `shared/.env.example` to `.env` and populate `FOUNDRY_PROJECT_ENDPOINT` and `RETAIL_REMEDY_OPS_MCP_SERVER_URL` from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`.
 
 ### Check 4 — Confirm Azure authentication
 

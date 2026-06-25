@@ -7,7 +7,7 @@ database connections are required.
 Usage:
     python shared/mcp-servers/retail-remedy-ops/src/server.py
 
-The server listens on http://0.0.0.0:<MCP_SERVER_PORT>/mcp (default port 8080).
+The server listens on http://0.0.0.0:<RETAIL_REMEDY_OPS_MCP_SERVER_PORT>/mcp (default port 8080).
 Expose this port via a public dev tunnel or Codespaces port forwarding before
 connecting the agent (see the Module 06 README).
 """
@@ -29,7 +29,7 @@ _PRODUCTS: dict = {p['product_id']: p for p in _DATA['products']}
 _POLICIES: list = _DATA['policies']
 _INVENTORY: dict = _DATA['inventory']
 
-_PORT = int(os.environ.get('MCP_SERVER_PORT', '8080'))
+_PORT = int(os.environ.get('RETAIL_REMEDY_OPS_MCP_SERVER_PORT', '8080'))
 
 mcp = FastMCP('Retail Remedy Operations', host='0.0.0.0', port=_PORT)
 

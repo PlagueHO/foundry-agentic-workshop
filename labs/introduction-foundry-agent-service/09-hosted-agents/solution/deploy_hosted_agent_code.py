@@ -57,15 +57,15 @@ def run() -> None:
     endpoint = os.environ['FOUNDRY_PROJECT_ENDPOINT']
     agent_name = os.environ.get('HOSTED_AGENT_NAME_CODE', 'acl-remedy-advisor-hosted-code')
     model_deployment = os.environ.get('AGENT_MODEL', 'chat')
-    mcp_server_url = os.environ.get('MCP_SERVER_URL', '').strip()
-    mcp_server_label = os.environ.get('MCP_SERVER_LABEL', 'retail_remedy_ops')
+    mcp_server_url = os.environ.get('RETAIL_REMEDY_OPS_MCP_SERVER_URL', '').strip()
+    mcp_server_label = os.environ.get('RETAIL_REMEDY_OPS_MCP_SERVER_LABEL', 'retail_remedy_ops')
 
     if not mcp_server_url:
         raise ValueError(
-            'MCP_SERVER_URL is not set. Start the Retail Remedy Operations MCP server '
-            '(Module 06, server.py), expose it via a dev tunnel, then set MCP_SERVER_URL to '
+            'RETAIL_REMEDY_OPS_MCP_SERVER_URL is not set. Start the Retail Remedy Operations MCP server '
+            '(Module 06, server.py), expose it via a dev tunnel, then set RETAIL_REMEDY_OPS_MCP_SERVER_URL to '
             'the public URL plus /mcp in your .env file. Example: '
-            'MCP_SERVER_URL=https://abc123-8080.devtunnels.ms/mcp'
+            'RETAIL_REMEDY_OPS_MCP_SERVER_URL=https://abc123-8080.devtunnels.ms/mcp'
         )
 
     zip_bytes, zip_sha256 = build_code_zip(AGENT_DIR)
@@ -81,8 +81,8 @@ def run() -> None:
                     memory=MEMORY,
                     environment_variables={
                         'AZURE_AI_MODEL_DEPLOYMENT_NAME': model_deployment,
-                        'MCP_SERVER_URL': mcp_server_url,
-                        'MCP_SERVER_LABEL': mcp_server_label,
+                        'RETAIL_REMEDY_OPS_MCP_SERVER_URL': mcp_server_url,
+                        'RETAIL_REMEDY_OPS_MCP_SERVER_LABEL': mcp_server_label,
                     },
                     code_configuration=CodeConfiguration(
                         runtime=RUNTIME,

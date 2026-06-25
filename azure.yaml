@@ -15,10 +15,24 @@ hooks:
   postprovision:
     posix:
       shell: sh
-      run: python scripts/seed-product-index.py && python scripts/seed-document-index.py && python scripts/deploy-mcp-server.py && python scripts/generate-attendee-onboarding.py && python scripts/deploy-attendee-portal.py
+      run: |
+        python scripts/seed-product-index.py &&
+        python scripts/seed-document-index.py &&
+        python scripts/seed-passenger-rights-index.py &&
+        python scripts/deploy-retail-remedy-ops-mcp-server.py &&
+        python scripts/deploy-flight-ops-mcp-server.py &&
+        python scripts/generate-attendee-onboarding.py &&
+        python scripts/deploy-attendee-portal.py
     windows:
       shell: pwsh
-      run: python scripts/seed-product-index.py; python scripts/seed-document-index.py; python scripts/deploy-mcp-server.py; python scripts/generate-attendee-onboarding.py; python scripts/deploy-attendee-portal.py
+      run: |
+        python scripts/seed-product-index.py
+        python scripts/seed-document-index.py
+        python scripts/seed-passenger-rights-index.py
+        python scripts/deploy-retail-remedy-ops-mcp-server.py
+        python scripts/deploy-flight-ops-mcp-server.py
+        python scripts/generate-attendee-onboarding.py
+        python scripts/deploy-attendee-portal.py
   predown:
     posix:
       shell: sh

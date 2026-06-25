@@ -11,9 +11,13 @@ const docsLabsRoot = path.join(docsRoot, 'labs')
 const labsSidebarPath = path.join(docsRoot, '.vitepress', 'labs-sidebar.ts')
 
 const STEP_DIR_PATTERN = /^\d{2}-/
-const TRACK_ORDER = ['introduction-foundry-agent-service']
+const TRACK_ORDER = [
+  'introduction-foundry-agent-service',
+  'agent-framework-dotnet',
+]
 const TRACK_TITLES = {
   'introduction-foundry-agent-service': 'Introduction to Foundry Agent Service',
+  'agent-framework-dotnet': 'Introduction to Microsoft Agent Framework (.NET)',
 }
 
 async function directoryExists(targetPath) {
@@ -71,6 +75,11 @@ function rewriteStepLinks(markdown, trackName) {
   let result = markdown.replace(
     /\]\(\.\.\/([\d]{2}-[^/]+)\/README\.md\)/g,
     `](./$1.md)`,
+  )
+  // Rewrite ../../other-track/XX-step-name/README.md links to ../other-track/XX-step-name.md
+  result = result.replace(
+    /\]\(\.\.\/\.\.\/([^/]+)\/([\d]{2}-[^/]+)\/README\.md\)/g,
+    `](../$1/$2.md)`,
   )
   // Rewrite ../README.md to the VitePress track index page
   result = result.replace(

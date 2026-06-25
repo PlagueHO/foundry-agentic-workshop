@@ -35,7 +35,7 @@ The following diagram shows the architecture you will build in this lab.
 
 ![Architecture diagram: Python Client calls the acl-remedy-advisor Agent Definition inside a Foundry Project inside a Foundry Account. The Agent Definition calls the chat Model Deployment and may invoke the Web Search Tool (which calls the Internet), the Code Interpreter Tool (sandboxed Python), or the MCP Tool — which connects over an HTTPS dev tunnel to a Retail Remedy Operations MCP Server running outside the Foundry Account on the local dev machine.](../../../docs/assets/diagrams/lab-06-mcp-tools-architecture.svg)
 
-This lab adds a **third** tool to `acl-remedy-advisor`. Unlike Web Search and Code Interpreter — which are built-in tools that run inside the **Foundry Account** — the MCP Tool is a connection to a **Retail Remedy Operations MCP Server** that runs outside the Foundry Account. By default your organizer deploys this server as a shared **Azure Container Apps** service, and the agent calls its six tools over the server's public HTTPS URL (`MCP_SERVER_URL`). You can also run your own copy locally and expose it with a dev tunnel (`shared/mcp-servers/retail-remedy-ops/src/server.py`). During a turn the agent may combine all three tools: MCP for purchase, policy, and stock facts; Web Search for current ACCC guidance; and Code Interpreter for the pro-rata refund calculation.
+This lab adds a **third** tool to `acl-remedy-advisor`. Unlike Web Search and Code Interpreter — which are built-in tools that run inside the **Foundry Account** — the MCP Tool is a connection to a **Retail Remedy Operations MCP Server** that runs outside the Foundry Account. By default your organizer deploys this server as a shared **Azure Container Apps** service, and the agent calls its six tools over the server's public HTTPS URL (`RETAIL_REMEDY_OPS_MCP_SERVER_URL`). You can also run your own copy locally and expose it with a dev tunnel (`shared/mcp-servers/retail-remedy-ops/src/server.py`). During a turn the agent may combine all three tools: MCP for purchase, policy, and stock facts; Web Search for current ACCC guidance; and Code Interpreter for the pro-rata refund calculation.
 
 ### What is MCP?
 
@@ -65,18 +65,18 @@ The tools return **facts, not verdicts**. The agent combines MCP facts with Web 
 ### Part 1 — Connect to the shared MCP server
 
 By default your organizer deploys a shared **Retail Remedy Operations** MCP server to **Azure Container Apps**, and its
-public HTTPS URL is already in your onboarding file as `MCP_SERVER_URL`. You do not need to run anything locally.
+public HTTPS URL is already in your onboarding file as `RETAIL_REMEDY_OPS_MCP_SERVER_URL`. You do not need to run anything locally.
 
 #### 1. Confirm your MCP server URL
 
-- [ ] Open your `.env` file and confirm `MCP_SERVER_URL` is set to the shared URL your organizer provided. It ends in
+- [ ] Open your `.env` file and confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set to the shared URL your organizer provided. It ends in
       `/mcp`, for example:
 
   ```text
   https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp
   ```
 
-- [ ] *(Optional)* Confirm the URL is reachable — open it in a browser or run `curl <your MCP_SERVER_URL>`. A healthy
+- [ ] *(Optional)* Confirm the URL is reachable — open it in a browser or run `curl <your RETAIL_REMEDY_OPS_MCP_SERVER_URL>`. A healthy
       server responds rather than failing to connect.
 - [ ] Keep this URL handy. You paste it into Agent Builder in the next part.
 
@@ -99,7 +99,7 @@ port must be **Public**.
    **Public**. In a devcontainer or Codespace the default is **Private**, so this step is mandatory — a private port
    returns a 403 when the Azure-hosted agent calls it.
 
-1. Copy the forwarded address, append `/mcp`, and set `MCP_SERVER_URL` in your `.env` to the full URL. Keep the server
+1. Copy the forwarded address, append `/mcp`, and set `RETAIL_REMEDY_OPS_MCP_SERVER_URL` in your `.env` to the full URL. Keep the server
    running and the port **Public** for the rest of the workshop.
 
 | Environment | Tunnel mechanism | URL style |
@@ -139,7 +139,7 @@ when the port is Public; if tool calls fail intermittently, use the shared Azure
   | Field | Value |
   |---|---|
   | Label / Name | `retail-remedy-ops` |
-  | Server URL | Your `MCP_SERVER_URL`, ending in `/mcp` |
+  | Server URL | Your `RETAIL_REMEDY_OPS_MCP_SERVER_URL`, ending in `/mcp` |
   | Authentication | None / Anonymous |
 
   > [!NOTE]
@@ -164,7 +164,7 @@ when the port is Public; if tool calls fail intermittently, use the shared Azure
 > python labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py
 > ```
 >
-> Ensure `MCP_SERVER_URL` is set in your `.env` file before running the script.
+> Ensure `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set in your `.env` file before running the script.
 
 ### Part 3 — Update the agent instructions
 
@@ -307,7 +307,7 @@ The **Traces** tab in the Foundry portal shows each agent conversation as a stru
 ---
 
 > [!IMPORTANT]
-> **The agent reuses these MCP tools in later modules** (Module 09 — Hosted Agents and Module 10 — Foundry Toolboxes). The shared MCP server stays available, so you do not need to do anything to keep it running. If you are running your own local server instead, leave it running with port 8080 set to **Public**, and keep `MCP_SERVER_URL` pointed at it.
+> **The agent reuses these MCP tools in later modules** (Module 09 — Hosted Agents and Module 10 — Foundry Toolboxes). The shared MCP server stays available, so you do not need to do anything to keep it running. If you are running your own local server instead, leave it running with port 8080 set to **Public**, and keep `RETAIL_REMEDY_OPS_MCP_SERVER_URL` pointed at it.
 
 ---
 
@@ -333,6 +333,6 @@ You connected your agent to live, custom operations. You wired the `retail_remed
 - **Port not reachable (403 or connection refused):** Confirm the port visibility is set to **Public** in the PORTS panel. Private ports return 403 to the Azure-hosted agent.
 - **Tools are never called:** Strengthen the agent instructions — add the MCP tool-boundary paragraph from Part 4 and re-save as a new version. Use a prompt that explicitly includes a receipt ID.
 - **Tool call times out:** The Agent Service times out MCP calls at 100 seconds. If the server is unresponsive, restart it and verify the tunnel is still active.
-- **Tunnel URL changed:** If you recreated the tunnel, the URL changes. Update `MCP_SERVER_URL` in `.env`, edit the MCP tool connection in Agent Builder with the new URL, and re-save the agent.
+- **Tunnel URL changed:** If you recreated the tunnel, the URL changes. Update `RETAIL_REMEDY_OPS_MCP_SERVER_URL` in `.env`, edit the MCP tool connection in Agent Builder with the new URL, and re-save the agent.
 - **`MCPTool` import fails in the code fallback:** Confirm `azure-ai-projects>=2.0.0` is installed (`pip install -r shared/requirements.txt`).
 - **Portal playground returns `missing_required_parameter: tools[1].container`:** The code fallback script (`create_agent_with_mcp.py`) creates Code Interpreter without the container reference the portal requires. To fix: in Agent Builder, click the `⋮` menu next to Code Interpreter, remove it, then click **Add** → **Code Interpreter** to re-add it through the UI. Alternatively, test using `starter.py` from the terminal, which does not require the container reference.

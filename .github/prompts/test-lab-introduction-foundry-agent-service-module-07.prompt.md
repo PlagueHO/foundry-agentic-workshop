@@ -51,16 +51,16 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. In the Codespace terminal, run:
 
    ```bash
-   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|AGENT_NAME|MCP_SERVER_URL|KNOWLEDGE_BASE_NAME|AZURE_SEARCH_PRODUCT_INDEX_NAME|AZURE_SEARCH_DOCUMENT_INDEX_NAME'
+   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|AGENT_NAME|RETAIL_REMEDY_OPS_MCP_SERVER_URL|KNOWLEDGE_BASE_NAME|AZURE_SEARCH_PRODUCT_INDEX_NAME|AZURE_SEARCH_DOCUMENT_INDEX_NAME'
    ```
 
 1. Confirm `FOUNDRY_PROJECT_ENDPOINT` is populated with a non-empty value.
 1. Confirm `AGENT_NAME` is set to `acl-remedy-advisor`.
-1. Confirm `MCP_SERVER_URL` is populated and ends in `/mcp` (either the shared Azure Container Apps URL the organizer deployed, or a Public Codespace tunnel URL).
+1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is populated and ends in `/mcp` (either the shared Azure Container Apps URL the organizer deployed, or a Public Codespace tunnel URL).
 1. Confirm `KNOWLEDGE_BASE_NAME` is populated with the per-attendee knowledge base name (for example `acl-remedy-knowledge-lab-attendee-1`).
 1. Note the values of `AZURE_SEARCH_PRODUCT_INDEX_NAME` (default `retail-products`) and `AZURE_SEARCH_DOCUMENT_INDEX_NAME` (default `retail-policies`); these are the indexes you select as knowledge sources.
 
-   **Check:** If `.env` does not exist, confirm with the user that Module 01 has been completed, then copy `shared/.env.example` to `.env` and populate `FOUNDRY_PROJECT_ENDPOINT`, `MCP_SERVER_URL`, and `KNOWLEDGE_BASE_NAME` from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`.
+   **Check:** If `.env` does not exist, confirm with the user that Module 01 has been completed, then copy `shared/.env.example` to `.env` and populate `FOUNDRY_PROJECT_ENDPOINT`, `RETAIL_REMEDY_OPS_MCP_SERVER_URL`, and `KNOWLEDGE_BASE_NAME` from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`.
 
 ### Check 5 — Confirm the attendee can create knowledge bases
 
@@ -85,7 +85,7 @@ This module requires the `acl-remedy-advisor` agent to already exist with three 
    python labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py
    ```
 
-   Confirm `MCP_SERVER_URL` is set in `.env` first. Then re-verify the agent state before proceeding.
+   Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set in `.env` first. Then re-verify the agent state before proceeding.
 
 ### Check 7 — Confirm the search indexes exist and are populated
 
@@ -115,7 +115,7 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
 1. In the Codespace terminal, confirm the configured endpoint responds:
 
    ```bash
-   curl -s -o /dev/null -w "%{http_code}" "$(grep '^MCP_SERVER_URL=' .env | cut -d= -f2-)"
+   curl -s -o /dev/null -w "%{http_code}" "$(grep '^RETAIL_REMEDY_OPS_MCP_SERVER_URL=' .env | cut -d= -f2-)"
    ```
 
 1. Confirm the HTTP status code is `200`, `405`, or `406` (a non-connection response confirms the endpoint is reachable).
@@ -127,7 +127,7 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
    python shared/mcp-servers/retail-remedy-ops/src/server.py
    ```
 
-   Then set `MCP_SERVER_URL` in `.env` to the tunnel URL ending in `/mcp` and re-run the `curl` check.
+   Then set `RETAIL_REMEDY_OPS_MCP_SERVER_URL` in `.env` to the tunnel URL ending in `/mcp` and re-run the `curl` check.
 
 ---
 
@@ -337,7 +337,7 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
 1. **Calculation (Code Interpreter):** send *"A customer paid $480 for an appliance 18 months into a 36-month expected life. Calculate a pro-rata refund."* — confirm a worked calculation.
 1. Take a screenshot of any tool-exercising response and its trace.
 
-   **Check:** If operational lookups do not call the MCP server, re-run the `curl` reachability check from Check 8 and confirm `MCP_SERVER_URL` still points at a reachable endpoint. Adding the knowledge base must not displace the existing tools.
+   **Check:** If operational lookups do not call the MCP server, re-run the `curl` reachability check from Check 8 and confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` still points at a reachable endpoint. Adding the knowledge base must not displace the existing tools.
 
 ---
 
@@ -347,7 +347,7 @@ If the portal walkthrough cannot be completed (for example in a Codespace with n
 
 ### Step 13 — Run the solution script
 
-1. In the Codespace terminal, confirm `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_SEARCH_SERVICE_NAME`, `KNOWLEDGE_BASE_NAME`, and `MCP_SERVER_URL` are set in `.env`.
+1. In the Codespace terminal, confirm `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_SEARCH_SERVICE_NAME`, `KNOWLEDGE_BASE_NAME`, and `RETAIL_REMEDY_OPS_MCP_SERVER_URL` are set in `.env`.
 1. Run the script from the repository root:
 
    ```bash

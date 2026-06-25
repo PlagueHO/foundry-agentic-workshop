@@ -1,0 +1,25 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!-- Allow wildcard/floating versions (e.g. *-*) so prerelease AF packages
+         are always resolved to the latest available build without pinning. -->
+    <CentralPackageFloatingVersionsEnabled>true</CentralPackageFloatingVersionsEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Microsoft Agent Framework -->
+    <PackageVersion Include="Microsoft.Agents.AI" Version="*-*" />
+    <PackageVersion Include="Microsoft.Agents.AI.Foundry" Version="*-*" />
+    <PackageVersion Include="Microsoft.Agents.AI.Foundry.Hosting" Version="*-*" />
+    <PackageVersion Include="ModelContextProtocol" Version="*" />
+    <PackageVersion Include="Microsoft.Agents.AI.Harness" Version="*-*" />
+    <!-- Azure -->
+    <PackageVersion Include="Azure.Identity" Version="*" />
+    <PackageVersion Include="Azure.Monitor.OpenTelemetry.Exporter" Version="*" />
+    <PackageVersion Include="Azure.Search.Documents" Version="*" />
+    <!-- Utilities -->
+    <PackageVersion Include="DotNetEnv" Version="*" />
+    <!-- OpenTelemetry -->
+    <PackageVersion Include="OpenTelemetry" Version="*" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="*" />
+  </ItemGroup>
+</Project>

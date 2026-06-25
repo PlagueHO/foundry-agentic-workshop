@@ -20,17 +20,23 @@ param location string = resourceGroup().location
 @description('Optional. Tags to apply to all resources.')
 param tags object = {}
 
-@description('Optional. Container image reference for the MCP server. Defaults to a public placeholder image that scripts/deploy-mcp-server.py replaces with the built image.')
+@description('Optional. Container image reference for the MCP server. Defaults to a public placeholder image that scripts/deploy-retail-remedy-ops-mcp-server.py replaces with the built image.')
 param containerImage string = 'mcr.microsoft.com/k8se/quickstart:latest'
 
 @description('Optional. Port the MCP server listens on inside the container.')
 param targetPort int = 8080
 
+@description('Optional. Name of the environment variable the MCP server reads for the port number. Must match the variable the server process reads at startup.')
+param portEnvVarName string = 'PORT'
+
+@description('Required. Resource ID of the Log Analytics workspace to send diagnostic logs and metrics to.')
+param logAnalyticsWorkspaceResourceId string
+
 // User-assigned managed identity used by the Container App to pull the image from the shared
 // Container Registry. The matching 'Container Registry Repository Reader' role assignment is
 // created by the caller (main.bicep) against the shared registry.
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.1' = {
-  name: 'mcp-server-identity'
+  name: 'mcp-server-identity-${containerAppName}'
   params: {
     name: userAssignedIdentityName
     location: location
@@ -41,10 +47,11 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 // Container App that hosts the MCP server, deployed into the shared Container Apps environment.
 // External ingress exposes the public HTTPS endpoint the agent connects to. A single always-on
 // replica keeps the in-memory mock data reachable without a cold start. The placeholder image is
-// replaced by scripts/deploy-mcp-server.py, which builds and pushes the real image and rolls the
+// replaced by scripts/deploy-retail-remedy-ops-mcp-server.py and
+// scripts/deploy-flight-ops-mcp-server.py, which builds and pushes the real image and rolls the
 // Container App to a new revision.
 module containerApp 'br/public:avm/res/app/container-app:0.22.1' = {
-  name: 'mcp-server-app'
+  name: 'mcp-server-app-${containerAppName}'
   params: {
     name: containerAppName
     environmentResourceId: containerAppsEnvironmentResourceId
@@ -53,6 +60,11 @@ module containerApp 'br/public:avm/res/app/container-app:0.22.1' = {
     ingressExternal: true
     ingressTargetPort: targetPort
     ingressAllowInsecure: false
+    diagnosticSettings: [
+      {
+        workspaceResourceId: logAnalyticsWorkspaceResourceId
+      }
+    ]
     scaleSettings: {
       minReplicas: 1
       maxReplicas: 1
@@ -78,7 +90,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.22.1' = {
         }
         env: [
           {
-            name: 'MCP_SERVER_PORT'
+            name: portEnvVarName
             value: string(targetPort)
           }
         ]
