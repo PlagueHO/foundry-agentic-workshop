@@ -2,6 +2,8 @@
 
 **Estimated time:** 35 minutes
 
+![Agent Systems in Microsoft Agent Framework — diagram showing Agent Loops (goal-driven orchestration with a Coordinator Agent routing to specialist agents backed by Memory) alongside Workflows (deterministic, step-by-step execution). The ConciergeClaw harness uses the Agent Loop pattern, combining LoopAgent, FileMemoryProvider, and tool invocation into a single AsHarnessAgent() call.](../../../docs/assets/diagrams/agent-framework-agent-systems.png)
+
 > [!IMPORTANT]
 > This module builds on [Module 12](../12-observability/README.md). Ensure your environment is set up and `.env` is configured before continuing.
 
@@ -43,14 +45,17 @@ Use `Disable*` flags in `HarnessAgentOptions` to turn off any feature you don't 
 Earlier modules used `client.AsAIAgent(model: ...)` as a shortcut. The harness requires an `IChatClient` directly, obtained by chaining through the Foundry project client:
 
 ```csharp
+var credential = new AzureCliCredential();
 IChatClient chatClient =
-    new AIProjectClient(new Uri(endpoint), new DefaultAzureCredential())
+    new AIProjectClient(new Uri(endpoint), credential)
         .GetProjectOpenAIClient()
         .GetResponsesClient()
         .AsIChatClient(model);
 ```
 
 This chain gives the harness access to Responses API features such as hosted web search.
+
+For the full API reference see the [Microsoft Agent Framework documentation](https://learn.microsoft.com/en-us/agent-framework/overview/).
 
 ### Plan vs execute mode
 
@@ -104,15 +109,16 @@ LoopAgentOptions   = new LoopAgentOptions { MaxIterations = 5 },
   Console.WriteLine("[Harness] Building IChatClient via Foundry Responses API...");
   Console.ResetColor();
 
+  var credential = new AzureCliCredential();
   IChatClient chatClient =
-      new AIProjectClient(new Uri(endpoint), new DefaultAzureCredential())
+      new AIProjectClient(new Uri(endpoint), credential)
           .GetProjectOpenAIClient()
           .GetResponsesClient()
           .AsIChatClient(model);
   ```
 
   > [!NOTE]
-  > `DefaultAzureCredential` tries several credential sources in order — environment variables, Azure CLI, managed identity, and more. Run `az login` locally to ensure it finds a valid session.
+  > `AzureCliCredential` picks up the session established by `az login`. Run `az login` before running the module if you haven't already.
 
 ### Part 2 — Create the HarnessAgent
 
@@ -227,7 +233,7 @@ LoopAgentOptions   = new LoopAgentOptions { MaxIterations = 5 },
   Console.WriteLine("[Harness] Snapshot captured. Restoring session from snapshot...");
   Console.ResetColor();
 
-  IAgentSession restoredSession = await agent.DeserializeSessionAsync(snapshot);
+  var restoredSession = await agent.DeserializeSessionAsync(snapshot);
 
   Console.ForegroundColor = ConsoleColor.DarkGray;
   Console.WriteLine("[Harness] Session restored. Continuing on restored session...");
@@ -269,11 +275,14 @@ LoopAgentOptions   = new LoopAgentOptions { MaxIterations = 5 },
 - Multiple model invocations are visible as the LoopAgent iterates through its todo list.
 - `[Harness] Snapshot captured.` and `[Harness] Session restored.` appear in the export/import section.
 - Turn 3 answers correctly using the restored session, referencing context from earlier turns.
-- A `passenger-profile.md` file appears in the `agent-files/` directory under the build output.
+- A `passenger-profile.md` file appears inside a timestamped session subfolder under `agent-files/` in the build output (for example `agent-files/20260625_123456_<guid>/passenger-profile.md`).
 
 ## Congratulations 🎉
 
 You built the ConciergeClaw — a full Agent Framework harness agent that combines planning, file memory, tool invocation, and loop-driven execution in a single `AsHarnessAgent()` call. You also demonstrated portable session state with `SerializeSessionAsync` and `DeserializeSessionAsync`.
+
+> [!TIP]
+> **You've completed the Agent Framework .NET lab!** Return to the [lab README](../../README.md) to review what you built across all modules, or explore the [Microsoft Agent Framework samples](https://github.com/microsoft/agent-framework/tree/main/dotnet/samples) for further patterns.
 
 ## Troubleshooting
 

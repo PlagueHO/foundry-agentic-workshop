@@ -239,7 +239,7 @@ Review the `README.md` against the canonical lab module structure defined in `.g
 
 1. Fetch the Microsoft Agent Framework .NET samples index from GitHub and compare patterns:
 
-   ```
+   ```text
    https://github.com/microsoft/agent-framework/tree/main/dotnet/samples
    ```
 
