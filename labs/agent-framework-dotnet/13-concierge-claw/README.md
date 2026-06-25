@@ -282,7 +282,7 @@ LoopAgentOptions   = new LoopAgentOptions { MaxIterations = 5 },
 You built the ConciergeClaw — a full Agent Framework harness agent that combines planning, file memory, tool invocation, and loop-driven execution in a single `AsHarnessAgent()` call. You also demonstrated portable session state with `SerializeSessionAsync` and `DeserializeSessionAsync`.
 
 > [!TIP]
-> **You've completed the Agent Framework .NET lab!** Return to the [lab README](../../README.md) to review what you built across all modules, or explore the [Microsoft Agent Framework samples](https://github.com/microsoft/agent-framework/tree/main/dotnet/samples) for further patterns.
+> **You've completed the Agent Framework .NET lab!** Return to the [lab README](../README.md) to review what you built across all modules, or explore the [Microsoft Agent Framework samples](https://github.com/microsoft/agent-framework/tree/main/dotnet/samples) for further patterns.
 
 ## Troubleshooting
 
