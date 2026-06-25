@@ -251,7 +251,7 @@ Because the agent logic runs locally before you deploy, you can test the full HT
   <details>
   <summary>📸 Screenshot: Agents list showing the hosted agent</summary>
 
-  ![Foundry portal Agents list showing trip-disruption-concierge as a hosted agent with an active version](../../../docs/assets/screenshots/agent-framework-dotnet/lab-10/01-agents-list-hosted-agent.png)
+  ![Foundry portal Agents list showing trip-disruption-concierge as a hosted agent with an active version](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-09/01-agents-list-hosted-agent.png)
 
   </details>
 
