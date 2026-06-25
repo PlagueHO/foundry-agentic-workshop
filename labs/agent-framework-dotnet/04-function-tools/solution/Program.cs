@@ -26,7 +26,7 @@ Console.WriteLine();
 // to the model as a tool result.
 var calculateCompensation = AIFunctionFactory.Create(
     (
-        [Description("Hours of delay, or hours of advance notice given before cancellation")]
+        [Description("Hours of delay, or hours of notice given before cancellation")]
         int delayOrNoticeHours,
         [Description("Original one-way ticket price in Australian dollars")]
         decimal ticketPriceAud
@@ -52,11 +52,11 @@ var calculateCompensation = AIFunctionFactory.Create(
         Console.WriteLine();
 
         return $"Compensation entitlement: {compensation:C2} " +
-               $"(policy: <3h = nil, 3–5h = 25%, 5h+ = 50% of ticket price)";
+               $"(rule: <3h = nil, 3\u20135h = 25%, 5h+ = 50% of ticket price)";
     },
     "calculate_compensation",
-    "Calculates passenger compensation entitlement based on delay duration and " +
-    "ticket price using the standard airline disruption policy tiers.");
+    "Calculates the passenger compensation entitlement based on delay duration " +
+    "and ticket price using the standard airline disruption policy.");
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine("[Loop] Tool registered: calculate_compensation");
@@ -77,8 +77,8 @@ var agent = client
         instructions:
             "You are the Trip Disruption Concierge. When a passenger asks " +
             "about compensation, always call the calculate_compensation tool " +
-            "with the exact delay hours and ticket price before responding. " +
-            "Quote the calculated amount clearly in your answer.",
+            "with the actual delay hours and ticket price before answering. " +
+            "State the calculated amount clearly in your response.",
         tools: [calculateCompensation]);
 
 Console.ForegroundColor = ConsoleColor.DarkGray;

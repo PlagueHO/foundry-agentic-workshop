@@ -17,7 +17,7 @@ Console.WriteLine();
 
 // ── TODO 1 ───────────────────────────────────────────────────────────────────
 // Create an AIProjectClient using the Foundry project endpoint and
-// DefaultAzureCredential for authentication.
+// AzureCliCredential for authentication.
 //
 // var credential = new AzureCliCredential();
 // var client = new AIProjectClient(new Uri(endpoint), credential);

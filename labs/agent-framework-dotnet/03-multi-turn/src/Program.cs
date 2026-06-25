@@ -34,7 +34,7 @@ Console.WriteLine();
 //
 // var session = await agent.CreateSessionAsync();
 // Console.ForegroundColor = ConsoleColor.DarkGray;
-// Console.WriteLine($"[Loop] Session created — ID: {session.Id}");
+// Console.WriteLine("[Loop] Session ready.");
 // Console.ResetColor();
 // Console.WriteLine();
 //

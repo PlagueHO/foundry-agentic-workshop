@@ -43,6 +43,8 @@ var myTool = AIFunctionFactory.Create(
 
 Use `[Description]` attributes on parameters to guide the model when choosing argument values.
 
+For the full API reference, see the [Microsoft Agent Framework overview](https://learn.microsoft.com/en-us/agent-framework/overview/) in the Microsoft documentation.
+
 ### Attaching tools to an agent
 
 Pass tools via the `tools:` parameter when calling `AsAIAgent()`:
@@ -128,7 +130,7 @@ The agent will automatically call `myTool` when the model decides it is needed.
 - [ ] Locate `// ── TODO 3` and replace the commented-out block with the prompt code already commented out there.
 
   > [!NOTE]
-  > Phrase the prompt to include an explicit delay duration and ticket price — for example, `"3 hours' notice"` and `"$450 ticket"`. The model uses these values as arguments when it calls `calculate_compensation`.
+  > The commented-out prompt already includes an explicit delay duration (`3 hours`) and ticket price (`AUD 420`) so the model can extract the exact values to pass to `calculate_compensation`.
 
 #### 5. Run the starter
 
@@ -144,9 +146,12 @@ The agent will automatically call `myTool` when the model decides it is needed.
 - The `[Tool] ←` line shows the calculated compensation value.
 - The final `[Agent]` response quotes the calculated amount.
 
+> [!NOTE]
+> The solution project runs a second turn (`AUD 650, 6-hour delay`) to demonstrate the tool being called again with different values. The completed starter produces only the single turn above.
+
 ## Congratulations 🎉
 
-You gave your agent a local C# function it can call autonomously. The model decided when the tool was needed, extracted the right arguments, and incorporated the result into its final response — all without any manual orchestration in your code.
+You gave your agent a local C# function it can call autonomously. The model decided when the tool was needed, extracted the right arguments, and incorporated the result into its final response — all without any manual orchestration in your code. To see tools work alongside streaming output, swap `RunAsync` for `RunStreamingAsync` — the framework invokes your function at the right moment in the stream.
 
 > [!TIP]
 > **Next up → [Module 05: MCP Tools](../05-mcp-tools/README.md)**
@@ -160,3 +165,4 @@ You gave your agent a local C# function it can call autonomously. The model deci
 | Tool returns unexpected value | Check the compensation tier logic in the function body |
 | Build error: `AIFunctionFactory` not found | Add `using Microsoft.Extensions.AI;` — it is pulled in transitively |
 | `NotImplementedException` | A TODO is still incomplete |
+| `AuthenticationFailedException` | Run `az login` or confirm your Entra account has the Foundry User role on the project |

@@ -23,6 +23,9 @@ Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine("[Loop] Creating agent...");
 Console.ResetColor();
 
+// AzureCliCredential uses the active `az login` session — explicit and reliable in a
+// workshop or local dev environment. For cloud-deployed code, prefer DefaultAzureCredential
+// (which also tries AzureCliCredential) or ManagedIdentityCredential.
 var credential = new AzureCliCredential();
 var client = new AIProjectClient(new Uri(endpoint), credential);
 

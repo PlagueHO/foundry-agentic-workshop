@@ -31,9 +31,46 @@ An `AIContextProvider` injects additional context into every agent turn:
 
 The returned `AIContext.Instructions` string is prepended to the model's system context for that turn.
 
+Extend `AIContextProvider` by overriding these two methods:
+
+```csharp
+internal sealed class PassengerRightsContextProvider(SearchClient searchClient)
+    : AIContextProvider
+{
+    protected override async ValueTask<AIContext> ProvideAIContextAsync(
+        InvokingContext context, CancellationToken ct = default)
+    {
+        // inject pre-fetched documents before the model call
+        return new AIContext { Instructions = await FetchContextAsync("...", ct) };
+    }
+
+    protected override async ValueTask StoreAIContextAsync(
+        InvokedContext context, CancellationToken ct = default)
+    {
+        // pre-fetch context for the next turn using the user's question
+    }
+}
+```
+
+### SearchClient
+
+`Azure.Search.Documents.SearchClient` connects to a single Azure AI Search index using `DefaultAzureCredential`:
+
+```csharp
+var searchClient = new SearchClient(
+    new Uri($"https://{serviceName}.search.windows.net"),
+    indexName,
+    new AzureCliCredential());
+
+var response = await searchClient.SearchAsync<SearchDocument>(query, options, ct);
+await foreach (var result in response.Value.GetResultsAsync()) { /* ... */ }
+```
+
 ### Retrieval pattern
 
 This module uses a **deferred search** approach: after each turn, the provider searches for documents relevant to the user's question and caches the result. On the next turn those cached documents are injected as context before the model call. This ensures the model always has relevant documents without needing to predict the query before the user types it.
+
+For more on context providers in the Microsoft Agent Framework, see the [Microsoft Agent Framework overview](https://learn.microsoft.com/en-us/agent-framework/overview/).
 
 ## Steps
 
@@ -89,14 +126,60 @@ This module uses a **deferred search** approach: after each turn, the provider s
 
 #### 4. Run the agent turns (TODO 3)
 
-- [ ] Locate `// ── TODO 3` and replace the commented-out block with the session and query code already commented out there.
+- [ ] Locate `// ── TODO 3` and uncomment the session and query block already commented out there.
+- [ ] Remove the `throw new NotImplementedException(...)` line immediately below the TODO block.
 
   > [!NOTE]
-  > The `PassengerRightsContextProvider` class is partially scaffolded below the main program. Locate `FetchContextAsync` inside that class and implement the Azure AI Search keyword query there, returning the top documents as a formatted string.
+  > The `PassengerRightsContextProvider` class is scaffolded below the main program. In the next step you will implement `FetchContextAsync` inside it.
+
+#### 5. Implement the search query (TODO 4)
+
+- [ ] Locate `// ── TODO 4` inside `PassengerRightsContextProvider` and replace the `throw` with:
+
+  ```csharp
+  private async Task<string> FetchContextAsync(string query, CancellationToken ct)
+  {
+      Console.ForegroundColor = ConsoleColor.Yellow;
+      var shortQuery = query.Length > 60 ? query[..60] + "..." : query;
+      Console.WriteLine($"\n[RAG] Searching: \"{shortQuery}\"");
+      Console.ResetColor();
+
+      var options = new SearchOptions { Size = 4 };
+      var response = await searchClient.SearchAsync<SearchDocument>(query, options, ct);
+
+      var sb = new StringBuilder();
+      sb.AppendLine("Passenger rights reference documents:");
+      sb.AppendLine();
+
+      int docCount = 0;
+      await foreach (var result in response.Value.GetResultsAsync())
+      {
+          docCount++;
+          var doc = result.Document;
+          var title = doc.TryGetValue("title", out var t) ? t?.ToString() : null;
+          var content = doc.TryGetValue("content", out var c) ? c?.ToString() : null;
+
+          if (title is not null || content is not null)
+          {
+              if (title is not null)
+                  sb.AppendLine($"[{docCount}] {title}");
+              if (content is not null)
+                  sb.AppendLine(content);
+              sb.AppendLine();
+          }
+      }
+
+      Console.ForegroundColor = ConsoleColor.Yellow;
+      Console.WriteLine($"[RAG] {docCount} document(s) retrieved.");
+      Console.ResetColor();
+
+      return sb.ToString();
+  }
+  ```
 
 ### Part 2 — Run and verify
 
-#### 5. Run the starter
+#### 6. Run the starter
 
 - [ ] In a terminal, run:
 
@@ -108,7 +191,7 @@ This module uses a **deferred search** approach: after each turn, the provider s
 
 ## Validation
 
-- Each response references retrieved document content.
+- Each agent response includes numbered citation markers such as `[1]`, `[2]` drawn from retrieved documents.
 - Yellow `[RAG]` lines show the query sent to Azure AI Search and the document count retrieved.
 - The agent cites compensation figures (e.g. EUR 250/400/600) drawn from the knowledge base, not from training data alone.
 
@@ -125,6 +208,7 @@ You grounded the Trip Disruption Concierge in a real Azure AI Search index. The 
 | Symptom | Fix |
 |---|---|
 | `AZURE_SEARCH_SERVICE_NAME is not set` | Add the value to `.env` in the repository root (output from `azd env get-values`) |
+| `AuthenticationFailedException` | Run `az login` to refresh your Azure CLI credentials |
 | `AuthorizationFailed` on search | Your account needs `Search Service Contributor` or `Search Index Data Reader` on the search resource |
 | Zero documents retrieved | Confirm the `passenger-rights` index is seeded — run `python scripts/seed-passenger-rights-index.py` |
 | `NotImplementedException` | A TODO is still incomplete |

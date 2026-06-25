@@ -23,6 +23,7 @@ import logging
 import os
 import time
 
+from azure.core.exceptions import ClientAuthenticationError, HttpResponseError
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient
 from fastapi import FastAPI, Request, Response
@@ -97,6 +98,8 @@ _PAGE_CSS = (
     'a.download-btn:hover{background:#0d6b0d;}'
     '.alert{background:#fff8e1;border-left:4px solid #f9a825;border-radius:4px;'
     'padding:1rem 1.25rem;color:#5f4400;}'
+    '.alert-error{background:#fdecea;border-left:4px solid #d32f2f;border-radius:4px;'
+    'padding:1rem 1.25rem;color:#611212;}'
     '.unresolved-warn{background:#fff3e0;border-left:4px solid #f57c00;'
     'border-radius:4px;padding:.75rem 1rem;color:#663c00;'
     'font-size:.9rem;margin-bottom:1rem;}'
@@ -271,21 +274,34 @@ def _credential() -> DefaultAzureCredential:
     return DefaultAzureCredential(managed_identity_client_id=_CLIENT_ID)
 
 
-def _load_index() -> dict[str, dict]:
-    """Return the attendee onboarding index, using an in-process TTL cache.
+def _is_permission_error(exc: Exception) -> bool:
+    """Return True if the exception indicates an authentication or authorisation failure."""
+    if isinstance(exc, ClientAuthenticationError):
+        return True
+    if isinstance(exc, HttpResponseError) and getattr(exc, 'status_code', None) in (401, 403):
+        return True
+    return False
+
+
+def _load_index() -> tuple[dict[str, dict], Exception | None]:
+    """Return ``(index, error)`` using an in-process TTL cache.
 
     The index is re-downloaded from blob storage at most once per
     ``_INDEX_CACHE_TTL`` seconds so that concurrent requests do not each
     issue a separate blob read, while still picking up updates written by
     ``scripts/generate-attendee-onboarding.py`` within a reasonable window.
+
+    On success ``error`` is ``None``.  On failure ``error`` is the caught
+    exception; the stale cache (possibly ``{}``) is returned alongside it so
+    callers can still serve data when available.
     """
     global _index_cache, _index_cache_ts  # noqa: PLW0603
     now = time.monotonic()
     if _index_cache and (now - _index_cache_ts) < _INDEX_CACHE_TTL:
-        return _index_cache
+        return _index_cache, None
     if not _STORAGE_ACCOUNT_NAME:
         _log.warning('AZURE_STORAGE_ACCOUNT_NAME not set; portal will return no data.')
-        return {}
+        return {}, None
     try:
         client = BlobServiceClient(
             account_url=f'https://{_STORAGE_ACCOUNT_NAME}.blob.core.windows.net',
@@ -294,10 +310,10 @@ def _load_index() -> dict[str, dict]:
         blob = client.get_blob_client(container=_CONTAINER_NAME, blob=_BLOB_NAME)
         _index_cache = json.loads(blob.download_blob().readall())
         _index_cache_ts = now
-        return _index_cache
+        return _index_cache, None
     except Exception as exc:  # pylint: disable=broad-except
         _log.error('Failed to load onboarding index: %s', exc)
-        return _index_cache  # return stale cache rather than empty on transient errors
+        return _index_cache, exc  # stale cache (possibly {}) alongside the error
 
 
 def _upn_key(upn: str) -> str:
@@ -336,18 +352,36 @@ async def portal(request: Request) -> HTMLResponse:
 
     key = _upn_key(upn)
     _log.info('Portal request: upn=%s key=%s', upn, key)
-    index = _load_index()
+    index, load_error = _load_index()
     record = index.get(key)
 
     if record is None:
         upn_safe = html.escape(upn)
-        body = (
-            '<div class="alert" role="alert">'
-            f'<strong>No configuration found</strong> for '
-            f'<strong>{upn_safe}</strong>. '
-            'Contact your facilitator or organiser for assistance.'
-            '</div>'
-        )
+        if load_error is not None and _is_permission_error(load_error):
+            body = (
+                '<div class="alert-error" role="alert">'
+                '<strong>Configuration unavailable \u2014 permissions error.</strong> '
+                'The portal cannot read the onboarding configuration from storage '
+                'due to an access or permissions issue. '
+                'Contact your organiser for assistance.'
+                '</div>'
+            )
+        elif load_error is not None:
+            body = (
+                '<div class="alert-error" role="alert">'
+                '<strong>Configuration temporarily unavailable.</strong> '
+                'The portal encountered an error reading the onboarding configuration. '
+                'Please try again in a few moments or contact your organiser.'
+                '</div>'
+            )
+        else:
+            body = (
+                '<div class="alert" role="alert">'
+                f'<strong>No configuration found</strong> for '
+                f'<strong>{upn_safe}</strong>. '
+                'Contact your facilitator or organiser for assistance.'
+                '</div>'
+            )
         return HTMLResponse(
             content=_render_page('', '', f'Signed in as {upn_safe}.', body, upn=upn),
         )
@@ -447,9 +481,21 @@ async def download_env(request: Request) -> Response:
     upn = _extract_upn(request)
     if not upn:
         return Response(status_code=401, content='Not authenticated.')
-    index = _load_index()
+    index, load_error = _load_index()
     record = index.get(_upn_key(upn))
     if record is None:
+        if load_error is not None and _is_permission_error(load_error):
+            return Response(
+                status_code=503,
+                content='Configuration unavailable due to a permissions error.',
+                media_type='text/plain',
+            )
+        if load_error is not None:
+            return Response(
+                status_code=503,
+                content='Configuration temporarily unavailable.',
+                media_type='text/plain',
+            )
         return Response(
             status_code=404,
             content='# No configuration found for this account.',

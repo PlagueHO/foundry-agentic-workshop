@@ -53,6 +53,7 @@ var agent = client
             "flight status or rebooking, call the appropriate tool to get live " +
             "data before responding. Always use the exact booking reference and " +
             "flight number the passenger provides.",
+        // McpClientTool implements AITool — spread the list directly into tools:
         tools: [.. mcpTools.Cast<AITool>()]);
 
 Console.ForegroundColor = ConsoleColor.DarkGray;

@@ -1,8 +1,11 @@
+using System.Text;
+using System.Text.RegularExpressions;
 using Azure.Identity;
 using Azure.AI.Projects;
 using DotNetEnv;
 using Microsoft.Agents.AI;
 using Microsoft.Agents.AI.Foundry;
+using Microsoft.Extensions.AI;
 
 // Load environment variables from .env in the repository root (searches parent directories)
 Env.TraversePath().Load();
@@ -105,3 +108,89 @@ Console.WriteLine();
 
 throw new NotImplementedException(
     "Complete the TODOs above, then remove this line and the throw statement.");
+
+// ── PassengerProfileMemory ────────────────────────────────────────────────────
+// A custom AIContextProvider that remembers the passenger's name and flight
+// number, then injects them as personalised instructions before every model call.
+internal sealed class PassengerProfileMemory : AIContextProvider
+{
+    private static readonly Regex NamePattern =
+        new(@"(?i)my name is\s+([A-Za-z]+(?:\s+[A-Za-z]+)?)", RegexOptions.Compiled);
+
+    private static readonly Regex FlightPattern =
+        new(@"(?i)\bflight\s+([A-Z]{1,3}\d{1,5})\b", RegexOptions.Compiled);
+
+    private readonly ProviderSessionState<PassengerProfile> _state;
+
+    public PassengerProfileMemory()
+    {
+        _state = new ProviderSessionState<PassengerProfile>(
+            _ => new PassengerProfile(),
+            GetType().Name);
+    }
+
+    // Expose the state key so the framework can serialise it correctly.
+    public override IReadOnlyList<string> StateKeys => [_state.StateKey];
+
+    // Called AFTER the model: scan user messages for name and flight details.
+    protected override ValueTask StoreAIContextAsync(
+        InvokedContext context, CancellationToken cancellationToken = default)
+    {
+        var profile = _state.GetOrInitializeState(context.Session);
+
+        // ── TODO 4 ───────────────────────────────────────────────────────────────
+        // Scan all user messages and extract the passenger's name and flight number.
+        // Save the updated profile so it persists across turns.
+        //
+        // foreach (var msg in context.RequestMessages.Where(m => m.Role == ChatRole.User))
+        // {
+        //     var text = msg.Text ?? string.Empty;
+        //     if (profile.Name is null)
+        //     {
+        //         var nameMatch = NamePattern.Match(text);
+        //         if (nameMatch.Success)
+        //             profile.Name = nameMatch.Groups[1].Value.Trim();
+        //     }
+        //     if (profile.FlightNumber is null)
+        //     {
+        //         var flightMatch = FlightPattern.Match(text);
+        //         if (flightMatch.Success)
+        //             profile.FlightNumber = flightMatch.Groups[1].Value.ToUpperInvariant();
+        //     }
+        // }
+        // _state.SaveState(context.Session, profile);
+        //
+        // ─────────────────────────────────────────────────────────────────────────
+
+        return ValueTask.CompletedTask;
+    }
+
+    // Called BEFORE the model: inject the remembered profile as instructions.
+    protected override ValueTask<AIContext> ProvideAIContextAsync(
+        InvokingContext context, CancellationToken cancellationToken = default)
+    {
+        var profile = _state.GetOrInitializeState(context.Session);
+
+        // ── TODO 5 ───────────────────────────────────────────────────────────────
+        // Read the stored profile and return it as instructions.
+        // Return an empty AIContext when nothing has been stored yet.
+        //
+        // var sb = new StringBuilder();
+        // if (profile.Name is not null)
+        //     sb.AppendLine($"The passenger's name is {profile.Name}.");
+        // if (profile.FlightNumber is not null)
+        //     sb.AppendLine($"Their flight number is {profile.FlightNumber}.");
+        // return new AIContext { Instructions = sb.ToString() };
+        //
+        // ─────────────────────────────────────────────────────────────────────────
+
+        return ValueTask.FromResult(new AIContext());
+    }
+}
+
+// ── PassengerProfile ──────────────────────────────────────────────────────────
+internal sealed class PassengerProfile
+{
+    public string? Name { get; set; }
+    public string? FlightNumber { get; set; }
+}

@@ -37,7 +37,7 @@ var result1 = await agent.RunAsync("My name is Emma.", session: session);
 var result2 = await agent.RunAsync("What did I just tell you?", session: session);
 ```
 
-The session ID is stable and unique. If you print it, you can correlate turns in portal traces.
+The session maps server-side to a durable Foundry thread. You can correlate conversation turns in the Foundry portal Traces tab — run the solution and look for the session in the Conversations grid.
 
 ### What the session stores
 
@@ -45,6 +45,10 @@ The session accumulates every user and assistant message in order. Context provi
 
 > [!WARNING]
 > The session is an **in-memory object**. It is lost when the process stops, and it is not shared between service instances. This is fine for a local demo but unsuitable for production services that restart, scale out, or need durable conversation history. See the [Extra Credit](#extra-credit--session-persistence) section for durable alternatives, and [Module 08](../08-chat-history/README.md) for a full walkthrough of serialisation and restore.
+
+<!-- markdownlint-disable-next-line MD028 -->
+> [!NOTE]
+> For the full `AgentSession` API reference and further background, see the [Microsoft Agent Framework .NET SDK documentation](https://learn.microsoft.com/en-us/agent-framework/).
 
 ## Steps
 
@@ -59,7 +63,7 @@ The session accumulates every user and assistant message in order. Context provi
 - [ ] Locate `// ── TODO 1` and replace the commented-out block with:
 
   ```csharp
-  var credential = new DefaultAzureCredential();
+  var credential = new AzureCliCredential();
   var client = new AIProjectClient(new Uri(endpoint), credential);
   var agent = client.AsAIAgent(
       model: model,
@@ -77,7 +81,7 @@ The session accumulates every user and assistant message in order. Context provi
   ```csharp
   var session = await agent.CreateSessionAsync();
   Console.ForegroundColor = ConsoleColor.DarkGray;
-  Console.WriteLine($"[Loop] Session created — ID: {session.Id}");
+  Console.WriteLine("[Loop] Session ready.");
   Console.ResetColor();
   Console.WriteLine();
   ```
@@ -89,8 +93,8 @@ The session accumulates every user and assistant message in order. Context provi
 - [ ] Locate `// ── TODO 3` and replace the commented-out block with:
 
   ```csharp
-  var turn1 = "My name is Emma. My flight AU123 AKL\u2192SYD was just cancelled. " +
-              "I have a separate connecting flight SYD\u2192MEL. What should I do first?";
+  var turn1 = "My name is Emma. My flight AU123 AKL→SYD was just cancelled. " +
+              "I have a separate connecting flight SYD→MEL. What should I do first?";
 
   Console.ForegroundColor = ConsoleColor.Cyan;
   Console.WriteLine($"[User] {turn1}");
@@ -124,9 +128,10 @@ The session accumulates every user and assistant message in order. Context provi
 
 ## Validation
 
-- Each turn shows a `[Loop] Turn N` counter in the terminal.
-- In Turn 2 the agent references the flight number (AU123) from Turn 1 without it being re-stated.
+- The session completes all 3 turns without errors.
+- In Turn 2 the agent references earlier context from Turn 1 (such as the AKL→SYD route or the Melbourne connecting flight) without it being re-stated.
 - In Turn 3 the agent synthesises all previous context into a summary recommendation.
+- _(Solution only)_ Each turn also shows a `[Loop] Turn N — RunAsync...` timing line.
 
 ## Congratulations 🎉
 
@@ -143,6 +148,7 @@ You held a persistent multi-turn conversation using an `AgentSession`. The agent
 | Agent forgets earlier turns | Confirm you are passing the **same** `session` object to every `RunAsync` call |
 | `CreateSessionAsync` not found | Confirm the `Microsoft.Agents.AI.Foundry` package restored correctly |
 | `NotImplementedException` | A TODO is still incomplete |
+| `AuthenticationFailedException` | Run `az login` and confirm the signed-in account has Foundry User rights on the project |
 
 ## Extra Credit — Session Persistence
 

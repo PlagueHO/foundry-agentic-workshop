@@ -13,7 +13,7 @@
 
 ## Objectives
 
-- Create an `AIProjectClient` using `DefaultAzureCredential`.
+- Create an `AIProjectClient` using `AzureCliCredential`.
 - Create an `AIAgent` using `client.AsAIAgent()`.
 - Run a single-turn prompt with `RunAsync` and print the response.
 - Stream a second response token-by-token with `RunStreamingAsync`.
@@ -25,11 +25,11 @@
 `AIProjectClient` is the entry point to your Azure AI Foundry project from .NET. You construct it with your project endpoint and an Azure credential — no API keys required. Once created, the client gives you access to models, agents, and other Foundry resources inside the project.
 
 ```csharp
-var credential = new DefaultAzureCredential();
+var credential = new AzureCliCredential();
 var client = new AIProjectClient(new Uri(endpoint), credential);
 ```
 
-`DefaultAzureCredential` tries a chain of authentication mechanisms in order: environment variables, workload identity, managed identity, Visual Studio, Azure CLI, and more. On a developer laptop after `az login`, it uses the Azure CLI session automatically.
+`AzureCliCredential` authenticates using the identity from your active `az login` session. In environments where multiple credential sources are present — such as VS Code, GitHub Copilot, or managed identity — `DefaultAzureCredential` may resolve a different identity before reaching the CLI, which can cause permission errors. Using `AzureCliCredential` makes the authentication path explicit.
 
 ### What is AIAgent?
 
@@ -54,6 +54,8 @@ The framework provides two ways to get a response from an agent:
 
 Streaming prints each token as the model generates it, which makes the response feel faster and lets you react to partial output.
 
+For a deeper introduction to the framework, see the [Microsoft Agent Framework documentation](https://learn.microsoft.com/en-us/agent-framework/overview/) on Microsoft Learn.
+
 ## Steps
 
 ### Part 1 — Complete the starter code
@@ -68,11 +70,11 @@ Streaming prints each token as the model generates it, which makes the response 
 - [ ] Locate `// ── TODO 1` and replace the commented-out block with:
 
   ```csharp
-  var credential = new DefaultAzureCredential();
+  var credential = new AzureCliCredential();
   var client = new AIProjectClient(new Uri(endpoint), credential);
   ```
 
-  `DefaultAzureCredential` picks up your `az login` session automatically. `AIProjectClient` connects to the Foundry project at the endpoint in your `.env`.
+  `AzureCliCredential` uses your active `az login` session directly. `AIProjectClient` connects to the Foundry project at the endpoint in your `.env`.
 
 #### 3. Create the agent (TODO 2)
 
@@ -109,6 +111,8 @@ Streaming prints each token as the model generates it, which makes the response 
 
 #### 5. Stream a second response (TODO 4)
 
+We will send a second prompt to the agent and stream the response token-by-token. This is a separate prompt to demonstrate the streaming API, but in a real application you would typically continue the conversation with the same agent.
+
 - [ ] Locate `// ── TODO 4` and replace the commented-out block with:
 
   ```csharp
@@ -143,6 +147,9 @@ Streaming prints each token as the model generates it, which makes the response 
 - The terminal prints a coloured `[Agent]` response to the first question.
 - A second response streams token-by-token to the console.
 - Both responses address the passenger rights question about a cancelled flight.
+
+> [!NOTE]
+> The reference `solution/` includes additional diagnostic output — status lines, timing, and a completion message — added for readability. Your completed starter shows only the `[User]` and `[Agent]` blocks above.
 
 ## Congratulations 🎉
 

@@ -45,6 +45,7 @@ Console.WriteLine();
 
 // ── TODO 3 ───────────────────────────────────────────────────────────────────
 // Create the agent, passing the MCP tools via the tools: parameter.
+// Then create a session to maintain conversation state across turns.
 //
 // var credential = new AzureCliCredential();
 // var client = new AIProjectClient(new Uri(endpoint), credential);
@@ -58,15 +59,12 @@ Console.WriteLine();
 //             "before responding.",
 //         tools: [.. mcpTools.Cast<AITool>()]);
 //
-// Console.ForegroundColor = ConsoleColor.DarkGray;
-// Console.WriteLine("[Loop] Agent ready — MCP tools loaded from server.");
-// Console.ResetColor();
-// Console.WriteLine();
-//// var session = await agent.CreateSessionAsync();
-//// ─────────────────────────────────────────────────────────────────────────────
+// var session = await agent.CreateSessionAsync();
+//
+// ─────────────────────────────────────────────────────────────────────────────
 
 // ── TODO 4 ───────────────────────────────────────────────────────────────────
-// Run the agent. It should call get_flight_status then get_rebooking_options.
+// Run the first turn: check flight status and get rebooking options.
 //
 // var query =
 //     "My flight AU123 is disrupted. Can you check the current status and " +
@@ -77,15 +75,31 @@ Console.WriteLine();
 // Console.ResetColor();
 // Console.WriteLine();
 //
-// Console.ForegroundColor = ConsoleColor.DarkGray;
-// Console.WriteLine("[Loop] RunAsync — agent will call MCP tools as needed...");
-// Console.ResetColor();
-// Console.WriteLine();
-//
 // var result = await agent.RunAsync(query, session: session);
 //
 // Console.ForegroundColor = ConsoleColor.Green;
 // Console.WriteLine($"[Agent] {result.Text}");
+// Console.ResetColor();
+// Console.WriteLine();
+//
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── TODO 5 ───────────────────────────────────────────────────────────────────
+// Run the second turn: file a compensation claim.
+// The session carries context from turn 1 so the agent knows the flight details.
+//
+// var query2 =
+//     "Please go ahead and file a compensation claim for the cancellation.";
+//
+// Console.ForegroundColor = ConsoleColor.Cyan;
+// Console.WriteLine($"[User] {query2}");
+// Console.ResetColor();
+// Console.WriteLine();
+//
+// var result2 = await agent.RunAsync(query2, session: session);
+//
+// Console.ForegroundColor = ConsoleColor.Green;
+// Console.WriteLine($"[Agent] {result2.Text}");
 // Console.ResetColor();
 // Console.WriteLine();
 //

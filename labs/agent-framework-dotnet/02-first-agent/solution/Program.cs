@@ -24,6 +24,9 @@ Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine("[Loop] Creating AIProjectClient...");
 Console.ResetColor();
 
+// AzureCliCredential uses the az login session directly.
+// DefaultAzureCredential may resolve VS Code or other ambient credentials first,
+// which can cause permission errors in environments with multiple credential sources.
 var credential = new AzureCliCredential();
 var client = new AIProjectClient(new Uri(endpoint), credential);
 
