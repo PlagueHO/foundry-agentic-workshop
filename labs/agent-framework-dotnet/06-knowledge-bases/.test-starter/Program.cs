@@ -21,7 +21,7 @@ var searchServiceName = Environment.GetEnvironmentVariable("AZURE_SEARCH_SERVICE
 var searchIndexName = Environment.GetEnvironmentVariable("AZURE_SEARCH_PASSENGER_RIGHTS_INDEX_NAME")
     ?? "passenger-rights";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 06: Knowledge Bases ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 06: Knowledge Bases ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model        : {model}");
 Console.WriteLine($"  Search index : {searchServiceName}/{searchIndexName}");

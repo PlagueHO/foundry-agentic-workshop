@@ -1,4 +1,4 @@
-# Solution — Module 10: Foundry Toolboxes
+# Solution - Module 10: Foundry Toolboxes
 
 This folder contains the reference implementation for Module 10.
 
@@ -6,7 +6,7 @@ This folder contains the reference implementation for Module 10.
 
 Creates the `acl-remedy-toolbox` toolbox from code. Use it when the Foundry portal
 does not yet expose the Toolboxes preview UI in your region, or when you skipped the
-portal toolbox creation step in Part 2. It creates the toolbox only — it does not
+portal toolbox creation step in Part 2. It creates the toolbox only - it does not
 modify any agent.
 
 The script:
@@ -70,9 +70,9 @@ The script:
 
 1. Selects the latest active version of the hosted agent.
 1. Creates a session and routes 100% of the agent endpoint traffic to that version.
-1. Runs a two-turn Australian Consumer Law conversation for receipt `R-1007` — the agent
+1. Runs a two-turn Australian Consumer Law conversation for receipt `R-1007` - the agent
    uses Tool Search to discover and call the retail tools, web search, and code interpreter
-   behind the single toolbox endpoint — then deletes the session.
+   behind the single toolbox endpoint - then deletes the session.
 
 ```bash
 python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py

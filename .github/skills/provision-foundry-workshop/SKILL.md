@@ -1,7 +1,7 @@
 ---
 name: provision-foundry-workshop
 description: >-
-  **WORKFLOW SKILL** — Provision a shared Microsoft Foundry workshop environment
+  **WORKFLOW SKILL** - Provision a shared Microsoft Foundry workshop environment
   for multiple attendees. Collects five parameters interactively when not supplied,
   validates the attendee roster, runs azd provision, and verifies RBAC assignments,
   AI Search population, audit CSVs, and per-attendee onboarding files.
@@ -30,11 +30,11 @@ Implements the full setup described in `docs/guide-organizer.md`.
 
 | Parameter | azd variable | Required | Default | Description |
 |-----------|-------------|----------|---------|-------------|
-| `env` | `AZURE_ENV_NAME` | Yes | — | azd environment name, e.g. `my-workshop` |
-| `location` | `AZURE_LOCATION` | Yes | — | Azure region slug, e.g. `australiaeast` |
-| `rg` | `AZURE_RESOURCE_GROUP` | Yes | — | Target resource group name |
+| `env` | `AZURE_ENV_NAME` | Yes | - | azd environment name, e.g. `my-workshop` |
+| `location` | `AZURE_LOCATION` | Yes | - | Azure region slug, e.g. `australiaeast` |
+| `rg` | `AZURE_RESOURCE_GROUP` | Yes | - | Target resource group name |
 | `default-role` | `AZURE_ATTENDEE_DEFAULT_ROLE` | No | `foundry-user` | Default role for attendees without an explicit `role` field |
-| `attendees` | `AZURE_ATTENDEE_LIST` | Yes | — | JSON array of attendee objects — see format below |
+| `attendees` | `AZURE_ATTENDEE_LIST` | Yes | - | JSON array of attendee objects - see format below |
 
 ### Attendee entry format
 
@@ -47,7 +47,7 @@ Valid role keys: `foundry-user` · `foundry-project-manager` · `foundry-account
 Omit `role` to use the `default-role`. Entries with role `facilitator`, `proctor`,
 or `organizer` always receive Foundry Owner at account scope.
 
-## Step 1 — Collect parameters
+## Step 1 - Collect parameters
 
 Extract each parameter from the invocation text. If any required parameter is absent,
 call `vscode_askQuestions` once with all missing parameters as separate questions.
@@ -64,7 +64,7 @@ When asking for the attendee list, display this example to guide the user:
 ]
 ```
 
-## Step 2 — Validate attendee list
+## Step 2 - Validate attendee list
 
 Parse and validate before touching azd. Fail fast with a clear error if any
 check fails, and ask the user to correct the list before proceeding.
@@ -77,7 +77,7 @@ check fails, and ask the user to correct the list before proceeding.
 Display the validated roster as a table (UPN | effective role | project scope)
 and ask the user to confirm before continuing.
 
-## Step 3 — Configure azd environment
+## Step 3 - Configure azd environment
 
 ```bash
 azd env new <env>
@@ -93,7 +93,7 @@ JSON string before passing it to `azd env set`.
 
 Confirm the active environment with `azd env list` before proceeding.
 
-## Step 4 — Provision
+## Step 4 - Provision
 
 ```bash
 azd provision
@@ -107,12 +107,12 @@ Bicep deploys all Azure resources with RBAC role assignments embedded.
 
 The post-provision hook (`scripts/generate-attendee-onboarding.py`) writes
 per-attendee onboarding markdown files, a provisioning summary CSV, and seeds
-the AI Search indexes — all under `.azure/<env>/`.
+the AI Search indexes - all under `.azure/<env>/`.
 
 Provisioning takes several minutes. Do not interrupt. Wait for full completion
 before running Step 5.
 
-## Step 5 — Validate
+## Step 5 - Validate
 
 Run all four checks. Report each result individually and surface any failures.
 
@@ -153,13 +153,13 @@ python scripts/health-check.py
 ```
 
 Confirm no AI Search errors appear in the output. If indexes are reported
-empty, wait 60 seconds and retry — the seeding step may still be running.
+empty, wait 60 seconds and retry - the seeding step may still be running.
 
-## Step 6 — Report
+## Step 6 - Report
 
 Summarise the provisioning outcome:
 
 * Environment name and resource group
 * Count of attendees provisioned vs. failed
 * Location of per-attendee onboarding files: `.azure/<env>/`
-* IMPORTANT: Remind organizer to deliver each attendee's `.md` file to the facilitator for distribution before the workshop — see `docs/quickstart-facilitator.md`
+* IMPORTANT: Remind organizer to deliver each attendee's `.md` file to the facilitator for distribution before the workshop - see `docs/quickstart-facilitator.md`

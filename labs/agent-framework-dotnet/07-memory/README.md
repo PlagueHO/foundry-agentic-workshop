@@ -2,7 +2,7 @@
 
 **Estimated time:** 20 minutes
 
-![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars — Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
+![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars - Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
 
 > [!IMPORTANT]
 > This module builds on [Module 06](../06-knowledge-bases/README.md). The `AIContextProvider` pattern introduced there is extended here to store per-session state.
@@ -33,12 +33,12 @@ internal sealed class PassengerProfileMemory : AIContextProvider
     // Expose the keys the framework uses to serialise this provider's state.
     public override IReadOnlyList<string> StateKeys => [_state.StateKey];
 
-    // Called BEFORE the model call — inject stored context as instructions.
+    // Called BEFORE the model call - inject stored context as instructions.
     protected override ValueTask<AIContext> ProvideAIContextAsync(
         InvokingContext context, CancellationToken cancellationToken = default)
     { ... }
 
-    // Called AFTER the model call — extract and persist new information.
+    // Called AFTER the model call - extract and persist new information.
     protected override ValueTask StoreAIContextAsync(
         InvokedContext context, CancellationToken cancellationToken = default)
     { ... }
@@ -62,12 +62,12 @@ state.SaveState(context.Session, profile);
 
 ### Provider flow
 
-1. **`ProvideAIContextAsync`** (before model call) — read the stored profile and inject it as instructions so the model knows who it is talking to.
-1. **`StoreAIContextAsync`** (after model call) — scan the user's messages for name and flight-number patterns and persist them for future turns.
+1. **`ProvideAIContextAsync`** (before model call) - read the stored profile and inject it as instructions so the model knows who it is talking to.
+1. **`StoreAIContextAsync`** (after model call) - scan the user's messages for name and flight-number patterns and persist them for future turns.
 
 ## Steps
 
-### Part 1 — Complete the starter code
+### Part 1 - Complete the starter code
 
 #### 1. Open the starter file
 
@@ -137,13 +137,13 @@ state.SaveState(context.Session, profile);
   Console.WriteLine();
 
   Console.ForegroundColor = ConsoleColor.Cyan;
-  Console.WriteLine("[User] Can you remind me — what was my flight number?");
+  Console.WriteLine("[User] Can you remind me - what was my flight number?");
   Console.ResetColor();
   Console.WriteLine();
 
   Console.ForegroundColor = ConsoleColor.Green;
   Console.WriteLine($"[Agent] {await agent.RunAsync(
-      \"By the way, can you remind me — what was my flight number?\",
+      \"By the way, can you remind me - what was my flight number?\",
       session: session)}");
   Console.ResetColor();
   Console.WriteLine();
@@ -187,7 +187,7 @@ state.SaveState(context.Session, profile);
   return new AIContext { Instructions = sb.ToString() };
   ```
 
-### Part 2 — Run and verify
+### Part 2 - Run and verify
 
 #### 7. Run the starter
 
@@ -216,6 +216,6 @@ You implemented a custom memory provider that extracts passenger details from na
 | Symptom | Fix |
 |---|---|
 | Agent does not remember the name | Ensure `StoreAIContextAsync` regex captures lowercase too: `(?i)my name is (\w+)` |
-| `InvalidOperationException: Could not retrieve IChatClient` | The Foundry agent package must be registered — confirm `Microsoft.Agents.AI.Foundry` is referenced |
+| `InvalidOperationException: Could not retrieve IChatClient` | The Foundry agent package must be registered - confirm `Microsoft.Agents.AI.Foundry` is referenced |
 | `AuthenticationFailedException` | Run `az login` and confirm `FOUNDRY_PROJECT_ENDPOINT` in `.env` matches the provisioned project |
 | `NotImplementedException` | A TODO is still incomplete |

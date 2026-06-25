@@ -16,8 +16,8 @@
 
 Your organizer provisions the shared Foundry environment and assigns you a project. Before you start, you should have received:
 
-- **Attendee Portal URL** — sign in with your lab Microsoft account to get your personal `.env` values.
-- `FOUNDRY_PROJECT_NAME` — for example, `attendee-01`.
+- **Attendee Portal URL** - sign in with your lab Microsoft account to get your personal `.env` values.
+- `FOUNDRY_PROJECT_NAME` - for example, `attendee-01`.
 - Shared values: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_OPENAI_ENDPOINT`, and `AZURE_SEARCH_SERVICE_NAME`.
 
 With the default `foundry-user` role you can build agents and use the models your organizer pre-deployed. You do not deploy models yourself.
@@ -32,14 +32,14 @@ Install the following before continuing:
 1. [.NET 10 SDK](https://dot.net/download).
 1. [Python 3.13 or later](https://www.python.org/downloads/).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
-1. [Docker](https://www.docker.com/products/docker-desktop/) (optional) — required only for [Module 12](../12-observability/README.md), which runs the Aspire Dashboard as a local container.
+1. [Docker](https://www.docker.com/products/docker-desktop/) (optional) - required only for [Module 12](../12-observability/README.md), which runs the Aspire Dashboard as a local container.
 
 > [!NOTE]
 > Docker is only needed for the Aspire Dashboard container in Module 12. You can complete the rest of the lab without it. GitHub Codespaces and local dev containers are fully supported, include Docker, and install all other prerequisites automatically. See the [Attendee Guide](../../../docs/guide-attendee.md) for setup steps.
 
 ## Steps
 
-### Part 1 — Clone and install dependencies
+### Part 1 - Clone and install dependencies
 
 #### 1. Clone the repository
 
@@ -77,7 +77,7 @@ Install the following before continuing:
   dotnet restore labs/agent-framework-dotnet
   ```
 
-### Part 2 — Configure your environment
+### Part 2 - Configure your environment
 
 #### 5. Populate your .env file
 
@@ -95,7 +95,7 @@ Install the following before continuing:
   - `AZURE_OPENAI_ENDPOINT`
   - `AZURE_SEARCH_SERVICE_NAME`
 
-### Part 3 — Sign in and verify
+### Part 3 - Sign in and verify
 
 #### 6. Sign in to Azure
 
@@ -123,7 +123,7 @@ Install the following before continuing:
 
 ## Congratulations 🎉
 
-You built a solid foundation for the rest of the lab. You created and activated a Python virtual environment, installed the shared dependencies, restored the .NET packages, populated your `.env` file, and signed in to Azure — with the health check passing. Everything is in place to start building agents.
+You built a solid foundation for the rest of the lab. You created and activated a Python virtual environment, installed the shared dependencies, restored the .NET packages, populated your `.env` file, and signed in to Azure - with the health check passing. Everything is in place to start building agents.
 
 > [!TIP]
 > **Next up → [Module 02: Your First Agent](../02-first-agent/README.md)**

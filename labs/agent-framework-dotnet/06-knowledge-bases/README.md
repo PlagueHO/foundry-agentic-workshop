@@ -2,7 +2,7 @@
 
 **Estimated time:** 25 minutes
 
-![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars — Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
+![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars - Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
 
 > [!IMPORTANT]
 > This module builds on [Module 02](../02-first-agent/README.md). The passenger-rights Azure AI Search index must be seeded before you begin. If you have not already done so, run `python scripts/seed-passenger-rights-index.py` from the repository root.
@@ -74,7 +74,7 @@ For more on context providers in the Microsoft Agent Framework, see the [Microso
 
 ## Steps
 
-### Part 1 — Complete the starter code
+### Part 1 - Complete the starter code
 
 #### 1. Open the starter file
 
@@ -177,7 +177,7 @@ For more on context providers in the Microsoft Agent Framework, see the [Microso
   }
   ```
 
-### Part 2 — Run and verify
+### Part 2 - Run and verify
 
 #### 6. Run the starter
 
@@ -210,5 +210,5 @@ You grounded the Trip Disruption Concierge in a real Azure AI Search index. The 
 | `AZURE_SEARCH_SERVICE_NAME is not set` | Add the value to `.env` in the repository root (output from `azd env get-values`) |
 | `AuthenticationFailedException` | Run `az login` to refresh your Azure CLI credentials |
 | `AuthorizationFailed` on search | Your account needs `Search Service Contributor` or `Search Index Data Reader` on the search resource |
-| Zero documents retrieved | Confirm the `passenger-rights` index is seeded — run `python scripts/seed-passenger-rights-index.py` |
+| Zero documents retrieved | Confirm the `passenger-rights` index is seeded - run `python scripts/seed-passenger-rights-index.py` |
 | `NotImplementedException` | A TODO is still incomplete |

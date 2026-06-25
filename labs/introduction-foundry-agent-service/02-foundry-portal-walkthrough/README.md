@@ -8,21 +8,21 @@ Microsoft Foundry is a unified Azure platform-as-a-service for enterprise AI ope
 
 Foundry unifies agents, models, and tools under a single management grouping with built-in enterprise-readiness capabilities, including tracing, monitoring, evaluations, and customizable enterprise setup. It streamlines operations through unified role-based access control (RBAC), networking, and policies under one Azure resource provider namespace.
 
-The platform gives you access to over 1,900 models from Microsoft, OpenAI, Anthropic, Mistral, xAI, Meta, DeepSeek, Hugging Face, and more. It serves application developers building AI-powered products, ML engineers and data scientists who fine-tune and evaluate models, and IT administrators who govern AI resources across teams — all from the portal you explore in this module.
+The platform gives you access to over 1,900 models from Microsoft, OpenAI, Anthropic, Mistral, xAI, Meta, DeepSeek, Hugging Face, and more. It serves application developers building AI-powered products, ML engineers and data scientists who fine-tune and evaluate models, and IT administrators who govern AI resources across teams - all from the portal you explore in this module.
 
 Foundry brings together several core functions:
 
-- **Models** — Access, deploy, and manage 1,900+ models from Microsoft and leading providers from a single project endpoint.
-- **Agent Service** — Build context-aware, action-oriented agents with multi-agent orchestration, memory, and publishing to Microsoft 365, Teams, or containers.
-- **IQ** — Ground agent responses in enterprise and web content with citation-backed answers (Foundry IQ), including Fabric IQ and Work IQ connectors.
-- **Tools** — Connect over 1,400 pre-built tools and MCP servers through public and private catalogs.
+- **Models** - Access, deploy, and manage 1,900+ models from Microsoft and leading providers from a single project endpoint.
+- **Agent Service** - Build context-aware, action-oriented agents with multi-agent orchestration, memory, and publishing to Microsoft 365, Teams, or containers.
+- **IQ** - Ground agent responses in enterprise and web content with citation-backed answers (Foundry IQ), including Fabric IQ and Work IQ connectors.
+- **Tools** - Connect over 1,400 pre-built tools and MCP servers through public and private catalogs.
 
 ## The Foundry Portal
 
 > [!TIP]
 > Tick the checkbox next to each step as you complete it to track your progress through this module.
 
-The Microsoft Foundry portal at [ai.azure.com](https://ai.azure.com) is the browser-based control plane for your project. This module gives you a quick orientation across the four main tabs — **Home**, **Discover**, **Build**, and **Operate** — so you know where everything lives before you write any code.
+The Microsoft Foundry portal at [ai.azure.com](https://ai.azure.com) is the browser-based control plane for your project. This module gives you a quick orientation across the four main tabs - **Home**, **Discover**, **Build**, and **Operate** - so you know where everything lives before you write any code.
 
 > **Tip:** The portal is a great place to explore and experiment. Most developers prefer to work directly in their IDE once they're comfortable, so Module 03 covers the Foundry Toolkit extension for VS Code.
 
@@ -53,7 +53,7 @@ You land on the **Home** tab for your project.
 
 Look for the **Project endpoint** displayed prominently near the top of the page. This is the URL your code uses to talk to agents and models in this project.
 
-> **Note:** Your project endpoint is already saved in your `.env` file — you don't need to copy it now. It is shown here so you know where to find it if you ever need to verify or share it.
+> **Note:** Your project endpoint is already saved in your `.env` file - you don't need to copy it now. It is shown here so you know where to find it if you ever need to verify or share it.
 
 The three quick-start cards below the endpoint let you jump straight to:
 
@@ -95,12 +95,12 @@ The Discover tab is the starting point for finding models, tools, and solution t
 
   </details>
 
-- [ ] Notice the **Availability** filter is set to **Available in my project** by default — this shows only the models already deployed and ready to use in your project.
+- [ ] Notice the **Availability** filter is set to **Available in my project** by default - this shows only the models already deployed and ready to use in your project.
 - [ ] Click **All models** to see the full catalog of 90+ models across providers (OpenAI, Anthropic, Microsoft, Meta, Mistral, DeepSeek, and more).
 - [ ] Click any model card to view its description, supported inference tasks, context window, and pricing.
 - [ ] Click **Compare models** (top right) to place two models side by side and compare capabilities.
 
-> You do not need to deploy any models — your workshop environment already has `gpt-4o` and an embedding model ready to go.
+> You do not need to deploy any models - your workshop environment already has `gpt-4o` and an embedding model ready to go.
 
 ### 4. Explore the Build tab
 
@@ -127,7 +127,7 @@ The Build tab is where you create and configure agents and their dependencies. T
 | **Evaluations** | Run and review agent and model evaluations |
 | **Guardrails** | Configure content safety and policy controls |
 
-You will use **Agents**, **Tools**, **Knowledge**, and **Evaluations** in later modules. No action is needed here now — just note the layout.
+You will use **Agents**, **Tools**, **Knowledge**, and **Evaluations** in later modules. No action is needed here now - just note the layout.
 
 ### 5. Explore the Operate tab
 
@@ -142,10 +142,10 @@ Click **Operate** in the top navigation bar.
 
 The Operate tab provides observability across your projects. The **Overview** dashboard shows:
 
-- **Running agents** — agents currently active
-- **Estimated cost** — token and compute spend over the selected period
-- **Agent success rate** — how often agents complete without errors
-- **Token usage** — consumption across models and projects
+- **Running agents** - agents currently active
+- **Estimated cost** - token and compute spend over the selected period
+- **Agent success rate** - how often agents complete without errors
+- **Token usage** - consumption across models and projects
 
 The sidebar also has **Assets**, **Compliance**, **Quota**, and **Admin** for governance and capacity management. You'll return here in Module 11 (Agent Ops and Agent Identity).
 
@@ -158,14 +158,14 @@ The sidebar also has **Assets**, **Compliance**, **Quota**, and **Admin** for go
 
 ## Congratulations 🎉
 
-You toured the Microsoft Foundry portal end to end. You located your project endpoint on the Home tab, browsed the deployed models under Discover, and found the Agents, Knowledge, and Evaluations sections on the Build tab — plus the Operate tab where you monitor agent health and cost. You now know your way around the portal and where everything lives.
+You toured the Microsoft Foundry portal end to end. You located your project endpoint on the Home tab, browsed the deployed models under Discover, and found the Agents, Knowledge, and Evaluations sections on the Build tab - plus the Operate tab where you monitor agent health and cost. You now know your way around the portal and where everything lives.
 
 > [!TIP]
 > **Next up → [Module 03: Foundry Toolkit for VS Code](../03-foundry-toolkit-vscode/README.md)**
-> Bring Foundry into your editor with the Foundry Toolkit and run your first model from the playground. No need to scroll — jump straight in!
+> Bring Foundry into your editor with the Foundry Toolkit and run your first model from the playground. No need to scroll - jump straight in!
 
 ## Troubleshooting
 
 - **Can't see your project?** Confirm the project name shown in the top breadcrumb matches the one assigned to you in Module 01. Use the breadcrumb dropdown to switch projects.
 - **A tab is empty or shows an error?** Refresh the page and confirm your account has the Contributor role on the project. Ask your proctor if the role assignment is missing.
-- **Project endpoint not visible on Home?** Make sure the **New Foundry** toggle (top right) is switched **on** — the classic view does not show the endpoint card.
+- **Project endpoint not visible on Home?** Make sure the **New Foundry** toggle (top right) is switched **on** - the classic view does not show the endpoint card.

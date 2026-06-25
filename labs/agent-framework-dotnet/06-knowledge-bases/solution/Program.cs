@@ -24,7 +24,7 @@ var searchServiceName = Environment.GetEnvironmentVariable("AZURE_SEARCH_SERVICE
 var searchIndexName = Environment.GetEnvironmentVariable("AZURE_SEARCH_PASSENGER_RIGHTS_INDEX_NAME")
     ?? "passenger-rights";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 06: Knowledge Bases ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 06: Knowledge Bases ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model        : {model}");
 Console.WriteLine($"  Search index : {searchServiceName}/{searchIndexName}");
@@ -116,7 +116,7 @@ Console.WriteLine("Module 06 complete. ✓");
 // ── PassengerRightsContextProvider ────────────────────────────────────────────
 // This context provider queries the passenger-rights Azure AI Search index
 // and injects the top matching documents before every model call.
-// Pattern: deferred search — after each turn, the user's query is used to
+// Pattern: deferred search - after each turn, the user's query is used to
 // pre-fetch context for the *next* turn.  The first turn uses a default seed query.
 internal sealed class PassengerRightsContextProvider(SearchClient searchClient)
     : AIContextProvider

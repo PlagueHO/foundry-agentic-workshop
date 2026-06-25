@@ -59,7 +59,7 @@ cd foundry-agentic-workshop
    ```
 
 > [!NOTE]
-> Docker is optional. You only need it for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which builds a hosted agent locally and pushes it to the workshop container registry. If Docker is not available, you can still complete every other module — including Module 09 Part 2, which deploys the same agent from source code without Docker. The GitHub Codespaces and dev container environments include Docker automatically.
+> Docker is optional. You only need it for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which builds a hosted agent locally and pushes it to the workshop container registry. If Docker is not available, you can still complete every other module - including Module 09 Part 2, which deploys the same agent from source code without Docker. The GitHub Codespaces and dev container environments include Docker automatically.
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!NOTE]
@@ -72,11 +72,11 @@ cd foundry-agentic-workshop
    - `AZURE_SUBSCRIPTION_ID`
    - `AZURE_RESOURCE_GROUP`
    - `FOUNDRY_RESOURCE_NAME`
-   - `FOUNDRY_PROJECT_NAME` — typically the local part of your UPN (for example `alice-smith` from `alice.smith@contoso.com`), unless your organizer configured sequential names. Confirm with your organizer if unsure.
-   - `FOUNDRY_PROJECT_ENDPOINT` — derived as `https://<FOUNDRY_RESOURCE_NAME>.services.ai.azure.com/api/projects/<FOUNDRY_PROJECT_NAME>`. Your organizer's onboarding file contains the exact value.
-   - `AZURE_OPENAI_ENDPOINT` — derived as `https://<FOUNDRY_RESOURCE_NAME>.openai.azure.com/openai/v1`. Your organizer's onboarding file contains the exact value.
+   - `FOUNDRY_PROJECT_NAME` - typically the local part of your UPN (for example `alice-smith` from `alice.smith@contoso.com`), unless your organizer configured sequential names. Confirm with your organizer if unsure.
+   - `FOUNDRY_PROJECT_ENDPOINT` - derived as `https://<FOUNDRY_RESOURCE_NAME>.services.ai.azure.com/api/projects/<FOUNDRY_PROJECT_NAME>`. Your organizer's onboarding file contains the exact value.
+   - `AZURE_OPENAI_ENDPOINT` - derived as `https://<FOUNDRY_RESOURCE_NAME>.openai.azure.com/openai/v1`. Your organizer's onboarding file contains the exact value.
    - `AZURE_SEARCH_SERVICE_NAME`
-   - `RETAIL_REMEDY_OPS_MCP_SERVER_URL` — the shared MCP server URL (ending in `/mcp`) used from [Module 06](./labs/introduction-foundry-agent-service) onward. See [MCP server for Module 06](#mcp-server-for-module-06).
+   - `RETAIL_REMEDY_OPS_MCP_SERVER_URL` - the shared MCP server URL (ending in `/mcp`) used from [Module 06](./labs/introduction-foundry-agent-service) onward. See [MCP server for Module 06](#mcp-server-for-module-06).
 1. Leave the attendee RBAC and `AZURE_SEARCH_ADMIN_KEY` values blank; those are for
    organizers.
 
@@ -88,7 +88,7 @@ az account set --subscription <your-subscription-id>
 ```
 
 The labs authenticate with `DefaultAzureCredential`, so signing in with the Azure CLI is
-enough — no keys required.
+enough - no keys required.
 
 ## Validate setup
 
@@ -136,7 +136,7 @@ Your organizer deploys a shared MCP server to **Azure Container Apps** and inclu
 RETAIL_REMEDY_OPS_MCP_SERVER_URL=https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp
 ```
 
-That is all you need — the cloud-hosted agent reaches the shared server directly, so you do not run anything locally.
+That is all you need - the cloud-hosted agent reaches the shared server directly, so you do not run anything locally.
 
 ### Run your own MCP server with a tunnel (alternative)
 

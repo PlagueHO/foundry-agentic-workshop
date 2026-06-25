@@ -1,7 +1,7 @@
-# Solution — Module 09: Hosted agents
+# Solution - Module 09: Hosted agents
 
 This folder contains the reference implementation for deploying the ACL Remedy Advisor
-agent to Microsoft Foundry hosted agents as two separate deployments —
+agent to Microsoft Foundry hosted agents as two separate deployments -
 `acl-remedy-advisor-hosted-container` (Part 1) and `acl-remedy-advisor-hosted-code`
 (Part 2). Run scripts from the repository root after activating the workshop virtual
 environment and populating `shared/.env` from `shared/.env.example`.

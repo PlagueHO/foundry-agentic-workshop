@@ -2,7 +2,7 @@
 
 **Estimated time:** 25 minutes
 
-![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars — Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
+![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars - Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
 
 > [!IMPORTANT]
 > This module builds on [Module 04](../04-function-tools/README.md). The function-tool pattern is replaced here with a remote MCP server. You need Python 3.13 installed to start the `flight-ops` MCP server.
@@ -23,9 +23,9 @@
 
 ### What is the Model Context Protocol?
 
-The **[Model Context Protocol](https://modelcontextprotocol.io/)** (MCP) is an open standard for exposing tools, resources, and prompts to language models over HTTP. An MCP server publishes a list of tools — each with a name, description, and typed parameters — that any MCP client can discover and call.
+The **[Model Context Protocol](https://modelcontextprotocol.io/)** (MCP) is an open standard for exposing tools, resources, and prompts to language models over HTTP. An MCP server publishes a list of tools - each with a name, description, and typed parameters - that any MCP client can discover and call.
 
-Instead of writing a local C# function (as in Module 04), you point the agent at a remote server and it discovers the available tools automatically. This means the tool logic can live in Python, Node.js, or any language — and can be updated without redeploying your agent code.
+Instead of writing a local C# function (as in Module 04), you point the agent at a remote server and it discovers the available tools automatically. This means the tool logic can live in Python, Node.js, or any language - and can be updated without redeploying your agent code.
 
 ### McpClient and tool discovery
 
@@ -47,7 +47,7 @@ var agent = client
         tools: [.. mcpTools.Cast<AITool>()]);
 ```
 
-When the model decides to call a tool, the framework sends a JSON-RPC request to the MCP server, waits for the result, and injects it back into the conversation — exactly as it does for local function tools. For more on the `AIAgent` and tool integration, see the [Microsoft Agent Framework documentation](https://learn.microsoft.com/en-us/agent-framework/overview/).
+When the model decides to call a tool, the framework sends a JSON-RPC request to the MCP server, waits for the result, and injects it back into the conversation - exactly as it does for local function tools. For more on the `AIAgent` and tool integration, see the [Microsoft Agent Framework documentation](https://learn.microsoft.com/en-us/agent-framework/overview/).
 
 ### flight-ops MCP server
 
@@ -63,7 +63,7 @@ The server is located in `shared/mcp-servers/flight-ops/src/server.py` and liste
 
 ## Steps
 
-### Part 1 — Start the MCP server
+### Part 1 - Start the MCP server
 
 #### 1. Start the flight-ops server
 
@@ -78,7 +78,7 @@ The server is located in `shared/mcp-servers/flight-ops/src/server.py` and liste
   > [!NOTE]
   > Keep this terminal open for the rest of the module. If you close it, the agent will fail with a connection error. If `FLIGHT_OPS_MCP_SERVER_URL` is already set in your `.env` to a shared remote server, you can skip this entire Part 1.
 
-### Part 2 — Complete the starter code
+### Part 2 - Complete the starter code
 
 #### 2. Open the starter file
 
@@ -130,7 +130,7 @@ The server is located in `shared/mcp-servers/flight-ops/src/server.py` and liste
   var session = await agent.CreateSessionAsync();
   ```
 
-#### 6. Run the first turn — check status and rebooking options (TODO 4)
+#### 6. Run the first turn - check status and rebooking options (TODO 4)
 
 - [ ] Locate `// ── TODO 4` and replace the commented-out block with:
 
@@ -175,7 +175,7 @@ The server is located in `shared/mcp-servers/flight-ops/src/server.py` and liste
 
   The session carries context from turn 1 so the agent remembers the flight and booking reference.
 
-### Part 3 — Run and verify
+### Part 3 - Run and verify
 
 #### 8. Run the starter
 
@@ -193,7 +193,7 @@ The server is located in `shared/mcp-servers/flight-ops/src/server.py` and liste
 
 ## Congratulations 🎉
 
-You replaced the local function tool with a remote MCP server. The agent discovered the available tools at startup, called them over HTTP when the model needed live data, and used a session to carry context across two turns — all without changing your agent setup code.
+You replaced the local function tool with a remote MCP server. The agent discovered the available tools at startup, called them over HTTP when the model needed live data, and used a session to carry context across two turns - all without changing your agent setup code.
 
 > [!TIP]
 > **Next up → [Module 06: Knowledge Bases](../06-knowledge-bases/README.md)**

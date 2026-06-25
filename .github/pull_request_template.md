@@ -2,15 +2,15 @@
 
 <!-- Check every type that applies. At least one must be selected. -->
 
-- [ ] Bug or fix — corrects a defect, broken step, or inaccuracy in existing content
-- [ ] Lab improvement or addition — improves clarity, adds a step, screenshot, concept, or validation to an existing module
-- [ ] New module — adds a new numbered module to an existing lab series
-- [ ] New lab — adds an entirely new lab series under `labs/`
-- [ ] Infrastructure — changes to Bicep, `azure.yaml`, or provisioning scripts
-- [ ] Documentation — changes to the VitePress docs site, guides, or quickstarts
-- [ ] Scripts — changes to `scripts/`, `shared/`, or `tools/`
-- [ ] CI / tooling — changes to GitHub Actions workflows, linting config, or dev tooling
-- [ ] Other — describe below
+- [ ] Bug or fix - corrects a defect, broken step, or inaccuracy in existing content
+- [ ] Lab improvement or addition - improves clarity, adds a step, screenshot, concept, or validation to an existing module
+- [ ] New module - adds a new numbered module to an existing lab series
+- [ ] New lab - adds an entirely new lab series under `labs/`
+- [ ] Infrastructure - changes to Bicep, `azure.yaml`, or provisioning scripts
+- [ ] Documentation - changes to the VitePress docs site, guides, or quickstarts
+- [ ] Scripts - changes to `scripts/`, `shared/`, or `tools/`
+- [ ] CI / tooling - changes to GitHub Actions workflows, linting config, or dev tooling
+- [ ] Other - describe below
 
 ## Related issues
 
@@ -42,5 +42,5 @@ Closes #
 
 - [ ] No secrets, tokens, keys, or connection strings are committed.
 - [ ] `shared/.env.example` is updated if new environment variables are introduced.
-- [ ] Change is scoped to the stated intent — no unrelated refactoring included.
+- [ ] Change is scoped to the stated intent - no unrelated refactoring included.
 - [ ] Docs site regenerated via `pnpm run docs:generate-labs` if any lab README was added or renamed.

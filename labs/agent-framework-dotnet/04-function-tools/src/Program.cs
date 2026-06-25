@@ -13,7 +13,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 04: Function Tools ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 04: Function Tools ===");
 Console.WriteLine();
 
 // ── TODO 1 ───────────────────────────────────────────────────────────────────
@@ -75,7 +75,7 @@ Console.WriteLine();
 
 // ── TODO 3 ───────────────────────────────────────────────────────────────────
 // Run a prompt that should trigger the tool. The agent will call
-// calculate_compensation automatically — watch for the [Tool] log lines.
+// calculate_compensation automatically - watch for the [Tool] log lines.
 //
 // var query =
 //     "My flight AU123 AKL→SYD was cancelled with only 3 hours' notice. " +
@@ -87,7 +87,7 @@ Console.WriteLine();
 // Console.WriteLine();
 //
 // Console.ForegroundColor = ConsoleColor.DarkGray;
-// Console.WriteLine("[Loop] RunAsync — agent may call tools before responding...");
+// Console.WriteLine("[Loop] RunAsync - agent may call tools before responding...");
 // Console.ResetColor();
 // Console.WriteLine();
 //

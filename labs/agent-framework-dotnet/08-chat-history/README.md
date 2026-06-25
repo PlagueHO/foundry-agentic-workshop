@@ -2,7 +2,7 @@
 
 **Estimated time:** 20 minutes
 
-![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars — Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
+![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars - Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
 
 > [!IMPORTANT]
 > This module builds on [Module 03](../03-multi-turn/README.md) (sessions) and [Module 07](../07-memory/README.md) (session state). You should be comfortable with both patterns before continuing.
@@ -28,7 +28,7 @@ Every `AIAgent` session is a lightweight object that contains the conversation h
 // Capture
 JsonElement snapshot = await agent.SerializeSessionAsync(session);
 
-// Restore — the same agent instance can be reused
+// Restore - the same agent instance can be reused
 AgentSession restored = await agent.DeserializeSessionAsync(snapshot);
 ```
 
@@ -45,7 +45,7 @@ This is the foundation for persistent chat history, resumable workflows, and sta
 
 ## Steps
 
-### Part 1 — Complete the starter code
+### Part 1 - Complete the starter code
 
 #### 1. Open the starter file
 
@@ -88,9 +88,9 @@ This is the foundation for persistent chat history, resumable workflows, and sta
 - [ ] Locate `// ── TODO 4` and replace the commented-out block with the restore and recall code already commented out there.
 
   > [!NOTE]
-  > The existing `AIAgent` instance can be reused — the agent is stateless; only the session holds conversation history. In a real application you would reload the JSON snapshot from a database or file before calling `DeserializeSessionAsync`.
+  > The existing `AIAgent` instance can be reused - the agent is stateless; only the session holds conversation history. In a real application you would reload the JSON snapshot from a database or file before calling `DeserializeSessionAsync`.
 
-### Part 2 — Run and verify
+### Part 2 - Run and verify
 
 #### 6. Run the starter
 
@@ -107,11 +107,11 @@ This is the foundation for persistent chat history, resumable workflows, and sta
 
 ## Congratulations 🎉
 
-You captured a full session snapshot and restored it into a new `AgentSession`. The restored session recalled the flight number from before the simulated restart — exactly what a real-world resumable support portal would need.
+You captured a full session snapshot and restored it into a new `AgentSession`. The restored session recalled the flight number from before the simulated restart - exactly what a real-world resumable support portal would need.
 
 > [!TIP]
 > **Next up → [Module 09: Multi-agent Orchestration](../09-multi-agent/README.md)**
-> Build a concierge that delegates to specialist agents for rebooking, accommodation, and compensation — and watch the routing decisions logged in your terminal.
+> Build a concierge that delegates to specialist agents for rebooking, accommodation, and compensation - and watch the routing decisions logged in your terminal.
 
 ## Troubleshooting
 

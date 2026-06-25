@@ -162,7 +162,7 @@ def _build_attendee_env_dict(  # pylint: disable=too-many-arguments,too-many-pos
 
     Optional keys (search service, container registry, MCP server URLs) are omitted
     when not configured so consumers can distinguish "not set" from an empty string.
-    Single source of truth for env content — used by both the onboarding index and
+    Single source of truth for env content - used by both the onboarding index and
     the per-attendee markdown files.
     """
     project_endpoint = (

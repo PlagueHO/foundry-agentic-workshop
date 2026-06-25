@@ -2,7 +2,7 @@
 
 This is the primary deployment path for Module 09. It zips the agent bundle in
 ``src/agent/`` and uploads it to Foundry, which builds the container image remotely and
-runs it as a hosted agent — no local Docker required. After the version becomes active it
+runs it as a hosted agent - no local Docker required. After the version becomes active it
 grants the agent's per-deploy identity the Foundry User role so the agent can call models.
 
 Usage:

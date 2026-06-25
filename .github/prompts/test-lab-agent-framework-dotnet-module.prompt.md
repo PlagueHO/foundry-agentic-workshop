@@ -18,11 +18,11 @@ Track every finding as you work through each section below. You will produce a c
 
 ---
 
-## Pre-flight — Verify the environment is ready
+## Pre-flight - Verify the environment is ready
 
-Before executing any module steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** — report the failure and ask the user to resolve it.
+Before executing any module steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** - report the failure and ask the user to resolve it.
 
-### Check 1 — Locate the module directory
+### Check 1 - Locate the module directory
 
 1. Identify the full module directory path by finding the folder matching `labs/agent-framework-dotnet/${input:moduleNumber}-*/`.
 1. Confirm the following files exist inside it:
@@ -32,9 +32,9 @@ Before executing any module steps, confirm all prerequisites are satisfied. **Do
    ```
 
 1. Confirm at minimum: `README.md`, `src/Program.cs`, and `solution/Program.cs` are present.
-1. Record the resolved directory name (e.g. `04-function-tools`) — use it as `MODULE_DIR` in all subsequent steps.
+1. Record the resolved directory name (e.g. `04-function-tools`) - use it as `MODULE_DIR` in all subsequent steps.
 
-### Check 2 — Confirm .NET SDK is available
+### Check 2 - Confirm .NET SDK is available
 
 1. Run:
 
@@ -44,7 +44,7 @@ Before executing any module steps, confirm all prerequisites are satisfied. **Do
 
 1. Confirm the version is `10.x` or later (required by `labs/agent-framework-dotnet/global.json`).
 
-### Check 3 — Confirm `.env` file exists and contains required values
+### Check 3 - Confirm `.env` file exists and contains required values
 
 1. Confirm `.env` exists at the repository root and `FOUNDRY_PROJECT_ENDPOINT` is set:
 
@@ -58,7 +58,7 @@ Before executing any module steps, confirm all prerequisites are satisfied. **Do
 
    **Check:** If `.env` does not exist, confirm with the user that Module 01 has been completed, then copy `shared/.env.example` to `.env` and populate it from `azd env get-values`.
 
-### Check 4 — Confirm Azure authentication
+### Check 4 - Confirm Azure authentication
 
 1. Confirm the Azure CLI is signed in:
 
@@ -69,7 +69,7 @@ Before executing any module steps, confirm all prerequisites are satisfied. **Do
 1. Confirm the subscription ID matches `AZURE_SUBSCRIPTION_ID` from `.env`.
 1. If the command fails, pause and ask the user to run `az login` before continuing.
 
-### Check 5 — Restore NuGet packages for the module
+### Check 5 - Restore NuGet packages for the module
 
 1. Restore packages for the starter project:
 
@@ -87,13 +87,13 @@ Before executing any module steps, confirm all prerequisites are satisfied. **Do
 
 ---
 
-## Section A — Structure review
+## Section A - Structure review
 
 Review the `README.md` against the canonical lab module structure defined in `.github/instructions/lab-module-readme.instructions.md`.
 
 ### A1. Title format
 
-1. Open `README.md` and confirm the first line matches the pattern `# NN. Title` (two-digit zero-padded number, period, space, title — no "Module" prefix).
+1. Open `README.md` and confirm the first line matches the pattern `# NN. Title` (two-digit zero-padded number, period, space, title - no "Module" prefix).
 
    **Check:** Record a finding if the title format deviates.
 
@@ -105,7 +105,7 @@ Review the `README.md` against the canonical lab module structure defined in `.g
    # NN. Title
    **Estimated time:** N minutes
    ![diagram](path)
-   > [!IMPORTANT]   (prerequisite callout — omit only for Module 01)
+   > [!IMPORTANT]   (prerequisite callout - omit only for Module 01)
    > [!TIP]         (tick-the-checkbox reminder)
    ## Objectives
    ## Concepts
@@ -119,14 +119,14 @@ Review the `README.md` against the canonical lab module structure defined in `.g
 
 ### A3. Steps structure
 
-1. Confirm Steps are grouped into `### Part N — Description` sub-sections.
+1. Confirm Steps are grouped into `### Part N - Description` sub-sections.
 1. Confirm each individual step uses `#### N. Step title` heading format.
 1. Confirm every attendee action is a `- [ ]` task-list item with code blocks indented 2 spaces under the item.
 1. Confirm `TODO` comments in the starter follow the pattern `// ── TODO N ──...`.
 
 ### A4. Validation section
 
-1. Confirm the `## Validation` section lists observable, concrete outcomes (printed output, file existence, console colours, or HTTP responses) — not vague statements like "the agent responds".
+1. Confirm the `## Validation` section lists observable, concrete outcomes (printed output, file existence, console colours, or HTTP responses) - not vague statements like "the agent responds".
 
 ### A5. Congratulations section
 
@@ -141,7 +141,7 @@ Review the `README.md` against the canonical lab module structure defined in `.g
 
 ---
 
-## Section B — Diagrams and images review
+## Section B - Diagrams and images review
 
 ### B1. Diagram presence and placement
 
@@ -151,7 +151,7 @@ Review the `README.md` against the canonical lab module structure defined in `.g
 ### B2. Diagram relevance
 
 1. Read the `alt` text of the diagram.
-1. Confirm the alt text accurately describes a diagram or visual that is relevant to the module's content — not a generic banner reused from an unrelated module.
+1. Confirm the alt text accurately describes a diagram or visual that is relevant to the module's content - not a generic banner reused from an unrelated module.
 1. Confirm the image file referenced by the `![...](path)` actually exists on disk:
 
    ```powershell
@@ -167,7 +167,7 @@ Review the `README.md` against the canonical lab module structure defined in `.g
 
 ---
 
-## Section C — Content and concept clarity review
+## Section C - Content and concept clarity review
 
 ### C1. Objectives completeness
 
@@ -179,7 +179,7 @@ Review the `README.md` against the canonical lab module structure defined in `.g
 
 1. Confirm the `## Concepts` section introduces every new MAF construct used in the starter TODOs before it appears in the Steps.
 1. Confirm each concept entry includes a focused code snippet demonstrating the construct in isolation (not lifted directly from the solution).
-1. Confirm concepts are explained at the appropriate level — new attendees should understand what each type does and why it is needed, without reading the source code.
+1. Confirm concepts are explained at the appropriate level - new attendees should understand what each type does and why it is needed, without reading the source code.
 1. Record a finding for any concept that is missing, too terse, or explained only by showing code without prose.
 
 ### C3. Microsoft Learn links
@@ -194,9 +194,9 @@ Review the `README.md` against the canonical lab module structure defined in `.g
 
 ---
 
-## Section D — Code quality review
+## Section D - Code quality review
 
-### D1. Starter code — TODO coverage
+### D1. Starter code - TODO coverage
 
 1. Open `src/Program.cs`.
 1. Confirm every `// ── TODO N` block in the starter is commented-out working code matching the snippet provided in the `README.md` Steps section.
@@ -208,7 +208,7 @@ Review the `README.md` against the canonical lab module structure defined in `.g
 
 1. Record a finding if the starter fails to build or if a TODO block does not match the README snippet.
 
-### D2. Solution code — completeness
+### D2. Solution code - completeness
 
 1. Open `solution/Program.cs`.
 1. Confirm the solution contains no `TODO` comments.
@@ -225,14 +225,14 @@ Review the `README.md` against the canonical lab module structure defined in `.g
 
 1. Review both `src/Program.cs` and `solution/Program.cs` for:
    - Clear, concise comments on every MAF construct (for example `AIAgent`, `AgentSession`, `AIFunctionFactory`, `McpServer`, `AIContextProvider`).
-   - Comments that explain the *why* of a pattern, not just the *what* (for example "// AgentSession maintains conversation state across turns — pass it to every RunAsync call").
+   - Comments that explain the *why* of a pattern, not just the *what* (for example "// AgentSession maintains conversation state across turns - pass it to every RunAsync call").
    - Console output messages that let attendees see when the agent, tool, or streaming call is active.
 1. Record a finding for any MAF construct used without an explanatory comment.
 
 ### D4. DRY and simplicity
 
 1. Confirm there is no duplicate environment-loading or credential-creation boilerplate that could be extracted (given that each module is a self-contained `Program.cs`, a helper method or local function is acceptable).
-1. Confirm the code is as short as possible while remaining readable — no dead code, no commented-out blocks left from prior modules, no unused `using` directives.
+1. Confirm the code is as short as possible while remaining readable - no dead code, no commented-out blocks left from prior modules, no unused `using` directives.
 1. Record a finding for any obvious duplication or dead code.
 
 ### D5. Agent Framework samples alignment
@@ -249,7 +249,7 @@ Review the `README.md` against the canonical lab module structure defined in `.g
 
 ---
 
-## Section E — Execution testing
+## Section E - Execution testing
 
 ### E1. Run the solution
 
@@ -273,7 +273,7 @@ Review the `README.md` against the canonical lab module structure defined in `.g
    ```
 
 1. Open `$tmp/Program.cs`.
-1. Apply each TODO replacement exactly as described in the module README Steps — replace every `// ── TODO N` commented-out block with the uncommented snippet from the README.
+1. Apply each TODO replacement exactly as described in the module README Steps - replace every `// ── TODO N` commented-out block with the uncommented snippet from the README.
 1. Confirm no `TODO` comments remain in the file.
 1. Run the completed starter from the temporary copy:
 
@@ -302,7 +302,7 @@ Review the `README.md` against the canonical lab module structure defined in `.g
 
 ---
 
-## Section F — Dependency and environment review
+## Section F - Dependency and environment review
 
 ### F1. Project file review
 
@@ -324,12 +324,12 @@ Review the `README.md` against the canonical lab module structure defined in `.g
 
 After completing all sections, produce a findings report. List every finding recorded during the review. For each finding include:
 
-- **ID** — sequential number (F-01, F-02, …).
-- **Section** — the letter and number code above (e.g. A1, C3, E2).
-- **Severity** — one of: `Critical` (blocks execution or learning), `Major` (significant gap in quality or correctness), `Minor` (style, clarity, or non-blocking issue), `Info` (suggestion or observation).
-- **Location** — file and line number or region (e.g. `README.md line 45`, `src/Program.cs TODO 2`, `solution/Program.cs`).
-- **Description** — what was found.
-- **Recommendation** — the specific change that would resolve the finding.
+- **ID** - sequential number (F-01, F-02, …).
+- **Section** - the letter and number code above (e.g. A1, C3, E2).
+- **Severity** - one of: `Critical` (blocks execution or learning), `Major` (significant gap in quality or correctness), `Minor` (style, clarity, or non-blocking issue), `Info` (suggestion or observation).
+- **Location** - file and line number or region (e.g. `README.md line 45`, `src/Program.cs TODO 2`, `solution/Program.cs`).
+- **Description** - what was found.
+- **Recommendation** - the specific change that would resolve the finding.
 
 Present the report as a Markdown table:
 

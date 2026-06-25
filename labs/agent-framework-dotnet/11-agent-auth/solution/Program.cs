@@ -13,7 +13,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 11: Agent Identity & Auth ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 11: Agent Identity & Auth ===");
 Console.WriteLine();
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine("Comparing Azure credential strategies for agent applications.");
@@ -35,7 +35,7 @@ Console.WriteLine("[Auth]        ManagedIdentity → AzureDeveloperCLI → Azure
 Console.ResetColor();
 Console.WriteLine();
 
-var defaultCredential = new AzureCliCredential();
+var defaultCredential = new DefaultAzureCredential();
 
 AIAgent agentDefault = new AIProjectClient(new Uri(endpoint), defaultCredential)
     .AsAIAgent(
@@ -70,7 +70,7 @@ Console.ResetColor();
 Console.WriteLine();
 
 var chainedCredential = new ChainedTokenCredential(
-    new ManagedIdentityCredential(),
+    new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned),
     new AzureCliCredential());
 
 AIAgent agentChained = new AIProjectClient(new Uri(endpoint), chainedCredential)

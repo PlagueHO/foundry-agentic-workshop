@@ -9,13 +9,13 @@ endpoint that bundles all of them behind Tool Search.
 
 How the toolbox is consumed:
   - The toolbox is exposed as an MCP endpoint secured with Microsoft Entra authentication.
-    Every request — including the initial MCP handshake — must carry an Entra bearer token
+    Every request - including the initial MCP handshake - must carry an Entra bearer token
     (scope ``https://ai.azure.com/.default``) and the preview header
     ``Foundry-Features: Toolboxes=V1Preview``.
   - Both are attached at the httpx-client level so they are present on every request, then the
     toolbox endpoint is wrapped in an ``MCPStreamableHTTPTool`` and given to the ``Agent``.
   - Inside the hosted container, ``DefaultAzureCredential`` resolves to the agent's own
-    per-deploy Microsoft Entra identity, which holds the Foundry User role — sufficient to
+    per-deploy Microsoft Entra identity, which holds the Foundry User role - sufficient to
     authenticate to the toolbox endpoint on the same scope it already uses to call the model.
 
 Environment variables (provided by Foundry at runtime, and by your ``.env`` locally):
@@ -55,7 +55,7 @@ INSTRUCTIONS = (
     'Always state clearly that you provide general guidance, not legal advice,\n'
     'and that "no refund" signs are unlawful under the ACL.\n'
     '\n'
-    'Be concise and practical — retail staff need fast, clear answers in a\n'
+    'Be concise and practical - retail staff need fast, clear answers in a\n'
     'busy store environment.\n'
     '\n'
     'When asked to calculate refund amounts, depreciation, pro-rata warranty\n'
@@ -73,7 +73,7 @@ INSTRUCTIONS = (
     'or current retail policy information. Use code interpreter to perform calculations such\n'
     'as pro-rata refund amounts.\n'
     '\n'
-    'Do not invent purchase, warranty, policy, or stock details — always call tool_search\n'
+    'Do not invent purchase, warranty, policy, or stock details - always call tool_search\n'
     'first if the tool you need is not already visible, then use the discovered tool.'
 )
 

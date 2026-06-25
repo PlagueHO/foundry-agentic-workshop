@@ -11,7 +11,7 @@ description: "Test the attendee guide end-to-end for a specific attendee using t
 
 You must test the steps in the #file:docs/guide-attendee.md for the attendee specified by `${input:attendeeUpn}` in the environment `${input:envName}`.
 
-## Step 1 — Locate the onboarding file
+## Step 1 - Locate the onboarding file
 
 The lab organizer provisioned the environment with `azd provision`. The post-provision hook (#file:scripts/generate-attendee-onboarding.py) wrote a per-attendee onboarding file to:
 
@@ -21,7 +21,7 @@ The lab organizer provisioned the environment with `azd provision`. The post-pro
 
 Where `<upn_local>` is the part of the UPN before the `@` symbol. Read that file to obtain the attendee's environment variable values.
 
-## Step 2 — Create the `.env` file
+## Step 2 - Create the `.env` file
 
 Using the values from the onboarding file, copy `shared/.env.example` to `.env` in the repository root and populate the following variables from the onboarding file's `## Your Environment Variables` section:
 
@@ -35,7 +35,7 @@ Using the values from the onboarding file, copy `shared/.env.example` to `.env` 
 
 Leave organizer-only values (e.g. `AZURE_ATTENDEE_LIST`, `AZURE_SEARCH_ADMIN_KEY`) blank or at their defaults from the example file.
 
-## Step 3 — Validate the guide steps
+## Step 3 - Validate the guide steps
 
 Follow and validate each step from #file:docs/guide-attendee.md:
 

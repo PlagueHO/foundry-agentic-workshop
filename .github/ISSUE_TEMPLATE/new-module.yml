@@ -1,6 +1,6 @@
 name: New Module Proposal
 description: Propose a new module to be added within an existing lab series.
-title: "new-module: <lab series> — <module title>"
+title: "new-module: <lab series> - <module title>"
 labels: ["new-module", "proposal"]
 body:
   - type: markdown
@@ -35,18 +35,18 @@ body:
       description: Where would this module fit best in the existing flow?
       options:
         - "Before Module 01 (Setup)"
-        - "After Module 01 — Setup"
-        - "After Module 02 — Foundry Portal Walkthrough"
-        - "After Module 03 — Foundry Toolkit for VS Code"
-        - "After Module 04 — Prompt Agents"
-        - "After Module 05 — Agent Tools and Evaluations"
-        - "After Module 06 — MCP Tools"
-        - "After Module 07 — Foundry IQ"
-        - "After Module 08 — Agent Framework Python"
-        - "After Module 09 — Hosted Agents"
-        - "After Module 10 — Foundry Toolboxes"
-        - "After Module 11 — Agent Ops and Agent ID"
-        - "After Module 12 — Publishing Agents (at end)"
+        - "After Module 01 - Setup"
+        - "After Module 02 - Foundry Portal Walkthrough"
+        - "After Module 03 - Foundry Toolkit for VS Code"
+        - "After Module 04 - Prompt Agents"
+        - "After Module 05 - Agent Tools and Evaluations"
+        - "After Module 06 - MCP Tools"
+        - "After Module 07 - Foundry IQ"
+        - "After Module 08 - Agent Framework Python"
+        - "After Module 09 - Hosted Agents"
+        - "After Module 10 - Foundry Toolboxes"
+        - "After Module 11 - Agent Ops and Agent ID"
+        - "After Module 12 - Publishing Agents (at end)"
         - "Flexible / discuss in comments"
     validations:
       required: true
@@ -66,7 +66,7 @@ body:
     id: description
     attributes:
       label: Module description
-      description: Describe what the module covers — the scenario, the Foundry/Azure features used, and the end state an attendee should reach.
+      description: Describe what the module covers - the scenario, the Foundry/Azure features used, and the end state an attendee should reach.
     validations:
       required: true
 

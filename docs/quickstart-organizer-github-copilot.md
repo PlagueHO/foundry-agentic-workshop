@@ -50,7 +50,7 @@ Before invoking the skill, gather the values below. The skill will ask for any t
 | `location` | Azure region slug | `australiaeast` |
 | `rg` | Resource group name | `rg-my-workshop` |
 | `default-role` | Default role for attendees (optional, defaults to `foundry-user`) | `foundry-user` |
-| `attendees` | JSON array of attendee objects — see [Attendee list format](#attendee-list-format) | See below |
+| `attendees` | JSON array of attendee objects - see [Attendee list format](#attendee-list-format) | See below |
 
 ### Attendee list format
 
@@ -110,7 +110,7 @@ attendees:
 Provision the Foundry workshop
 ```
 
-The skill will ask for each missing parameter — including a guided prompt for the attendee list — before starting any Azure operations.
+The skill will ask for each missing parameter - including a guided prompt for the attendee list - before starting any Azure operations.
 
 ### GitHub Copilot CLI
 
@@ -123,7 +123,7 @@ gh copilot suggest "Provision the Foundry workshop with env=my-workshop location
 The skill executes these steps automatically:
 
 1. **Collects** any missing parameters via interactive prompts.
-1. **Validates** the attendee list — JSON structure, UPN format, valid role keys, no duplicates.
+1. **Validates** the attendee list - JSON structure, UPN format, valid role keys, no duplicates.
 1. **Confirms** the validated roster with you before making any changes.
 1. **Configures** the azd environment with all required variables.
 1. **Provisions** with `azd provision`, which:

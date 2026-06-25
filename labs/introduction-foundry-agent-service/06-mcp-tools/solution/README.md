@@ -1,4 +1,4 @@
-# Solution — Module 06: MCP tools
+# Solution - Module 06: MCP tools
 
 This folder contains the reference implementation for Module 06.
 

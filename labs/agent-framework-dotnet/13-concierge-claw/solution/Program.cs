@@ -17,7 +17,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 13: ConciergeClaw — Agent Harness ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 13: ConciergeClaw - Agent Harness ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model    : {model}");
 Console.ResetColor();
@@ -60,11 +60,11 @@ IChatClient chatClient = new AIProjectClient(new Uri(endpoint), credential)
 
 // ── Part 2: Wrap the IChatClient in a HarnessAgent ────────────────────────────
 // AsHarnessAgent() adds these features in a single call:
-//   • TodoProvider + AgentModeProvider  — plan / execute mode with todo tracking
-//   • FileMemoryProvider               — per-session notes written to disk
-//   • FileAccessProvider               — read/write arbitrary local files
-//   • Web search                       — hosted tool (Foundry Responses endpoints)
-//   • LoopAgent decorator              — re-invokes the inner agent until a
+//   • TodoProvider + AgentModeProvider  - plan / execute mode with todo tracking
+//   • FileMemoryProvider               - per-session notes written to disk
+//   • FileAccessProvider               - read/write arbitrary local files
+//   • Web search                       - hosted tool (Foundry Responses endpoints)
+//   • LoopAgent decorator              - re-invokes the inner agent until a
 //                                        LoopEvaluator says to stop
 //
 // We supply only what makes this agent ours: instructions and a custom tool.
@@ -98,7 +98,7 @@ Console.ResetColor();
 Console.WriteLine();
 
 // ── Part 3: Create a session and start in execute mode ────────────────────────
-// The harness defaults to plan mode — the agent asks clarifying questions and
+// The harness defaults to plan mode - the agent asks clarifying questions and
 // seeks your approval before acting. Switching to execute mode lets it act
 // immediately, which is more suitable for this scripted demo.
 var session = await agent.CreateSessionAsync();
@@ -127,7 +127,7 @@ Console.ResetColor();
 Console.WriteLine();
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine("[Harness] Running — LoopAgent will iterate until all todos are resolved...");
+Console.WriteLine("[Harness] Running - LoopAgent will iterate until all todos are resolved...");
 Console.ResetColor();
 Console.WriteLine();
 
@@ -165,7 +165,7 @@ Console.WriteLine();
 // ── Part 4: Export and restore the session ────────────────────────────────────
 // SerializeSessionAsync captures: conversation history, current mode, todo list,
 // and the location of any file-memory the agent has written.
-// DeserializeSessionAsync restores all of this into a fresh session object —
+// DeserializeSessionAsync restores all of this into a fresh session object -
 // allowing sessions to be paused, stored, or resumed in a new process.
 Console.WriteLine($"─── Session Export / Import {'─',50}");
 Console.WriteLine();
@@ -229,7 +229,7 @@ static FlightOption[] GetFlightAlternatives(
         $"\n[Tool] → get_flight_alternatives(flightNumber={flightNumber}, {origin}→{destination})");
     Console.ResetColor();
 
-    // Illustrative mock data — replace with a live flights API in production.
+    // Illustrative mock data - replace with a live flights API in production.
     FlightOption[] options = flightNumber.ToUpperInvariant() switch
     {
         "AU123" =>

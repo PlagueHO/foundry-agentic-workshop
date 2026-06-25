@@ -17,11 +17,11 @@ The lab environment must already be provisioned and the Azure CLI must already b
 
 > **Important:** Any Azure login dialogs that appear during the test must be completed by the user. Pause and prompt the user whenever a sign-in dialog is encountered. Do not attempt to enter credentials automatically.
 
-## Pre-flight — Verify the environment is ready
+## Pre-flight - Verify the environment is ready
 
-Before executing any lab steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** — report the failure and ask the user to resolve it.
+Before executing any lab steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** - report the failure and ask the user to resolve it.
 
-### Check 1 — Confirm the repository and scripts are present
+### Check 1 - Confirm the repository and scripts are present
 
 1. In a terminal at the repository root, confirm the module 10 scripts exist:
 
@@ -32,7 +32,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 1. Confirm all paths resolve without error.
 
-### Check 2 — Activate the virtual environment and confirm dependencies
+### Check 2 - Activate the virtual environment and confirm dependencies
 
 1. Activate the `.venv` virtual environment from the repository root:
 
@@ -54,7 +54,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If the import raises `ModuleNotFoundError`, reinstall `shared/requirements.txt` in the active environment and retry. Confirm the `(.venv)` prefix is present so the install targets the correct interpreter.
 
-### Check 3 — Confirm the `.env` file exists and contains required values
+### Check 3 - Confirm the `.env` file exists and contains required values
 
 1. Confirm `.env` exists and the required toolbox values are populated:
 
@@ -68,11 +68,11 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If `.env` does not exist, confirm with the user that Module 01 has been completed, then copy `shared/.env.example` to `.env` and populate the values from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`.
 
-### Check 4 — Confirm the Module 06 MCP server is running and publicly exposed
+### Check 4 - Confirm the Module 06 MCP server is running and publicly exposed
 
 The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It must be running and reachable on its public URL for toolbox creation and the consumer script to succeed.
 
-1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` points to a **public** URL (ending in `/mcp`), not a `localhost` address — the toolbox endpoint runs in Foundry's managed infrastructure and cannot reach `localhost`.
+1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` points to a **public** URL (ending in `/mcp`), not a `localhost` address - the toolbox endpoint runs in Foundry's managed infrastructure and cannot reach `localhost`.
 1. Confirm the public endpoint responds:
 
    ```bash
@@ -81,7 +81,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
    **Check:** Expect an HTTP `200` with a JSON-RPC response listing the `retail_remedy_ops` tools: `lookup_purchase`, `get_product_profile`, `search_store_policy`, `find_replacement_options`, `draft_remedy_summary`, `create_remedy_case`. If the request fails or times out, restart the Module 06 server, re-expose the dev tunnel publicly, and update `RETAIL_REMEDY_OPS_MCP_SERVER_URL` before continuing.
 
-### Check 5 — Confirm Azure authentication
+### Check 5 - Confirm Azure authentication
 
 1. Confirm the Azure CLI is signed in as the attendee:
 
@@ -92,7 +92,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 1. Confirm the output shows `${input:attendeeUpn}` as the signed-in user.
 1. If the command fails or shows a different identity, pause and ask the user to run `az login` and complete the browser sign-in before continuing. Do not enter credentials automatically.
 
-### Check 6 — Open the Foundry portal
+### Check 6 - Open the Foundry portal
 
 1. Use `open_browser_page` to navigate to `https://ai.azure.com`.
 1. If a login dialog appears, pause and ask the user to sign in as `${input:attendeeUpn}`. Do not enter credentials automatically.
@@ -101,9 +101,9 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
 ---
 
-## Part 1 — Confirm the MCP server URL
+## Part 1 - Confirm the MCP server URL
 
-### Step 1 — Verify RETAIL_REMEDY_OPS_MCP_SERVER_URL in .env
+### Step 1 - Verify RETAIL_REMEDY_OPS_MCP_SERVER_URL in .env
 
 1. Open the `.env` file and confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set to the shared server URL ending in `/mcp`. For example:
 
@@ -111,17 +111,17 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
    https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp
    ```
 
-1. Save this URL — it is pasted into the toolbox configuration in Part 2.
+1. Save this URL - it is pasted into the toolbox configuration in Part 2.
 
    > **Note:** If you are running your own MCP server instead of the shared one, confirm it is still running with port 8080 set to **Public** and use its tunnel URL as your `RETAIL_REMEDY_OPS_MCP_SERVER_URL`. See Module 06, Part 1.
 
 ---
 
-## Part 2 — Create the toolbox in the Foundry portal
+## Part 2 - Create the toolbox in the Foundry portal
 
 > **Note:** The Toolboxes portal UI is in preview. If **Toolboxes** is not visible in the portal navigation, skip to the [code fallback](#code-fallback--create-the-toolbox-with-python) at the end of this part.
 
-### Step 2 — Navigate to Toolboxes
+### Step 2 - Navigate to Toolboxes
 
 1. In the browser opened in Check 6, navigate to the attendee's Foundry project.
 1. In the left navigation, click **Build**.
@@ -131,7 +131,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
    **Check:** If **Toolboxes** is not visible in the navigation, record this step as **skipped (Toolboxes not in portal)** and proceed to the code fallback.
 
-### Step 3 — Create the toolbox
+### Step 3 - Create the toolbox
 
 1. Click **+ Create** or **+ New toolbox**.
 1. Enter the following details:
@@ -143,7 +143,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
 1. Take a screenshot of the filled-in creation form.
 
-### Step 4 — Add the Web Search tool
+### Step 4 - Add the Web Search tool
 
 1. In the tool configuration area, click **+ Add tool**.
 1. Select **Web Search** from the tool picker.
@@ -155,7 +155,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
 1. Confirm the Web Search tool appears in the toolbox configuration.
 
-### Step 5 — Add the MCP tool
+### Step 5 - Add the MCP tool
 
 1. Click **+ Add tool** again.
 1. Select **MCP** (or **Model Context Protocol** / **Custom MCP**) from the tool picker.
@@ -173,22 +173,22 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
    **Check:** If the MCP tools are not discovered, confirm the MCP server is still running and `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is publicly accessible. Restart the server and re-expose the tunnel if needed, then retry tool discovery.
 
-### Step 6 — Add the Code Interpreter tool
+### Step 6 - Add the Code Interpreter tool
 
 1. Click **+ Add tool** again.
 1. Select **Code Interpreter** from the tool picker.
 1. Confirm the toolbox now lists all three tools: **Web Search**, the `retail_remedy_ops` MCP server, and **Code Interpreter**.
 1. Take a screenshot showing all three tools configured.
 
-### Step 7 — Enable Tool Search
+### Step 7 - Enable Tool Search
 
 1. Locate the **Tool search** toggle or checkbox in the toolbox configuration.
 1. Enable it.
 1. Confirm the toggle is enabled.
 
-   **Check:** If the **Tool search** toggle is not visible, the preview feature may not be available in this region. Record this in the results report and continue — the consumer script will attempt to use it regardless.
+   **Check:** If the **Tool search** toggle is not visible, the preview feature may not be available in this region. Record this in the results report and continue - the consumer script will attempt to use it regardless.
 
-### Step 8 — Publish the toolbox and set it as the default version
+### Step 8 - Publish the toolbox and set it as the default version
 
 1. Click **Publish** (or **Save** / **Create**).
 1. Confirm a toolbox named `acl-remedy-toolbox` is created.
@@ -197,7 +197,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
    **Check:** If the published version is not automatically set as the default, locate the version in the toolbox and set it as the default manually before continuing.
 
-### Step 9 — Confirm the toolbox MCP endpoint
+### Step 9 - Confirm the toolbox MCP endpoint
 
 1. After publishing, locate the **Consumer endpoint** URL for `acl-remedy-toolbox`. It has the form:
 
@@ -205,9 +205,9 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
    https://<account>.services.ai.azure.com/api/projects/<project>/toolboxes/acl-remedy-toolbox/mcp?api-version=v1
    ```
 
-1. Confirm the endpoint URL is visible in the portal. The consumer script builds this URL automatically from `FOUNDRY_PROJECT_ENDPOINT` and `TOOLBOX_NAME`, so you do not need to paste it anywhere — but confirm it matches the pattern above.
+1. Confirm the endpoint URL is visible in the portal. The consumer script builds this URL automatically from `FOUNDRY_PROJECT_ENDPOINT` and `TOOLBOX_NAME`, so you do not need to paste it anywhere - but confirm it matches the pattern above.
 
-#### Code fallback — Create the toolbox with Python
+#### Code fallback - Create the toolbox with Python
 
 > If the portal does not expose Toolboxes in your region, or you skipped the portal steps above, run the fallback script to create the toolbox through the Python SDK. `RETAIL_REMEDY_OPS_MCP_SERVER_URL` must be set in your `.env` file.
 >
@@ -222,9 +222,9 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
 ---
 
-## Part 3 — Consume the toolbox with the Microsoft Agent Framework
+## Part 3 - Consume the toolbox with the Microsoft Agent Framework
 
-### Step 10 — Confirm the environment and sign-in are still active
+### Step 10 - Confirm the environment and sign-in are still active
 
 1. Confirm the `.venv` virtual environment is still active (Check 2 above).
 1. Confirm the Azure CLI session is still valid:
@@ -235,7 +235,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
    **Check:** If the session has expired, pause and ask the user to run `az login` and complete the browser sign-in before continuing.
 
-### Step 11 — Confirm the required environment variables
+### Step 11 - Confirm the required environment variables
 
 1. Confirm `FOUNDRY_PROJECT_ENDPOINT` and `TOOLBOX_NAME` are set in `.env`:
 
@@ -245,7 +245,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
 1. Confirm `FOUNDRY_PROJECT_ENDPOINT` is a non-empty value and `TOOLBOX_NAME` is `acl-remedy-toolbox` (or unset, which defaults to `acl-remedy-toolbox`).
 
-### Step 12 — Review the consumer script
+### Step 12 - Review the consumer script
 
 1. Open `labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/consume_toolbox.py`.
 1. Confirm it wraps the toolbox MCP endpoint in an `MCPStreamableHTTPTool` backed by an `httpx.AsyncClient` that adds a fresh Microsoft Entra bearer token (scope `https://ai.azure.com/.default`) and the `Foundry-Features: Toolboxes=V1Preview` header to every request, including the connection handshake.
@@ -253,7 +253,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 1. Confirm the script retries the connection on failure to handle cold-start drops (`CONNECT_ATTEMPTS = 3` with a backoff).
 1. Confirm the built-in query sends receipt `R-1007` (a ProBook 14 laptop battery that stopped holding charge 14 months after purchase against a 12-month standard warranty).
 
-### Step 13 — Run the consumer script
+### Step 13 - Run the consumer script
 
 1. From the repository root, run:
 
@@ -270,20 +270,20 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
    **Check:** If the script raises `KeyError` or `ValueError` for a missing environment variable, confirm `FOUNDRY_PROJECT_ENDPOINT` and `TOOLBOX_NAME` are set in `.env`.
 
-### Step 14 — Confirm Tool Search drove the response
+### Step 14 - Confirm Tool Search drove the response
 
 1. Confirm the printed remedy recommendation:
    - References the customer's purchase and relevant store policy retrieved through the `retail_remedy_ops` tools (for example, the `R-1007` receipt and store warranty policy).
    - Applies Australian Consumer Law reasoning, distinguishing a major or minor failure and stating the appropriate remedy.
    - Includes a calculated figure (such as a pro-rata refund amount) produced by Code Interpreter, confirming Code Interpreter was invoked through the toolbox.
 
-1. Confirm the response is grounded in tool results rather than generic — the agent must have called `tool_search` to discover the retail tools and then called them through `call_tool`.
+1. Confirm the response is grounded in tool results rather than generic - the agent must have called `tool_search` to discover the retail tools and then called them through `call_tool`.
 
    **Check:** If the response is generic and does not reference the purchase or Australian Consumer Law, confirm the Web Search and MCP tools have clear, specific descriptions in the toolbox definition and that Tool Search is enabled on the default version. Publish a new toolbox version with improved descriptions and set it as the default, then rerun the script.
 
 ---
 
-## Validation — confirm all criteria
+## Validation - confirm all criteria
 
 Work through each item in the lab's Validation section and confirm:
 
@@ -294,7 +294,7 @@ Work through each item in the lab's Validation section and confirm:
 
 ---
 
-## Step 15 — Report results
+## Step 15 - Report results
 
 Report the outcome of every step above. For each step state whether it **passed**, **failed**, or was **skipped** (with the reason, for example Toolboxes not visible in portal for Steps 2–9). For any failure, include:
 

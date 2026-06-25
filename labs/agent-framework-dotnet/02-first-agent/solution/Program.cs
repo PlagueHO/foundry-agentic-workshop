@@ -13,7 +13,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 02: Your First Agent ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 02: Your First Agent ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model : {model}");
 Console.ResetColor();
@@ -60,7 +60,7 @@ Console.WriteLine();
 var sw = Stopwatch.StartNew();
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.Write("[Loop] RunAsync — waiting for response...");
+Console.Write("[Loop] RunAsync - waiting for response...");
 Console.ResetColor();
 
 var result = await agent.RunAsync(query1);
@@ -88,7 +88,7 @@ Console.ResetColor();
 Console.WriteLine();
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine("[Loop] RunStreamingAsync — streaming tokens as they arrive...");
+Console.WriteLine("[Loop] RunStreamingAsync - streaming tokens as they arrive...");
 Console.ResetColor();
 Console.WriteLine();
 

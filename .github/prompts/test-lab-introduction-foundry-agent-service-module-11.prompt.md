@@ -13,13 +13,13 @@ You must test the steps in the #file:labs/introduction-foundry-agent-service/11-
 
 This module is a guided observability and identity tour. It locates the **Entra Agent Identity** and **agent identity blueprint** for an agent, inspects per-agent **Traces** and **Monitor** tabs for both the `acl-remedy-advisor` prompt agent and a hosted agent from [Module 09](../../labs/introduction-foundry-agent-service/09-hosted-agents/README.md), tours the **Operate** control plane, opens the **Agents** view in Azure Monitor (Application Insights), and reviews where continuous evaluation and red team scans are configured.
 
-This test is **browser-only**. Use `open_browser_page` (and the related browser tools) to drive `https://ai.azure.com` and `https://portal.azure.com`. Do not run any terminal commands, Python scripts, Azure CLI commands, or MCP servers — this module has none. The only setup the environment needs is a provisioned project with **at least one prior agent run** so telemetry exists.
+This test is **browser-only**. Use `open_browser_page` (and the related browser tools) to drive `https://ai.azure.com` and `https://portal.azure.com`. Do not run any terminal commands, Python scripts, Azure CLI commands, or MCP servers - this module has none. The only setup the environment needs is a provisioned project with **at least one prior agent run** so telemetry exists.
 
 > **Approach every step as a person who has never used Microsoft Foundry before.** Do not rely on prior knowledge of where controls live. Follow the README literally, find each control as a first-time attendee would, and note anywhere the written instruction was not enough to locate or understand the control without guessing.
 >
 > **Important:** Any Azure sign-in dialogs that appear during the test must be completed by the user. Pause and prompt the user whenever a sign-in dialog is encountered. Do not attempt to enter credentials automatically.
 
-## Screenshots — capture and persist
+## Screenshots - capture and persist
 
 Screenshots from this test may be reused to improve the Module 11 documentation, so persist them to disk in the lab's screenshot folder.
 
@@ -45,11 +45,11 @@ As you walk the lab as a first-time user, watch for anything that would make the
 
 For each trigger, record: the exact step, what the README says, what you actually observed, and a concrete suggested wording or screenshot that would remove the ambiguity. Report these together in the final results.
 
-## Pre-flight — Verify the environment is ready
+## Pre-flight - Verify the environment is ready
 
-Before executing any lab steps, confirm the prerequisites are satisfied. **Do not proceed if a check fails** — report the failure and ask the user to resolve it.
+Before executing any lab steps, confirm the prerequisites are satisfied. **Do not proceed if a check fails** - report the failure and ask the user to resolve it.
 
-### Check 1 — Open the Foundry portal and sign in
+### Check 1 - Open the Foundry portal and sign in
 
 1. Use `open_browser_page` to navigate to `https://ai.azure.com`.
 1. Read the page to confirm it loaded.
@@ -57,14 +57,14 @@ Before executing any lab steps, confirm the prerequisites are satisfied. **Do no
 1. After sign-in, confirm the **New Foundry** toggle is on (top of the portal). If it is off, turn it on.
 1. Navigate to the attendee's Foundry project and confirm the project workspace loads.
 
-### Check 2 — Confirm telemetry exists
+### Check 2 - Confirm telemetry exists
 
 1. The Traces and Monitor views require at least one prior agent run and the project's Application Insights connection.
 1. Confirm with the user that the `acl-remedy-advisor` agent (and a hosted agent from Module 09, if available) has been run at least once in this environment.
 
    **Check:** If no agent has been run, the Traces and Monitor grids will be empty. Record this as a blocking condition and ask the user to run an agent once from an earlier module, then continue.
 
-### Check 3 — Identify the hosted agent name
+### Check 3 - Identify the hosted agent name
 
 The README refers to the hosted agent as `<your-hosted-agent>` and notes its name is **to be confirmed** in this revision.
 
@@ -73,9 +73,9 @@ The README refers to the hosted agent as `<your-hosted-agent>` and notes its nam
 
 ---
 
-## Part 1 — Find the agent identity on the Details tab
+## Part 1 - Find the agent identity on the Details tab
 
-### Step 1 — Open the agent and its Details tab
+### Step 1 - Open the agent and its Details tab
 
 1. In the project, select **Build** in the top navigation.
 1. Open the `acl-remedy-advisor` agent.
@@ -84,7 +84,7 @@ The README refers to the hosted agent as `<your-hosted-agent>` and notes its nam
 
    **📸 Capture:** the Details tab showing the agent's identity information.
 
-### Step 2 — Locate the Entra Agent Identity and blueprint
+### Step 2 - Locate the Entra Agent Identity and blueprint
 
 1. Locate the **Entra Agent Identity** value for the agent.
 1. Confirm the README's claim: because `acl-remedy-advisor` is not yet published, it uses the **shared default project agent identity**.
@@ -93,13 +93,13 @@ The README refers to the hosted agent as `<your-hosted-agent>` and notes its nam
 
    **Check:** If the **Entra Agent Identity** or **blueprint** fields are not visible on the Details tab, record exactly which field is missing and where you looked, and add a clarification recommendation.
 
-   **📸 Capture:** the panel showing the Entra Agent Identity and blueprint values (redact nothing — these are non-secret identifiers).
+   **📸 Capture:** the panel showing the Entra Agent Identity and blueprint values (redact nothing - these are non-secret identifiers).
 
 ---
 
-## Part 2 — Per-agent operations: Traces (Conversations)
+## Part 2 - Per-agent operations: Traces (Conversations)
 
-### Step 3 — Open Traces and switch sub-tabs
+### Step 3 - Open Traces and switch sub-tabs
 
 1. With `acl-remedy-advisor` still open, select the **Traces** tab.
 1. Switch between the **Conversations** and **Responses** sub-tabs and confirm both load:
@@ -108,14 +108,14 @@ The README refers to the hosted agent as `<your-hosted-agent>` and notes its nam
 
    **📸 Capture:** the **Conversations** sub-tab with at least one row of activity.
 
-### Step 4 — Review the columns and scope the view
+### Step 4 - Review the columns and scope the view
 
 1. Confirm the grid shows the documented columns: **Conversation ID**, **Trace ID**, **Response ID**, **Status**, **Created at**, **Duration (s)**, **Tokens (In)**, **Tokens (Out)**, **Estimated cost ($)**, **Evaluation**, and **Agent version**.
 1. Use the date-range selector (**Last Day**, **7D**, **1M**, **3M**) to scope the view so rows appear.
 
    **Check:** If the grid is empty, expand the date range and refresh. If it remains empty, confirm the agent has been run (Check 2) and note ingestion can lag a few minutes.
 
-### Step 5 — Drill into a single trace
+### Step 5 - Drill into a single trace
 
 1. Select a **Trace ID** to open the execution path for that run.
 1. Confirm the drill-down shows model and tool spans, timings, and inputs/outputs.
@@ -124,16 +124,16 @@ The README refers to the hosted agent as `<your-hosted-agent>` and notes its nam
 
 ---
 
-## Part 3 — Per-agent operations: Monitor
+## Part 3 - Per-agent operations: Monitor
 
-### Step 6 — Open Monitor and read the summary
+### Step 6 - Open Monitor and read the summary
 
 1. Select the **Monitor** tab.
 1. Confirm the **summary cards** appear at the top and the **charts** appear below.
 
    **📸 Capture:** the Monitor dashboard showing summary cards and charts.
 
-### Step 7 — Interpret the metrics
+### Step 7 - Interpret the metrics
 
 1. Confirm the dashboard surfaces the documented metrics: **Token usage**, **Latency**, **Run success rate**, and **Evaluation metrics**.
 1. Locate the **gear icon** that opens **Monitor settings** (where continuous evaluation and red team scans are configured in Part 7).
@@ -142,20 +142,20 @@ The README refers to the hosted agent as `<your-hosted-agent>` and notes its nam
 
 ---
 
-## Part 4 — Repeat for the hosted agent
+## Part 4 - Repeat for the hosted agent
 
 > **Note:** Use the hosted agent from Module 09. Its name was supplied in Check 3 or is discovered here. Substitute it for `<your-hosted-agent>` throughout this part.
 
-### Step 8 — Open the hosted agent's Details tab
+### Step 8 - Open the hosted agent's Details tab
 
 1. Under **Build → Agents**, locate and open the hosted agent (name from Check 3, e.g. `acl-remedy-advisor-hosted-1`).
 1. If you could not get the name in Check 3, record the actual hosted agent name you found here and confirm it against the README's `acl-remedy-advisor-hosted-*` pattern.
 1. Select the **Details** tab and locate its **Entra Agent Identity**.
-1. Confirm it has a **distinct agent identity and blueprint** rather than the shared project identity — verify this value differs from the one observed in Step 2 for `acl-remedy-advisor`.
+1. Confirm it has a **distinct agent identity and blueprint** rather than the shared project identity - verify this value differs from the one observed in Step 2 for `acl-remedy-advisor`.
 
    **📸 Capture:** the hosted agent's Details tab showing its distinct Entra Agent Identity.
 
-### Step 9 — Review the hosted agent's Traces and Monitor
+### Step 9 - Review the hosted agent's Traces and Monitor
 
 1. On the **Traces** tab, review the hosted agent's conversations and responses as in Part 2.
 1. On the **Monitor** tab, review its operational metrics and evaluation scores as in Part 3.
@@ -167,9 +167,9 @@ The README refers to the hosted agent as `<your-hosted-agent>` and notes its nam
 
 ---
 
-## Part 5 — The Operate control plane
+## Part 5 - The Operate control plane
 
-### Step 10 — Open Operate
+### Step 10 - Open Operate
 
 1. Select **Operate** in the top navigation.
 1. Confirm the control plane aggregates health and metrics across agents using their connected Application Insights resources.
@@ -181,9 +181,9 @@ The README refers to the hosted agent as `<your-hosted-agent>` and notes its nam
 
 ---
 
-## Part 6 — The Agents view in Application Insights
+## Part 6 - The Agents view in Application Insights
 
-### Step 11 — Open the Azure portal Application Insights resource
+### Step 11 - Open the Azure portal Application Insights resource
 
 1. Use `open_browser_page` (or a new tab) to navigate to `https://portal.azure.com`.
 1. If a sign-in dialog appears, pause and ask the user to sign in as `${input:attendeeUpn}`. Do not enter credentials automatically.
@@ -191,7 +191,7 @@ The README refers to the hosted agent as `<your-hosted-agent>` and notes its nam
 
    **Check:** If the attendee cannot locate or open the Application Insights resource, record the access requirement (Log Analytics Reader) as a clarification recommendation, since the README does not say how to find the resource name.
 
-### Step 12 — Open the Agents (details) view
+### Step 12 - Open the Agents (details) view
 
 1. Under **Investigate**, open the **Agents (details)** view.
 1. Confirm the view surfaces agent performance and run activity, token usage and estimated cost, and errors and failures.
@@ -202,11 +202,11 @@ The README refers to the hosted agent as `<your-hosted-agent>` and notes its nam
 
 ---
 
-## Part 7 (extra credit) — Configure evaluations and red teaming
+## Part 7 (extra credit) - Configure evaluations and red teaming
 
 > **Important:** Creating evaluation and red-team configurations changes project settings and typically requires the **`foundry-project-manager`** role or higher. If the attendee has the `foundry-user` role, walk through this part read-only without applying changes and record that in the report.
 
-### Step 13 — Open Monitor settings
+### Step 13 - Open Monitor settings
 
 1. Return to the **Monitor** tab for `acl-remedy-advisor` and select the **gear icon** to open **Monitor settings**.
 1. Confirm the settings expose: **Continuous evaluation**, **Scheduled evaluations** (preview), **Red team scans** (preview), and **Alerts** (preview).
@@ -217,7 +217,7 @@ The README refers to the hosted agent as `<your-hosted-agent>` and notes its nam
 
 ---
 
-## Validation — confirm all criteria
+## Validation - confirm all criteria
 
 Work through each item in the lab's Validation section and confirm:
 
@@ -229,7 +229,7 @@ Work through each item in the lab's Validation section and confirm:
 
 ---
 
-## Step 14 — Report results
+## Step 14 - Report results
 
 Report the outcome of every step above. For each step state whether it **passed**, **failed**, or was **skipped/blocked** (with the reason, for example hosted agent not built or role does not permit configuration). For any failure or block, include:
 
@@ -241,7 +241,7 @@ Report the outcome of every step above. For each step state whether it **passed*
 
 Then provide two summaries:
 
-1. **Screenshots captured** — the full list of saved filenames with a one-line caption for each, so they can be reused to improve the module documentation.
-1. **Clarification recommendations** — every ambiguity, missing control, unresolved placeholder (such as the hosted agent name or **TBD** estimated time), or guess you had to make, each with the exact step, what the README says, what you observed, and a concrete suggested fix.
+1. **Screenshots captured** - the full list of saved filenames with a one-line caption for each, so they can be reused to improve the module documentation.
+1. **Clarification recommendations** - every ambiguity, missing control, unresolved placeholder (such as the hosted agent name or **TBD** estimated time), or guess you had to make, each with the exact step, what the README says, what you observed, and a concrete suggested fix.
 
 If all non-skipped steps pass, confirm that lab module 11 end-to-end browser validation is complete.

@@ -1,8 +1,8 @@
-"""Lab 08 starter — run the Module 07 Prompt Agent with the Microsoft Agent Framework.
+"""Lab 08 starter - run the Module 07 Prompt Agent with the Microsoft Agent Framework.
 
 Fill in each numbered TODO with the matching code snippet from the lab README.
 When every TODO is complete, this script connects to the acl-remedy-advisor
-Prompt Agent you built in Modules 04-07 and runs it from Python — first as a
+Prompt Agent you built in Modules 04-07 and runs it from Python - first as a
 single response, then as a streamed response.
 
 Prerequisites:
@@ -43,7 +43,7 @@ async def run() -> None:
     # Leave AGENT_VERSION empty to use the latest published version of the agent.
     agent_version = os.environ.get('AGENT_VERSION', '').strip() or None
 
-    # DefaultAzureCredential reuses your `az login` session — no keys in code.
+    # DefaultAzureCredential reuses your `az login` session - no keys in code.
     credential = DefaultAzureCredential()
 
     # TODO 2: Connect to the existing Prompt Agent by name.

@@ -1,6 +1,6 @@
 # 10. Foundry Toolboxes
 
-![Diagram showing the Foundry Toolbox architecture — Build and Consume pillars expose a curated set of tools through a single MCP-compatible endpoint consumed by any agent framework.](../../../docs/assets/diagrams/foundry-toolbox.png)
+![Diagram showing the Foundry Toolbox architecture - Build and Consume pillars expose a curated set of tools through a single MCP-compatible endpoint consumed by any agent framework.](../../../docs/assets/diagrams/foundry-toolbox.png)
 
 **Estimated time:** 30 minutes
 
@@ -11,9 +11,9 @@
 > [!IMPORTANT]
 > This capstone module builds on three earlier modules:
 >
-> - [Module 06 — Integrate MCP tools](../06-mcp-tools/README.md): you need the `retail_remedy_ops` MCP server URL (`RETAIL_REMEDY_OPS_MCP_SERVER_URL`) — the shared Azure Container Apps server, or your own tunnel.
-> - [Module 08 — Use Agent Framework for Python](../08-agent-framework-python/README.md): the hosted agent is a Python **Microsoft Agent Framework** app, reusing the client and agent patterns introduced there.
-> - [Module 09 — Deploy hosted agents](../09-hosted-agents/README.md): you publish the agent as a hosted agent from **source code**, exactly as in Module 09, Part 2 — this module replaces its tools with the toolbox.
+> - [Module 06 - Integrate MCP tools](../06-mcp-tools/README.md): you need the `retail_remedy_ops` MCP server URL (`RETAIL_REMEDY_OPS_MCP_SERVER_URL`) - the shared Azure Container Apps server, or your own tunnel.
+> - [Module 08 - Use Agent Framework for Python](../08-agent-framework-python/README.md): the hosted agent is a Python **Microsoft Agent Framework** app, reusing the client and agent patterns introduced there.
+> - [Module 09 - Deploy hosted agents](../09-hosted-agents/README.md): you publish the agent as a hosted agent from **source code**, exactly as in Module 09, Part 2 - this module replaces its tools with the toolbox.
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!NOTE]
@@ -27,7 +27,7 @@
 
 - Bundle the **Retail Remedy Operations MCP server**, **Web Search**, and **Code Interpreter** into a single **Foundry Toolbox** managed through the portal.
 - Enable **Tool Search** so the toolbox exposes tools by intent rather than returning the full tool list.
-- Deploy a **hosted agent** from **source code** — as a new version of the `acl-remedy-advisor-hosted-code` agent from Module 09 — whose only tool is the toolbox.
+- Deploy a **hosted agent** from **source code** - as a new version of the `acl-remedy-advisor-hosted-code` agent from Module 09 - whose only tool is the toolbox.
 - Invoke the hosted agent from code and confirm it produces a correct Australian Consumer Law remedy using Tool Search behind the toolbox endpoint.
 - Inspect the agent in the portal and review its run traces and metrics.
 
@@ -55,22 +55,22 @@ When a toolbox contains many tools, passing all definitions to the model on ever
 | `tool_search` | Calls with a natural-language description of what it needs; Foundry returns the matching tool definitions |
 | `call_tool` | Invokes any tool returned by `tool_search` |
 
-The model never browses a full tool list — it describes intent, discovers the right tools, and calls them. The agent instructions need to tell the model to call `tool_search` when a needed tool is not already visible.
+The model never browses a full tool list - it describes intent, discovers the right tools, and calls them. The agent instructions need to tell the model to call `tool_search` when a needed tool is not already visible.
 
 > [!NOTE]
 > Tool descriptions drive match quality. A vague or missing description causes poor discovery. Every tool added to the toolbox should have a clear description.
 
 ### Why deploy a hosted agent that uses the toolbox?
 
-A toolbox is exposed as an MCP endpoint secured with Microsoft Entra authentication. Every request — including the connection handshake — must carry an Entra bearer token (scope `https://ai.azure.com/.default`) **and** the preview header `Foundry-Features: Toolboxes=V1Preview`. The Foundry portal's prompt-agent builder cannot yet attach a custom header to an MCP connection, so the agent is a small Microsoft Agent Framework app that attaches both itself.
+A toolbox is exposed as an MCP endpoint secured with Microsoft Entra authentication. Every request - including the connection handshake - must carry an Entra bearer token (scope `https://ai.azure.com/.default`) **and** the preview header `Foundry-Features: Toolboxes=V1Preview`. The Foundry portal's prompt-agent builder cannot yet attach a custom header to an MCP connection, so the agent is a small Microsoft Agent Framework app that attaches both itself.
 
-Rather than run that app locally, you **deploy it as a hosted agent from source code** — the same publish flow as [Module 09, Part 2](../09-hosted-agents/README.md). Foundry builds the container, runs it managed, and gives the agent its own per-deploy Microsoft Entra identity. That identity authenticates to the toolbox endpoint, so the deployed agent reaches every tool — the retail MCP server, web search, and code interpreter — through the single toolbox URL with no local process to keep running.
+Rather than run that app locally, you **deploy it as a hosted agent from source code** - the same publish flow as [Module 09, Part 2](../09-hosted-agents/README.md). Foundry builds the container, runs it managed, and gives the agent its own per-deploy Microsoft Entra identity. That identity authenticates to the toolbox endpoint, so the deployed agent reaches every tool - the retail MCP server, web search, and code interpreter - through the single toolbox URL with no local process to keep running.
 
 This is the capstone pattern: **one managed agent, one toolbox endpoint, every tool discovered through Tool Search.**
 
 ## Steps
 
-### Part 1 — Get the MCP server URL
+### Part 1 - Get the MCP server URL
 
 The toolbox wraps the same `retail_remedy_ops` MCP server from Module 06. You need its public URL (`RETAIL_REMEDY_OPS_MCP_SERVER_URL`) to add it to the toolbox.
 
@@ -82,14 +82,14 @@ The toolbox wraps the same `retail_remedy_ops` MCP server from Module 06. You ne
   https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp
   ```
 
-- [ ] Save this URL — you will paste it into the toolbox configuration in the next part.
+- [ ] Save this URL - you will paste it into the toolbox configuration in the next part.
 
   > [!NOTE]
   > If you are running your own MCP server instead of the shared one, make sure it is still running with port 8080 set to **Public**, and use its tunnel URL (ending in `/mcp`) as your `RETAIL_REMEDY_OPS_MCP_SERVER_URL`. See [Module 06](../06-mcp-tools/README.md), Part 1.
 
 ---
 
-### Part 2 — Create the toolbox in the Foundry portal
+### Part 2 - Create the toolbox in the Foundry portal
 
 > [!NOTE]
 > The Toolboxes portal UI is in preview. The exact navigation path at [ai.azure.com](https://ai.azure.com) may differ from the steps below as the portal evolves. If **Toolboxes** is not visible in your portal navigation, use the [code fallback](#code-fallback--create-the-toolbox-with-python) at the end of this part.
@@ -102,7 +102,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server from Module 06. You ne
 - [ ] Click **Toolboxes** to open the toolbox management view.
 
   <details>
-  <summary>📸 Screenshot: Tools page — Toolboxes tab</summary>
+  <summary>📸 Screenshot: Tools page - Toolboxes tab</summary>
 
   ![Foundry portal Tools page with the Toolboxes tab selected, showing the option to create a new toolbox.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-10/01-tools-toolboxes-tab.png)
 
@@ -185,7 +185,7 @@ The toolbox wraps the same `retail_remedy_ops` MCP server from Module 06. You ne
   <details>
   <summary>📸 Screenshot: Toolbox with three tools</summary>
 
-  ![Toolbox configuration showing all three tools — Web Search, the retail_remedy_ops MCP server, and Code Interpreter.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-10/07-toolbox-three-tools.png)
+  ![Toolbox configuration showing all three tools - Web Search, the retail_remedy_ops MCP server, and Code Interpreter.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-10/07-toolbox-three-tools.png)
 
   </details>
 
@@ -224,9 +224,9 @@ The toolbox wraps the same `retail_remedy_ops` MCP server from Module 06. You ne
   https://<account>.services.ai.azure.com/api/projects/<project>/toolboxes/acl-remedy-toolbox/mcp?api-version=v1
   ```
 
-  The app in Part 3 builds this URL automatically from `FOUNDRY_PROJECT_ENDPOINT` and `TOOLBOX_NAME`, so you do not need to paste it anywhere — but confirm it matches the endpoint shown in the portal.
+  The app in Part 3 builds this URL automatically from `FOUNDRY_PROJECT_ENDPOINT` and `TOOLBOX_NAME`, so you do not need to paste it anywhere - but confirm it matches the endpoint shown in the portal.
 
-#### Code fallback — Create the toolbox with Python
+#### Code fallback - Create the toolbox with Python
 
 > [!TIP]
 > If the portal does not expose Toolboxes in your region yet, or you skipped the steps above, run the fallback script to create the toolbox through the Python SDK. `RETAIL_REMEDY_OPS_MCP_SERVER_URL` must be set in your `.env` file.
@@ -239,9 +239,9 @@ The toolbox wraps the same `retail_remedy_ops` MCP server from Module 06. You ne
 
 ---
 
-### Part 3 — Deploy the toolbox-wired agent as a hosted agent
+### Part 3 - Deploy the toolbox-wired agent as a hosted agent
 
-You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a Python **Microsoft Agent Framework** app (as in Module 08) that points its tool at the toolbox's MCP endpoint and supplies the Entra bearer token and the `Foundry-Features: Toolboxes=V1Preview` header on every request. You publish it from **source code** as a new version of the `acl-remedy-advisor-hosted-code` agent from Module 09 — Foundry builds and runs it managed, and its per-deploy identity authenticates to the toolbox.
+You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a Python **Microsoft Agent Framework** app (as in Module 08) that points its tool at the toolbox's MCP endpoint and supplies the Entra bearer token and the `Foundry-Features: Toolboxes=V1Preview` header on every request. You publish it from **source code** as a new version of the `acl-remedy-advisor-hosted-code` agent from Module 09 - Foundry builds and runs it managed, and its per-deploy identity authenticates to the toolbox.
 
 #### 10. Review the agent bundle
 
@@ -250,7 +250,7 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
   - [`agent.yaml`](https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/10-foundry-toolboxes/src/agent/agent.yaml) declares the hosted agent (`acl-remedy-advisor-hosted`), the Responses protocol, the 1 vCPU / 2 GiB shape, and the baked environment variables.
   - [`requirements.txt`](https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/10-foundry-toolboxes/src/agent/requirements.txt) and [`Dockerfile`](https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/10-foundry-toolboxes/src/agent/Dockerfile) define the runtime Foundry builds remotely.
 
-  > The agent reads `FOUNDRY_PROJECT_ENDPOINT` from the runtime environment Foundry injects, and `AZURE_AI_MODEL_DEPLOYMENT_NAME` and `TOOLBOX_NAME` from the values baked in at deploy time. It carries **no** MCP server URL — every tool now lives behind the toolbox.
+  > The agent reads `FOUNDRY_PROJECT_ENDPOINT` from the runtime environment Foundry injects, and `AZURE_AI_MODEL_DEPLOYMENT_NAME` and `TOOLBOX_NAME` from the values baked in at deploy time. It carries **no** MCP server URL - every tool now lives behind the toolbox.
 
 #### 11. Activate the environment and sign in
 
@@ -259,7 +259,7 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
   - **Windows (PowerShell):** `.venv\Scripts\Activate.ps1`
   - **macOS / Linux:** `source .venv/bin/activate`
 
-- [ ] Confirm you are signed in with the Azure CLI — the deploy and invoke scripts authenticate with `DefaultAzureCredential`, which relies on your CLI session:
+- [ ] Confirm you are signed in with the Azure CLI - the deploy and invoke scripts authenticate with `DefaultAzureCredential`, which relies on your CLI session:
 
   ```bash
   az login
@@ -287,9 +287,9 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
   python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/deploy_hosted_agent_code.py
   ```
 
-- [ ] The script zips `src/agent/`, uploads it, and Foundry builds the container remotely. Wait for it to report the new version as **active** — the remote build takes a few minutes. The script then grants the agent's per-deploy identity the **Foundry User** role so it can call the model and the toolbox.
+- [ ] The script zips `src/agent/`, uploads it, and Foundry builds the container remotely. Wait for it to report the new version as **active** - the remote build takes a few minutes. The script then grants the agent's per-deploy identity the **Foundry User** role so it can call the model and the toolbox.
 
-  > This publishes a **new version** of the `acl-remedy-advisor-hosted-code` agent from Module 09 — the toolbox edition — without disturbing the version you deployed there.
+  > This publishes a **new version** of the `acl-remedy-advisor-hosted-code` agent from Module 09 - the toolbox edition - without disturbing the version you deployed there.
 
 #### 14. View the agent in the portal
 
@@ -317,7 +317,7 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
   - Applies Australian Consumer Law reasoning (a major or minor failure and the appropriate remedy).
   - Recommends a concrete next step for the customer (such as a repair, replacement, or refund).
 
-  > Because Tool Search is enabled, the agent first calls `tool_search` to discover the retail tools, then calls them through `call_tool` — it never receives the full tool list up front. The agent calls only the tools each turn needs; for the `R-1007` scenario that is the `retail_remedy_ops` lookups. Web Search and Code Interpreter stay available through the same toolbox for questions that need an external ruling or a calculation (such as a pro-rata refund). Every tool reaches the agent through the single toolbox endpoint.
+  > Because Tool Search is enabled, the agent first calls `tool_search` to discover the retail tools, then calls them through `call_tool` - it never receives the full tool list up front. The agent calls only the tools each turn needs; for the `R-1007` scenario that is the `retail_remedy_ops` lookups. Web Search and Code Interpreter stay available through the same toolbox for questions that need an external ruling or a calculation (such as a pro-rata refund). Every tool reaches the agent through the single toolbox endpoint.
 
 #### 16. Review the run traces and metrics
 
@@ -331,7 +331,7 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
 
   </details>
 
-- [ ] Select the **Monitor** tab and confirm the run appears in the operational charts — agent runs, token usage, and tool calls.
+- [ ] Select the **Monitor** tab and confirm the run appears in the operational charts - agent runs, token usage, and tool calls.
 
   <details>
   <summary>📸 Screenshot: Agent metrics</summary>
@@ -352,11 +352,11 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
 
 ## Congratulations 🎉
 
-You packaged your tools for reuse and shipped them as a managed agent. You assembled an `acl-remedy-toolbox` that exposes **Web Search**, the `retail_remedy_ops` MCP server, and **Code Interpreter** through a single Tool Search–enabled endpoint, then deployed a **hosted agent from source code** — a new toolbox-driven version of `acl-remedy-advisor-hosted-code` — whose per-deploy identity reaches every tool through that one endpoint. This is the capstone pattern for sharing curated capabilities across teams and running them in production.
+You packaged your tools for reuse and shipped them as a managed agent. You assembled an `acl-remedy-toolbox` that exposes **Web Search**, the `retail_remedy_ops` MCP server, and **Code Interpreter** through a single Tool Search–enabled endpoint, then deployed a **hosted agent from source code** - a new toolbox-driven version of `acl-remedy-advisor-hosted-code` - whose per-deploy identity reaches every tool through that one endpoint. This is the capstone pattern for sharing curated capabilities across teams and running them in production.
 
 > [!TIP]
 > **Next up → [Module 11: Agent operations and Agent ID](../11-agent-ops-and-agent-id/README.md)**
-> Operationalize your agent with monitoring, run history, and Agent ID. No need to scroll — jump straight in!
+> Operationalize your agent with monitoring, run history, and Agent ID. No need to scroll - jump straight in!
 
 ## Troubleshooting
 

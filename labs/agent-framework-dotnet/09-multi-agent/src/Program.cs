@@ -11,14 +11,14 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 09: Multi-agent Orchestration ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 09: Multi-agent Orchestration ===");
 Console.WriteLine();
 
 var credential = new AzureCliCredential();
 var client = new AIProjectClient(new Uri(endpoint), credential);
 
 // ── TODO 1 ───────────────────────────────────────────────────────────────────
-// Create three specialist agents — each an AIAgent with focused instructions.
+// Create three specialist agents - each an AIAgent with focused instructions.
 //
 // var rebookingSpecialist = client.AsAIAgent(
 //     model: model,
@@ -61,7 +61,7 @@ var client = new AIProjectClient(new Uri(endpoint), credential);
 //             "specialist agents to help passengers. For flight rebooking, " +
 //             "always call RebookFlight. For hotel accommodation, call FindHotel. " +
 //             "For compensation questions, call CalculateCompensation. " +
-//             "Never answer these topics yourself — always delegate to the " +
+//             "Never answer these topics yourself - always delegate to the " +
 //             "appropriate specialist.")
 //     .WithAgentSkill(
 //         rebookingSpecialist,
@@ -100,7 +100,7 @@ var client = new AIProjectClient(new Uri(endpoint), credential);
 //     Console.WriteLine();
 //
 //     Console.ForegroundColor = ConsoleColor.DarkGray;
-//     Console.WriteLine("[Loop] RunAsync — concierge will delegate to a specialist...");
+//     Console.WriteLine("[Loop] RunAsync - concierge will delegate to a specialist...");
 //     Console.ResetColor();
 //     Console.WriteLine();
 //

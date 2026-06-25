@@ -12,7 +12,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 03: Multi-turn & Threads ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 03: Multi-turn & Threads ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model : {model}");
 Console.ResetColor();
@@ -23,7 +23,7 @@ Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine("[Loop] Creating agent...");
 Console.ResetColor();
 
-// AzureCliCredential uses the active `az login` session — explicit and reliable in a
+// AzureCliCredential uses the active `az login` session - explicit and reliable in a
 // workshop or local dev environment. For cloud-deployed code, prefer DefaultAzureCredential
 // (which also tries AzureCliCredential) or ManagedIdentityCredential.
 var credential = new AzureCliCredential();
@@ -33,7 +33,7 @@ var agent = client.AsAIAgent(
     model: model,
     instructions:
         "You are the Trip Disruption Concierge. Help passengers with flight disruptions. " +
-        "Remember everything from earlier in the conversation — the passenger must not " +
+        "Remember everything from earlier in the conversation - the passenger must not " +
         "need to repeat information they have already provided.");
 
 // ── Create session ────────────────────────────────────────────────────────────
@@ -64,7 +64,7 @@ async Task TurnAsync(string userInput)
     Console.WriteLine();
 
     Console.ForegroundColor = ConsoleColor.DarkGray;
-    Console.Write($"[Loop] Turn {turnNumber} — RunAsync...");
+    Console.Write($"[Loop] Turn {turnNumber} - RunAsync...");
     Console.ResetColor();
 
     var sw = Stopwatch.StartNew();
@@ -83,25 +83,25 @@ async Task TurnAsync(string userInput)
 }
 
 // ── Conversation ──────────────────────────────────────────────────────────────
-// Turn 1 — establish the scenario context
+// Turn 1 - establish the scenario context
 await TurnAsync(
     "My name is Emma. My flight AU123 AKL→SYD was just cancelled. " +
     "I have a separate connecting flight SYD→MEL booked independently. " +
     "What should I do first?");
 
-// Turn 2 — follow-up; agent remembers Emma's name, AU123, and the connecting flight
+// Turn 2 - follow-up; agent remembers Emma's name, AU123, and the connecting flight
 await TurnAsync(
     "The airline is offering a rebooking on tomorrow's flight. " +
     "But I will miss my connecting flight to Melbourne. What are my options?");
 
-// Turn 3 — ask for a synthesis; agent draws on the full conversation history
+// Turn 3 - ask for a synthesis; agent draws on the full conversation history
 await TurnAsync(
     "Given everything we have discussed, what is the single best outcome " +
     "I can realistically push for with the airline?");
 
 // ── Summary ───────────────────────────────────────────────────────────────────
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine($"[Loop] Session complete — {turnNumber} turns.");
+Console.WriteLine($"[Loop] Session complete - {turnNumber} turns.");
 Console.ResetColor();
 Console.WriteLine();
 

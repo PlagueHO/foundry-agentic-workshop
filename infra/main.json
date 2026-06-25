@@ -35014,7 +35014,7 @@
               "templateHash": "4584470556756958664"
             },
             "name": "Attendee Onboarding Portal (Azure Container Apps)",
-            "description": "Deploys the Attendee Onboarding Portal as an authenticated Container App into the shared Azure Container Apps environment. Attendees visit the published URL, sign in with their lab Entra ID account, and see their personal onboarding configuration. Authentication is handled by Container Apps built-in EasyAuth — no custom auth code is required in the application."
+            "description": "Deploys the Attendee Onboarding Portal as an authenticated Container App into the shared Azure Container Apps environment. Attendees visit the published URL, sign in with their lab Entra ID account, and see their personal onboarding configuration. Authentication is handled by Container Apps built-in EasyAuth - no custom auth code is required in the application."
           },
           "parameters": {
             "containerAppName": {

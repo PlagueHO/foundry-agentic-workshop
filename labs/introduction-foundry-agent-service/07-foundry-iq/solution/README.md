@@ -1,4 +1,4 @@
-# Module 07 solution — Foundry IQ knowledge base
+# Module 07 solution - Foundry IQ knowledge base
 
 Reference implementation for facilitators and proctors.
 
@@ -10,7 +10,7 @@ project to a known-good state. It performs the same work as the UI:
 1. Creates the `retail-products` and `retail-policies` **knowledge sources** over
    the pre-seeded Azure AI Search indexes.
 1. Creates the **knowledge base** (`KNOWLEDGE_BASE_NAME`) that combines both
-   sources using extractive, minimal retrieval — matching the README's **Basic
+   sources using extractive, minimal retrieval - matching the README's **Basic
    configuration** (no LLM, Minimal reasoning, Extractive data).
 1. Creates the Foundry project **connection** (RemoteTool / ProjectManagedIdentity)
    that targets the knowledge base MCP endpoint.
@@ -23,8 +23,8 @@ project to a known-good state. It performs the same work as the UI:
 
 Knowledge sources, the knowledge base, and the project connection are
 create-or-update operations, so re-running never creates duplicates. Creating an
-agent version always produces a new version — exactly like clicking **Save** in
-the portal — and converges on the same desired configuration.
+agent version always produces a new version - exactly like clicking **Save** in
+the portal - and converges on the same desired configuration.
 
 ## Prerequisites
 
@@ -46,7 +46,7 @@ python labs/introduction-foundry-agent-service/07-foundry-iq/solution/create_kno
 
 Required: `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_SEARCH_SERVICE_NAME`,
 `KNOWLEDGE_BASE_NAME`, and (for the connection) `AZURE_SUBSCRIPTION_ID`,
-`AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `FOUNDRY_PROJECT_NAME` — or set
+`AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `FOUNDRY_PROJECT_NAME` - or set
 `FOUNDRY_PROJECT_RESOURCE_ID` directly.
 
 Optional: `AGENT_NAME`, `AGENT_MODEL`, `AZURE_SEARCH_PRODUCT_INDEX_NAME`,

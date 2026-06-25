@@ -2,7 +2,7 @@
 
 **Estimated time:** 15 minutes
 
-![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars — Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
+![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars - Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
 
 > [!IMPORTANT]
 > This module builds on [Module 02](../02-first-agent/README.md). You must have a working `AIAgent` from Module 02 before continuing.
@@ -21,7 +21,7 @@
 
 ### Why sessions are needed
 
-In Module 02, every `RunAsync` call was independent — the agent had no memory of earlier messages. That works for single-shot queries but not for a support conversation where the passenger must not repeat themselves every turn.
+In Module 02, every `RunAsync` call was independent - the agent had no memory of earlier messages. That works for single-shot queries but not for a support conversation where the passenger must not repeat themselves every turn.
 
 An `AgentSession` solves this by maintaining the conversation history. Pass the **same session** to every `RunAsync` call and the model sees the full message history before generating each response.
 
@@ -30,14 +30,14 @@ An `AgentSession` solves this by maintaining the conversation history. Pass the 
 ```csharp
 var session = await agent.CreateSessionAsync();
 
-// Turn 1 — agent receives only this message
+// Turn 1 - agent receives only this message
 var result1 = await agent.RunAsync("My name is Emma.", session: session);
 
-// Turn 2 — agent sees Turn 1 + this message
+// Turn 2 - agent sees Turn 1 + this message
 var result2 = await agent.RunAsync("What did I just tell you?", session: session);
 ```
 
-The session maps server-side to a durable Foundry thread. You can correlate conversation turns in the Foundry portal Traces tab — run the solution and look for the session in the Conversations grid.
+The session maps server-side to a durable Foundry thread. You can correlate conversation turns in the Foundry portal Traces tab - run the solution and look for the session in the Conversations grid.
 
 ### What the session stores
 
@@ -52,7 +52,7 @@ The session accumulates every user and assistant message in order. Context provi
 
 ## Steps
 
-### Part 1 — Complete the starter code
+### Part 1 - Complete the starter code
 
 #### 1. Open the starter file
 
@@ -69,7 +69,7 @@ The session accumulates every user and assistant message in order. Context provi
       model: model,
       instructions:
           "You are the Trip Disruption Concierge. Help passengers with flight " +
-          "disruptions. Remember everything from earlier in the conversation — " +
+          "disruptions. Remember everything from earlier in the conversation - " +
           "the passenger must not need to repeat information they have already " +
           "provided.");
   ```
@@ -114,9 +114,9 @@ The session accumulates every user and assistant message in order. Context provi
 - [ ] Locate `// ── TODO 4` and replace the commented-out block with the additional turns already commented out there.
 
   > [!NOTE]
-  > Notice that the Turn 2 message does not repeat Emma's name or the flight number — the session carries that context automatically.
+  > Notice that the Turn 2 message does not repeat Emma's name or the flight number - the session carries that context automatically.
 
-### Part 2 — Run and verify
+### Part 2 - Run and verify
 
 #### 6. Run the starter
 
@@ -131,15 +131,15 @@ The session accumulates every user and assistant message in order. Context provi
 - The session completes all 3 turns without errors.
 - In Turn 2 the agent references earlier context from Turn 1 (such as the AKL→SYD route or the Melbourne connecting flight) without it being re-stated.
 - In Turn 3 the agent synthesises all previous context into a summary recommendation.
-- _(Solution only)_ Each turn also shows a `[Loop] Turn N — RunAsync...` timing line.
+- _(Solution only)_ Each turn also shows a `[Loop] Turn N - RunAsync...` timing line.
 
 ## Congratulations 🎉
 
-You held a persistent multi-turn conversation using an `AgentSession`. The agent remembered Emma's name, flight number, and connecting flight across every turn — without any repeated context from your code.
+You held a persistent multi-turn conversation using an `AgentSession`. The agent remembered Emma's name, flight number, and connecting flight across every turn - without any repeated context from your code.
 
 > [!TIP]
 > **Next up → [Module 04: Function Tools](../04-function-tools/README.md)**
-> Give the agent a local C# function it can call to calculate compensation — and watch the tool invocation logged in your terminal.
+> Give the agent a local C# function it can call to calculate compensation - and watch the tool invocation logged in your terminal.
 
 ## Troubleshooting
 
@@ -150,11 +150,11 @@ You held a persistent multi-turn conversation using an `AgentSession`. The agent
 | `NotImplementedException` | A TODO is still incomplete |
 | `AuthenticationFailedException` | Run `az login` and confirm the signed-in account has Foundry User rights on the project |
 
-## Extra Credit — Session Persistence
+## Extra Credit - Session Persistence
 
 The `AgentSession` in this module lives entirely in process memory. If the application restarts, the session is gone and the next conversation starts from scratch. The following approaches address this at increasing levels of production-readiness.
 
-### Option 1 — Serialize and restore (manual persistence)
+### Option 1 - Serialize and restore (manual persistence)
 
 The Agent Framework provides `SerializeSessionAsync` / `DeserializeSessionAsync` to export the full session state to a portable `JsonElement` that you can write to any storage medium:
 
@@ -173,7 +173,7 @@ var stored = JsonSerializer.Deserialize<JsonElement>(
 // Restore on a brand-new agent instance
 var restored = await agent.DeserializeSessionAsync(stored);
 
-// Continue — the agent remembers everything from before the restart
+// Continue - the agent remembers everything from before the restart
 var result = await agent.RunAsync("So, where were we?", session: restored);
 ```
 
@@ -183,24 +183,24 @@ A complete working example is in the Agent Framework repository:
 [Module 08](../08-chat-history/README.md) of this workshop walks through this pattern end-to-end.
 
 > [!NOTE]
-> Manual serialization pushes every production concern onto your code — concurrent writers can overwrite each other's snapshot, a crash mid-write corrupts the store, and every service replica must reach the same storage. This approach is appropriate for single-instance tools and local development, not for scaled-out services.
+> Manual serialization pushes every production concern onto your code - concurrent writers can overwrite each other's snapshot, a crash mid-write corrupts the store, and every service replica must reach the same storage. This approach is appropriate for single-instance tools and local development, not for scaled-out services.
 
-### Option 2 — Foundry Agent Service (server-managed threads)
+### Option 2 - Foundry Agent Service (server-managed threads)
 
 When you target [Foundry Agent Service](https://learn.microsoft.com/azure/ai-foundry/agents/overview) using `AIProjectClient`, thread storage is managed server-side automatically. The session ID is durable across restarts and scales horizontally without any extra code:
 
 ```csharp
-// AIProjectClient routes to Foundry Agent Service — threads are persisted in Azure
+// AIProjectClient routes to Foundry Agent Service - threads are persisted in Azure
 var client = new AIProjectClient(new Uri(endpoint), credential);
 var agent = client.AsAIAgent(model: model, instructions: "...");
 
-// Session ID is stable across process restarts — no serialization needed
+// Session ID is stable across process restarts - no serialization needed
 var session = await agent.CreateSessionAsync();
 ```
 
 This is exactly what the solution code in this module already does. The `AIProjectClient` routes all thread state to Azure, so you get cloud-durable sessions with no extra plumbing.
 
-### Option 3 — Custom `ChatHistoryProvider` (bring your own store)
+### Option 3 - Custom `ChatHistoryProvider` (bring your own store)
 
 For self-hosted or multi-cloud deployments, you can plug in any storage backend by implementing a `ChatHistoryProvider`. The framework passes a session state bag to your provider on every turn; you read and write history against your own store. The session pointer (a key or ID into your store) round-trips automatically through session serialization.
 

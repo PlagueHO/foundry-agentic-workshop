@@ -17,7 +17,7 @@ var otlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOI
     ?? "http://localhost:4317";
 var appInsightsConnStr = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 12: Observability & Tracing ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 12: Observability & Tracing ===");
 Console.WriteLine();
 
 // ── TODO 1 ───────────────────────────────────────────────────────────────────

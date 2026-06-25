@@ -1,6 +1,6 @@
-/* === Prompt Babbler — VitePress theme overrides ===
+/* === Prompt Babbler - VitePress theme overrides ===
  * Values extracted from:
- *   prompt-babbler-app/src/index.css — :root (light), .dark, .gradient-brand
+ *   prompt-babbler-app/src/index.css - :root (light), .dark, .gradient-brand
  */
 
 :root {
@@ -103,7 +103,7 @@
 .custom-block.caution   .custom-block-title::before { content: "🚨\00a0\00a0"; }
 .custom-block.danger    .custom-block-title::before { content: "🔥\00a0\00a0"; }
 
-/* note/info title has no colour by default in VitePress — apply blue */
+/* note/info title has no colour by default in VitePress - apply blue */
 .custom-block.note .custom-block-title,
 .custom-block.info .custom-block-title { color: oklch(0.45 0.16 245); }
 

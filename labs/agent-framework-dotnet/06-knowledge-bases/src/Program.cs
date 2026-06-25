@@ -24,7 +24,7 @@ var searchServiceName = Environment.GetEnvironmentVariable("AZURE_SEARCH_SERVICE
 var searchIndexName = Environment.GetEnvironmentVariable("AZURE_SEARCH_PASSENGER_RIGHTS_INDEX_NAME")
     ?? "passenger-rights";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 06: Knowledge Bases ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 06: Knowledge Bases ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model        : {model}");
 Console.WriteLine($"  Search index : {searchServiceName}/{searchIndexName}");
@@ -138,7 +138,7 @@ internal sealed class PassengerRightsContextProvider(SearchClient searchClient)
 
     // ProvideAIContextAsync is called BEFORE the model call.
     // Return documents cached after the previous turn.
-    // On turn 1 the cache is empty — seed it with a broad default query.
+    // On turn 1 the cache is empty - seed it with a broad default query.
     protected override async ValueTask<AIContext> ProvideAIContextAsync(
         InvokingContext context, CancellationToken cancellationToken = default)
     {
@@ -176,6 +176,6 @@ internal sealed class PassengerRightsContextProvider(SearchClient searchClient)
     {
         _ = searchClient; // will be used after TODO 4 is implemented
         throw new NotImplementedException(
-            "Complete TODO 4: implement FetchContextAsync — see README Step 5.");
+            "Complete TODO 4: implement FetchContextAsync - see README Step 5.");
     }
 }

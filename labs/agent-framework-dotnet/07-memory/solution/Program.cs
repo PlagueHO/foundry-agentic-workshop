@@ -16,7 +16,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 07: Memory & Context Providers ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 07: Memory & Context Providers ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model : {model}");
 Console.ResetColor();
@@ -90,7 +90,7 @@ await AskAsync("What compensation am I typically entitled to for a cancellation 
 await AskAsync("What should I do if the airline just offers a voucher and not cash?");
 
 // Deliberately ask for memory recall without re-stating the name or flight:
-await AskAsync("Can you remind me — what was my flight number again?");
+await AskAsync("Can you remind me - what was my flight number again?");
 
 Console.WriteLine("Module 07 complete. ✓");
 
@@ -134,7 +134,7 @@ internal sealed class PassengerProfileMemory : AIContextProvider
             sb.AppendLine($"  Flight number : {profile.FlightNumber}");
 
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine($"\n[Memory] Injecting profile — {sb.ToString().Trim()}");
+        Console.WriteLine($"\n[Memory] Injecting profile - {sb.ToString().Trim()}");
         Console.ResetColor();
 
         return ValueTask.FromResult(new AIContext { Instructions = sb.ToString() });
@@ -177,7 +177,7 @@ internal sealed class PassengerProfileMemory : AIContextProvider
             _state.SaveState(context.Session, profile);
 
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"\n[Memory] Profile updated — Name: {profile.Name ?? "(unknown)"}, " +
+            Console.WriteLine($"\n[Memory] Profile updated - Name: {profile.Name ?? "(unknown)"}, " +
                               $"Flight: {profile.FlightNumber ?? "(unknown)"}");
             Console.ResetColor();
         }

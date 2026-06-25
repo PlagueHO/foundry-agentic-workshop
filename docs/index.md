@@ -5,7 +5,7 @@ ms.date: 2026-06-08
 ms.topic: overview
 ---
 
-![Microsoft Foundry Agentic Workshop — Hands-on-labs](./assets/banners/microsoft-foundry-agentic-workshop.png)
+![Microsoft Foundry Agentic Workshop - Hands-on-labs](./assets/banners/microsoft-foundry-agentic-workshop.png)
 
 Build and deliver a 3–4 hour, facilitator-led workshop for agentic applications with [Microsoft Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-foundry).
 
@@ -17,7 +17,7 @@ Not sure where to start? Pick your situation:
 * 🎓 **Attending a lab someone has set up for you?** Your organizer will send you connection details. Start with the [Attendee Quickstart](./quickstart-attendee.md).
 * 🎤 **Delivering the session live as a facilitator?** Start with the [Facilitator Quickstart](./quickstart-facilitator.md).
 * 🔍 **Not sure which lab to do?** Browse [Available labs](#available-labs) below and pick a series that matches your goals.
-* 🤔 **Not sure which role you have?** Read the [Roles](#roles) section below — most people are either an organizer or an attendee.
+* 🤔 **Not sure which role you have?** Read the [Roles](#roles) section below - most people are either an organizer or an attendee.
 
 ## Available labs
 
@@ -56,4 +56,4 @@ Pick the path that matches your role.
 | Organizer | Yes | [Organizer Quickstart](./quickstart-organizer.md) | [Organizer Guide](./guide-organizer.md) |
 | Attendee | Yes | [Attendee Quickstart](./quickstart-attendee.md) | [Attendee Guide](./guide-attendee.md) |
 | Facilitator | No | [Facilitator Quickstart](./quickstart-facilitator.md) | [Facilitator Guide](./guide-facilitator.md) |
-| Proctor | No | [Proctor Guide](./guide-proctor.md) | — |
+| Proctor | No | [Proctor Guide](./guide-proctor.md) | - |

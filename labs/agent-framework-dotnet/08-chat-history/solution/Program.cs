@@ -14,7 +14,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 08: Session Persistence ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 08: Session Persistence ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model : {model}");
 Console.ResetColor();
@@ -38,7 +38,7 @@ Console.ResetColor();
 Console.WriteLine();
 
 // ── Phase 1: Initial conversation ────────────────────────────────────────────
-Console.WriteLine("════════ Phase 1 — Initial session ════════════════════════════════");
+Console.WriteLine("════════ Phase 1 - Initial session ════════════════════════════════");
 Console.WriteLine();
 
 var session = await agent.CreateSessionAsync();
@@ -69,7 +69,7 @@ Console.ResetColor();
 Console.WriteLine();
 
 // ── Phase 2: Serialise the session ───────────────────────────────────────────
-Console.WriteLine("════════ Phase 2 — Serialise ═══════════════════════════════════════");
+Console.WriteLine("════════ Phase 2 - Serialise ═══════════════════════════════════════");
 Console.WriteLine();
 
 JsonElement snapshot = await agent.SerializeSessionAsync(session);
@@ -85,12 +85,12 @@ Console.WriteLine();
 session = null!;
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine("[Session] Simulating app restart — original session discarded...");
+Console.WriteLine("[Session] Simulating app restart - original session discarded...");
 Console.ResetColor();
 Console.WriteLine();
 
 // ── Phase 3: Restore and continue ────────────────────────────────────────────
-Console.WriteLine("════════ Phase 3 — Restore and continue ═══════════════════════════");
+Console.WriteLine("════════ Phase 3 - Restore and continue ═══════════════════════════");
 Console.WriteLine();
 
 AgentSession restoredSession = await agent.DeserializeSessionAsync(snapshot);
@@ -107,7 +107,7 @@ Console.WriteLine();
 
 Console.ForegroundColor = ConsoleColor.Green;
 Console.WriteLine($"[Agent] {(await agent.RunAsync(
-    "Sorry, I had to restart the app — can you remind me, what was my flight number?",
+    "Sorry, I had to restart the app - can you remind me, what was my flight number?",
     session: restoredSession)).Text}");
 Console.ResetColor();
 Console.WriteLine();

@@ -29,7 +29,7 @@ In addition to producing accessible code, GitHub Copilot and similar tools must 
   When suggesting accessibility implementations or decisions, include reasoning or references to standards (e.g., WCAG, platform guidelines). If uncertainty exists, the assistant should state this clearly.
 
 - **Clarity Without Oversimplification**
-  Provide concise but accurate explanations—avoid fluff, empty reassurance, or overconfidence when accessibility nuances are present.
+  Provide concise but accurate explanations-avoid fluff, empty reassurance, or overconfidence when accessibility nuances are present.
 
 - **Tone Matters**
   Copilot output must be neutral, helpful, and respectful. Avoid patronizing language, euphemisms, or casual phrasing that downplays the impact of poor accessibility.

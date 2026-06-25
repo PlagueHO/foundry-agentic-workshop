@@ -1,9 +1,9 @@
 """Starter: deploy the acl-remedy-advisor-hosted-code agent (toolbox edition) from source code.
 
 Fill in the numbered TODOs to deploy the agent bundle in ``src/agent/`` as a new version of
-the ``acl-remedy-advisor-hosted-code`` hosted agent — this version answers entirely through the
+the ``acl-remedy-advisor-hosted-code`` hosted agent - this version answers entirely through the
 ``acl-remedy-toolbox`` Foundry Toolbox. The completed reference implementation lives in
-``solution/deploy_hosted_agent_code.py`` — try to finish this file before peeking.
+``solution/deploy_hosted_agent_code.py`` - try to finish this file before peeking.
 
 Usage:
     python labs/introduction-foundry-agent-service/10-foundry-toolboxes/src/starter.py

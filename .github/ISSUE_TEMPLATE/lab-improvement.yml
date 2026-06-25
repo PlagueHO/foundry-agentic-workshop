@@ -1,12 +1,12 @@
 name: Lab Improvement or Addition
 description: Suggest an improvement, clarification, or content addition to an existing lab module (new step, better explanation, additional screenshot, etc.).
-title: "improvement: <module> — <short description>"
+title: "improvement: <module> - <short description>"
 labels: ["enhancement"]
 body:
   - type: markdown
     attributes:
       value: |
-        Use this template to propose improvements or additions to an **existing** lab module — for example, clearer instructions, a missing validation step, an additional concept, or a new screenshot. To propose a brand-new module within an existing lab series, use the **New Module** template. To propose an entirely new lab series, use the **New Lab** template.
+        Use this template to propose improvements or additions to an **existing** lab module - for example, clearer instructions, a missing validation step, an additional concept, or a new screenshot. To propose a brand-new module within an existing lab series, use the **New Module** template. To propose an entirely new lab series, use the **New Lab** template.
 
   - type: dropdown
     id: lab
@@ -26,18 +26,18 @@ body:
       description: Which module(s) would this improvement affect?
       multiple: true
       options:
-        - "01 — Setup"
-        - "02 — Foundry Portal Walkthrough"
-        - "03 — Foundry Toolkit for VS Code"
-        - "04 — Prompt Agents"
-        - "05 — Agent Tools and Evaluations"
-        - "06 — MCP Tools"
-        - "07 — Foundry IQ"
-        - "08 — Agent Framework Python"
-        - "09 — Hosted Agents"
-        - "10 — Foundry Toolboxes"
-        - "11 — Agent Ops and Agent ID"
-        - "12 — Publishing Agents"
+        - "01 - Setup"
+        - "02 - Foundry Portal Walkthrough"
+        - "03 - Foundry Toolkit for VS Code"
+        - "04 - Prompt Agents"
+        - "05 - Agent Tools and Evaluations"
+        - "06 - MCP Tools"
+        - "07 - Foundry IQ"
+        - "08 - Agent Framework Python"
+        - "09 - Hosted Agents"
+        - "10 - Foundry Toolboxes"
+        - "11 - Agent Ops and Agent ID"
+        - "12 - Publishing Agents"
         - "Not module-specific"
     validations:
       required: true

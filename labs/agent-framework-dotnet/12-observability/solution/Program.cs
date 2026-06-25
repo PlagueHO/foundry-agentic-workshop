@@ -19,7 +19,7 @@ var otlpEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOI
     ?? "http://localhost:4317";
 var appInsightsConnStr = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 12: Observability & Tracing ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 12: Observability & Tracing ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model : {model}");
 Console.ResetColor();
@@ -75,13 +75,13 @@ var agent = client
     .WithOpenTelemetry();  // Enables AF's built-in instrumentation
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine("[Loop] Agent ready — every RunAsync call will produce a trace span.");
+Console.WriteLine("[Loop] Agent ready - every RunAsync call will produce a trace span.");
 Console.ResetColor();
 Console.WriteLine();
 Console.WriteLine("Open http://localhost:18888 in a browser to see traces.");
 Console.WriteLine();
 
-// ── Run queries — each produces a trace ───────────────────────────────────────
+// ── Run queries - each produces a trace ───────────────────────────────────────
 var queries = new[]
 {
     "My flight AKL→SYD was cancelled with only 3 hours' notice. What are my rights?",
@@ -124,7 +124,7 @@ Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine("[Telemetry] Flushing traces...");
 Console.ResetColor();
 
-// tracerProvider disposes here via `using var` — flushes all pending spans.
+// tracerProvider disposes here via `using var` - flushes all pending spans.
 Console.WriteLine();
 Console.WriteLine("Refresh the Aspire Dashboard Traces view to see the spans.");
 Console.WriteLine();

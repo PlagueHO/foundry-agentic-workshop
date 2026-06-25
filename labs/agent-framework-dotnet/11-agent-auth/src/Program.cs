@@ -13,7 +13,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 11: Agent Identity & Auth ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 11: Agent Identity & Auth ===");
 Console.WriteLine();
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -29,15 +29,15 @@ Console.WriteLine();
 // Console.WriteLine("[Auth] Strategy 1: DefaultAzureCredential");
 // Console.ResetColor();
 //
-// var defaultCredential = new AzureCliCredential();
+// var defaultCredential = new DefaultAzureCredential();
 // AIAgent agentDefault = new AIProjectClient(new Uri(endpoint), defaultCredential)
 //     .AsAIAgent(
 //         model: model,
 //         instructions: "You are the Trip Disruption Concierge. Be concise.");
 //
 // Console.ForegroundColor = ConsoleColor.Green;
-// Console.WriteLine($"[Agent] {await agentDefault.RunAsync(
-//     "My flight AU123 was cancelled. What is the first thing I should do?")}");
+// Console.WriteLine($"[Agent] {(await agentDefault.RunAsync(
+//     "My flight AU123 was cancelled. What is the first thing I should do?")).Text}");
 // Console.ResetColor();
 // Console.WriteLine();
 //
@@ -55,7 +55,7 @@ Console.WriteLine();
 // Console.ResetColor();
 //
 // var chainedCredential = new ChainedTokenCredential(
-//     new ManagedIdentityCredential(),
+//     new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned),
 //     new AzureCliCredential());
 //
 // AIAgent agentChained = new AIProjectClient(new Uri(endpoint), chainedCredential)
@@ -64,8 +64,8 @@ Console.WriteLine();
 //         instructions: "You are the Trip Disruption Concierge. Be concise.");
 //
 // Console.ForegroundColor = ConsoleColor.Green;
-// Console.WriteLine($"[Agent] {await agentChained.RunAsync(
-//     "What compensation am I entitled to for a 3-hour notice cancellation?")}");
+// Console.WriteLine($"[Agent] {(await agentChained.RunAsync(
+//     "What are the rebooking options when a flight is cancelled?")).Text}");
 // Console.ResetColor();
 // Console.WriteLine();
 //

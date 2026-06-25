@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1040" height="730" viewBox="0 0 1040 730">
-  <title>Lab 07 — Foundry IQ Knowledge Bases Architecture</title>
+  <title>Lab 07 - Foundry IQ Knowledge Bases Architecture</title>
   <desc>Python Client calls the acl-remedy-advisor Agent Definition inside a Foundry Project inside a Foundry Account. The Agent Definition calls the chat Model Deployment and may invoke four connections: the Web Search Tool (which calls the Internet), the Code Interpreter Tool (sandboxed Python), the MCP Tool (which connects over an HTTPS dev tunnel to a Retail Remedy Operations MCP Server on the local dev machine), and a Knowledge Base connection (connected as an MCP tool) to a Foundry IQ Knowledge Base hosted in the connected Azure AI Search service. The Knowledge Base contains two Knowledge Sources that read from the retail-products and retail-policies search indexes.</desc>
 
   <!-- Background -->
@@ -100,7 +100,7 @@
         fill="#999999" font-family="'Segoe UI',Arial,sans-serif"
         font-size="10">LLM inference</text>
 
-  <!-- Web Search Tool (inside Project) — center x=342 -->
+  <!-- Web Search Tool (inside Project) - center x=342 -->
   <rect x="263" y="270" width="158" height="72" rx="6"
         fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2"/>
   <text x="342" y="299" text-anchor="middle"
@@ -110,7 +110,7 @@
         fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
         font-size="10">Built-in · Foundry</text>
 
-  <!-- Code Interpreter Tool (inside Project) — center x=516 -->
+  <!-- Code Interpreter Tool (inside Project) - center x=516 -->
   <rect x="437" y="270" width="158" height="72" rx="6"
         fill="#FFF3E0" stroke="#E65100" stroke-width="2"/>
   <text x="516" y="299" text-anchor="middle"
@@ -120,7 +120,7 @@
         fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
         font-size="10">Built-in · sandboxed</text>
 
-  <!-- MCP Tool connection (inside Project) — center x=690 -->
+  <!-- MCP Tool connection (inside Project) - center x=690 -->
   <rect x="611" y="270" width="158" height="72" rx="6"
         fill="#E8EAF6" stroke="#283593" stroke-width="2"/>
   <text x="690" y="299" text-anchor="middle"
@@ -130,7 +130,7 @@
         fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
         font-size="10">retail-remedy-ops · 6 tools</text>
 
-  <!-- Knowledge Base connection (inside Project) — center x=864 -->
+  <!-- Knowledge Base connection (inside Project) - center x=864 -->
   <rect x="785" y="270" width="158" height="72" rx="6"
         fill="#F1F8E9" stroke="#558B2F" stroke-width="2"/>
   <text x="864" y="299" text-anchor="middle"
@@ -140,7 +140,7 @@
         fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
         font-size="10">MCP tool · Foundry IQ</text>
 
-  <!-- Python Client (outside containers) — vertically centred with Agent Def -->
+  <!-- Python Client (outside containers) - vertically centred with Agent Def -->
   <rect x="20" y="125" width="160" height="90" rx="6"
         fill="#BBDEFB" stroke="#1565C0" stroke-width="2"/>
   <text x="100" y="154" text-anchor="middle"
@@ -184,7 +184,7 @@
         font-size="9">src/server.py · localhost:8080</text>
 
   <!-- ──────────────────────────────────────────
-       AZURE AI SEARCH SERVICE (connected) — Knowledge Base + sources + indexes
+       AZURE AI SEARCH SERVICE (connected) - Knowledge Base + sources + indexes
        ────────────────────────────────────────── -->
   <rect x="710" y="420" width="300" height="280" rx="6"
         fill="#F1F8E9" stroke="#558B2F" stroke-width="2"/>

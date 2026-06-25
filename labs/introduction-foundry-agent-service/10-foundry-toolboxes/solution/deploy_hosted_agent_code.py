@@ -2,7 +2,7 @@
 
 This is the primary deployment path for Module 10, Part 3. It zips the agent bundle in
 ``src/agent/`` and uploads it to Foundry, which builds the container image remotely and runs
-it as a new version of the ``acl-remedy-advisor-hosted-code`` hosted agent from Module 09 — no
+it as a new version of the ``acl-remedy-advisor-hosted-code`` hosted agent from Module 09 - no
 local Docker required. The new version swaps Module 09's three separately wired tools for the
 single ``acl-remedy-toolbox`` Foundry Toolbox. After the version becomes active it grants the
 agent's per-deploy identity the Foundry User role so the agent can call models and authenticate

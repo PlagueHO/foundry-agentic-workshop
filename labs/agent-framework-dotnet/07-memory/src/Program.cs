@@ -16,7 +16,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 07: Memory & Context Providers ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 07: Memory & Context Providers ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model : {model}");
 Console.ResetColor();
@@ -93,13 +93,13 @@ Console.WriteLine();
 // Console.WriteLine();
 //
 // Console.ForegroundColor = ConsoleColor.Cyan;
-// Console.WriteLine("[User] Can you remind me — what was my flight number?");
+// Console.WriteLine("[User] Can you remind me - what was my flight number?");
 // Console.ResetColor();
 // Console.WriteLine();
 //
 // Console.ForegroundColor = ConsoleColor.Green;
 // Console.WriteLine($"[Agent] {await agent.RunAsync(
-//     "By the way, can you remind me — what was my flight number?",
+//     "By the way, can you remind me - what was my flight number?",
 //     session: session)}");
 // Console.ResetColor();
 // Console.WriteLine();

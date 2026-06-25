@@ -25,7 +25,7 @@ if _REPO_ROOT not in sys.path:
 import shared.health_check as core  # noqa: E402
 
 # Environment variables used by specific IFS lab modules.  Checked as optional
-# warnings — missing values do not block core lab progress but must be set
+# warnings - missing values do not block core lab progress but must be set
 # before the relevant module.
 _ADDITIONAL_ENV_VARS = [
     'AGENT_NAME',

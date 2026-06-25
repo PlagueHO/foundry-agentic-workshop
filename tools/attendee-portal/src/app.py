@@ -327,7 +327,7 @@ def _upn_key(upn: str) -> str:
 
 @app.get('/healthz', include_in_schema=False)
 async def healthz() -> Response:
-    """Liveness probe — no authentication required."""
+    """Liveness probe - no authentication required."""
     return Response(content='ok', media_type='text/plain')
 
 

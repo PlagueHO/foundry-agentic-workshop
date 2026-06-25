@@ -13,7 +13,7 @@ You must test the steps in the #file:labs/introduction-foundry-agent-service/03-
 
 > **Important:** Any Azure or GitHub login dialogs that appear during the test must be completed by the user. Pause and prompt the user whenever a sign-in dialog is encountered. Do not attempt to enter credentials automatically.
 
-## Step 1 — Open a GitHub Codespace for this repository
+## Step 1 - Open a GitHub Codespace for this repository
 
 1. Open the browser and navigate to `https://github.com/PlagueHO/foundry-agentic-workshop`.
 1. Click **Code** → **Codespaces** → **Create codespace on main** (or open an existing codespace if one already exists for the current branch).
@@ -22,7 +22,7 @@ You must test the steps in the #file:labs/introduction-foundry-agent-service/03-
 
 > **Note:** If a login dialog appears at any point during Codespace creation or VS Code connection, pause and ask the user to complete sign-in before continuing.
 
-## Step 2 — Load the attendee environment
+## Step 2 - Load the attendee environment
 
 1. In the codespace terminal, run:
 
@@ -42,7 +42,7 @@ You must test the steps in the #file:labs/introduction-foundry-agent-service/03-
 
 1. Confirm a `.env` file exists at the repository root and is populated with the attendee's values. If it is missing, copy `shared/.env.example` to `.env` and populate it from the onboarding file's `## Your Environment Variables` section.
 
-## Step 3 — Validate Step 1 of the lab (Verify the extension is installed)
+## Step 3 - Validate Step 1 of the lab (Verify the extension is installed)
 
 Follow lab step **1. Verify the extension is installed**:
 
@@ -52,7 +52,7 @@ Follow lab step **1. Verify the extension is installed**:
 
    > **Check:** If the icon is absent, verify the devcontainer finished building and reload the VS Code window (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> → **Developer: Reload Window**).
 
-## Step 4 — Validate Step 2 of the lab (Sign in to Azure)
+## Step 4 - Validate Step 2 of the lab (Sign in to Azure)
 
 Follow lab step **2. Sign in to Azure**:
 
@@ -61,7 +61,7 @@ Follow lab step **2. Sign in to Azure**:
 1. After sign-in, confirm the attendee's subscription appears under **RESOURCES** in the Azure view.
 1. As a fallback, open a terminal in the codespace and run `az login` to confirm the identity; verify the active subscription matches `AZURE_SUBSCRIPTION_ID` from the onboarding file.
 
-## Step 5 — Validate Step 3 of the lab (Connect to your Foundry project)
+## Step 5 - Validate Step 3 of the lab (Connect to your Foundry project)
 
 Follow lab step **3. Connect to your Foundry project**:
 
@@ -76,7 +76,7 @@ Follow lab step **3. Connect to your Foundry project**:
 
 1. Confirm the toolkit now shows the project name under **My Resources** with sub-sections for **Models**, **Prompt Agents**, **Hosted Agents (Preview)**, **Tools**, **Knowledge**, and **Evaluations**.
 
-## Step 6 — Validate Step 4 of the lab (Tour the extension interface)
+## Step 6 - Validate Step 4 of the lab (Tour the extension interface)
 
 Follow lab step **4. Tour the extension interface**:
 
@@ -85,9 +85,9 @@ Follow lab step **4. Tour the extension interface**:
 1. Expand **Help and Feedback** and confirm documentation links are present.
 1. Press <kbd>F1</kbd>, type `Foundry Toolkit`, and verify that commands such as **Open Model Catalog** and **Open Playground** appear in the command palette.
 
-## Step 7 — Validate Step 5 of the lab (Explore My Resources — deployed models)
+## Step 7 - Validate Step 5 of the lab (Explore My Resources - deployed models)
 
-Follow lab step **5. Explore My Resources — deployed models**:
+Follow lab step **5. Explore My Resources - deployed models**:
 
 1. Under **My Resources**, expand the project, then expand **Models**.
 1. Confirm both the `chat` model (GPT-4o) and the `embedding` model are listed.
@@ -96,9 +96,9 @@ Follow lab step **5. Explore My Resources — deployed models**:
    * **Endpoint info**: target URI and authentication type.
    * **Useful links**: code sample and tutorial links.
 
-## Step 8 — Validate Step 6 of the lab (Explore Developer Tools — Model Catalog)
+## Step 8 - Validate Step 6 of the lab (Explore Developer Tools - Model Catalog)
 
-Follow lab step **6. Explore Developer Tools — Model Catalog**:
+Follow lab step **6. Explore Developer Tools - Model Catalog**:
 
 1. Under **Developer Tools**, expand **Discover** and double-click **Model Catalog**.
 1. Confirm the Model Catalog page opens in the editor area.
@@ -106,14 +106,14 @@ Follow lab step **6. Explore Developer Tools — Model Catalog**:
 1. Use the search bar to search for a model by name and confirm results appear.
 1. Click any model card and confirm its full description, context window, and supported inference tasks are displayed.
 
-## Step 9 — Validate Step 7 of the lab (Explore Developer Tools — Tool Catalog)
+## Step 9 - Validate Step 7 of the lab (Explore Developer Tools - Tool Catalog)
 
-Follow lab step **7. Explore Developer Tools — Tool Catalog**:
+Follow lab step **7. Explore Developer Tools - Tool Catalog**:
 
 1. Under **Developer Tools**, expand **Discover** and double-click **Tool Catalog**.
 1. Confirm the Tool Catalog page opens and lists available tools and MCP servers.
 
-## Step 10 — Validate Step 8 of the lab (Open the Model Playground)
+## Step 10 - Validate Step 8 of the lab (Open the Model Playground)
 
 Follow lab step **8. Open the Model Playground**:
 
@@ -142,22 +142,22 @@ Follow lab step **8. Open the Model Playground**:
    * Mentions or acknowledges waterproof boot options.
 1. Click **View Code** (top right of the playground) and confirm a code snippet is displayed that reproduces the playground call.
 
-## Step 11 — Validate Step 9 of the lab (Generate starter code for a model)
+## Step 11 - Validate Step 9 of the lab (Generate starter code for a model)
 
 Follow lab step **9. Generate starter code for a model**:
 
 1. In **My Resources > Models**, right-click the `chat` model and select **Open code file**.
 1. Confirm a dialog or quick-pick appears prompting for:
-   * **SDK**: Azure AI Foundry SDK (or Azure OpenAI SDK) — select **Azure AI Foundry SDK**.
-   * **Language**: Python — select **Python**.
-   * **Authentication**: DefaultAzureCredential — select **DefaultAzureCredential**.
+   * **SDK**: Azure AI Foundry SDK (or Azure OpenAI SDK) - select **Azure AI Foundry SDK**.
+   * **Language**: Python - select **Python**.
+   * **Authentication**: DefaultAzureCredential - select **DefaultAzureCredential**.
 1. Confirm a new file opens in the editor containing a working Python code sample.
 1. Verify the generated code:
    * Pulls the project endpoint from an environment variable (not a hard-coded value).
    * Uses `DefaultAzureCredential` for authentication.
    * Contains an import for `azure-ai-projects` or equivalent SDK.
 
-## Step 12 — Validate the Validation criteria
+## Step 12 - Validate the Validation criteria
 
 Confirm each item listed in the **Validation** section of the lab README is satisfied:
 
@@ -167,7 +167,7 @@ Confirm each item listed in the **Validation** section of the lab README is sati
 1. The **Model Playground** accepts a system prompt, sends a user message, and returns a response in the role of the retail assistant.
 1. The **View Code** button in the playground generates a Python code snippet.
 
-## Step 13 — Report results
+## Step 13 - Report results
 
 Report the outcome of every step above clearly. For each step state whether it **passed** or **failed**. For any failure, include:
 

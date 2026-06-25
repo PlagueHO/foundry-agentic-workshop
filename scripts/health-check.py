@@ -1,4 +1,4 @@
-﻿"""Workshop environment health check — core checks entry point.
+﻿"""Workshop environment health check - core checks entry point.
 
 Runs the core set of environment checks required for all workshop labs.
 For lab-specific checks (additional env vars, MCP servers, .NET SDK, etc.)

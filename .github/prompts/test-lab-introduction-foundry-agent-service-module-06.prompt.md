@@ -13,11 +13,11 @@ You must test the steps in the #file:labs/introduction-foundry-agent-service/06-
 
 > **Important:** Any Azure or GitHub login dialogs that appear during the test must be completed by the user. Pause and prompt the user whenever a sign-in dialog is encountered. Do not attempt to enter credentials automatically.
 
-## Pre-flight — Verify the Codespace is ready
+## Pre-flight - Verify the Codespace is ready
 
-Before executing any lab steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** — report the failure and ask the user to resolve it.
+Before executing any lab steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** - report the failure and ask the user to resolve it.
 
-### Check 1 — Confirm the Codespace browser page is open and shared
+### Check 1 - Confirm the Codespace browser page is open and shared
 
 1. Use `open_browser_page` to check which pages are currently available.
 1. Confirm a page is open with a URL matching `*.github.dev/*` or `github.dev/*`, indicating a GitHub Codespace connected to VS Code Insiders in the browser.
@@ -27,7 +27,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
    - Wait for the devcontainer to finish building, then share the resulting browser tab with this session.
 1. Take a screenshot of the Codespace page to confirm it is showing VS Code Insiders with the `foundry-agentic-workshop` repository open.
 
-### Check 2 — Confirm Azure authentication
+### Check 2 - Confirm Azure authentication
 
 1. In the Codespace terminal, run:
 
@@ -38,13 +38,13 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm the output shows `${input:attendeeUpn}` as the signed-in user and that the subscription ID matches `AZURE_SUBSCRIPTION_ID` from the environment.
 1. If the command fails or shows a different identity, pause and ask the user to run `az login` in the codespace terminal and complete the browser sign-in before continuing.
 
-### Check 3 — Confirm the Foundry project is set as default in the Foundry Toolkit
+### Check 3 - Confirm the Foundry project is set as default in the Foundry Toolkit
 
 1. Click the **Foundry Toolkit** icon in the Activity Bar (the blue Foundry spark logo).
 1. In **My Resources**, confirm the project name assigned to `${input:attendeeUpn}` is shown and expanded, with sub-sections including **Models**, **Prompt Agents**, **Hosted Agents (Preview)**, **Tools**, **Knowledge**, and **Evaluations** visible.
 1. If the project is not set, follow the Set Default Project flow from module 03 before continuing.
 
-### Check 4 — Confirm the `.env` file exists and contains required values
+### Check 4 - Confirm the `.env` file exists and contains required values
 
 1. In the Codespace terminal, run:
 
@@ -57,7 +57,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is populated with the shared **Azure Container Apps** MCP server URL the organizer deployed. It ends in `/mcp` and the host looks like `https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp`.
 1. If `.env` does not exist, confirm with the user that module 01 has been completed, then copy `shared/.env.example` to `.env` and populate `FOUNDRY_PROJECT_ENDPOINT` and `RETAIL_REMEDY_OPS_MCP_SERVER_URL` from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`).
 
-### Check 5 — Confirm the `acl-remedy-advisor` agent exists at the end state of module 05
+### Check 5 - Confirm the `acl-remedy-advisor` agent exists at the end state of module 05
 
 This module requires the `acl-remedy-advisor` agent to already exist with both **Web search** and **Code Interpreter** tools attached and saved as **v2**, as created during module 05.
 
@@ -82,11 +82,11 @@ This module requires the `acl-remedy-advisor` agent to already exist with both *
 
 ---
 
-## Part 1 — Confirm the deployed MCP server
+## Part 1 - Confirm the deployed MCP server
 
-By default the organizer deploys the shared **Retail Remedy Operations** MCP server to **Azure Container Apps**, and its public HTTPS URL is already in the attendee's `.env` file as `RETAIL_REMEDY_OPS_MCP_SERVER_URL`. Nothing needs to run locally — the agent calls the deployed server directly, and this URL must always be present in `.env`.
+By default the organizer deploys the shared **Retail Remedy Operations** MCP server to **Azure Container Apps**, and its public HTTPS URL is already in the attendee's `.env` file as `RETAIL_REMEDY_OPS_MCP_SERVER_URL`. Nothing needs to run locally - the agent calls the deployed server directly, and this URL must always be present in `.env`.
 
-### Step 1 — Confirm the deployed MCP server URL
+### Step 1 - Confirm the deployed MCP server URL
 
 1. In the Codespace terminal, print the configured URL:
 
@@ -102,7 +102,7 @@ By default the organizer deploys the shared **Retail Remedy Operations** MCP ser
 
    **Check:** If `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is empty, populate it from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`. The `.env` file must always contain this value before continuing.
 
-### Step 2 — Verify the deployed server is reachable
+### Step 2 - Verify the deployed server is reachable
 
 1. Confirm the deployed endpoint responds by running:
 
@@ -116,7 +116,7 @@ By default the organizer deploys the shared **Retail Remedy Operations** MCP ser
    **Check:** If the command times out or returns a connection error, the deployed Azure Container Apps server is unavailable. Pause and ask the user to confirm with the organizer that the shared MCP server is running before continuing.
 
 <details>
-<summary>Optional — run your own MCP server locally and expose it with a public tunnel</summary>
+<summary>Optional - run your own MCP server locally and expose it with a public tunnel</summary>
 
 If the shared Azure Container Apps server is unavailable, or you want to run and modify the server yourself, host it locally and expose it with a public HTTPS tunnel. The Azure-hosted agent runs in the cloud and cannot reach `localhost`, so the forwarded port must be **Public**.
 
@@ -141,14 +141,14 @@ If the shared Azure Container Apps server is unavailable, or you want to run and
 
 ---
 
-## Part 2 — Connect the MCP server to the agent
+## Part 2 - Connect the MCP server to the agent
 
-### Step 3 — Open the agent in Agent Builder
+### Step 3 - Open the agent in Agent Builder
 
 1. In the Foundry Toolkit panel (**MY RESOURCES → Prompt Agents**), expand `acl-remedy-advisor` and click **v2** to open Agent Builder.
 1. Confirm the Agent Builder header shows `acl-remedy-advisor | Microsoft Foundry | v2`.
 
-### Step 4 — Add the MCP tool
+### Step 4 - Add the MCP tool
 
 1. Scroll to the **TOOL** section and click the **+** button.
 1. In the tool picker, look for an option labelled **MCP**, **Custom MCP**, or **Model Context Protocol**.
@@ -183,9 +183,9 @@ If the shared Azure Container Apps server is unavailable, or you want to run and
 
 ---
 
-## Part 3 — Update the agent instructions
+## Part 3 - Update the agent instructions
 
-### Step 5 — Add the MCP tool-boundary instruction
+### Step 5 - Add the MCP tool-boundary instruction
 
 1. Scroll to the **Instructions** field in Agent Builder.
 1. Confirm the existing instructions include both the base ACL advisor text (from module 04) and the Code Interpreter paragraph (from module 05).
@@ -201,26 +201,26 @@ If the shared Azure Container Apps server is unavailable, or you want to run and
    if the customer may want a replacement. Use draft_remedy_summary to produce a
    structured summary for the staff member. Use create_remedy_case to log the
    outcome if the staff member confirms the remedy. Do not invent purchase,
-   warranty, policy, or stock details — call the MCP tools instead.
+   warranty, policy, or stock details - call the MCP tools instead.
    ```
 
 1. Take a screenshot of the instructions field showing the new paragraph at the bottom.
 
    **Check:** If the instructions field shows only the base text without the Code Interpreter paragraph from module 05, the wrong agent version is open. Confirm the header shows `v2` and re-add the missing Code Interpreter paragraph before adding the MCP paragraph.
 
-### Step 6 — Save as v3
+### Step 6 - Save as v3
 
 1. Click **Save to Foundry** in Agent Builder.
 1. Wait for the confirmation notification: *Agent 'acl-remedy-advisor' updated successfully.*
 1. Confirm the Agent Builder header now shows `acl-remedy-advisor | Microsoft Foundry | v3`.
-1. Check the **MY RESOURCES** panel — **v3** should appear below `acl-remedy-advisor` alongside **v1** and **v2**.
+1. Check the **MY RESOURCES** panel - **v3** should appear below `acl-remedy-advisor` alongside **v1** and **v2**.
 1. Take a screenshot of the MY RESOURCES panel showing all three versions.
 
 ---
 
-## Part 4 — Test with a realistic scenario
+## Part 4 - Test with a realistic scenario
 
-### Step 7 — Run the battery-failure test prompt
+### Step 7 - Run the battery-failure test prompt
 
 1. Click the **Playground** tab in Agent Builder (ensure it is targeting `acl-remedy-advisor v3`).
 1. Paste the following prompt and send it:
@@ -241,7 +241,7 @@ If the shared Azure Container Apps server is unavailable, or you want to run and
 
    **Check:** If the agent answers from general knowledge without calling any MCP tools, the instructions may not have been saved or the MCP connection may be broken. Re-run the `curl` reachability check from Step 2 to confirm the deployed server responds, then retry.
 
-### Step 8 — Inspect the run trace
+### Step 8 - Inspect the run trace
 
 1. Open the **Run** trace in the playground or the **Runs** panel in Agent Builder.
 1. Confirm MCP tool calls appear in the trace. Look for at least these three calls:
@@ -258,9 +258,9 @@ If the shared Azure Container Apps server is unavailable, or you want to run and
 
 ---
 
-## Part 5 (optional) — Verify from code
+## Part 5 (optional) - Verify from code
 
-### Step 9 — Chat from the terminal
+### Step 9 - Chat from the terminal
 
 1. Open a terminal in the Codespace.
 1. Run the chat client:
@@ -286,7 +286,7 @@ If the shared Azure Container Apps server is unavailable, or you want to run and
 
 ---
 
-## Validation — confirm all criteria
+## Validation - confirm all criteria
 
 Work through each item in the lab's Validation section and confirm:
 
@@ -301,7 +301,7 @@ Work through each item in the lab's Validation section and confirm:
 
 ---
 
-## Step 10 — Report results
+## Step 10 - Report results
 
 Report the outcome of every step above. For each step state whether it **passed** or **failed**. For any failure, include:
 

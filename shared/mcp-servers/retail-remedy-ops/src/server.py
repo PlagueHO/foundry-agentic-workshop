@@ -1,7 +1,7 @@
 """Mocked Retail Remedy Operations MCP server.
 
 Exposes six tools that the acl-remedy-advisor agent calls during its reasoning
-loop. All data is loaded from a local JSON file — no real POS, CRM, or
+loop. All data is loaded from a local JSON file - no real POS, CRM, or
 database connections are required.
 
 Usage:
@@ -136,7 +136,7 @@ def draft_remedy_summary(
         'recommended_remedy': recommended_remedy,
         'notes': notes,
         'status': 'draft',
-        'disclaimer': 'General guidance only — not legal advice.',
+        'disclaimer': 'General guidance only - not legal advice.',
     }
 
 
@@ -149,7 +149,7 @@ def create_remedy_case(
     """Simulate creating a remedy case in the retail operations system.
 
     Returns a deterministic case ID for demonstration purposes.
-    No data is actually persisted — this is a mocked write operation
+    No data is actually persisted - this is a mocked write operation
     that shows how the agent would log an approved remedy outcome.
     """
     _log_tool_call(

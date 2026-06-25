@@ -13,7 +13,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 05: MCP Tools ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 05: MCP Tools ===");
 Console.WriteLine();
 
 // ── TODO 1 ───────────────────────────────────────────────────────────────────

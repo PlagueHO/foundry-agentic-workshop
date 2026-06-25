@@ -365,7 +365,7 @@ def main() -> int:  # pylint: disable=too-many-return-statements
 
     _azd_env_set('AZURE_ATTENDEE_PORTAL_APP_ID', app_id)
 
-    # Enable ID token issuance — required for Container Apps EasyAuth.
+    # Enable ID token issuance - required for Container Apps EasyAuth.
     # See https://learn.microsoft.com/azure/container-apps/authentication
     if _run([
         _AZ_CMD, 'ad', 'app', 'update',
@@ -384,7 +384,7 @@ def main() -> int:  # pylint: disable=too-many-return-statements
     if sp_result.returncode == 0:
         print(f'{TICK} Service principal created for Entra app {app_id}.')
     else:
-        # SP already exists — not an error.
+        # SP already exists - not an error.
         print(f'{TICK} Service principal already exists for Entra app {app_id}.')
 
     client_secret = _reset_credential(app_id)

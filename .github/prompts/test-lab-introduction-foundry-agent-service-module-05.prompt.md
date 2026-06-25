@@ -13,11 +13,11 @@ You must test the steps in the #file:labs/introduction-foundry-agent-service/05-
 
 > **Important:** Any Azure or GitHub login dialogs that appear during the test must be completed by the user. Pause and prompt the user whenever a sign-in dialog is encountered. Do not attempt to enter credentials automatically.
 
-## Pre-flight — Verify the environment is ready
+## Pre-flight - Verify the environment is ready
 
-Before executing any lab steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** — report the failure and ask the user to resolve it.
+Before executing any lab steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** - report the failure and ask the user to resolve it.
 
-### Check 1 — Confirm the Codespace browser page is open and shared
+### Check 1 - Confirm the Codespace browser page is open and shared
 
 1. Use `open_browser_page` to list currently available pages.
 1. Confirm a page is open with a URL matching `*.github.dev/*` or `github.dev/*`, indicating a GitHub Codespace connected to VS Code in the browser.
@@ -27,22 +27,22 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
    - Wait for the devcontainer to finish building, then share the resulting browser tab with this session.
 1. Take a screenshot of the Codespace page to confirm it is showing VS Code with the `foundry-agentic-workshop` repository open.
 
-### Check 2 — Confirm the Foundry portal is open and authenticated
+### Check 2 - Confirm the Foundry portal is open and authenticated
 
 1. Use `open_browser_page` to navigate to `https://ai.azure.com`.
 1. Take a screenshot and confirm the portal home page or a project page is visible.
 1. Confirm the signed-in account displayed in the top-right corner matches `${input:attendeeUpn}`. If a login dialog or account-picker is shown, pause and instruct the user to sign in with `${input:attendeeUpn}` before continuing. Do not enter credentials automatically.
 1. Once authenticated, confirm the portal is accessible and note the project name visible in the portal (or navigate to **All projects** to find the project assigned to `${input:attendeeUpn}`).
 
-### Check 3 — Confirm Module 04 is complete: acl-remedy-advisor agent exists
+### Check 3 - Confirm Module 04 is complete: acl-remedy-advisor agent exists
 
 1. In the Foundry portal, navigate to the attendee's Foundry project.
 1. In the left navigation, click **Agents**.
 1. Confirm `acl-remedy-advisor` appears in the agent list with at least **v1** recorded.
-1. If the agent is absent, **do not proceed** — instruct the user to complete Module 04 successfully before running this test.
+1. If the agent is absent, **do not proceed** - instruct the user to complete Module 04 successfully before running this test.
 1. Note the current highest version of the agent (expected: **v1** if Module 04 was just completed, or higher if the attendee has already experimented).
 
-### Check 4 — Confirm Azure authentication in the Codespace
+### Check 4 - Confirm Azure authentication in the Codespace
 
 1. Switch back to the Codespace browser page.
 1. Open a terminal in the Codespace (if one is not already open).
@@ -55,7 +55,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm the output shows `${input:attendeeUpn}` as the signed-in user.
 1. If the command fails or shows a different identity, pause and ask the user to run `az login` in the Codespace terminal and complete the browser sign-in before continuing.
 
-### Check 5 — Confirm the Foundry Toolkit shows the project and the v1 agent
+### Check 5 - Confirm the Foundry Toolkit shows the project and the v1 agent
 
 1. Click the **Foundry Toolkit** icon in the Activity Bar.
 1. In **MY RESOURCES**, expand **Prompt Agents** → **acl-remedy-advisor**.
@@ -65,9 +65,9 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 ---
 
-## Part 1 — Add Code Interpreter to the agent
+## Part 1 - Add Code Interpreter to the agent
 
-### Step 1 — Open the agent in Agent Builder
+### Step 1 - Open the agent in Agent Builder
 
 1. In the Foundry Toolkit **MY RESOURCES** panel, confirm **Prompt Agents** → **acl-remedy-advisor** is expanded.
 1. Click **v1** to open Agent Builder.
@@ -76,7 +76,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If **v1** is not directly clickable, click **acl-remedy-advisor** first to expand its version list, then click **v1**. If Agent Builder opens a blank view, reload the VS Code window (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> → **Developer: Reload Window**) and retry.
 
-### Step 2 — Open the tool picker
+### Step 2 - Open the tool picker
 
 1. Scroll down in the left panel of Agent Builder to the **TOOL** section.
 1. Confirm **Web search** is already listed (it was added in Module 04).
@@ -86,7 +86,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If the **+** button is not visible, hover over the **TOOL** section header. If the dialog still does not open, reload the Codespace window and retry from Step 1.
 
-### Step 3 — Add Code Interpreter
+### Step 3 - Add Code Interpreter
 
 1. In the *Select a tool* dialog, locate **Code Interpreter** in the tool list.
 1. Click **Code Interpreter** to select it. Confirm the card visually highlights.
@@ -100,12 +100,12 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 ---
 
-## Part 2 — Update the instructions
+## Part 2 - Update the instructions
 
-### Step 4 — Add a Code Interpreter instruction
+### Step 4 - Add a Code Interpreter instruction
 
 1. Scroll back up to the **Instructions** field in Agent Builder.
-1. Confirm the original Module 04 instructions are still present and intact. The instructions should end with `Be concise and practical — retail staff need fast, clear answers in a busy store environment.`
+1. Confirm the original Module 04 instructions are still present and intact. The instructions should end with `Be concise and practical - retail staff need fast, clear answers in a busy store environment.`
 1. Click at the very end of the existing instructions text to position the cursor there.
 1. Press <kbd>Enter</kbd> twice to create a blank line, then type or paste the following paragraph exactly:
 
@@ -122,9 +122,9 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 ---
 
-## Part 3 — Save and test the updated agent
+## Part 3 - Save and test the updated agent
 
-### Step 5 — Save as version 2
+### Step 5 - Save as version 2
 
 1. Click **Save to Foundry** in the top-right of Agent Builder.
 1. Wait for the confirmation notification: *Agent 'acl-remedy-advisor' updated successfully.*
@@ -132,9 +132,9 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. In the **MY RESOURCES** panel, confirm **v2** now appears under `acl-remedy-advisor` alongside **v1**.
 1. Take a screenshot of the Agent Builder header showing `v2` and the sidebar showing both `v1` and `v2`.
 
-   **Check:** If the save fails with "Cannot read properties of undefined", click **Save to Foundry** again — this is a known transient error. If it continues to fail after three attempts, confirm the Default Project is still set correctly in the Foundry Toolkit and that the Codespace can reach the Foundry endpoint (`curl -I $FOUNDRY_PROJECT_ENDPOINT` in the terminal).
+   **Check:** If the save fails with "Cannot read properties of undefined", click **Save to Foundry** again - this is a known transient error. If it continues to fail after three attempts, confirm the Default Project is still set correctly in the Foundry Toolkit and that the Codespace can reach the Foundry endpoint (`curl -I $FOUNDRY_PROJECT_ENDPOINT` in the terminal).
 
-### Step 6 — Test in the playground
+### Step 6 - Test in the playground
 
 1. Click the **Playground** tab at the top of Agent Builder.
 1. Send the following message to test the agent with both a legal guidance need (Web search) and a calculation need (Code Interpreter):
@@ -149,7 +149,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
    - Explains the remedy options available to the customer under each classification.
    - Cites at least one URL from `accc.gov.au` or a state consumer affairs site (Web search fired).
 
-1. Note whether **Code Interpreter** activity is visible in the response (e.g. a code block output, a calculation shown step-by-step, or a `[code interpreter]` indicator). Record this observation without treating absence as a failure — the model exercises judgement about when to invoke Code Interpreter.
+1. Note whether **Code Interpreter** activity is visible in the response (e.g. a code block output, a calculation shown step-by-step, or a `[code interpreter]` indicator). Record this observation without treating absence as a failure - the model exercises judgement about when to invoke Code Interpreter.
 
    > If you want to verify Code Interpreter fires reliably, send a second, calculation-focused message:
    >
@@ -165,9 +165,9 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 ---
 
-## Part 4 — Scaffold evaluation code
+## Part 4 - Scaffold evaluation code
 
-### Step 7 — Open the Evaluation tab in Agent Builder
+### Step 7 - Open the Evaluation tab in Agent Builder
 
 1. In Agent Builder, look for the **Evaluation** tab in the header area alongside **Playground** and **Conversations**.
 1. Click **Evaluation**.
@@ -178,7 +178,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If the **Evaluation** tab is not visible, scroll the Agent Builder header to reveal hidden tabs, or resize the panel. If it still does not appear, reload the window and reopen the agent.
 
-### Step 8 — Choose evaluators
+### Step 8 - Choose evaluators
 
 1. Click **Scaffold Evaluation Code**.
 1. Confirm the **Select Evaluator(s)** dialog opens, listing evaluators grouped by category.
@@ -190,7 +190,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If the dialog does not open at all, confirm the Foundry Toolkit has an active project connection. Check the VS Code **Output** panel (select **Foundry Toolkit** in the dropdown) for errors before retrying.
 
-### Step 9 — Select the save folder and confirm files are generated
+### Step 9 - Select the save folder and confirm files are generated
 
 1. When the folder picker dialog appears with the prompt *Select a folder to save the evaluation code*, navigate to:
 
@@ -211,7 +211,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If no files appear, confirm the `src/` directory exists and VS Code has write permission. In the Codespace terminal, verify with `ls labs/introduction-foundry-agent-service/05-agent-tools-and-evaluations/src/`. If the directory is missing or write-protected, resolve that and retry from Step 8. If files still are not generated, check the VS Code **Output → Foundry Toolkit** panel for error details.
 
-### Step 10 — Inspect the generated files
+### Step 10 - Inspect the generated files
 
 1. Open `test_acl_remedy_advisor.py` in the editor.
 1. Confirm the file contains `from pytest_agent_evals import` with at least `EvaluatorResults`, `evals`, `AzureOpenAIModelConfig`, `FoundryAgentConfig`, and `BuiltInEvaluatorConfig` in the import block.
@@ -221,9 +221,9 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 ---
 
-## Part 5 — Run an automatic evaluation in the Foundry portal
+## Part 5 - Run an automatic evaluation in the Foundry portal
 
-### Step 11 — Navigate to the agent in the Foundry portal
+### Step 11 - Navigate to the agent in the Foundry portal
 
 1. Switch to the Foundry portal browser tab (`https://ai.azure.com`).
 1. Confirm you are in the attendee's project. If not, navigate to it from **All projects**.
@@ -236,7 +236,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If **acl-remedy-advisor** is not in the Agents list in the portal, the agent save in Step 5 may not have propagated. Reload the portal page and wait 30 seconds before retrying. If the agent is still absent, verify the Codespace is connected to the correct project endpoint.
 
-### Step 12 — Wizard Step 1: Select evaluation target
+### Step 12 - Wizard Step 1: Select evaluation target
 
 1. Confirm the **Create new evaluation** wizard opens at **Step 1: Target**.
 1. Confirm **Agent** is selected as the target type.
@@ -246,14 +246,14 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If only **v1** is listed or if the expected version is not pre-checked, verify that the save in Step 5 completed with the correct version confirmation. Reload the portal page if needed to refresh the agent version list.
 
-### Step 13 — Wizard Step 2: Select evaluation scope
+### Step 13 - Wizard Step 2: Select evaluation scope
 
 1. Confirm **Step 2: Scope** shows options including **Individual turns** and **Full conversations (preview)**.
 1. Confirm **Individual turns** is selected.
 1. Take a screenshot of Step 2.
 1. Click **Next**.
 
-### Step 14 — Wizard Step 3: Configure synthetic data
+### Step 14 - Wizard Step 3: Configure synthetic data
 
 1. Confirm **Step 3: Data** is shown.
 1. Confirm **Synthetic generation** is selected (it should be the default).
@@ -276,9 +276,9 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Take a screenshot of the data step with the dataset card visible.
 1. Click **Next**.
 
-   **Check:** If the **Generate** button is absent or the dialog fails to open, confirm the project has an active chat model deployment. If the generation request errors, try reducing rows to **3** and retry. If the project shows no model deployments, report this as a failure — the environment provisioning may be incomplete.
+   **Check:** If the **Generate** button is absent or the dialog fails to open, confirm the project has an active chat model deployment. If the generation request errors, try reducing rows to **3** and retry. If the project shows no model deployments, report this as a failure - the environment provisioning may be incomplete.
 
-### Step 15 — Wizard Step 4: Review pre-selected criteria
+### Step 15 - Wizard Step 4: Review pre-selected criteria
 
 1. Confirm **Step 4: Criteria** is shown with evaluators pre-selected across multiple categories.
 1. Confirm evaluators are present in at least the **Agents**, **Quality**, and **Safety** groupings.
@@ -287,7 +287,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Take a screenshot of the Criteria step showing the evaluator groups and their items.
 1. Click **Next**.
 
-### Step 16 — Wizard Step 5: Name and submit
+### Step 16 - Wizard Step 5: Name and submit
 
 1. Confirm **Step 5: Review** is shown with a summary panel on the right listing Target, Scope, Dataset, and Evaluators.
 1. In the evaluation name field, enter:
@@ -303,12 +303,12 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If the name field is read-only or the Submit button is disabled, confirm all prior wizard steps completed without errors. If submission fails with an error, note the full error message and include it in the report.
 
-### Step 17 — Monitor the evaluation run
+### Step 17 - Monitor the evaluation run
 
 1. On the `acl-remedy-advisor-tools-eval` detail page, locate the run row in **Evaluation runs**.
 1. Confirm the run shows a **Queued** or **In progress** status immediately after submission.
 1. Take a screenshot confirming the run was submitted successfully.
-1. Wait for the **Status** to change to **Completed**. With 5 rows and approximately 19 evaluators, expect 3–10 minutes. If the run has not completed within 15 minutes, note this as a warning and include the current status in the report — do not block the test run indefinitely.
+1. Wait for the **Status** to change to **Completed**. With 5 rows and approximately 19 evaluators, expect 3–10 minutes. If the run has not completed within 15 minutes, note this as a warning and include the current status in the report - do not block the test run indefinitely.
 1. Once **Completed**, click the run name to open the detailed results view.
 1. Take a screenshot of the results view showing per-evaluator scores across the test rows.
 1. Verify:
@@ -320,7 +320,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 ---
 
-## Validation — Confirm all lab criteria
+## Validation - Confirm all lab criteria
 
 Work through each item in the lab's Validation section and confirm the outcome:
 
@@ -333,7 +333,7 @@ Work through each item in the lab's Validation section and confirm the outcome:
 
 ---
 
-## Step 18 — Report results
+## Step 18 - Report results
 
 Report the outcome of every step above. For each step state whether it **passed**, **failed**, or was **skipped**. For any failure, include:
 

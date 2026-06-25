@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="580" viewBox="0 0 900 580">
-  <title>Lab 06 — Integrate MCP Tools Architecture</title>
-  <desc>Python Client calls the acl-remedy-advisor Agent Definition inside a Foundry Project inside a Foundry Account. The Agent Definition calls the chat Model Deployment and may invoke the Web Search Tool (which calls the Internet), the Code Interpreter Tool (sandboxed Python), or the MCP tool — which connects over an HTTPS dev tunnel to a Retail Remedy Operations MCP Server running outside the Foundry Account on the local dev machine.</desc>
+  <title>Lab 06 - Integrate MCP Tools Architecture</title>
+  <desc>Python Client calls the acl-remedy-advisor Agent Definition inside a Foundry Project inside a Foundry Account. The Agent Definition calls the chat Model Deployment and may invoke the Web Search Tool (which calls the Internet), the Code Interpreter Tool (sandboxed Python), or the MCP tool - which connects over an HTTPS dev tunnel to a Retail Remedy Operations MCP Server running outside the Foundry Account on the local dev machine.</desc>
 
   <!-- Background -->
   <rect width="900" height="580" fill="white"/>
@@ -97,7 +97,7 @@
         fill="#999999" font-family="'Segoe UI',Arial,sans-serif"
         font-size="10">LLM inference</text>
 
-  <!-- Web Search Tool (inside Project) — center x=352 -->
+  <!-- Web Search Tool (inside Project) - center x=352 -->
   <rect x="270" y="265" width="165" height="72" rx="6"
         fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2"/>
   <text x="352" y="294" text-anchor="middle"
@@ -107,7 +107,7 @@
         fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
         font-size="10">Built-in · Foundry</text>
 
-  <!-- Code Interpreter Tool (inside Project) — center x=537 -->
+  <!-- Code Interpreter Tool (inside Project) - center x=537 -->
   <rect x="455" y="265" width="165" height="72" rx="6"
         fill="#FFF3E0" stroke="#E65100" stroke-width="2"/>
   <text x="537" y="294" text-anchor="middle"
@@ -117,7 +117,7 @@
         fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
         font-size="10">Built-in · sandboxed Python</text>
 
-  <!-- MCP Tool connection (inside Project) — center x=722 -->
+  <!-- MCP Tool connection (inside Project) - center x=722 -->
   <rect x="640" y="265" width="165" height="72" rx="6"
         fill="#E8EAF6" stroke="#283593" stroke-width="2"/>
   <text x="722" y="294" text-anchor="middle"
@@ -127,7 +127,7 @@
         fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
         font-size="10">retail-remedy-ops · 6 tools</text>
 
-  <!-- Python Client (outside containers) — vertically centred with Agent Def -->
+  <!-- Python Client (outside containers) - vertically centred with Agent Def -->
   <rect x="20" y="120" width="175" height="90" rx="6"
         fill="#BBDEFB" stroke="#1565C0" stroke-width="2"/>
   <text x="107" y="149" text-anchor="middle"

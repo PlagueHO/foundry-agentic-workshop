@@ -66,7 +66,7 @@ The default role for entries without an explicit `role` is `foundry-project-mana
 > Store the formatted version in a local file for readability and paste the single-line form into `azd env set`. See [Scenario examples](#scenario-examples) for more roster patterns.
 
 > [!TIP]
-> By default, each attendee's Foundry project is named from the local part of their UPN — for example `alice.smith@contoso.com` becomes `alice-smith`. Dots and underscores are replaced with hyphens and the name is lowercased and capped at 32 characters. Set `AZURE_USE_UPN_PROJECT_NAMES=false` to revert to sequential `<prefix>-NN` names (for example `attendee-01`).
+> By default, each attendee's Foundry project is named from the local part of their UPN - for example `alice.smith@contoso.com` becomes `alice-smith`. Dots and underscores are replaced with hyphens and the name is lowercased and capped at 32 characters. Set `AZURE_USE_UPN_PROJECT_NAMES=false` to revert to sequential `<prefix>-NN` names (for example `attendee-01`).
 <!-- markdownlint-enable MD028 -->
 
 ### 5. Provision
@@ -80,14 +80,14 @@ azd provision
 
 This single command runs three stages automatically:
 
-1. **Resolve attendees** — `scripts/prepare-attendee-roles.py` (pre-provision) maps each UPN to a Microsoft Entra object ID and computes project names. It writes an audit to `.azure/<env>/attendee-resolution-<env>-<timestamp>.csv`.
-1. **Deploy infrastructure** — Bicep creates all Azure resources with attendee role assignments embedded.
-1. **Onboard and seed** — `scripts/generate-attendee-onboarding.py` (post-provision) writes a per-attendee onboarding file to `.azure/<env>/<upn_local>.md`, a provisioning summary to `.azure/<env>/attendee-provisioning-<env>-<timestamp>.csv`, seeds the Azure AI Search indexes, and publishes the shared MCP server.
+1. **Resolve attendees** - `scripts/prepare-attendee-roles.py` (pre-provision) maps each UPN to a Microsoft Entra object ID and computes project names. It writes an audit to `.azure/<env>/attendee-resolution-<env>-<timestamp>.csv`.
+1. **Deploy infrastructure** - Bicep creates all Azure resources with attendee role assignments embedded.
+1. **Onboard and seed** - `scripts/generate-attendee-onboarding.py` (post-provision) writes a per-attendee onboarding file to `.azure/<env>/<upn_local>.md`, a provisioning summary to `.azure/<env>/attendee-provisioning-<env>-<timestamp>.csv`, seeds the Azure AI Search indexes, and publishes the shared MCP server.
 
 Re-run `azd provision` any time you change `AZURE_ATTENDEE_LIST`, `AZURE_ATTENDEE_COUNT`, or the project prefix.
 
 > [!TIP]
-> The shared **Retail Remedy Operations** MCP server for [Module 06](./lab-steps/introduction-foundry-agent-service/06-mcp-tools.md) and subsequent modules is published for you during provisioning, and its URL is saved into every attendee onboarding file as `RETAIL_REMEDY_OPS_MCP_SERVER_URL` — attendees use it without running anything locally. This step needs **Docker** running and a signed-in **Azure CLI**. To skip the shared server and have attendees tunnel their own copy instead, run `azd env set AZURE_CONTAINER_APPS_DEPLOY false` before provisioning.
+> The shared **Retail Remedy Operations** MCP server for [Module 06](./lab-steps/introduction-foundry-agent-service/06-mcp-tools.md) and subsequent modules is published for you during provisioning, and its URL is saved into every attendee onboarding file as `RETAIL_REMEDY_OPS_MCP_SERVER_URL` - attendees use it without running anything locally. This step needs **Docker** running and a signed-in **Azure CLI**. To skip the shared server and have attendees tunnel their own copy instead, run `azd env set AZURE_CONTAINER_APPS_DEPLOY false` before provisioning.
 
 <details>
 <summary>📸 Screenshot: Azure Portal showing the deploy resources</summary>
@@ -126,7 +126,7 @@ After provisioning, share the **Attendee Portal URL** with all attendees.
 azd env get-value ATTENDEE_PORTAL_URL
 ```
 
-Attendees visit the portal URL, sign in with their lab Microsoft account, and immediately see their personal `.env` configuration, sign-in commands, and validation steps — no file distribution required. A single URL covers all attendees.
+Attendees visit the portal URL, sign in with their lab Microsoft account, and immediately see their personal `.env` configuration, sign-in commands, and validation steps - no file distribution required. A single URL covers all attendees.
 
 <details>
 <summary>📸 Screenshot: Attendee portal showing environment variables and setup steps</summary>
@@ -139,11 +139,11 @@ Attendees visit the portal URL, sign in with their lab Microsoft account, and im
 
 The portal is an authenticated Azure Container Apps web application backed by Container Apps built-in EasyAuth (Entra ID single-tenant). On sign-in, EasyAuth validates the attendee's Entra ID token and injects identity claims into each request. The portal reads the attendee's UPN from those claims to look up their record in the `index.json` blob stored in the shared Azure Storage account and renders a personalised page containing:
 
-- **Your environment variables** — all `.env` values in a copyable code block, plus a **Download .env** button to save the file directly.
-- **Sign in to Azure** — `az login` and `az account set` commands pre-populated with the workshop subscription ID.
-- **Validate setup** — the `python scripts/health-check.py` command ready to copy.
-- **Next steps** — a link to the Attendee Quickstart to complete setup.
-- **Workshop Resources** — links to the GitHub repo, lab modules, and Microsoft Foundry documentation.
+- **Your environment variables** - all `.env` values in a copyable code block, plus a **Download .env** button to save the file directly.
+- **Sign in to Azure** - `az login` and `az account set` commands pre-populated with the workshop subscription ID.
+- **Validate setup** - the `python scripts/health-check.py` command ready to copy.
+- **Next steps** - a link to the Attendee Quickstart to complete setup.
+- **Workshop Resources** - links to the GitHub repo, lab modules, and Microsoft Foundry documentation.
 - A role badge showing the attendee's assigned Foundry role.
 - A **Sign out** button.
 
@@ -156,7 +156,7 @@ The `index.json` blob is written by `scripts/generate-attendee-onboarding.py` du
 | Portal shows "No configuration found" | `index.json` not yet uploaded | Re-run `azd provision` or run `python scripts/generate-attendee-onboarding.py` manually after setting required env vars. |
 | Portal redirects to login then returns 401 | EasyAuth misconfigured | Run `python scripts/deploy-attendee-portal.py` to re-apply the EasyAuth configuration. |
 | Portal shows a role badge of blank | `index.json` predates the `roleDisplayName` field | Re-run `azd provision` to regenerate `index.json`. |
-| Attendee sees another attendee's config | UPN key collision | Unlikely — keys are derived from the local part of the UPN. File a bug if seen. |
+| Attendee sees another attendee's config | UPN key collision | Unlikely - keys are derived from the local part of the UPN. File a bug if seen. |
 
 #### Markdown backups
 

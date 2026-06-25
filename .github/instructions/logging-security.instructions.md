@@ -3,41 +3,41 @@ description: "Logging security rules: prevent log injection and sensitive data e
 applyTo: "**/*.cs"
 ---
 
-# Logging Security — Backend C# Code
+# Logging Security - Backend C# Code
 
 ## Rule: Never log raw user-derived values
 
 Do not pass raw user input, user-supplied content, or values derived from user input directly to any log call. This prevents log injection attacks (CWE-117 / OWASP Log Injection) and protects sensitive user data.
 
-**Prohibited patterns — do not write code like these:**
+**Prohibited patterns - do not write code like these:**
 
 ```csharp
-// BAD — raw user query in a log call
+// BAD - raw user query in a log call
 _logger.LogDebug("Search query: {Query}", request.Query);
 
-// BAD — user display name in a log call
+// BAD - user display name in a log call
 _logger.LogInformation("User {DisplayName} signed in", user.DisplayName);
 
-// BAD — access code value in a log call
+// BAD - access code value in a log call
 _logger.LogWarning("Bad access code: {Code}", providedCode);
 
-// BAD — transcription text in a log call
+// BAD - transcription text in a log call
 _logger.LogInformation("Transcribed: {Text}", transcriptionResult.Text);
 ```
 
-**Approved alternatives — use metadata instead of content:**
+**Approved alternatives - use metadata instead of content:**
 
 ```csharp
-// GOOD — log a count, not the content
+// GOOD - log a count, not the content
 _logger.LogDebug("Search completed: QueryLength={QueryLength}", request.Query.Length);
 
-// GOOD — log a lifecycle event, not the identity content
+// GOOD - log a lifecycle event, not the identity content
 _logger.LogInformation("User sign-in completed");
 
-// GOOD — log an outcome, not the secret value
+// GOOD - log an outcome, not the secret value
 _logger.LogWarning("Access code validation failed for protected endpoint");
 
-// GOOD — log metrics only
+// GOOD - log metrics only
 _logger.LogInformation("Speech recognized: TextLength={TextLength}, DurationMs={DurationMs}",
     text.Length, duration.TotalMilliseconds);
 ```
@@ -71,14 +71,14 @@ These are always safe to log:
 
 A `SanitizingLogRecordProcessor` is registered centrally in `ServiceDefaults/Extensions.cs`. This processor escapes control characters (CR, LF, TAB) from all string values in every `LogRecord` before export.
 
-This is a safety net only. It does **not** replace the call-site rule above. Raw content will still appear sanitized — but that content should never have been logged in the first place.
+This is a safety net only. It does **not** replace the call-site rule above. Raw content will still appear sanitized - but that content should never have been logged in the first place.
 
 ## Validation
 
 CI runs a grep scan over `src/**/*.cs` that fails the build if any of the following forbidden patterns are detected:
 
-- `LogDebug.*\.Query[^L]` — raw query string in a debug log
-- `Log.*[Aa]ccessCode\|Log.*providedCode` — access code values in logs
-- `Log.*[Tt]ranscri` — transcription text in logs
+- `LogDebug.*\.Query[^L]` - raw query string in a debug log
+- `Log.*[Aa]ccessCode\|Log.*providedCode` - access code values in logs
+- `Log.*[Tt]ranscri` - transcription text in logs
 
 If you believe a specific exception is warranted, document the justification in a comment and add the line to the allowlist in `.github/workflows/build-backend-service.yml`.

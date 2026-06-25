@@ -146,7 +146,7 @@ var modelDeployments = loadJsonContent('./model-deployments.json')
 
 // Role definition GUIDs for per-attendee Foundry RBAC assignments. Mirrors ROLE_DEFINITION_IDS
 // in scripts/generate-attendee-onboarding.py. Bicep owns this catalog as the authoritative
-// source — Python scripts derive their catalogs from this same set of values.
+// source - Python scripts derive their catalogs from this same set of values.
 var foundryRoleCatalog = {
   'foundry-user':            '53ca6127-db72-4b80-b1b0-d745d6d5456d'
   'foundry-project-manager': 'eadc314b-1a2d-4efa-be10-5d325db5065e'
@@ -376,7 +376,7 @@ var attendeeAppInsightsLogAnalyticsReaderRoleAssignments = map(resolvedAttendees
 // Constrained Role Based Access Control Administrator assignments (all resolved attendees) at the
 // Foundry account scope. Required for Module 09: each hosted agent receives a per-deploy Microsoft
 // Entra agent identity that needs the Foundry User role on the account to invoke models at runtime.
-// That identity's principal ID only exists after deployment, so it cannot be pre-assigned in Bicep —
+// That identity's principal ID only exists after deployment, so it cannot be pre-assigned in Bicep -
 // the attendee's deploy script assigns it. The ABAC condition restricts each attendee to assigning
 // ONLY the Foundry User role to ServicePrincipals, enforcing least privilege. The Role Based Access
 // Control Administrator role GUID is f58310d9-a9f6-439a-9e8d-f62e7b41a168.
@@ -871,7 +871,7 @@ module containerAppsStorageRoleAssignments './core/security/role_storage.bicep' 
   }
 }
 
-// Storage Blob Data Contributor for the deployer principal — always assigned so
+// Storage Blob Data Contributor for the deployer principal - always assigned so
 // scripts/generate-attendee-onboarding.py can upload the attendee onboarding index
 // even when Container Apps are not deployed (azureContainerAppsDeploy=false).
 module deployerStorageRoleAssignment './core/security/role_storage.bicep' = {
@@ -1043,7 +1043,7 @@ module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = {
 // knowledge base MCP endpoint (https://<search>.search.windows.net/knowledgebases/<kb>/mcp) when an
 // agent performs Foundry IQ retrieval (Module 07). Without the Search Index Data Reader role, those
 // knowledge base tool calls fail with HTTP 403 Forbidden. A module loop is used (rather than a
-// variable loop) so the per-project principal IDs — only known after the Foundry account deploys —
+// variable loop) so the per-project principal IDs - only known after the Foundry account deploys -
 // can be referenced in the loop body. The loop count comes from allProjectNames (compile-time), and
 // the project array order matches aiFoundryAccount's projects input so IDs are indexed by position.
 // See: https://learn.microsoft.com/azure/foundry/agents/how-to/foundry-iq-connect#authentication-and-permissions
@@ -1075,8 +1075,8 @@ module projectSearchRoleAssignments './core/security/role_aisearch.bicep' = [
 // Registry Repository Reader' role (not legacy AcrPull); without it, deployment fails with
 // image_pull_failed (HTTP 400). This role is only honored because the registry is configured with
 // ABAC repository permissions mode (see containerRegistry above). A module loop is used (rather
-// than a variable loop) so the per-project principal IDs — only known after the Foundry account
-// deploys — can be referenced in the loop body. The loop count comes from allProjectNames
+// than a variable loop) so the per-project principal IDs - only known after the Foundry account
+// deploys - can be referenced in the loop body. The loop count comes from allProjectNames
 // (compile-time), and the project array order matches aiFoundryAccount's projects input so IDs are
 // indexed by position.
 // See: https://learn.microsoft.com/azure/foundry/agents/how-to/deploy-hosted-agent#required-permissions
@@ -1106,7 +1106,7 @@ module projectAcrRoleAssignments './core/security/role_acr.bicep' = [
 // Application Insights component to read traces in the Foundry portal. Without it, the portal
 // reports "Setup incomplete: Assign the Foundry project's managed identity the Reader role on
 // Application Insights to access traces." A module loop is used (rather than a variable loop) so
-// the per-project principal IDs — only known after the Foundry account deploys — can be referenced
+// the per-project principal IDs - only known after the Foundry account deploys - can be referenced
 // in the loop body. The loop count comes from allProjectNames (compile-time), and the project array
 // order matches aiFoundryAccount's projects input so IDs are indexed by position.
 module projectAppInsightsRoleAssignments './core/security/role_appinsights.bicep' = [

@@ -1,4 +1,4 @@
-# Module 08 solution — run the Prompt Agent with Agent Framework
+# Module 08 solution - run the Prompt Agent with Agent Framework
 
 Reference implementation for facilitators and proctors.
 
@@ -8,7 +8,7 @@ This folder contains two scripts:
 
 The completed version of [src/starter.py](../src/starter.py). It connects to the
 `acl-remedy-advisor` Prompt Agent from Modules 04-07 using the Agent Framework's
-`FoundryAgent` client and runs it from Python — first as a single response, then
+`FoundryAgent` client and runs it from Python - first as a single response, then
 as a streamed response. `DefaultAzureCredential` reuses the attendee's `az login`
 session, so no keys appear in code.
 

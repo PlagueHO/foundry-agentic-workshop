@@ -10,14 +10,14 @@ All workshop resources are provisioned into a single Azure resource group by [in
 
 ### Components
 
-- **Microsoft Foundry account** — the AI Services account that owns one Foundry project per attendee (plus facilitator, proctor, and organizer projects), the model deployments (`chat`, `embedding`, `gpt-5.4`, `gpt-5.4-mini`, `gpt-5.4-nano`), the content safety (RAI) policy, and all shared connections.
-- **Azure AI Search** — search and vector store used for Foundry IQ knowledge bases and agentic retrieval. Connected to the Foundry account for every deployment.
-- **Azure Container Registry** — stores the hosted agent images attendees build and push in Module 09. Uses ABAC repository permissions and is connected to the Foundry account.
-- **Application Insights** — receives agent telemetry and traces over OpenTelemetry. It is workspace-based and backed by the Log Analytics workspace.
-- **Azure Cosmos DB** and **Azure Storage** — optional agent capability hosts for thread storage and file storage, enabled when the corresponding capability-host flags are set.
-- **Azure Container Apps environment** — runs the Module 06 Retail Remedy Operations MCP server, which Foundry agents reach over HTTPS and which pulls its image from the container registry.
-- **Azure Key Vault** — RBAC-based secret storage for the workshop.
-- **Log Analytics workspace** — the central diagnostics sink that every resource sends diagnostic settings to.
+- **Microsoft Foundry account** - the AI Services account that owns one Foundry project per attendee (plus facilitator, proctor, and organizer projects), the model deployments (`chat`, `embedding`, `gpt-5.4`, `gpt-5.4-mini`, `gpt-5.4-nano`), the content safety (RAI) policy, and all shared connections.
+- **Azure AI Search** - search and vector store used for Foundry IQ knowledge bases and agentic retrieval. Connected to the Foundry account for every deployment.
+- **Azure Container Registry** - stores the hosted agent images attendees build and push in Module 09. Uses ABAC repository permissions and is connected to the Foundry account.
+- **Application Insights** - receives agent telemetry and traces over OpenTelemetry. It is workspace-based and backed by the Log Analytics workspace.
+- **Azure Cosmos DB** and **Azure Storage** - optional agent capability hosts for thread storage and file storage, enabled when the corresponding capability-host flags are set.
+- **Azure Container Apps environment** - runs the Module 06 Retail Remedy Operations MCP server, which Foundry agents reach over HTTPS and which pulls its image from the container registry.
+- **Azure Key Vault** - RBAC-based secret storage for the workshop.
+- **Log Analytics workspace** - the central diagnostics sink that every resource sends diagnostic settings to.
 
 ### Connections and data flow
 

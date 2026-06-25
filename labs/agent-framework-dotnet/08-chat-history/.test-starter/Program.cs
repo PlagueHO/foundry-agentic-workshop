@@ -13,7 +13,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 08: Session Persistence ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 08: Session Persistence ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model : {model}");
 Console.ResetColor();
@@ -32,7 +32,7 @@ AIAgent agent = new AIProjectClient(new Uri(endpoint), credential)
 var session = await agent.CreateSessionAsync();
 
 Console.ForegroundColor = ConsoleColor.Cyan;
-Console.WriteLine("[User] My flight AU123 AKL→SYD was cancelled — 3 hours' notice.");
+Console.WriteLine("[User] My flight AU123 AKL→SYD was cancelled - 3 hours' notice.");
 Console.ResetColor();
 Console.WriteLine();
 

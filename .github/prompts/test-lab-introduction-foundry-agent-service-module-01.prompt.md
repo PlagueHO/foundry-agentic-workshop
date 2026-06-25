@@ -11,7 +11,7 @@ description: "Test lab module 01 (Workshop setup and access verification) end-to
 
 You must test the steps in the #file:labs/introduction-foundry-agent-service/01-setup/README.md for the attendee specified by `${input:attendeeUpn}` in the environment `${input:envName}`.
 
-## Step 1 — Locate the onboarding file
+## Step 1 - Locate the onboarding file
 
 The lab organizer provisioned the environment with `azd provision`. The post-provision hook (#file:scripts/generate-attendee-onboarding.py) wrote a per-attendee onboarding file to:
 
@@ -21,7 +21,7 @@ The lab organizer provisioned the environment with `azd provision`. The post-pro
 
 Where `<upn_local>` is the part of the UPN before the `@` symbol. Read that file to obtain the attendee's environment variable values.
 
-## Step 2 — Create the `.env` file
+## Step 2 - Create the `.env` file
 
 Using the values from the onboarding file, copy `shared/.env.example` to `.env` in the repository root and populate the following variables from the onboarding file's `## Your Environment Variables` section:
 
@@ -35,7 +35,7 @@ Using the values from the onboarding file, copy `shared/.env.example` to `.env` 
 
 Leave organizer-only values (e.g. `AZURE_ATTENDEE_LIST`, `AZURE_SEARCH_ADMIN_KEY`) blank or at their defaults from the example file.
 
-## Step 3 — Validate the lab steps
+## Step 3 - Validate the lab steps
 
 Follow and validate each step from #file:labs/introduction-foundry-agent-service/01-setup/README.md:
 
@@ -47,7 +47,7 @@ Follow and validate each step from #file:labs/introduction-foundry-agent-service
 1. Run `python scripts/health-check.py` and confirm it passes with no errors.
 1. Confirm the `FOUNDRY_PROJECT_NAME` from the onboarding file matches the expected project name pattern for the attendee's UPN (local part of UPN, dots/underscores replaced with hyphens, lowercased, capped at 32 characters) or the configured sequential name pattern.
 
-## Step 4 — Validate the Validation criteria
+## Step 4 - Validate the Validation criteria
 
 Confirm each item listed in the **Validation** section of the lab README is satisfied:
 

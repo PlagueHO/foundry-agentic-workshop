@@ -11,15 +11,15 @@ description: "Test lab module 08 (Use Agent Framework for Python) end-to-end fro
 
 You must test the steps in the #file:labs/introduction-foundry-agent-service/08-agent-framework-python/README.md from a local terminal in this repository. The attendee is `${input:attendeeUpn}` in the environment `${input:envName}`.
 
-This module is run entirely from code: it connects to the grounded `acl-remedy-advisor` Prompt Agent built in Modules 04-07 and runs it from Python with the Microsoft Agent Framework. There is no Codespace or browser UI to drive for the core flow — the test runs the solution and starter scripts locally and verifies their output. The only prerequisites are the local repository, a configured `.env`, an authenticated Azure CLI session, and the agent existing in the Foundry project.
+This module is run entirely from code: it connects to the grounded `acl-remedy-advisor` Prompt Agent built in Modules 04-07 and runs it from Python with the Microsoft Agent Framework. There is no Codespace or browser UI to drive for the core flow - the test runs the solution and starter scripts locally and verifies their output. The only prerequisites are the local repository, a configured `.env`, an authenticated Azure CLI session, and the agent existing in the Foundry project.
 
 > **Important:** Any Azure login dialogs that appear during the test must be completed by the user. Pause and prompt the user whenever a sign-in dialog is encountered. Do not attempt to enter credentials automatically.
 
-## Pre-flight — Verify the environment is ready
+## Pre-flight - Verify the environment is ready
 
-Before executing any lab steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** — report the failure and ask the user to resolve it.
+Before executing any lab steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** - report the failure and ask the user to resolve it.
 
-### Check 1 — Confirm the repository and solution scripts are present
+### Check 1 - Confirm the repository and solution scripts are present
 
 1. In a terminal at the repository root, confirm the module 08 scripts exist:
 
@@ -31,7 +31,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 1. Confirm all three paths resolve without error.
 
-### Check 2 — Activate the virtual environment and confirm dependencies
+### Check 2 - Activate the virtual environment and confirm dependencies
 
 1. Activate the `.venv` virtual environment from the repository root:
 
@@ -53,7 +53,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If the import raises `ModuleNotFoundError`, reinstall `shared/requirements.txt` in the active environment and retry. Confirm the `(.venv)` prefix is present so the install targets the correct interpreter.
 
-### Check 3 — Confirm the `.env` file exists and contains required values
+### Check 3 - Confirm the `.env` file exists and contains required values
 
 1. Confirm `.env` exists and the required values are populated:
 
@@ -64,11 +64,11 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm `FOUNDRY_PROJECT_ENDPOINT` is set to a non-empty value of the form `https://<resource>.services.ai.azure.com/api/projects/<project>`.
 1. Confirm `AGENT_NAME` is either unset (the script defaults to `acl-remedy-advisor`) or set to `acl-remedy-advisor`.
 1. Confirm `AGENT_VERSION` is either unset or empty (the script uses the latest published version when it is empty).
-1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set to the shared **Azure Container Apps** MCP server URL the organizer deployed. It ends in `/mcp` and the host looks like `https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp`. The grounded `acl-remedy-advisor` agent calls this deployed server when its MCP tools fire during a run, so it must be present and reachable — no local server or tunnel is required.
+1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set to the shared **Azure Container Apps** MCP server URL the organizer deployed. It ends in `/mcp` and the host looks like `https://ca-mcp-<env>.<region>.azurecontainerapps.io/mcp`. The grounded `acl-remedy-advisor` agent calls this deployed server when its MCP tools fire during a run, so it must be present and reachable - no local server or tunnel is required.
 
    **Check:** If `.env` does not exist, confirm with the user that Module 01 has been completed, then copy `shared/.env.example` to `.env` and populate `FOUNDRY_PROJECT_ENDPOINT` and `RETAIL_REMEDY_OPS_MCP_SERVER_URL` from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`.
 
-### Check 4 — Confirm Azure authentication
+### Check 4 - Confirm Azure authentication
 
 1. Confirm the Azure CLI is signed in as the attendee:
 
@@ -79,7 +79,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm the output shows `${input:attendeeUpn}` as the signed-in user and that the subscription ID matches `AZURE_SUBSCRIPTION_ID` from the environment.
 1. If the command fails or shows a different identity, pause and ask the user to run `az login` and complete the browser sign-in before continuing. Do not enter credentials automatically.
 
-### Check 5 — Confirm the `acl-remedy-advisor` agent exists in the Foundry project
+### Check 5 - Confirm the `acl-remedy-advisor` agent exists in the Foundry project
 
 This module connects to the grounded `acl-remedy-advisor` Prompt Agent built across Modules 04-07.
 
@@ -89,7 +89,7 @@ This module connects to the grounded `acl-remedy-advisor` Prompt Agent built acr
    python scripts/list-attendee-projects.py
    ```
 
-   If the helper is not applicable to a single attendee, confirm the agent another way — for example by running the module 08 solution in Part 3, which fails fast with a clear "agent not found" error if the agent is missing.
+   If the helper is not applicable to a single attendee, confirm the agent another way - for example by running the module 08 solution in Part 3, which fails fast with a clear "agent not found" error if the agent is missing.
 
 1. Confirm `acl-remedy-advisor` is present in the project.
 
@@ -103,11 +103,11 @@ This module connects to the grounded `acl-remedy-advisor` Prompt Agent built acr
 
 ---
 
-## Part 1 — Run the agent from the solution script
+## Part 1 - Run the agent from the solution script
 
 The solution script `run_prompt_agent.py` is the completed version of `starter.py`. Running it is the deterministic way to validate that the agent connects and responds.
 
-### Step 1 — Run the solution
+### Step 1 - Run the solution
 
 1. From the repository root, run:
 
@@ -123,14 +123,14 @@ The solution script `run_prompt_agent.py` is the completed version of `starter.p
 
    **Check:** If the script reports the agent could not be found, recreate it with `solution/create_knowledge_base_agent.py` (Check 5), then retry.
 
-### Step 2 — Verify the single-response output
+### Step 2 - Verify the single-response output
 
 1. Confirm the output contains an `Agent:` block followed by a complete answer printed in one piece.
 1. Confirm the answer addresses the built-in `QUERY` (a $1,200 fridge that stopped cooling after 14 months with a 12-month store warranty) and includes:
    - A remedy recommendation under the Australian Consumer Law.
    - Reasoning that distinguishes a major failure from a minor failure, or otherwise justifies the remedy.
 
-### Step 3 — Verify the streaming output
+### Step 3 - Verify the streaming output
 
 1. Confirm a second block appears, prefixed with `Agent (streaming):`.
 1. Confirm the streamed answer is printed incrementally (token by token) rather than all at once, and that it conveys the same kind of grounded remedy guidance as the single-response block.
@@ -138,22 +138,22 @@ The solution script `run_prompt_agent.py` is the completed version of `starter.p
 
 ---
 
-## Part 2 — Complete and run the starter script
+## Part 2 - Complete and run the starter script
 
 This part confirms the learner-facing path (completing the TODOs in `starter.py`) produces the same result as the solution.
 
-### Step 4 — Complete the four TODOs in starter.py
+### Step 4 - Complete the four TODOs in starter.py
 
 1. Open [src/starter.py](labs/introduction-foundry-agent-service/08-agent-framework-python/src/starter.py).
 1. Apply the four snippets from the README exactly:
 
-   - **TODO 1** — import the client:
+   - **TODO 1** - import the client:
 
      ```python
      from agent_framework.foundry import FoundryAgent
      ```
 
-   - **TODO 2** — connect to the existing Prompt Agent:
+   - **TODO 2** - connect to the existing Prompt Agent:
 
      ```python
      agent = FoundryAgent(
@@ -164,14 +164,14 @@ This part confirms the learner-facing path (completing the TODOs in `starter.py`
      )
      ```
 
-   - **TODO 3** — run once and print the full response:
+   - **TODO 3** - run once and print the full response:
 
      ```python
      result = await agent.run(QUERY)
      print(f'\nAgent:\n{result.text}\n')
      ```
 
-   - **TODO 4** — run again and stream the response:
+   - **TODO 4** - run again and stream the response:
 
      ```python
      print('Agent (streaming): ', end='', flush=True)
@@ -183,7 +183,7 @@ This part confirms the learner-facing path (completing the TODOs in `starter.py`
 
 1. Confirm the completed `starter.py` now matches the structure of `solution/run_prompt_agent.py` (the `agent = None` placeholder is replaced and all four TODO comments are resolved).
 
-### Step 5 — Run the completed starter
+### Step 5 - Run the completed starter
 
 1. From the repository root, run:
 
@@ -198,9 +198,9 @@ This part confirms the learner-facing path (completing the TODOs in `starter.py`
 
 ---
 
-## Part 3 — Confirm the QUERY is configurable
+## Part 3 - Confirm the QUERY is configurable
 
-### Step 6 — Change the QUERY and rerun
+### Step 6 - Change the QUERY and rerun
 
 1. In `src/starter.py`, change the `QUERY` string to a different retail scenario, for example:
 
@@ -222,11 +222,11 @@ This part confirms the learner-facing path (completing the TODOs in `starter.py`
 
 ---
 
-## Part 4 (optional) — Verify the runs appear in the Foundry portal Traces
+## Part 4 (optional) - Verify the runs appear in the Foundry portal Traces
 
 This step uses only the Foundry portal in a browser and does not require a Codespace. Skip it if browser access is not available.
 
-### Step 7 — Open the agent's Traces tab
+### Step 7 - Open the agent's Traces tab
 
 1. Use `open_browser_page` to navigate to `https://ai.azure.com` and confirm the signed-in account matches `${input:attendeeUpn}`. If a login dialog appears, pause and ask the user to sign in. Do not enter credentials automatically.
 1. Navigate to the attendee's Foundry project, open **Agents**, and select `acl-remedy-advisor`.
@@ -234,11 +234,11 @@ This step uses only the Foundry portal in a browser and does not require a Codes
 1. Confirm one or more traces recorded during this test (the solution run, the starter runs, and the changed-QUERY run) appear alongside any earlier playground conversations.
 1. Take a screenshot of the Traces tab showing the recorded Python runs.
 
-   **Check:** If no traces appear, refresh the page after a short wait — trace ingestion can lag a few seconds behind the run.
+   **Check:** If no traces appear, refresh the page after a short wait - trace ingestion can lag a few seconds behind the run.
 
 ---
 
-## Validation — confirm all criteria
+## Validation - confirm all criteria
 
 Work through each item in the lab's Validation section and confirm:
 
@@ -250,7 +250,7 @@ Work through each item in the lab's Validation section and confirm:
 
 ---
 
-## Step 8 — Report results
+## Step 8 - Report results
 
 Report the outcome of every step above. For each step state whether it **passed** or **failed**. For any failure, include:
 

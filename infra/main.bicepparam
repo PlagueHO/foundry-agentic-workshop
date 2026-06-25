@@ -7,7 +7,7 @@ param location = readEnvironmentVariable('AZURE_LOCATION', 'EastUS2')
 // Resource Group Configuration
 param resourceGroupName = readEnvironmentVariable('AZURE_RESOURCE_GROUP', '')
 
-// Principal running the deployment — populated automatically by azd from the signed-in identity.
+// Principal running the deployment - populated automatically by azd from the signed-in identity.
 // Used to assign Search Index Data Contributor and Search Service Contributor to the organizer
 // so the postprovision seeding scripts can write to AI Search without a manual role grant.
 param principalId = readEnvironmentVariable('AZURE_PRINCIPAL_ID', '')

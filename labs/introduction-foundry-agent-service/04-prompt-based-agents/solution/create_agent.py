@@ -37,7 +37,7 @@ INSTRUCTIONS = (
     'Always state clearly that you provide general guidance, not legal advice,\n'
     'and that "no refund" signs are unlawful under the ACL.\n'
     '\n'
-    'Be concise and practical — retail staff need fast, clear answers in a\n'
+    'Be concise and practical - retail staff need fast, clear answers in a\n'
     'busy store environment.'
 )
 

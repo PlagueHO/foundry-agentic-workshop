@@ -73,11 +73,11 @@ Install the [markdownlint extension](https://marketplace.visualstudio.com/items?
 
 Configuration lives in `.markdownlint.json` and `.markdownlint-cli2.jsonc`. Notable settings:
 
-- **MD013** (line length): disabled — no line length limit.
-- **MD024** (duplicate headings): siblings only — duplicate headings allowed if not siblings.
-- **MD029** (ordered list style): `one` — all list items use `1.`.
+- **MD013** (line length): disabled - no line length limit.
+- **MD024** (duplicate headings): siblings only - duplicate headings allowed if not siblings.
+- **MD029** (ordered list style): `one` - all list items use `1.`.
 - **MD033** (inline HTML): only `br` and `kbd` are permitted.
-- **MD041** (first line heading): disabled — files need not start with a heading.
+- **MD041** (first line heading): disabled - files need not start with a heading.
 
 ### CI
 

@@ -12,7 +12,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 09: Multi-agent Orchestration ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 09: Multi-agent Orchestration ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model : {model}");
 Console.ResetColor();
@@ -69,7 +69,7 @@ var concierge = client
             "For all flight rebooking queries: delegate to RebookFlight. " +
             "For all hotel and accommodation queries: delegate to FindHotel. " +
             "For all compensation and refund queries: delegate to CalculateCompensation. " +
-            "Never answer these specialist topics yourself — always delegate. " +
+            "Never answer these specialist topics yourself - always delegate. " +
             "You may provide a brief introduction or closing summary.")
     .WithAgentSkill(
         rebookingSpecialist,
@@ -85,11 +85,11 @@ var concierge = client
         "Explain and calculate the passenger's compensation entitlement.");
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine("[Loop] Concierge ready — 3 specialist skills registered.");
+Console.WriteLine("[Loop] Concierge ready - 3 specialist skills registered.");
 Console.ResetColor();
 Console.WriteLine();
 
-// ── Run queries — each routes to a different specialist ───────────────────────
+// ── Run queries - each routes to a different specialist ───────────────────────
 var queries = new[]
 {
     "My flight AU123 AKL→SYD was cancelled. What flights can I get today?",
@@ -112,7 +112,7 @@ foreach (var query in queries)
     Console.WriteLine();
 
     Console.ForegroundColor = ConsoleColor.DarkGray;
-    Console.WriteLine("[Loop] RunAsync — concierge will select and delegate to a specialist...");
+    Console.WriteLine("[Loop] RunAsync - concierge will select and delegate to a specialist...");
     Console.ResetColor();
     Console.WriteLine();
 

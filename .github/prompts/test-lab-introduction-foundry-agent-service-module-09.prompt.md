@@ -17,11 +17,11 @@ The lab environment must already be provisioned and the Azure CLI must already b
 
 > **Important:** Any Azure login dialogs that appear during the test must be completed by the user. Pause and prompt the user whenever a sign-in dialog is encountered. Do not attempt to enter credentials automatically.
 
-## Pre-flight — Verify the environment is ready
+## Pre-flight - Verify the environment is ready
 
-Before executing any lab steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** — report the failure and ask the user to resolve it.
+Before executing any lab steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** - report the failure and ask the user to resolve it.
 
-### Check 1 — Confirm the repository, agent bundle, and scripts are present
+### Check 1 - Confirm the repository, agent bundle, and scripts are present
 
 1. In a terminal at the repository root, confirm the module 09 scripts and agent bundle exist:
 
@@ -36,7 +36,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 1. Confirm all paths resolve without error.
 
-### Check 2 — Activate the virtual environment and confirm dependencies
+### Check 2 - Activate the virtual environment and confirm dependencies
 
 1. Activate the `.venv` virtual environment from the repository root:
 
@@ -58,7 +58,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If the import raises `ModuleNotFoundError`, reinstall `shared/requirements.txt` in the active environment and retry. Confirm the `(.venv)` prefix is present so the install targets the correct interpreter.
 
-### Check 3 — Confirm the `.env` file exists and contains required values
+### Check 3 - Confirm the `.env` file exists and contains required values
 
 1. Confirm `.env` exists and the required hosted-agent values are populated:
 
@@ -73,12 +73,12 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If `.env` does not exist, confirm with the user that Module 01 has been completed, then copy `shared/.env.example` to `.env` and populate the values from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`.
 
-### Check 4 — Confirm the Module 06 MCP server is running and publicly exposed
+### Check 4 - Confirm the Module 06 MCP server is running and publicly exposed
 
 The hosted agent calls the **Retail Remedy Operations MCP server** from Module 06 over `RETAIL_REMEDY_OPS_MCP_SERVER_URL` at runtime. The server must be running and reachable on its public dev-tunnel URL for the deploy verification and invoke steps to succeed.
 
 1. Confirm the MCP server is running locally (Module 06 starts it with `python shared/mcp-servers/retail-remedy-ops/src/server.py`).
-1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` points to the **public** dev-tunnel URL (ending in `/mcp`), not a `localhost` address — the hosted agent runs in Foundry's managed compute and cannot reach `localhost`.
+1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` points to the **public** dev-tunnel URL (ending in `/mcp`), not a `localhost` address - the hosted agent runs in Foundry's managed compute and cannot reach `localhost`.
 1. Confirm the public endpoint responds:
 
    ```bash
@@ -87,7 +87,7 @@ The hosted agent calls the **Retail Remedy Operations MCP server** from Module 0
 
    **Check:** Expect an HTTP `200` with a JSON-RPC response listing the `retail_remedy_ops` tools. If the request fails or times out, restart the Module 06 server, re-expose the dev tunnel publicly, and update `RETAIL_REMEDY_OPS_MCP_SERVER_URL` before continuing. If you change the URL after deploying, you must redeploy the agent.
 
-### Check 5 — Confirm Azure authentication
+### Check 5 - Confirm Azure authentication
 
 1. Confirm the Azure CLI is signed in as the attendee:
 
@@ -98,14 +98,14 @@ The hosted agent calls the **Retail Remedy Operations MCP server** from Module 0
 1. Confirm the output shows `${input:attendeeUpn}` as the signed-in user and that the subscription ID matches `AZURE_SUBSCRIPTION_ID` from the environment.
 1. If the command fails or shows a different identity, pause and ask the user to run `az login` and complete the browser sign-in before continuing. Do not enter credentials automatically.
 
-### Check 6 — Confirm the constrained role-assignment permission
+### Check 6 - Confirm the constrained role-assignment permission
 
 The deploy scripts assign the hosted agent's own Microsoft Entra identity the **Foundry User** role after the version becomes active. This requires the project to have been provisioned with the constrained Role Based Access Control Administrator role.
 
 1. Confirm with the user that the lab environment `${input:envName}` was provisioned by the facilitator (which grants this constrained role).
-1. No command is required here — the assignment is attempted automatically during deploy. If it fails with `PrincipalNotFound` or an authorization error, capture the error for the Troubleshooting follow-up rather than retrying blindly.
+1. No command is required here - the assignment is attempted automatically during deploy. If it fails with `PrincipalNotFound` or an authorization error, capture the error for the Troubleshooting follow-up rather than retrying blindly.
 
-### Check 7 — Confirm the browser portal session is ready
+### Check 7 - Confirm the browser portal session is ready
 
 1. Use the already-open `open_browser_page` on `https://ai.azure.com` and confirm the signed-in account matches `${input:attendeeUpn}`.
 1. If a login dialog appears, pause and ask the user to sign in. Do not enter credentials automatically.
@@ -113,11 +113,11 @@ The deploy scripts assign the hosted agent's own Microsoft Entra identity the **
 
 ---
 
-## Part 1 — Deploy from a container image (optional, needs Docker)
+## Part 1 - Deploy from a container image (optional, needs Docker)
 
-This part needs **Docker** and the **Azure CLI**. If Docker is not available, skip to **Part 2** — it deploys a separate hosted agent without Docker.
+This part needs **Docker** and the **Azure CLI**. If Docker is not available, skip to **Part 2** - it deploys a separate hosted agent without Docker.
 
-### Step 1 — Check for Docker
+### Step 1 - Check for Docker
 
 1. Confirm Docker is available:
 
@@ -127,7 +127,7 @@ This part needs **Docker** and the **Azure CLI**. If Docker is not available, sk
 
    **Check:** If the command reports `docker: command not found` (or similar), record Part 1 as **skipped (Docker unavailable)** and proceed to Part 2.
 
-### Step 2 — Deploy the agent from a container image
+### Step 2 - Deploy the agent from a container image
 
 1. From the repository root, run:
 
@@ -142,16 +142,16 @@ This part needs **Docker** and the **Azure CLI**. If Docker is not available, sk
 
 ---
 
-## Part 2 — Deploy from source code (preview, recommended)
+## Part 2 - Deploy from source code (preview, recommended)
 
-This is the primary deployment path. Foundry zips `src/agent/`, builds the image remotely, and runs it as a hosted agent — no local Docker required.
+This is the primary deployment path. Foundry zips `src/agent/`, builds the image remotely, and runs it as a hosted agent - no local Docker required.
 
-### Step 3 — Complete the three TODOs in starter.py
+### Step 3 - Complete the three TODOs in starter.py
 
 1. Open [src/starter.py](labs/introduction-foundry-agent-service/09-hosted-agents/src/starter.py).
 1. Apply the three snippets so the starter matches `solution/deploy_hosted_agent_code.py`:
 
-   - **TODO 1** — build the `CreateAgentVersionFromCodeContent`:
+   - **TODO 1** - build the `CreateAgentVersionFromCodeContent`:
 
      ```python
      content = CreateAgentVersionFromCodeContent(
@@ -173,7 +173,7 @@ This is the primary deployment path. Foundry zips `src/agent/`, builds the image
      )
      ```
 
-   - **TODO 2** — create the agent version from code:
+   - **TODO 2** - create the agent version from code:
 
      ```python
      created = client.beta.agents.create_version_from_code(
@@ -184,7 +184,7 @@ This is the primary deployment path. Foundry zips `src/agent/`, builds the image
      print(f'Created hosted agent {agent_name} version {created.version}; Foundry is building it.')
      ```
 
-   - **TODO 3** — wait for the version to become active and grant the agent identity RBAC:
+   - **TODO 3** - wait for the version to become active and grant the agent identity RBAC:
 
      ```python
      wait_for_agent_version_active(client, agent_name, created.version)
@@ -193,7 +193,7 @@ This is the primary deployment path. Foundry zips `src/agent/`, builds the image
 
 1. Confirm the completed `starter.py` no longer raises `NotImplementedError` and that the `content = ...` placeholder and all three TODO comments are resolved. Ensure `wait_for_agent_version_active` and `ensure_agent_identity_rbac` are imported from `hosted_agent_support` (the solution imports them at the top of the file).
 
-### Step 4 — Run the completed starter
+### Step 4 - Run the completed starter
 
 1. From the repository root, run:
 
@@ -216,9 +216,9 @@ This is the primary deployment path. Foundry zips `src/agent/`, builds the image
 
 ---
 
-## Part 3 — Invoke the hosted agent
+## Part 3 - Invoke the hosted agent
 
-### Step 5 — Chat with the deployed hosted agent
+### Step 5 - Chat with the deployed hosted agent
 
 1. From the repository root, run:
 
@@ -237,29 +237,29 @@ This is the primary deployment path. Foundry zips `src/agent/`, builds the image
 
 ---
 
-## Part 4 — Verify the deployment and metrics in the Foundry portal
+## Part 4 - Verify the deployment and metrics in the Foundry portal
 
-Use the already-open, authenticated `open_browser_page` on `https://ai.azure.com`. Do not enter credentials automatically — pause for the user if a sign-in dialog appears.
+Use the already-open, authenticated `open_browser_page` on `https://ai.azure.com`. Do not enter credentials automatically - pause for the user if a sign-in dialog appears.
 
-### Step 6 — Confirm the hosted agent appears with an active version
+### Step 6 - Confirm the hosted agent appears with an active version
 
 1. In the portal, open the attendee's Foundry project and select **Agents**.
 1. Confirm `acl-remedy-advisor-hosted-code` (and `acl-remedy-advisor-hosted-container` if Part 1 ran) appears in the list with an **active** version.
 1. Open the agent and confirm it is a hosted agent (not a Prompt Agent) and that the version created during this test is active.
 1. Take a screenshot of the agent's overview showing the active version.
 
-### Step 7 — Inspect the hosted agent's metrics
+### Step 7 - Inspect the hosted agent's metrics
 
 1. In the agent view, open the **Metrics** (or **Monitoring** / **Observability**) area for `acl-remedy-advisor-hosted-code`.
-1. Confirm metrics reflect the invocation from Step 5 — for example request count, latency, or session activity recorded during this test.
+1. Confirm metrics reflect the invocation from Step 5 - for example request count, latency, or session activity recorded during this test.
 1. If a **Traces** tab is available, confirm one or more traces from the invoke run appear, and that the hosted agent called its retail tools (for example looking up receipt `R-1007`) rather than answering generically.
 1. Take a screenshot of the metrics (and traces, if shown) for the hosted agent.
 
-   **Check:** If no metrics or traces appear, refresh the page after a short wait — ingestion can lag a few seconds behind the run.
+   **Check:** If no metrics or traces appear, refresh the page after a short wait - ingestion can lag a few seconds behind the run.
 
 ---
 
-## Validation — confirm all criteria
+## Validation - confirm all criteria
 
 Work through each item in the lab's Validation section and confirm:
 
@@ -271,7 +271,7 @@ Work through each item in the lab's Validation section and confirm:
 
 ---
 
-## Step 8 — Report results
+## Step 8 - Report results
 
 Report the outcome of every step above. For each step state whether it **passed**, **failed**, or was **skipped** (with the reason, for example Docker unavailable in Part 1). For any failure, include:
 

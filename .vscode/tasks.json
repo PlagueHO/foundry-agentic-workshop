@@ -738,6 +738,24 @@
             }
         },
         {
+            "label": "agent-framework-dotnet: module 10- deploy hosted agent (deploy-solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run", "--project", "labs/agent-framework-dotnet/10-hosted-agents/deploy-solution/TripConcierge.Deploy.csproj"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "cloud-upload",
+                "color": "terminal.ansiCyan"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
             "label": "agent-framework-dotnet: module 11- agent auth (solution)",
             "type": "shell",
             "command": "dotnet",

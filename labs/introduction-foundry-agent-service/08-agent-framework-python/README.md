@@ -2,10 +2,10 @@
 
 **Estimated time:** 25 minutes
 
-![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars — Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
+![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars - Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
 
 > [!IMPORTANT]
-> This module builds on [Module 07 — Ground the agent with Foundry IQ knowledge bases](../07-foundry-iq/README.md). It connects to the grounded `acl-remedy-advisor` Prompt Agent you built across Modules 04-07 and runs it from Python with the Agent Framework.
+> This module builds on [Module 07 - Ground the agent with Foundry IQ knowledge bases](../07-foundry-iq/README.md). It connects to the grounded `acl-remedy-advisor` Prompt Agent you built across Modules 04-07 and runs it from Python with the Agent Framework.
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!NOTE]
@@ -31,7 +31,7 @@
 
 So far you have built and tested the `acl-remedy-advisor` agent entirely in the
 Foundry portal. The portal is excellent for designing, grounding, and testing a
-single agent — but real applications call agents from code. That is where the
+single agent - but real applications call agents from code. That is where the
 Microsoft Agent Framework comes in.
 
 ### What the Agent Framework is
@@ -60,19 +60,19 @@ app when the underlying model or service changes.
 
 The framework gives you two complementary ways to work with Foundry:
 
-1. **Connect to an agent you already built** — [`FoundryAgent`](https://learn.microsoft.com/en-us/agent-framework/agents/providers/microsoft-foundry/?pivots=programming-language-python) binds to an
+1. **Connect to an agent you already built** - [`FoundryAgent`](https://learn.microsoft.com/en-us/agent-framework/agents/providers/microsoft-foundry/?pivots=programming-language-python) binds to an
    existing Prompt Agent or Hosted Agent by name. Its model, instructions, and
    tools all live on the Foundry service; you simply connect and run. This is
    the path you use in this module.
-1. **Define an agent in code** — [`FoundryChatClient`](https://learn.microsoft.com/en-us/agent-framework/agents/providers/microsoft-foundry/?pivots=programming-language-python) plus [`Agent`](https://learn.microsoft.com/en-us/agent-framework/agents/?pivots=programming-language-python) let you
+1. **Define an agent in code** - [`FoundryChatClient`](https://learn.microsoft.com/en-us/agent-framework/agents/providers/microsoft-foundry/?pivots=programming-language-python) plus [`Agent`](https://learn.microsoft.com/en-us/agent-framework/agents/?pivots=programming-language-python) let you
    declare a model, instructions, and tools directly in Python. You use this
    pattern in Module 10.
 
 > [!NOTE]
-> While this workshop focuses on Foundry, the SDK supports many other providers — including OpenAI, Azure OpenAI, Ollama, and more — so the same agent code runs against different backends without rewriting. See the [Providers Overview](https://learn.microsoft.com/en-us/agent-framework/agents/providers/?pivots=programming-language-python) for the full list.
+> While this workshop focuses on Foundry, the SDK supports many other providers - including OpenAI, Azure OpenAI, Ollama, and more - so the same agent code runs against different backends without rewriting. See the [Providers Overview](https://learn.microsoft.com/en-us/agent-framework/agents/providers/?pivots=programming-language-python) for the full list.
 
-In this module you take the agent that already exists in Foundry — the grounded
-`acl-remedy-advisor` Prompt Agent from Module 07 — and run it from Python with
+In this module you take the agent that already exists in Foundry - the grounded
+`acl-remedy-advisor` Prompt Agent from Module 07 - and run it from Python with
 `FoundryAgent`, authenticating with `DefaultAzureCredential` so no keys appear in
 your code.
 
@@ -108,13 +108,13 @@ your code.
 
 - [ ] Open `src/starter.py` and complete each TODO using the snippets below.
 
-   **Snippet 1 — import the `FoundryAgent` client** (TODO 1):
+   **Snippet 1 - import the `FoundryAgent` client** (TODO 1):
 
    ```python
    from agent_framework.foundry import FoundryAgent
    ```
 
-   **Snippet 2 — connect to the existing Prompt Agent** (TODO 2). The model, instructions, and tools are configured on the service, so you only pass the connection details:
+   **Snippet 2 - connect to the existing Prompt Agent** (TODO 2). The model, instructions, and tools are configured on the service, so you only pass the connection details:
 
    ```python
    agent = FoundryAgent(
@@ -125,14 +125,14 @@ your code.
    )
    ```
 
-   **Snippet 3 — [run the agent once](https://learn.microsoft.com/en-us/agent-framework/agents/running-agents/?pivots=programming-language-python) and print the full response** (TODO 3):
+   **Snippet 3 - [run the agent once](https://learn.microsoft.com/en-us/agent-framework/agents/running-agents/?pivots=programming-language-python) and print the full response** (TODO 3):
 
    ```python
    result = await agent.run(QUERY)
    print(f'\nAgent:\n{result.text}\n')
    ```
 
-   **Snippet 4 — run the agent again and [stream the response](https://learn.microsoft.com/en-us/agent-framework/agents/running-agents/?pivots=programming-language-python#streaming-and-non-streaming)** (TODO 4). Each chunk is printed as the agent generates it:
+   **Snippet 4 - run the agent again and [stream the response](https://learn.microsoft.com/en-us/agent-framework/agents/running-agents/?pivots=programming-language-python#streaming-and-non-streaming)** (TODO 4). Each chunk is printed as the agent generates it:
 
    ```python
    print('Agent (streaming): ', end='', flush=True)
@@ -174,21 +174,21 @@ You took your agent from the portal into code. Using the Microsoft Agent Framewo
 
 > [!TIP]
 > **Next up → [Module 09: Build and run a hosted agent](../09-hosted-agents/README.md)**
-> Take full control of agent logic by building and running a code-first hosted agent. No need to scroll — jump straight in!
+> Take full control of agent logic by building and running a code-first hosted agent. No need to scroll - jump straight in!
 
 ## Troubleshooting
 
-- **Authentication fails** — the script uses `DefaultAzureCredential`, which
+- **Authentication fails** - the script uses `DefaultAzureCredential`, which
   relies on your Azure CLI session. Run `az login` in the terminal to
   re-authenticate, then confirm the active subscription with `az account show`.
-- **`FOUNDRY_PROJECT_ENDPOINT` is missing** — confirm the endpoint and project
+- **`FOUNDRY_PROJECT_ENDPOINT` is missing** - confirm the endpoint and project
   name with `azd env get-values`, then set `FOUNDRY_PROJECT_ENDPOINT` in your
   `.env` file.
-- **Agent not found** — confirm `AGENT_NAME` matches the agent in your project
+- **Agent not found** - confirm `AGENT_NAME` matches the agent in your project
   (default `acl-remedy-advisor`). If you skipped Module 07, run
   `solution/create_knowledge_base_agent.py` to create it.
-- **Version error on a Prompt Agent** — leave `AGENT_VERSION` empty to use the
+- **Version error on a Prompt Agent** - leave `AGENT_VERSION` empty to use the
   latest published version, or set it to a specific version shown on the agent's
   page in the Foundry portal.
-- **`agent_framework` is not installed** — reinstall `shared/requirements.txt`
+- **`agent_framework` is not installed** - reinstall `shared/requirements.txt`
   in your active Python environment.

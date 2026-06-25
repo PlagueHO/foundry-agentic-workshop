@@ -20,11 +20,11 @@
 
 An **agent identity** is a specialized identity type in [Microsoft Entra ID](https://learn.microsoft.com/entra/fundamentals/what-is-entra) designed specifically for AI agents. It is a special [service principal](https://learn.microsoft.com/entra/identity-platform/app-objects-and-service-principals) that represents the agent at runtime, with stable identifiers (object ID and app ID) that you can use for authentication and authorization decisions. Agent identities have no credentials of their own.
 
-![Agent identity anatomy — each identity has a unique Agent ID, a display name, a human Sponsor, and a link to its governing Blueprint.](../../../docs/assets/diagrams/agent-identity-anatomy.png)
+![Agent identity anatomy - each identity has a unique Agent ID, a display name, a human Sponsor, and a link to its governing Blueprint.](../../../docs/assets/diagrams/agent-identity-anatomy.png)
 
 An [**agent identity blueprint**](https://learn.microsoft.com/entra/agent-id/agent-blueprint) is the Entra ID object that governs a class of agent identities and holds the OAuth credentials ([federated identity credentials](https://learn.microsoft.com/entra/workload-id/workload-identity-federation), certificates, or client secrets) used for lifecycle operations and runtime token exchange.
 
-![Agent identity blueprint — composed of an Agent Blueprint Application and Service Principal, a single blueprint creates and impersonates multiple agent identities in a 1:M pattern.](../../../docs/assets/diagrams/agent-identity-blueprint.png)
+![Agent identity blueprint - composed of an Agent Blueprint Application and Service Principal, a single blueprint creates and impersonates multiple agent identities in a 1:M pattern.](../../../docs/assets/diagrams/agent-identity-blueprint.png)
 
 Foundry provisions and manages these for you automatically:
 
@@ -33,12 +33,12 @@ Foundry provisions and manages these for you automatically:
 | In the project (in development) | Each agent surfaces its **own named agent identity and blueprint** in the portal (for example, `acl-remedy-advisor-AgentIdentity`), which Foundry provisions automatically as you build and test. |
 | Published or hosted | A published or hosted agent keeps a **distinct agent identity blueprint and agent identity** tied to its own agent application resource, giving it stronger isolation and granular, independently grantable access control. |
 
-![Agent identity details — from agent builder (Microsoft Foundry, Security Copilot, Copilot Studio) through the blueprint and its shared credentials to multiple agent identities, each paired with a digital worker (agent user) in a 1:1 relationship.](../../../docs/assets/diagrams/agent-identity-details.png)
+![Agent identity details - from agent builder (Microsoft Foundry, Security Copilot, Copilot Studio) through the blueprint and its shared credentials to multiple agent identities, each paired with a digital worker (agent user) in a 1:1 relationship.](../../../docs/assets/diagrams/agent-identity-details.png)
 
 Agent identities serve two related needs:
 
-1. **Management and governance** — give administrators a consistent way to inventory agents, apply [Conditional Access](https://learn.microsoft.com/entra/identity/conditional-access/overview) and [Identity Protection](https://learn.microsoft.com/entra/id-protection/overview-identity-protection) policies, and audit activity in the [Microsoft Entra admin center](https://entra.microsoft.com).
-1. **Tool authentication** — let an agent authenticate to downstream systems (Azure Storage, MCP servers, Agent-to-Agent endpoints) through an automatic [OAuth 2.0 token exchange](https://learn.microsoft.com/entra/identity-platform/v2-oauth2-on-behalf-of-flow), without embedding secrets in prompts, code, or connection strings. This works in both *attended* (on-behalf-of a user) and *unattended* (application-only) flows.
+1. **Management and governance** - give administrators a consistent way to inventory agents, apply [Conditional Access](https://learn.microsoft.com/entra/identity/conditional-access/overview) and [Identity Protection](https://learn.microsoft.com/entra/id-protection/overview-identity-protection) policies, and audit activity in the [Microsoft Entra admin center](https://entra.microsoft.com).
+1. **Tool authentication** - let an agent authenticate to downstream systems (Azure Storage, MCP servers, Agent-to-Agent endpoints) through an automatic [OAuth 2.0 token exchange](https://learn.microsoft.com/entra/identity-platform/v2-oauth2-on-behalf-of-flow), without embedding secrets in prompts, code, or connection strings. This works in both *attended* (on-behalf-of a user) and *unattended* (application-only) flows.
 
 > [!NOTE]
 > Learn more in [Agent identity concepts in Microsoft Foundry](https://learn.microsoft.com/azure/ai-foundry/agents/concepts/agent-identity), [Agent identity blueprints](https://learn.microsoft.com/entra/agent-id/agent-blueprint), [Microsoft Entra Agent ID overview](https://learn.microsoft.com/entra/agent-id/overview), and [Governing agent identities](https://learn.microsoft.com/entra/id-governance/agent-id-governance-overview).
@@ -47,21 +47,21 @@ Agent identities serve two related needs:
 
 Foundry gives you three lenses on a running agent:
 
-1. **Traces** — the execution path of each conversation and response (model calls, tool calls, durations, tokens, cost). Trace data flows to the [Application Insights](https://learn.microsoft.com/azure/azure-monitor/app/app-insights-overview) resource connected to your project.
-1. **Monitor** — a dashboard of operational metrics (agent runs, token usage, tool calls, and error rate) plus evaluation and red-team scores over a time range.
-1. **Evaluation** — runs [evaluators](https://learn.microsoft.com/azure/ai-foundry/concepts/evaluation-evaluators-metrics) against datasets or sampled traffic to measure quality, safety, and task adherence.
+1. **Traces** - the execution path of each conversation and response (model calls, tool calls, durations, tokens, cost). Trace data flows to the [Application Insights](https://learn.microsoft.com/azure/azure-monitor/app/app-insights-overview) resource connected to your project.
+1. **Monitor** - a dashboard of operational metrics (agent runs, token usage, tool calls, and error rate) plus evaluation and red-team scores over a time range.
+1. **Evaluation** - runs [evaluators](https://learn.microsoft.com/azure/ai-foundry/concepts/evaluation-evaluators-metrics) against datasets or sampled traffic to measure quality, safety, and task adherence.
 
 > [!NOTE]
 > This module is a guided tour. It reuses the `acl-remedy-advisor` agent from earlier modules and your hosted agent from [Module 09](../09-hosted-agents/README.md). Telemetry requires the project's Application Insights connection (provisioned by the workshop infrastructure) and at least one prior agent run.
 
 ## Steps
 
-### Part 1 — Find the agent identity on the Details tab
+### Part 1 - Find the agent identity on the Details tab
 
 - [ ] In [Microsoft Foundry](https://ai.azure.com), confirm the **New Foundry** toggle is on.
 - [ ] Select **Build** in the top navigation, then open the `acl-remedy-advisor` agent.
 - [ ] Select the **Details** tab (marked **Preview**).
-- [ ] In the **Identity & access** section, locate the **Entra agent identity** for the agent. Foundry provisions a named identity automatically — for `acl-remedy-advisor` it is named `acl-remedy-advisor-AgentIdentity`. Note its **ID** (a GUID); you compare it to the hosted agent's identity in Part 4.
+- [ ] In the **Identity & access** section, locate the **Entra agent identity** for the agent. Foundry provisions a named identity automatically - for `acl-remedy-advisor` it is named `acl-remedy-advisor-AgentIdentity`. Note its **ID** (a GUID); you compare it to the hosted agent's identity in Part 4.
 - [ ] Note the associated **Entra agent blueprint** (the [agent identity blueprint](https://learn.microsoft.com/entra/agent-id/agent-blueprint)). The blueprint is what Foundry authenticates as during the runtime token exchange when the agent calls a tool.
 - [ ] Discuss what the identity is used for: governance (inventory, policy, audit) and secret-free tool authentication to downstream services.
 
@@ -75,7 +75,7 @@ Foundry gives you three lenses on a running agent:
   > [!TIP]
   > To browse every agent identity in your tenant, go to the [Microsoft Entra admin center](https://entra.microsoft.com) → **Entra ID → Agent ID → All agent identities**. To see the project's default identity values, open the Foundry **project** in the [Azure portal](https://portal.azure.com), select **Overview → JSON View**, and read the `agentIdentity` and `agentIdentityBlueprint` fields.
 
-### Part 2 — Per-agent operations: Traces (Conversations)
+### Part 2 - Per-agent operations: Traces (Conversations)
 
 - [ ] With `acl-remedy-advisor` still open, select the **Traces** tab.
 - [ ] Switch between the **Conversations** and **Responses** sub-tabs:
@@ -101,7 +101,7 @@ Foundry gives you three lenses on a running agent:
   > [!NOTE]
   > The Traces grid is populated *"Data generated when Application Insights is enabled."* If the grid is empty, run the agent once from an earlier module and refresh. See [Agent tracing overview](https://learn.microsoft.com/azure/ai-foundry/observability/concepts/trace-agent-concept).
 
-### Part 3 — Per-agent operations: Monitor
+### Part 3 - Per-agent operations: Monitor
 
 - [ ] Select the **Monitor** tab.
 - [ ] Review the **summary cards** at the top (**Estimated cost** and **Total token usage**) for high-level metrics, then the **charts** below for granular detail across the selected time range.
@@ -129,13 +129,13 @@ Foundry gives you three lenses on a running agent:
   > [!NOTE]
   > [Continuous evaluation](https://learn.microsoft.com/azure/ai-foundry/concepts/evaluation-evaluators-metrics) provides near real-time quality and safety scores on sampled traffic and links results back to traces for root-cause analysis. Red team scans use the [AI Red Teaming Agent](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-red-teaming-agent) (built on Microsoft's [PyRIT](https://github.com/Azure/PyRIT) framework) to simulate adversarial probing and surface safety risks such as data leakage or prohibited actions.
 
-### Part 4 — Repeat for the hosted agent
+### Part 4 - Repeat for the hosted agent
 
 > [!NOTE]
 > This is the hosted agent you built in [Module 09](../09-hosted-agents/README.md), named `acl-remedy-advisor-hosted-code`. If you deployed it under a different name, substitute that name wherever this module refers to the hosted agent.
 
 - [ ] Open `acl-remedy-advisor-hosted-code` under **Build → Agents**.
-- [ ] On the **Details** tab, open the **Identity & access** section and locate its **Entra agent identity**. Because a hosted agent has its own application resource, it has a [**distinct agent identity and blueprint**](https://learn.microsoft.com/entra/agent-id/agent-blueprint) — confirm its **ID** differs from the `acl-remedy-advisor` identity you noted in Part 1, and notice that the hosted agent's identity and blueprint are shown as links to their registered application in Azure.
+- [ ] On the **Details** tab, open the **Identity & access** section and locate its **Entra agent identity**. Because a hosted agent has its own application resource, it has a [**distinct agent identity and blueprint**](https://learn.microsoft.com/entra/agent-id/agent-blueprint) - confirm its **ID** differs from the `acl-remedy-advisor` identity you noted in Part 1, and notice that the hosted agent's identity and blueprint are shown as links to their registered application in Azure.
 
   <details>
   <summary>📸 Screenshot: Hosted agent's distinct Entra agent identity</summary>
@@ -148,7 +148,7 @@ Foundry gives you three lenses on a running agent:
 - [ ] On the **Monitor** tab, review its operational metrics and evaluation scores the same way as in Part 3.
 - [ ] Note how the distinct identity isolates the hosted agent's permissions, auditability, and telemetry from the in-development agents in the project.
 
-### Part 5 — The Operate control plane
+### Part 5 - The Operate control plane
 
 - [ ] Select **Operate** in the top navigation.
 - [ ] Review how the Foundry **control plane** aggregates health and metrics across agents in your subscription using their connected Application Insights resources.
@@ -160,12 +160,12 @@ Foundry gives you three lenses on a running agent:
 
   </details>
 
-- [ ] Note that the control plane covers prompt-based agents, workflows, **hosted agents**, and manually registered custom agents — giving you a single place to monitor a fleet rather than one agent at a time.
+- [ ] Note that the control plane covers prompt-based agents, workflows, **hosted agents**, and manually registered custom agents - giving you a single place to monitor a fleet rather than one agent at a time.
 
   > [!NOTE]
   > Different users may see different agents depending on their access. Learn more in [Monitor agent health and performance across your fleet](https://learn.microsoft.com/azure/ai-foundry/control-plane/monitoring-across-fleet).
 
-### Part 6 — The Agents view in Application Insights
+### Part 6 - The Agents view in Application Insights
 
 - [ ] Open the [Azure portal](https://portal.azure.com) and navigate to the **Application Insights** resource connected to your Foundry project.
 
@@ -190,7 +190,7 @@ Foundry gives you three lenses on a running agent:
   > [!NOTE]
   > Learn more in [Monitor AI agents with Application Insights](https://learn.microsoft.com/azure/azure-monitor/app/agents-view).
 
-### Part 7 (extra credit) — Configure evaluations, scheduled evaluations, and red teaming
+### Part 7 (extra credit) - Configure evaluations, scheduled evaluations, and red teaming
 
 > [!IMPORTANT]
 > Creating evaluation and red-team configurations changes project settings and typically requires the **`foundry-project-manager`** role or higher. If you have the `foundry-user` role, read through this part without applying changes, or ask your organizer to elevate your role.
@@ -231,16 +231,16 @@ Foundry gives you three lenses on a running agent:
 
 ## Congratulations 🎉
 
-You looked at your agents through an operations and identity lens. You found the Entra agent identity and blueprint that tie an agent's configuration, runs, and access together, compared each agent's named identity and saw how a hosted agent's identity and blueprint are isolated in its own application resource, walked the Traces and Monitor tabs for both agents, toured the Operate control plane and the Application Insights Agents view, and saw where continuous evaluation and red teaming are configured — the foundations of running agents reliably and governing them in production.
+You looked at your agents through an operations and identity lens. You found the Entra agent identity and blueprint that tie an agent's configuration, runs, and access together, compared each agent's named identity and saw how a hosted agent's identity and blueprint are isolated in its own application resource, walked the Traces and Monitor tabs for both agents, toured the Operate control plane and the Application Insights Agents view, and saw where continuous evaluation and red teaming are configured - the foundations of running agents reliably and governing them in production.
 
 > [!TIP]
 > **Next up → [Module 12: Publish an agent](../12-publishing-agents/README.md)**
-> Publish your agent so consumers can discover and use it. No need to scroll — jump straight in!
+> Publish your agent so consumers can discover and use it. No need to scroll - jump straight in!
 
 ## Troubleshooting
 
 - If the **Traces** or **Monitor** views are empty, confirm the agent has been run at least once, expand the time range, and refresh after a few minutes for ingestion delay.
-- If you see authorization errors viewing telemetry, confirm your account has read access to the connected Application Insights resource — querying logs requires the [Log Analytics Reader](https://learn.microsoft.com/azure/azure-monitor/logs/manage-access?tabs=portal#log-analytics-reader) role.
+- If you see authorization errors viewing telemetry, confirm your account has read access to the connected Application Insights resource - querying logs requires the [Log Analytics Reader](https://learn.microsoft.com/azure/azure-monitor/logs/manage-access?tabs=portal#log-analytics-reader) role.
 - If continuous evaluation results do not appear, confirm the rule is enabled, that agent traffic is flowing, and that the project managed identity has the **Foundry User** role.
 - If the **Details** tab or evaluation settings are unavailable, confirm your role grants the required access to the project (`foundry-project-manager` or higher for configuration changes).
 - If the hosted agent is missing, complete [Module 09](../09-hosted-agents/README.md) first, then return here.

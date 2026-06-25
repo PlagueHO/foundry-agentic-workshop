@@ -16,7 +16,7 @@
 
 Your organizer provisions the shared Foundry environment and assigns you a project. Before you start, you should have received:
 
-- **Attendee Portal URL** — sign in with your lab Microsoft account to get your personal `.env` values.
+- **Attendee Portal URL** - sign in with your lab Microsoft account to get your personal `.env` values.
 - `FOUNDRY_PROJECT_NAME` - for example, `attendee-01`.
 - Shared values: `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `FOUNDRY_RESOURCE_NAME`, `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_OPENAI_ENDPOINT`, and `AZURE_SEARCH_SERVICE_NAME`.
 
@@ -33,7 +33,7 @@ Install the following before continuing:
 1. [Python 3.13 or later](https://www.python.org/downloads/).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
-1. [Docker](https://www.docker.com/products/docker-desktop/) (optional) — required only for [Module 09](../09-hosted-agents/README.md) Part 1, which deploys a hosted agent from a container image. Every other module, including Module 09 Part 2 (deploy from source code), runs without it.
+1. [Docker](https://www.docker.com/products/docker-desktop/) (optional) - required only for [Module 09](../09-hosted-agents/README.md) Part 1, which deploys a hosted agent from a container image. Every other module, including Module 09 Part 2 (deploy from source code), runs without it.
 
 > [!NOTE]
 > Docker is only needed for the container-image deployment path in Module 09. You can complete the rest of the workshop without it. GitHub Codespaces and local dev containers are fully supported, include Docker, and install all other prerequisites automatically. See the [Attendee Guide](../../../docs/guide-attendee.md) for setup steps.
@@ -124,11 +124,11 @@ Install the following before continuing:
 
 ## Congratulations 🎉
 
-You built a solid foundation for the rest of the workshop. You created and activated a Python virtual environment, installed the shared dependencies, populated your `.env` file, signed in to Azure, and confirmed access to your assigned Foundry project — with the health check passing and your project visible in the portal. Everything is in place to start building agents.
+You built a solid foundation for the rest of the workshop. You created and activated a Python virtual environment, installed the shared dependencies, populated your `.env` file, signed in to Azure, and confirmed access to your assigned Foundry project - with the health check passing and your project visible in the portal. Everything is in place to start building agents.
 
 > [!TIP]
 > **Next up → [Module 02: Foundry portal walkthrough](../02-foundry-portal-walkthrough/README.md)**
-> Get oriented in the Microsoft Foundry portal so you know exactly where every model, tool, and setting lives. No need to scroll — jump straight in!
+> Get oriented in the Microsoft Foundry portal so you know exactly where every model, tool, and setting lives. No need to scroll - jump straight in!
 
 ## Troubleshooting
 

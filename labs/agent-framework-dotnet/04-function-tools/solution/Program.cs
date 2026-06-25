@@ -14,7 +14,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 04: Function Tools ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 04: Function Tools ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model : {model}");
 Console.ResetColor();
@@ -82,11 +82,11 @@ var agent = client
         tools: [calculateCompensation]);
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine("[Loop] Agent ready — tool will execute locally when called.");
+Console.WriteLine("[Loop] Agent ready - tool will execute locally when called.");
 Console.ResetColor();
 Console.WriteLine();
 
-// ── Run — tool call visible in console ───────────────────────────────────────
+// ── Run - tool call visible in console ───────────────────────────────────────
 var query =
     "My flight AU123 AKL→SYD was cancelled with only 3 hours' notice. " +
     "My ticket cost AUD 420. How much compensation am I entitled to?";
@@ -97,7 +97,7 @@ Console.ResetColor();
 Console.WriteLine();
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine("[Loop] RunAsync starting — agent will decide when to call tools...");
+Console.WriteLine("[Loop] RunAsync starting - agent will decide when to call tools...");
 Console.ResetColor();
 Console.WriteLine();
 
@@ -115,7 +115,7 @@ Console.WriteLine($"[Agent] {result.Text}");
 Console.ResetColor();
 Console.WriteLine();
 
-// ── Second turn — tool called again with different values ─────────────────────
+// ── Second turn - tool called again with different values ─────────────────────
 var query2 =
     "What if my ticket had cost AUD 650 and the delay was 6 hours?";
 

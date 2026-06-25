@@ -2,7 +2,7 @@
 
 **Estimated time:** 25 minutes
 
-![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars — Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
+![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars - Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
 
 > [!IMPORTANT]
 > This module requires **Docker** to run the Aspire Dashboard container. Confirm Docker is running before you start. See the [Attendee Guide](../../../docs/guide-attendee.md) for Docker installation instructions.
@@ -40,7 +40,7 @@ Each agent run, tool call, and model response becomes a span in the trace.
 
 ### Aspire Dashboard
 
-The **[.NET Aspire Dashboard](https://learn.microsoft.com/dotnet/aspire/fundamentals/dashboard/standalone)** is a standalone OpenTelemetry viewer that runs in Docker. You do not need a full Aspire application to use it — any OTLP source works:
+The **[.NET Aspire Dashboard](https://learn.microsoft.com/dotnet/aspire/fundamentals/dashboard/standalone)** is a standalone OpenTelemetry viewer that runs in Docker. You do not need a full Aspire application to use it - any OTLP source works:
 
 ```bash
 docker run --rm -it -p 18888:18888 -p 4317:18889 \
@@ -59,7 +59,7 @@ After running the module, the Aspire Dashboard Traces view shows one trace per `
 
 ## Steps
 
-### Part 1 — Start the Aspire Dashboard
+### Part 1 - Start the Aspire Dashboard
 
 #### 1. Start the dashboard container
 
@@ -75,7 +75,7 @@ After running the module, the Aspire Dashboard Traces view shows one trace per `
   > [!NOTE]
   > Keep this terminal open. The dashboard must be running before you start the agent, or traces will fail to export.
 
-### Part 2 — Complete the starter code
+### Part 2 - Complete the starter code
 
 #### 2. Open the starter file
 
@@ -121,7 +121,7 @@ After running the module, the Aspire Dashboard Traces view shows one trace per `
 
 - [ ] Locate `// ── TODO 3` and replace the commented-out block with the queries already commented out there.
 
-### Part 3 — Run and verify
+### Part 3 - Run and verify
 
 #### 6. Run the starter
 
@@ -145,7 +145,7 @@ After running the module, the Aspire Dashboard Traces view shows one trace per `
 
 ## Congratulations 🎉
 
-You instrumented the Trip Disruption Concierge with OpenTelemetry and explored its traces in the Aspire Dashboard. Every agent run, model call, and tool invocation is now a traceable span — giving you the observability you need to debug and optimise agent behaviour in production.
+You instrumented the Trip Disruption Concierge with OpenTelemetry and explored its traces in the Aspire Dashboard. Every agent run, model call, and tool invocation is now a traceable span - giving you the observability you need to debug and optimise agent behaviour in production.
 
 You have completed all twelve modules of the **Introduction to Microsoft Agent Framework (.NET)** lab. You built a fully featured multi-agent travel assistant, adding capabilities module by module: single-turn responses, multi-turn sessions, function tools, MCP tools, knowledge bases, memory, session persistence, multi-agent orchestration, hosted deployment, authentication, and observability.
 

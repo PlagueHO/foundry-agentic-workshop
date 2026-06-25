@@ -8,7 +8,7 @@ attendees hit most often. For the condensed flow, see the
 
 - Keep modules interactive and time-boxed.
 - Encourage pair troubleshooting before the solution reveal.
-- Keep every attendee productive — pull in a [proctor](./guide-proctor.md) early when
+- Keep every attendee productive - pull in a [proctor](./guide-proctor.md) early when
   someone is blocked.
 
 ## Prepare

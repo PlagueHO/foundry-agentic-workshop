@@ -1,7 +1,7 @@
 ---
 name: capture-lab-module-screenshots
 description: >-
-  **WORKFLOW SKILL** — Live-validate a single workshop lab module in the browser
+  **WORKFLOW SKILL** - Live-validate a single workshop lab module in the browser
   and add correct, clarifying screenshots. Requires a specific lab module to be
   named, confirms the required browser pages are already open AND authenticated
   (Microsoft Foundry portal at ai.azure.com, and VS Code + Foundry Toolkit in a
@@ -31,7 +31,7 @@ argument-hint: >-
 # Capture Lab Module Screenshots
 
 Live-validate one workshop lab module and add the screenshots an attendee needs
-at the moments that are not immediately obvious — while confirming the written
+at the moments that are not immediately obvious - while confirming the written
 steps actually work. The screenshots are a by-product of *walking the lab for
 real*; that walk is also what guarantees the module is correct.
 
@@ -46,9 +46,9 @@ a step does not behave as written, **STOP AND ASK** rather than improvising.
 |-------|----------|----------------|
 | Target lab module | Yes | A path like `labs/introduction-foundry-agent-service/06-mcp-tools`, or a number like `06`. If absent, ask which module. |
 | Screenshot folder | Derived | `docs/assets/screenshots/lab-NN/` where `NN` is the module's two-digit prefix. |
-| Required browser pages | Verified | Enumerated from the shared pages — see Step 2. |
+| Required browser pages | Verified | Enumerated from the shared pages - see Step 2. |
 
-## Step 1 — Resolve the target module
+## Step 1 - Resolve the target module
 
 Resolve the named module to a concrete README path and screenshot folder.
 
@@ -64,20 +64,20 @@ Resolve the named module to a concrete README path and screenshot folder.
 State the resolved module, README path, and screenshot folder back to the user
 before touching the browser.
 
-## Step 2 — Verify the required pages are open and authenticated
+## Step 2 - Verify the required pages are open and authenticated
 
 This is a hard gate. Do not start the walkthrough until it passes.
 
 1. Enumerate the shared browser pages (they are listed in the conversation
    context, or call `open_browser_page` to inspect).
 1. Determine which apps the module needs:
-   - **Foundry portal** (`ai.azure.com`) — needed by almost every module.
-   - **VS Code + Foundry Toolkit in a GitHub Codespace** (`*.github.dev`) — needed
+   - **Foundry portal** (`ai.azure.com`) - needed by almost every module.
+   - **VS Code + Foundry Toolkit in a GitHub Codespace** (`*.github.dev`) - needed
      when the module uses the Foundry Toolkit extension, a local MCP server, or a
      forwarded tunnel.
 1. For each required app, confirm a page is **open AND authenticated**:
    - Foundry portal: the URL is under `ai.azure.com/...` and the page shows the
-     agent/project workspace — **not** a `login.microsoftonline.com` or
+     agent/project workspace - **not** a `login.microsoftonline.com` or
      "Sign in" screen.
    - Codespace VS Code: the `*.github.dev` workbench is loaded (not the GitHub
      sign-in or "Resume Codespace" screen).
@@ -87,9 +87,9 @@ This is a hard gate. Do not start the walkthrough until it passes.
 
 Briefly confirm which pages you matched (with their page IDs) before proceeding.
 
-## Step 3 — Walk the lab steps literally
+## Step 3 - Walk the lab steps literally
 
-Follow the README as a first-time attendee would — in order, doing exactly what
+Follow the README as a first-time attendee would - in order, doing exactly what
 each step says, with no shortcuts or prior knowledge.
 
 For each step:
@@ -108,9 +108,9 @@ The short version: prefer `run_playwright_code` with `.dispatchEvent('click')` a
 `getByRole(...)` locators over `click_element`, and fall back to coordinate clicks
 for flaky dialogs.
 
-## Step 4 — Capture the clarifying screenshots
+## Step 4 - Capture the clarifying screenshots
 
-Capture screenshots only where the written step is **not immediately obvious** —
+Capture screenshots only where the written step is **not immediately obvious** -
 a non-trivial dialog, a control that is hard to find, a multi-field form, an
 approval prompt, or a confirming end state. Skip the trivially obvious.
 
@@ -127,11 +127,11 @@ approval prompt, or a confirming end state. Skip the trivially obvious.
 - Frame each shot on the relevant control or result. Re-open menus/dialogs as
   needed so the screenshot shows the exact state the step describes.
 - A temporary scratch screenshot (e.g. `.tmp-dialog.png` at the repo root) is fine
-  while you find the right framing — **delete it before finishing**.
+  while you find the right framing - **delete it before finishing**.
 
-## Step 5 — Embed the screenshots in the README
+## Step 5 - Embed the screenshots in the README
 
-Match the repo's existing screenshot convention exactly — a collapsible block so
+Match the repo's existing screenshot convention exactly - a collapsible block so
 the lab stays scannable:
 
 ```markdown
@@ -145,15 +145,15 @@ the lab stays scannable:
 
 - The relative path from a lab README to the screenshots is `../../../docs/assets/screenshots/lab-NN/`.
 - Write meaningful **alt text** that conveys the purpose of the image (per the
-  repo's accessibility rules) — not "screenshot" or a bare filename.
+  repo's accessibility rules) - not "screenshot" or a bare filename.
 - Place each block immediately after the step it illustrates.
 - Preserve the **Objectives → Steps → Validation → Troubleshooting** order and the
   module's existing step numbering. If you add a step, renumber contiguously.
 
-## Step 6 — Fix correctness defects (scoped)
+## Step 6 - Fix correctness defects (scoped)
 
 If the walkthrough exposed factual errors (wrong field values, an inaccurate
-version claim, a missing approval step, an outdated label), fix them — but keep
+version claim, a missing approval step, an outdated label), fix them - but keep
 edits **minimal and scoped to this module**. Confirm any non-trivial wording or
 behavioral change with the user before applying it, consistent with Step 3's
 STOP-AND-ASK rule.
@@ -161,7 +161,7 @@ STOP-AND-ASK rule.
 Do not refactor neighbouring labs or introduce new patterns. Mirror the existing
 structure.
 
-## Step 7 — Validate
+## Step 7 - Validate
 
 1. Run the screenshot-inventory + lint check:
 
@@ -186,7 +186,7 @@ structure.
    pnpm exec markdownlint-cli2 "labs/introduction-foundry-agent-service/NN-name/README.md"
    ```
 
-## Step 8 — Record findings and present the result
+## Step 8 - Record findings and present the result
 
 1. If you discovered a durable fact (a portal quirk, a naming constraint, a
    behavior that contradicted the docs), add a short note to repository memory so
@@ -203,7 +203,7 @@ structure.
 - **Authentication is the user's job.** If a page needs sign-in, stop and ask.
 - **Do not fake a passing walkthrough.** A step that does not work is a finding,
   not something to engineer around.
-- **Ask before clicking anything you cannot reliably drive** — if a control will
+- **Ask before clicking anything you cannot reliably drive** - if a control will
   not respond to Playwright, ask the user to click it.
 - **Keep edits scoped** to the named module; preserve lab numbering and section
   order.

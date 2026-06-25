@@ -13,11 +13,11 @@ You must test the steps in the #file:labs/introduction-foundry-agent-service/04-
 
 > **Important:** Any Azure or GitHub login dialogs that appear during the test must be completed by the user. Pause and prompt the user whenever a sign-in dialog is encountered. Do not attempt to enter credentials automatically.
 
-## Pre-flight — Verify the Codespace is ready
+## Pre-flight - Verify the Codespace is ready
 
-Before executing any lab steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** — report the failure and ask the user to resolve it.
+Before executing any lab steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** - report the failure and ask the user to resolve it.
 
-### Check 1 — Confirm the Codespace browser page is open and shared
+### Check 1 - Confirm the Codespace browser page is open and shared
 
 1. Use `open_browser_page` to check which pages are currently available.
 1. Confirm a page is open with a URL matching `*.github.dev/*` or `github.dev/*`, indicating a GitHub Codespace connected to VS Code Insiders in the browser.
@@ -27,7 +27,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
    - Wait for the devcontainer to finish building, then share the resulting browser tab with this session.
 1. Take a screenshot of the Codespace page to confirm it is showing VS Code Insiders with the `foundry-agentic-workshop` repository open.
 
-### Check 2 — Confirm Azure authentication
+### Check 2 - Confirm Azure authentication
 
 1. In the Codespace terminal, run:
 
@@ -38,13 +38,13 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm the output shows `${input:attendeeUpn}` as the signed-in user and that the subscription ID matches `AZURE_SUBSCRIPTION_ID` from the environment.
 1. If the command fails or shows a different identity, pause and ask the user to run `az login` in the codespace terminal and complete the browser sign-in before continuing.
 
-### Check 3 — Confirm the Foundry project is set as default in the Foundry Toolkit
+### Check 3 - Confirm the Foundry project is set as default in the Foundry Toolkit
 
 1. Click the **Foundry Toolkit** icon in the Activity Bar (the blue Foundry spark logo).
 1. In **My Resources**, confirm the project name assigned to `${input:attendeeUpn}` is shown and expanded, with sub-sections including **Models**, **Prompt Agents**, **Hosted Agents (Preview)**, **Tools**, **Knowledge**, and **Evaluations** visible.
 1. If the project is not set, follow the Set Default Project flow from module 03 before continuing.
 
-### Check 4 — Confirm the `.env` file exists and contains required values
+### Check 4 - Confirm the `.env` file exists and contains required values
 
 1. In the Codespace terminal, run:
 
@@ -58,9 +58,9 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 ---
 
-## Part 1 — Create the Prompt Agent in Agent Builder
+## Part 1 - Create the Prompt Agent in Agent Builder
 
-### Step 1 — Open Agent Builder
+### Step 1 - Open Agent Builder
 
 1. Click the **Foundry Toolkit** icon in the Activity Bar.
 1. In the **Developer Tools** section, click **Create Agent**.
@@ -70,7 +70,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If **Create Agent** is not visible, the Foundry Toolkit may not have loaded correctly. Reload the VS Code window (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> → **Developer: Reload Window**) and retry.
 
-### Step 2 — Configure the agent
+### Step 2 - Configure the agent
 
 1. In the **Agent name** field, enter exactly:
 
@@ -82,7 +82,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 1. In the **Model** dropdown, select `chat (via Microsoft Foundry)`.
 
-   **Check:** If `chat (via Microsoft Foundry)` is not listed, expand **My Resources → Models** and confirm the `chat` deployment is present. If it is absent, report a failure — the environment may not be provisioned correctly.
+   **Check:** If `chat (via Microsoft Foundry)` is not listed, expand **My Resources → Models** and confirm the `chat` deployment is present. If it is absent, report a failure - the environment may not be provisioned correctly.
 
 1. In the **Instructions** field, paste the following text exactly (confirm there is no truncation):
 
@@ -108,13 +108,13 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
    Always state clearly that you provide general guidance, not legal advice,
    and that "no refund" signs are unlawful under the ACL.
 
-   Be concise and practical — retail staff need fast, clear answers in a
+   Be concise and practical - retail staff need fast, clear answers in a
    busy store environment.
    ```
 
 1. Take a screenshot confirming the agent name, model, and (beginning of) instructions are correctly filled in.
 
-### Step 3 — Add the Web Search tool
+### Step 3 - Add the Web Search tool
 
 1. Scroll down to the **TOOL** section in the Agent Builder and click **Add Tool**.
 1. Confirm a dialog opens.
@@ -125,7 +125,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If the Configured tab is empty or Web search is absent, the provisioned environment may be missing the built-in tool configuration. Report this as a failure.
 
-### Step 4 — Save and test in the playground
+### Step 4 - Save and test in the playground
 
 #### Save to Foundry
 
@@ -135,7 +135,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
    **Check:** If the save fails, check the following in order:
    - The Default Project is set correctly (verify via **My Resources**).
    - The Codespace can reach the Foundry endpoint (run `curl -I $FOUNDRY_PROJECT_ENDPOINT` in the terminal).
-   - If the endpoint is unreachable, report a failure — the environment may need re-provisioning.
+   - If the endpoint is unreachable, report a failure - the environment may need re-provisioning.
 
 1. Confirm the Agent Builder header now shows `acl-remedy-advisor | Microsoft Foundry | v1`. Record this version badge for later validation.
 
@@ -162,13 +162,13 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
    The customer says they just want a refund and don't want a repair. Can the store insist on repairing it first?
    ```
 
-1. Confirm the response references the TV or the 18-month scenario from the first turn — this demonstrates conversation memory is working within the Agent Builder playground.
+1. Confirm the response references the TV or the 18-month scenario from the first turn - this demonstrates conversation memory is working within the Agent Builder playground.
 
 ---
 
-## Part 2 — Chat with the agent from code
+## Part 2 - Chat with the agent from code
 
-### Step 5 — Set up the environment
+### Step 5 - Set up the environment
 
 1. Confirm `.env` exists at the repository root. If it does not, copy it now:
 
@@ -195,11 +195,11 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    Confirm the command completes without error. If `azure-ai-projects` is not installed, report this and run the install command again.
 
-### Step 6 — Complete the starter code
+### Step 6 - Complete the starter code
 
 Open `labs/introduction-foundry-agent-service/04-prompt-based-agents/src/starter.py` in the editor. Confirm the file contains four `TODO` comments. Work through each one:
 
-#### TODO 1 — Connect to the Foundry project
+#### TODO 1 - Connect to the Foundry project
 
 Locate the line `# TODO 1` and replace it with:
 
@@ -208,14 +208,14 @@ client = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
 openai = client.get_openai_client()
 ```
 
-**Check:** Confirm `AIProjectClient` and `DefaultAzureCredential` are already imported at the top of the file. They should be present in the starter — if not, add the imports:
+**Check:** Confirm `AIProjectClient` and `DefaultAzureCredential` are already imported at the top of the file. They should be present in the starter - if not, add the imports:
 
 ```python
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 ```
 
-#### TODO 2 — Start a conversation thread
+#### TODO 2 - Start a conversation thread
 
 Locate the line `# TODO 2` and replace it with:
 
@@ -224,7 +224,7 @@ conversation = openai.conversations.create()
 print(f'Conversation started: {conversation.id}\n')
 ```
 
-#### TODO 3 — Send a message to the agent
+#### TODO 3 - Send a message to the agent
 
 Locate the line `# TODO 3` and replace it with:
 
@@ -241,7 +241,7 @@ response = openai.responses.create(
 )
 ```
 
-#### TODO 4 — Display the response
+#### TODO 4 - Display the response
 
 Locate the line `# TODO 4` and replace it with:
 
@@ -255,7 +255,7 @@ print(f'\nAdvisor: {response.output_text}\n')
 
 After completing all four TODOs, save the file (<kbd>Ctrl</kbd>+<kbd>S</kbd>). Confirm no syntax errors are shown in the editor (no red underlines in the code).
 
-### Step 7 — Run the starter script
+### Step 7 - Run the starter script
 
 1. Open a terminal in the Codespace (if one is not already open).
 
@@ -297,7 +297,7 @@ After completing all four TODOs, save the file (<kbd>Ctrl</kbd>+<kbd>S</kbd>). C
 
 1. Take a screenshot of the terminal showing the two-turn conversation with the final `Goodbye.` message.
 
-### Step 8 — Inspect the conversation in Agent Builder
+### Step 8 - Inspect the conversation in Agent Builder
 
 1. Return to the **Agent Builder** tab in the editor area.
 
@@ -314,11 +314,11 @@ After completing all four TODOs, save the file (<kbd>Ctrl</kbd>+<kbd>S</kbd>). C
 
 1. Take a screenshot of the conversation detail view showing the agentic loop items.
 
-   > **Note:** The entire agent loop — reasoning, tool dispatch, and response generation — executed inside Foundry Agent Service. The Python code only submitted the user message and received the finished result; the intermediate steps are only visible here in Agent Builder.
+   > **Note:** The entire agent loop - reasoning, tool dispatch, and response generation - executed inside Foundry Agent Service. The Python code only submitted the user message and received the finished result; the intermediate steps are only visible here in Agent Builder.
 
 ---
 
-## Validation — confirm all criteria
+## Validation - confirm all criteria
 
 Work through each item in the lab's Validation section and confirm:
 
@@ -331,7 +331,7 @@ Work through each item in the lab's Validation section and confirm:
 
 ---
 
-## Step 9 — Report results
+## Step 9 - Report results
 
 Report the outcome of every step above. For each step state whether it **passed** or **failed**. For any failure, include:
 

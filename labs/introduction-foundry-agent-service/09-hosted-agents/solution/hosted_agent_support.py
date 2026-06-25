@@ -71,7 +71,7 @@ def ensure_agent_identity_rbac(
 
     Every hosted agent receives its own Microsoft Entra agent identity at deploy time.
     That identity needs the Foundry User role on the Foundry account to call models at
-    runtime, and its principal ID only exists after the version is created — so this role
+    runtime, and its principal ID only exists after the version is created - so this role
     assignment cannot be pre-provisioned in Bicep.
 
     Reads ``AZURE_SUBSCRIPTION_ID``, ``AZURE_RESOURCE_GROUP``, and ``FOUNDRY_RESOURCE_NAME``

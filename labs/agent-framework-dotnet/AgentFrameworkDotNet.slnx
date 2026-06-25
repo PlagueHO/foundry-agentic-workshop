@@ -70,6 +70,12 @@
     <Folder Name="solution">
       <Project Path="10-hosted-agents/solution/TripConcierge.HostedAgent.csproj" />
     </Folder>
+    <Folder Name="deploy-src">
+      <Project Path="10-hosted-agents/deploy-src/TripConcierge.Deploy.csproj" />
+    </Folder>
+    <Folder Name="deploy-solution">
+      <Project Path="10-hosted-agents/deploy-solution/TripConcierge.Deploy.csproj" />
+    </Folder>
   </Folder>
   <Folder Name="11-agent-auth">
     <Folder Name="src">

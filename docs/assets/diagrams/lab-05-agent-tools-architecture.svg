@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="820" height="510" viewBox="0 0 820 510">
-  <title>Lab 05 — Agent Tools and Evaluations Architecture</title>
+  <title>Lab 05 - Agent Tools and Evaluations Architecture</title>
   <desc>Python Client calls the acl-remedy-advisor Agent Definition (v2) inside a Foundry Project inside a Foundry Account. The Agent Definition calls the chat Model Deployment for LLM inference and may invoke the Web Search Tool (which calls the Internet) or the Code Interpreter Tool (which runs Python in a local sandbox).</desc>
 
   <!-- Background -->
@@ -92,7 +92,7 @@
         fill="#999999" font-family="'Segoe UI',Arial,sans-serif"
         font-size="10">LLM inference</text>
 
-  <!-- Web Search Tool (inside Project) — center x=380, below Agent Def -->
+  <!-- Web Search Tool (inside Project) - center x=380, below Agent Def -->
   <rect x="275" y="270" width="210" height="72" rx="6"
         fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2"/>
   <text x="380" y="300" text-anchor="middle"
@@ -102,7 +102,7 @@
         fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
         font-size="11">Built-in · Microsoft Foundry</text>
 
-  <!-- Code Interpreter Tool (inside Project) — center x=630, below chat model -->
+  <!-- Code Interpreter Tool (inside Project) - center x=630, below chat model -->
   <rect x="530" y="270" width="200" height="72" rx="6"
         fill="#FFF3E0" stroke="#E65100" stroke-width="2"/>
   <text x="630" y="300" text-anchor="middle"
@@ -112,7 +112,7 @@
         fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
         font-size="11">Built-in · sandboxed Python</text>
 
-  <!-- Python Client (outside containers) — vertically centred with Agent Def -->
+  <!-- Python Client (outside containers) - vertically centred with Agent Def -->
   <rect x="20" y="120" width="175" height="90" rx="6"
         fill="#BBDEFB" stroke="#1565C0" stroke-width="2"/>
   <text x="107" y="149" text-anchor="middle"

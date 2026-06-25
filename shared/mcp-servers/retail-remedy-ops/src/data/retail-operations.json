@@ -75,13 +75,13 @@
   "policies": [
     {
       "policy_id": "POL-001",
-      "title": "Consumer Guarantee — Major Failure",
+      "title": "Consumer Guarantee - Major Failure",
       "keywords": ["major failure", "refund", "replacement", "consumer guarantee", "acl", "serious problem"],
       "excerpt": "Under the Australian Consumer Law (ACL), a customer is entitled to a refund, replacement, or repair of their choice when a product has a major failure. A major failure occurs when: the product would not have been bought if the customer had known about the problem; the product is significantly different from the description or sample; the product is substantially unfit for its common purpose and cannot easily be fixed; or the product is unsafe. Staff must not restrict the customer's choice of remedy for a major failure."
     },
     {
       "policy_id": "POL-002",
-      "title": "Consumer Guarantee — Minor Failure",
+      "title": "Consumer Guarantee - Minor Failure",
       "keywords": ["minor failure", "repair", "reasonable time", "consumer guarantee", "acl"],
       "excerpt": "For a minor failure, the business may choose to repair the product within a reasonable time, or offer a replacement or refund. If the business cannot repair within a reasonable time, the customer may ask for a refund or replacement. A minor failure is one that can be fixed and does not make the product unsafe or significantly different from what was described."
     },

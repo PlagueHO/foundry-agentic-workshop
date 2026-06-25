@@ -30,7 +30,7 @@ body:
     id: overview
     attributes:
       label: Lab series overview
-      description: A short paragraph describing the lab series — the audience, the scenario, and what Foundry features it covers.
+      description: A short paragraph describing the lab series - the audience, the scenario, and what Foundry features it covers.
     validations:
       required: true
 
@@ -51,8 +51,8 @@ body:
       label: Proposed module outline
       description: List the planned modules in order. Include a one-line description for each. This does not need to be final.
       placeholder: |
-        1. Setup — configure the environment
-        2. Module Title — what it covers
+        1. Setup - configure the environment
+        2. Module Title - what it covers
         3. …
     validations:
       required: true

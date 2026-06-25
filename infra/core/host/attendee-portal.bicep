@@ -1,5 +1,5 @@
 metadata name = 'Attendee Onboarding Portal (Azure Container Apps)'
-metadata description = 'Deploys the Attendee Onboarding Portal as an authenticated Container App into the shared Azure Container Apps environment. Attendees visit the published URL, sign in with their lab Entra ID account, and see their personal onboarding configuration. Authentication is handled by Container Apps built-in EasyAuth — no custom auth code is required in the application.'
+metadata description = 'Deploys the Attendee Onboarding Portal as an authenticated Container App into the shared Azure Container Apps environment. Attendees visit the published URL, sign in with their lab Entra ID account, and see their personal onboarding configuration. Authentication is handled by Container Apps built-in EasyAuth - no custom auth code is required in the application.'
 
 @description('Required. Name of the Container App that hosts the attendee portal.')
 @maxLength(32)

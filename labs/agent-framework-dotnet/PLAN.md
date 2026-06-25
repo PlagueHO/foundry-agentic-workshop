@@ -1,4 +1,4 @@
-# Agent Framework (.NET) Lab — Evolving Plan
+# Agent Framework (.NET) Lab - Evolving Plan
 
 This file tracks the design, decisions, build status, and open items for the
 `agent-framework-dotnet` lab. Update it after every implementation session.
@@ -17,7 +17,7 @@ across all modules so attendees build a single coherent system.
 
 | Agent | Role |
 |---|---|
-| `trip-disruption-concierge` | Orchestrating concierge — routes to specialists |
+| `trip-disruption-concierge` | Orchestrating concierge - routes to specialists |
 | `rebooking-specialist` | Finds alternative flight options |
 | `accommodation-specialist` | Sources hotel accommodation for stranded passengers |
 | `compensation-specialist` | Calculates and files compensation entitlements |
@@ -26,7 +26,7 @@ across all modules so attendees build a single coherent system.
 
 ## Module Plan (17 modules total)
 
-### Phase 0 — Demo (completed)
+### Phase 0 - Demo (completed)
 
 | # | Slug | Title | Status |
 |---|---|---|---|
@@ -37,7 +37,7 @@ across all modules so attendees build a single coherent system.
 | M9 | `09-multi-agent` | Multi-agent Orchestration | ✅ Done |
 | M12 | `12-observability` | Observability & Tracing | ✅ Done |
 
-### Phase 1 — Core (in progress)
+### Phase 1 - Core (in progress)
 
 | # | Slug | Title | Status |
 |---|---|---|---|
@@ -48,33 +48,33 @@ across all modules so attendees build a single coherent system.
 | M10 | `10-hosted-agents` | Hosted Agents (Foundry) | ✅ Done |
 | M11 | `11-agent-auth` | Agent Identity & Auth | ✅ Done |
 
-### Phase 2 — Harness (in progress)
+### Phase 2 - Harness (in progress)
 
 | # | Slug | Title | Status |
 |---|---|---|---|
-| M13 | `13-concierge-claw` | ConciergeClaw — Agent Harness | ✅ Done |
+| M13 | `13-concierge-claw` | ConciergeClaw - Agent Harness | ✅ Done |
 
-### Phase 3 — Extension (not started)
+### Phase 3 - Extension (not started)
 
 | # | Slug | Title | Status |
 |---|---|---|---|
 | M14 | `14-evaluation` | Evaluation & Quality | ❌ Todo |
 | M15 | `15-agent-to-agent` | Agent-to-Agent (A2A) | ❌ Todo |
 | M16 | `16-ag-ui` | Making your agent interactive through AG-UI | ❌ Todo |
-| M17 | `17-capstone` | Capstone — Full System | ❌ Todo |
+| M17 | `17-capstone` | Capstone - Full System | ❌ Todo |
 
 ---
 
-## Demo Path (Phase 0 — 30 min)
+## Demo Path (Phase 0 - 30 min)
 
 Recommended delivery order for a live 30-minute demo:
 
-1. **M2** (~6 min) — Create the simplest possible AI agent. Show RunAsync + streaming.
-1. **M3** (~5 min) — Add a session. Show how context is preserved across turns.
-1. **M4** (~6 min) — Add a function tool. Show the agent calling local C# code.
-1. **M5** (~5 min) — Replace the function tool with an MCP server. Show the protocol layer.
-1. **M9** (~5 min) — Add specialist sub-agents. Show the orchestration loop.
-1. **M12** (~3 min) — Add OTel. Open Aspire Dashboard. Show traces.
+1. **M2** (~6 min) - Create the simplest possible AI agent. Show RunAsync + streaming.
+1. **M3** (~5 min) - Add a session. Show how context is preserved across turns.
+1. **M4** (~6 min) - Add a function tool. Show the agent calling local C# code.
+1. **M5** (~5 min) - Replace the function tool with an MCP server. Show the protocol layer.
+1. **M9** (~5 min) - Add specialist sub-agents. Show the orchestration loop.
+1. **M12** (~3 min) - Add OTel. Open Aspire Dashboard. Show traces.
 
 ---
 
@@ -84,12 +84,12 @@ Recommended delivery order for a live 30-minute demo:
 
 | Package | Purpose |
 |---|---|
-| `Microsoft.Agents.AI.Foundry` | Foundry provider — `AIProjectClient.AsAIAgent()` |
-| `Microsoft.Agents.AI` | Core abstractions — `AIAgent`, `AgentSession` |
-| `Microsoft.Agents.AI.Mcp` | MCP tool client — `McpServer`, `.WithMcpTools()` |
+| `Microsoft.Agents.AI.Foundry` | Foundry provider - `AIProjectClient.AsAIAgent()` |
+| `Microsoft.Agents.AI` | Core abstractions - `AIAgent`, `AgentSession` |
+| `Microsoft.Agents.AI.Mcp` | MCP tool client - `McpServer`, `.WithMcpTools()` |
 | `Microsoft.Agents.AI.Harness` | Hosting harness (Phase 1+) |
 | `Azure.Identity` | `DefaultAzureCredential` |
-| `dotenv.net` | `.env` file loading — `Env.TraversalSearch()` |
+| `dotenv.net` | `.env` file loading - `Env.TraversalSearch()` |
 | `OpenTelemetry.Exporter.OpenTelemetryProtocol` | OTLP exporter (Aspire Dashboard) |
 | `Azure.Monitor.OpenTelemetry.Exporter` | App Insights exporter (M12) |
 
@@ -120,20 +120,20 @@ var result = await agent.RunAsync(query, session: session);
 
 | Mode | Loop Location | How to recognise |
 |---|---|---|
-| `ChatClientAgent` | **Local** — your code | Your code controls the turn cycle, tools execute in-process |
-| `HarnessAgent` | **Local** — harness loop | Framework manages tool calling, planning, memory, approvals; you supply instructions + tools |
-| `Foundry Hosted Agent` | **Remote** — Agent Service | Service manages the loop; you just call and await |
+| `ChatClientAgent` | **Local** - your code | Your code controls the turn cycle, tools execute in-process |
+| `HarnessAgent` | **Local** - harness loop | Framework manages tool calling, planning, memory, approvals; you supply instructions + tools |
+| `Foundry Hosted Agent` | **Remote** - Agent Service | Service manages the loop; you just call and await |
 
 ---
 
 ## Module Design Details
 
-### M13 — ConciergeClaw: Agent Harness
+### M13 - ConciergeClaw: Agent Harness
 
 The `ConciergeClaw` wraps a `ChatClientAgent` in the AF Harness to produce a
 batteries-included Trip Disruption Concierge. Attendees replace the bare agent
 from earlier modules with one that has planning, memory, file access, and
-concurrent sub-agent delegation — all by calling `AsHarnessAgent()`.
+concurrent sub-agent delegation - all by calling `AsHarnessAgent()`.
 
 #### Learning objectives
 
@@ -226,9 +226,9 @@ await HarnessConsole.RunAgentAsync(
 - [x] Phase 1: Create `scripts/deploy-flight-ops-mcp-server.py`
 - [x] Phase 1: Update `shared/.env.example` with all Phase 1 env vars
 - [x] Phase 1: Add `azure.yaml` postprovision hooks for new scripts
-- [x] Phase 2 (M13): Scaffold `13-concierge-claw/` project — starter + solution
+- [x] Phase 2 (M13): Scaffold `13-concierge-claw/` project - starter + solution
 - [x] Phase 2 (M13): Write README with `ConciergeClaw` steps (plan → execute → loop)
-- [ ] Phase 2 (M13): Add `HarnessConsole` shared console reference project to `shared/` (deferred — console TUI is sample-only; no NuGet package available)
+- [ ] Phase 2 (M13): Add `HarnessConsole` shared console reference project to `shared/` (deferred - console TUI is sample-only; no NuGet package available)
 - [x] Phase 2 (M13): Verify `AsHarnessAgent` / `HarnessAgentOptions` API signatures against published release
 - [ ] Phase 2: Evaluate A2A protocol support in AF .NET
 - [ ] Phase 2: Add capstone lab wiring all modules together
@@ -249,7 +249,7 @@ await HarnessConsole.RunAgentAsync(
 - Foundry provider: <https://learn.microsoft.com/en-us/agent-framework/agents/providers/microsoft-foundry>
 - Aspire Dashboard standalone: <https://learn.microsoft.com/dotnet/aspire/fundamentals/dashboard/standalone>
 - Harness overview (blog): <https://devblogs.microsoft.com/agent-framework/build-your-own-claw-and-agent-harness-with-microsoft-agent-framework/>
-- Harness Part 1 — Meet your claw (blog): <https://devblogs.microsoft.com/agent-framework/meet-your-agent-harness-and-claw/>
+- Harness Part 1 - Meet your claw (blog): <https://devblogs.microsoft.com/agent-framework/meet-your-agent-harness-and-claw/>
 - Harness samples: <https://github.com/microsoft/agent-framework/tree/main/dotnet/samples/02-agents/Harness>
 - AF GitHub repo: <https://github.com/microsoft/agent-framework>
 - .NET samples: <https://github.com/microsoft/agent-framework/tree/main/dotnet/samples>

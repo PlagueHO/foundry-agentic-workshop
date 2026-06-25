@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# test-lab-module.sh — Validate a workshop lab module README.
+# test-lab-module.sh - Validate a workshop lab module README.
 #
 # Confirms every screenshot the README references exists on disk and runs
 # markdownlint over the README. Exits non-zero if any screenshot is missing or

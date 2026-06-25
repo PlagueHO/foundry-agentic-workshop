@@ -1,4 +1,4 @@
-# Solution — Module 04: Create and chat with a Prompt Agent
+# Solution - Module 04: Create and chat with a Prompt Agent
 
 This folder contains the reference solution for facilitators and proctors.
 
@@ -31,7 +31,7 @@ accc.gov.au and always cite your sources with links.
 Always state clearly that you provide general guidance, not legal advice,
 and that "no refund" signs are unlawful under the ACL.
 
-Be concise and practical — retail staff need fast, clear answers in a
+Be concise and practical - retail staff need fast, clear answers in a
 busy store environment.
 ```
 
@@ -70,7 +70,7 @@ See `starter.py` in this folder for the complete solution.
 ```text
 Conversation started: conv_<id>
 
-ACL Remedy Advisor — type your question, or "exit" to quit.
+ACL Remedy Advisor - type your question, or "exit" to quit.
 
 You: A customer wants to return a $1,200 TV that stopped working after 18 months. What are their rights under Australian Consumer Law?
 [web search]
@@ -88,7 +88,7 @@ You: The customer says they just want a refund and don't want a repair. Can the 
 
 Advisor: General guidance only (not legal advice).
 
-**Yes — the store can insist on repairing it first if the fault is a *minor failure*.**
+**Yes - the store can insist on repairing it first if the fault is a *minor failure*.**
 
 [response continues citing accc.gov.au and state consumer affairs sites]
 

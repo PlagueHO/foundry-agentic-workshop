@@ -1,9 +1,9 @@
-"""Lab 08 solution — run the Module 07 Prompt Agent with the Microsoft Agent Framework.
+"""Lab 08 solution - run the Module 07 Prompt Agent with the Microsoft Agent Framework.
 
 This is the completed version of src/starter.py. It connects to the
 acl-remedy-advisor Prompt Agent built in Modules 04-07 and runs it from Python
 using the Agent Framework's FoundryAgent client, which binds to an agent that
-already exists in Foundry — its model, instructions, and tools all live on the
+already exists in Foundry - its model, instructions, and tools all live on the
 service. You only connect and run.
 
 The first call returns the complete response in one piece; the second streams the
@@ -53,7 +53,7 @@ async def run() -> None:
     # Leave AGENT_VERSION empty to use the latest published version of the agent.
     agent_version = os.environ.get('AGENT_VERSION', '').strip() or None
 
-    # DefaultAzureCredential reuses your `az login` session — no keys in code.
+    # DefaultAzureCredential reuses your `az login` session - no keys in code.
     credential = DefaultAzureCredential()
 
     # Connect to the Prompt Agent that already exists in Foundry. The model,

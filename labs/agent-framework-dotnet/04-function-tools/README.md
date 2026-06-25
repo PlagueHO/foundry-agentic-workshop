@@ -2,7 +2,7 @@
 
 **Estimated time:** 20 minutes
 
-![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars — Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
+![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars - Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
 
 > [!IMPORTANT]
 > This module builds on [Module 02](../02-first-agent/README.md). The `AIAgent` pattern from Module 02 is used here with an added tool.
@@ -28,7 +28,7 @@ A **function tool** is a local C# method that the agent can call during its reas
 1. Injects the return value back into the conversation as a tool result.
 1. Asks the model to continue reasoning with the result.
 
-Your code never manually handles the tool-call protocol — the framework manages it transparently.
+Your code never manually handles the tool-call protocol - the framework manages it transparently.
 
 ### AIFunctionFactory.Create
 
@@ -58,7 +58,7 @@ The agent will automatically call `myTool` when the model decides it is needed.
 
 ## Steps
 
-### Part 1 — Define the function tool
+### Part 1 - Define the function tool
 
 #### 1. Open the starter file
 
@@ -105,7 +105,7 @@ The agent will automatically call `myTool` when the model decides it is needed.
 
   The `[Description]` attributes guide the model when it selects argument values. The yellow `[Tool]` lines make the invocation visible in the terminal.
 
-### Part 2 — Attach the tool and run the agent
+### Part 2 - Attach the tool and run the agent
 
 #### 3. Create the agent with the tool (TODO 2)
 
@@ -151,7 +151,7 @@ The agent will automatically call `myTool` when the model decides it is needed.
 
 ## Congratulations 🎉
 
-You gave your agent a local C# function it can call autonomously. The model decided when the tool was needed, extracted the right arguments, and incorporated the result into its final response — all without any manual orchestration in your code. To see tools work alongside streaming output, swap `RunAsync` for `RunStreamingAsync` — the framework invokes your function at the right moment in the stream.
+You gave your agent a local C# function it can call autonomously. The model decided when the tool was needed, extracted the right arguments, and incorporated the result into its final response - all without any manual orchestration in your code. To see tools work alongside streaming output, swap `RunAsync` for `RunStreamingAsync` - the framework invokes your function at the right moment in the stream.
 
 > [!TIP]
 > **Next up → [Module 05: MCP Tools](../05-mcp-tools/README.md)**
@@ -163,6 +163,6 @@ You gave your agent a local C# function it can call autonomously. The model deci
 |---|---|
 | `[Tool]` lines never appear | Rephrase the prompt to explicitly mention delay hours and ticket price |
 | Tool returns unexpected value | Check the compensation tier logic in the function body |
-| Build error: `AIFunctionFactory` not found | Add `using Microsoft.Extensions.AI;` — it is pulled in transitively |
+| Build error: `AIFunctionFactory` not found | Add `using Microsoft.Extensions.AI;` - it is pulled in transitively |
 | `NotImplementedException` | A TODO is still incomplete |
 | `AuthenticationFailedException` | Run `az login` or confirm your Entra account has the Foundry User role on the project |

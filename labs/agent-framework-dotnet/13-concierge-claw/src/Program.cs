@@ -19,7 +19,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 13: ConciergeClaw — Agent Harness ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 13: ConciergeClaw - Agent Harness ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model    : {model}");
 Console.ResetColor();
@@ -47,7 +47,7 @@ var conciergeInstructions =
 
 // ── TODO 1 ───────────────────────────────────────────────────────────────────
 // Build an IChatClient using the Foundry Responses API chain.
-// The harness requires an IChatClient — not the AsAIAgent(model: ...) shortcut.
+// The harness requires an IChatClient - not the AsAIAgent(model: ...) shortcut.
 //
 // Console.ForegroundColor = ConsoleColor.DarkGray;
 // Console.WriteLine("[Harness] Building IChatClient via Foundry Responses API...");
@@ -130,7 +130,7 @@ Console.ResetColor();
 Console.WriteLine();
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine("[Harness] Running — LoopAgent will iterate until all todos are resolved...");
+Console.WriteLine("[Harness] Running - LoopAgent will iterate until all todos are resolved...");
 Console.ResetColor();
 Console.WriteLine();
 
@@ -248,7 +248,7 @@ static FlightOption[] GetFlightAlternatives(
         $"\n[Tool] → get_flight_alternatives(flightNumber={flightNumber}, {origin}→{destination})");
     Console.ResetColor();
 
-    // Illustrative mock data — replace with a live flights API in production.
+    // Illustrative mock data - replace with a live flights API in production.
     FlightOption[] options = flightNumber.ToUpperInvariant() switch
     {
         "AU123" =>

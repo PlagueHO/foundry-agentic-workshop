@@ -16,7 +16,7 @@ var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 var mcpUrl = Environment.GetEnvironmentVariable("FLIGHT_OPS_MCP_SERVER_URL")
     ?? "http://localhost:3001/mcp";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 05: MCP Tools ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 05: MCP Tools ===");
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine($"  Model      : {model}");
 Console.WriteLine($"  MCP server : {mcpUrl}");
@@ -53,11 +53,11 @@ var agent = client
             "flight status or rebooking, call the appropriate tool to get live " +
             "data before responding. Always use the exact booking reference and " +
             "flight number the passenger provides.",
-        // McpClientTool implements AITool — spread the list directly into tools:
+        // McpClientTool implements AITool - spread the list directly into tools:
         tools: [.. mcpTools.Cast<AITool>()]);
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine("[Loop] Agent ready — MCP tools available from flight-ops server.");
+Console.WriteLine("[Loop] Agent ready - MCP tools available from flight-ops server.");
 Console.ResetColor();
 Console.WriteLine();
 
@@ -73,7 +73,7 @@ Console.WriteLine("[Loop] Session ready.");
 Console.ResetColor();
 Console.WriteLine();
 
-// ── Run — agent calls MCP tools automatically ─────────────────────────────────
+// ── Run - agent calls MCP tools automatically ─────────────────────────────────
 var query =
     "My flight AU123 has been disrupted. Can you check its current status " +
     "and find me the best rebooking option? My booking reference is BK98765, " +
@@ -85,7 +85,7 @@ Console.ResetColor();
 Console.WriteLine();
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine("[Loop] RunAsync — agent will call MCP tools as needed...");
+Console.WriteLine("[Loop] RunAsync - agent will call MCP tools as needed...");
 Console.ResetColor();
 Console.WriteLine();
 
@@ -103,7 +103,7 @@ Console.WriteLine($"[Agent] {result.Text}");
 Console.ResetColor();
 Console.WriteLine();
 
-// ── Second turn — file a compensation claim ────────────────────────────────────
+// ── Second turn - file a compensation claim ────────────────────────────────────
 var query2 =
     "Please go ahead and file a compensation claim for the cancellation.";
 

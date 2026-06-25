@@ -43,7 +43,7 @@ INSTRUCTIONS = (
     'Always state clearly that you provide general guidance, not legal advice,\n'
     'and that "no refund" signs are unlawful under the ACL.\n'
     '\n'
-    'Be concise and practical — retail staff need fast, clear answers in a\n'
+    'Be concise and practical - retail staff need fast, clear answers in a\n'
     'busy store environment.\n'
     '\n'
     'When asked to calculate refund amounts, depreciation, pro-rata warranty\n'
@@ -58,7 +58,7 @@ INSTRUCTIONS = (
     'if the customer may want a replacement. Use draft_remedy_summary to produce a\n'
     'structured summary for the staff member. Use create_remedy_case to log the\n'
     'outcome if the staff member confirms the remedy. Do not invent purchase,\n'
-    'warranty, policy, or stock details — call the MCP tools instead.'
+    'warranty, policy, or stock details - call the MCP tools instead.'
 )
 
 

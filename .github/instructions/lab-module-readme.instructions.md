@@ -16,7 +16,7 @@ Apply these rules when creating or editing any `README.md` inside `labs/`.
 - Use real, working example prompts in lab steps; avoid placeholder text such as "enter some text here".
 - Use `- [ ]` task-list checkboxes for every attendee action so progress can be tracked.
 - Separate consecutive `> [!...]` callout blocks with `<!-- markdownlint-disable-next-line MD028 -->`.
-- Do **not** add a `## See also` section to any lab module README — cross-references belong inline or in callouts.
+- Do **not** add a `## See also` section to any lab module README - cross-references belong inline or in callouts.
 
 ## Lab Module README Structure
 
@@ -41,7 +41,7 @@ Both the `introduction-foundry-agent-service` and `agent-framework-dotnet` lab m
 
 ### Title format
 
-Use `# NN. Title` — two-digit zero-padded number, period, space, title. No "Module" prefix.
+Use `# NN. Title` - two-digit zero-padded number, period, space, title. No "Module" prefix.
 
 ```markdown
 # 04. Function Tools
@@ -49,7 +49,7 @@ Use `# NN. Title` — two-digit zero-padded number, period, space, title. No "Mo
 
 ### Prerequisite callout
 
-Use a `> [!IMPORTANT]` block immediately after the diagram. Reference prerequisite modules with bare `[Module NN](relative/path)` link text — include no title in the link text.
+Use a `> [!IMPORTANT]` block immediately after the diagram. Reference prerequisite modules with bare `[Module NN](relative/path)` link text - include no title in the link text.
 
 ```markdown
 > [!IMPORTANT]
@@ -58,10 +58,10 @@ Use a `> [!IMPORTANT]` block immediately after the diagram. Reference prerequisi
 
 ### Steps structure
 
-Group related steps into named parts using `### Part N — Description`. Number individual steps with `#### N. Step title`. Each attendee action is a `- [ ]` item. Embed code blocks directly under the step item (indented 2 spaces), not in a separate sub-item.
+Group related steps into named parts using `### Part N - Description`. Number individual steps with `#### N. Step title`. Each attendee action is a `- [ ]` item. Embed code blocks directly under the step item (indented 2 spaces), not in a separate sub-item.
 
 ````markdown
-### Part 1 — Complete the starter code
+### Part 1 - Complete the starter code
 
 #### 1. Open the starter file
 
@@ -115,5 +115,5 @@ Use a two-column `| Symptom | Fix |` table. Always include a row for `NotImpleme
 | Symptom | Fix |
 |---------|-----|
 | `AuthenticationFailedException` | Run `az login` or confirm your managed identity has the correct role |
-| `NotImplementedException` | A TODO is still incomplete — check the starter code |
+| `NotImplementedException` | A TODO is still incomplete - check the starter code |
 ```

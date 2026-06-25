@@ -15,14 +15,14 @@ The module pages are generated automatically during docs build and preview from 
 
 ## Scenario
 
-Throughout the lab, you will build a single production-grade agent called `acl-remedy-advisor` — an Australian Consumer Law (ACL) Remedy Advisor designed to help retail staff determine the correct remedy when a customer reports a product problem. Starting with a simple prompt-based agent in Microsoft Foundry Agent Builder, the agent is incrementally enriched across twelve modules: web search and Code Interpreter tools are added for live ACCC guidance and pro-rata refund calculations; a custom Model Context Protocol (MCP) server called `retail-remedy-ops` is wired in to look up real purchase records, product profiles, store policies, and replacement stock; a Foundry IQ knowledge base grounds the agent in the retailer's own policy documents; the agent is driven programmatically via the Python Agent Framework; and finally it is packaged as a containerised hosted agent and consumed through a Foundry Toolbox — all the way through to agent identity, operational monitoring, and publishing.
+Throughout the lab, you will build a single production-grade agent called `acl-remedy-advisor` - an Australian Consumer Law (ACL) Remedy Advisor designed to help retail staff determine the correct remedy when a customer reports a product problem. Starting with a simple prompt-based agent in Microsoft Foundry Agent Builder, the agent is incrementally enriched across twelve modules: web search and Code Interpreter tools are added for live ACCC guidance and pro-rata refund calculations; a custom Model Context Protocol (MCP) server called `retail-remedy-ops` is wired in to look up real purchase records, product profiles, store policies, and replacement stock; a Foundry IQ knowledge base grounds the agent in the retailer's own policy documents; the agent is driven programmatically via the Python Agent Framework; and finally it is packaged as a containerised hosted agent and consumed through a Foundry Toolbox - all the way through to agent identity, operational monitoring, and publishing.
 
 ## Modules
 
 | #  | Module | Estimated Time | Required | End State |
 |----|--------|----------------|:--------:|-----------|
-| 1  | [Setup](./01-setup/README.md) | 15 min | ✅ | Working environment with verified Foundry access — no agent created yet. |
-| 2  | [Foundry Portal Walkthrough](./02-foundry-portal-walkthrough/README.md) | 10 min | ✅ | Comfortable navigating the portal — nothing created. |
+| 1  | [Setup](./01-setup/README.md) | 15 min | ✅ | Working environment with verified Foundry access - no agent created yet. |
+| 2  | [Foundry Portal Walkthrough](./02-foundry-portal-walkthrough/README.md) | 10 min | ✅ | Comfortable navigating the portal - nothing created. |
 | 3  | [Foundry Toolkit for VS Code](./03-foundry-toolkit-vscode/README.md) | 15 min | ✅ | Foundry Toolkit installed and connected to your project in VS Code. |
 | 4  | [Prompt Agents](./04-prompt-based-agents/README.md) | 20 min | ✅ | The `acl-remedy-advisor` prompt agent created and chattable. |
 | 5  | [Agent Tools and Evaluations](./05-agent-tools-and-evaluations/README.md) | 30 min | ✅ | `acl-remedy-advisor` extended with tools plus an evaluation run. |

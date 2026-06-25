@@ -1,8 +1,8 @@
-# 13. ConciergeClaw — Agent Harness
+# 13. ConciergeClaw - Agent Harness
 
 **Estimated time:** 35 minutes
 
-![Agent Systems in Microsoft Agent Framework — diagram showing Agent Loops (goal-driven orchestration with a Coordinator Agent routing to specialist agents backed by Memory) alongside Workflows (deterministic, step-by-step execution). The ConciergeClaw harness uses the Agent Loop pattern, combining LoopAgent, FileMemoryProvider, and tool invocation into a single AsHarnessAgent() call.](../../../docs/assets/diagrams/agent-framework-agent-systems.png)
+![Agent Systems in Microsoft Agent Framework - diagram showing Agent Loops (goal-driven orchestration with a Coordinator Agent routing to specialist agents backed by Memory) alongside Workflows (deterministic, step-by-step execution). The ConciergeClaw harness uses the Agent Loop pattern, combining LoopAgent, FileMemoryProvider, and tool invocation into a single AsHarnessAgent() call.](../../../docs/assets/diagrams/agent-framework-agent-systems.png)
 
 > [!IMPORTANT]
 > This module builds on [Module 12](../12-observability/README.md). Ensure your environment is set up and `.env` is configured before continuing.
@@ -73,7 +73,7 @@ modeProvider?.SetMode(session, "execute");
 
 ### LoopAgent and TodoCompletionLoopEvaluator
 
-`LoopAgent` keeps calling the inner agent until a `LoopEvaluator` signals completion. `TodoCompletionLoopEvaluator` stops the loop when all todos are marked done — only while in execute mode:
+`LoopAgent` keeps calling the inner agent until a `LoopEvaluator` signals completion. `TodoCompletionLoopEvaluator` stops the loop when all todos are marked done - only while in execute mode:
 
 ```csharp
 LoopEvaluators     =
@@ -94,7 +94,7 @@ LoopAgentOptions   = new LoopAgentOptions { MaxIterations = 5 },
 
 ## Steps
 
-### Part 1 — Build the IChatClient
+### Part 1 - Build the IChatClient
 
 #### 1. Open the starter file
 
@@ -120,7 +120,7 @@ LoopAgentOptions   = new LoopAgentOptions { MaxIterations = 5 },
   > [!NOTE]
   > `AzureCliCredential` picks up the session established by `az login`. Run `az login` before running the module if you haven't already.
 
-### Part 2 — Create the HarnessAgent
+### Part 2 - Create the HarnessAgent
 
 #### 3. Wrap the IChatClient in a HarnessAgent (TODO 2)
 
@@ -159,7 +159,7 @@ LoopAgentOptions   = new LoopAgentOptions { MaxIterations = 5 },
 
   `AIFunctionFactory.Create(GetFlightAlternatives)` reads the `[Description]` attributes from the `GetFlightAlternatives` static function at the bottom of the file to generate the JSON schema the model uses when deciding whether to call the tool.
 
-### Part 3 — Create the session
+### Part 3 - Create the session
 
 #### 4. Create a session (TODO 3)
 
@@ -184,9 +184,9 @@ LoopAgentOptions   = new LoopAgentOptions { MaxIterations = 5 },
   Console.WriteLine();
   ```
 
-### Part 4 — Run the first two turns
+### Part 4 - Run the first two turns
 
-#### 6. Stream Turn 1 — Emma's disruption (TODO 5)
+#### 6. Stream Turn 1 - Emma's disruption (TODO 5)
 
 - [ ] Locate `// ── TODO 5` and replace the commented-out block with:
 
@@ -204,7 +204,7 @@ LoopAgentOptions   = new LoopAgentOptions { MaxIterations = 5 },
 
   Watch the terminal for yellow `[Tool]` lines when the agent calls `get_flight_alternatives`, and for the LoopAgent iterating as it works through its todo list.
 
-#### 7. Stream Turn 2 — follow-up (TODO 6)
+#### 7. Stream Turn 2 - follow-up (TODO 6)
 
 - [ ] Locate `// ── TODO 6` and replace the commented-out block with:
 
@@ -220,7 +220,7 @@ LoopAgentOptions   = new LoopAgentOptions { MaxIterations = 5 },
   Console.WriteLine();
   ```
 
-### Part 5 — Export, restore, and resume the session
+### Part 5 - Export, restore, and resume the session
 
 #### 8. Export and restore the session (TODO 7)
 
@@ -279,7 +279,7 @@ LoopAgentOptions   = new LoopAgentOptions { MaxIterations = 5 },
 
 ## Congratulations 🎉
 
-You built the ConciergeClaw — a full Agent Framework harness agent that combines planning, file memory, tool invocation, and loop-driven execution in a single `AsHarnessAgent()` call. You also demonstrated portable session state with `SerializeSessionAsync` and `DeserializeSessionAsync`.
+You built the ConciergeClaw - a full Agent Framework harness agent that combines planning, file memory, tool invocation, and loop-driven execution in a single `AsHarnessAgent()` call. You also demonstrated portable session state with `SerializeSessionAsync` and `DeserializeSessionAsync`.
 
 > [!TIP]
 > **You've completed the Agent Framework .NET lab!** Return to the [lab README](../README.md) to review what you built across all modules, or explore the [Microsoft Agent Framework samples](https://github.com/microsoft/agent-framework/tree/main/dotnet/samples) for further patterns.
@@ -288,8 +288,8 @@ You built the ConciergeClaw — a full Agent Framework harness agent that combin
 
 | Symptom | Fix |
 |---|---|
-| `CS0103: The name 'HarnessAgentOptions' does not exist` | Run `dotnet restore` — confirm `Microsoft.Agents.AI.Harness` prerelease is in `Directory.Packages.props` |
+| `CS0103: The name 'HarnessAgentOptions' does not exist` | Run `dotnet restore` - confirm `Microsoft.Agents.AI.Harness` prerelease is in `Directory.Packages.props` |
 | `OPENAI001` compiler warning | Add `#pragma warning disable OPENAI001` at the top of the file |
 | `AuthenticationFailedException` | Run `az login` to refresh your local credential session |
 | `InvalidOperationException: FOUNDRY_PROJECT_ENDPOINT is not set` | Copy `shared/.env.example` to `.env` in the repository root and fill in your values |
-| `NotImplementedException` | A TODO is still incomplete — check `src/Program.cs` |
+| `NotImplementedException` | A TODO is still incomplete - check `src/Program.cs` |

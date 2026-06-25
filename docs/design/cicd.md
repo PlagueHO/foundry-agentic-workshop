@@ -160,7 +160,7 @@ All variables use the pattern `vars.VAR_NAME || 'default'` in workflow files, so
 
 | Field | Required | Default | Description |
 |-------|----------|---------|-------------|
-| `upn` | Yes | — | Microsoft Entra UPN, resolved to an object ID at provisioning time. |
+| `upn` | Yes | - | Microsoft Entra UPN, resolved to an object ID at provisioning time. |
 | `role` | No | `AZURE_ATTENDEE_DEFAULT_ROLE` | Role key. See the [role catalog](../guide-organizer.md#role-catalog). |
 | `individualProject` | No | `true` | `false` shares the first standard project rather than creating a dedicated one. |
 | `projectName` | No | `<prefix>-NN` | Explicit project name overrides the auto-generated name. |

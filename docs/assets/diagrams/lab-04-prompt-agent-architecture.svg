@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="820" height="510" viewBox="0 0 820 510">
-  <title>Lab 04 — Prompt Agent Architecture</title>
+  <title>Lab 04 - Prompt Agent Architecture</title>
   <desc>Python Client calls the acl-remedy-advisor Agent Definition inside a Foundry Project inside a Foundry Account. The Agent Definition calls the chat Model Deployment for LLM inference and may invoke the Web Search Tool, which calls out to the Internet.</desc>
 
   <!-- Background -->
@@ -87,7 +87,7 @@
         fill="#999999" font-family="'Segoe UI',Arial,sans-serif"
         font-size="10">LLM inference</text>
 
-  <!-- Web Search Tool (inside Project) — cx=380, below Agent Def -->
+  <!-- Web Search Tool (inside Project) - cx=380, below Agent Def -->
   <rect x="275" y="270" width="210" height="72" rx="6"
         fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2"/>
   <text x="380" y="300" text-anchor="middle"
@@ -97,7 +97,7 @@
         fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
         font-size="11">Built-in · Microsoft Foundry</text>
 
-  <!-- Python Client (outside containers) — top-aligned with Agent Def (cy=165) -->
+  <!-- Python Client (outside containers) - top-aligned with Agent Def (cy=165) -->
   <rect x="20" y="120" width="175" height="90" rx="6"
         fill="#BBDEFB" stroke="#1565C0" stroke-width="2"/>
   <text x="107" y="149" text-anchor="middle"
@@ -110,7 +110,7 @@
         fill="#999999" font-family="'Segoe UI',Arial,sans-serif"
         font-size="10">AIProjectClient</text>
 
-  <!-- Internet (outside containers, bottom) — cx=380, below Web Search Tool -->
+  <!-- Internet (outside containers, bottom) - cx=380, below Web Search Tool -->
   <ellipse cx="380" cy="448" rx="140" ry="43"
            fill="#FFEBEE" stroke="#C62828" stroke-width="2"/>
   <text x="380" y="443" text-anchor="middle"
@@ -125,7 +125,7 @@
        ────────────────────────────────────────── -->
 
   <!-- 1. Python Client → Agent Definition  (solid blue, request) -->
-  <!-- right of client (195,155) → left of agent_def (280,155) — straight horizontal -->
+  <!-- right of client (195,155) → left of agent_def (280,155) - straight horizontal -->
   <path d="M 195,155 L 280,155"
         stroke="#1565C0" stroke-width="2" fill="none"
         marker-end="url(#ah-blue)"/>
@@ -134,7 +134,7 @@
         font-size="10" font-weight="bold">responses.create()</text>
 
   <!-- 2. Agent Definition → Python Client  (dashed grey, response) -->
-  <!-- left of agent_def (280,175) → right of client (195,175) — straight horizontal -->
+  <!-- left of agent_def (280,175) → right of client (195,175) - straight horizontal -->
   <path d="M 280,175 L 195,175"
         stroke="#888888" stroke-width="1.5" stroke-dasharray="5,4"
         fill="none" marker-end="url(#ah)"/>
@@ -143,7 +143,7 @@
         font-size="10">response</text>
 
   <!-- 3. Agent Definition → chat model  (solid teal, LLM call) -->
-  <!-- right of agent_def (480,155) → left of model (555,155) — straight horizontal -->
+  <!-- right of agent_def (480,155) → left of model (555,155) - straight horizontal -->
   <path d="M 480,155 L 555,155"
         stroke="#006064" stroke-width="2" fill="none"
         marker-end="url(#ah-teal)"/>
@@ -152,7 +152,7 @@
         font-size="10" font-weight="bold">LLM call</text>
 
   <!-- 4. chat model → Agent Definition  (dashed teal, completion) -->
-  <!-- left of model (555,175) → right of agent_def (480,175) — straight horizontal -->
+  <!-- left of model (555,175) → right of agent_def (480,175) - straight horizontal -->
   <path d="M 555,175 L 480,175"
         stroke="#006064" stroke-width="1.5" stroke-dasharray="5,4"
         fill="none" marker-end="url(#ah-teal)"/>
@@ -161,7 +161,7 @@
         font-size="10">completion</text>
 
   <!-- 5. Agent Definition → Web Search Tool  (solid purple, tool call) -->
-  <!-- bottom centre of agent_def (380,210) → top centre of web_search (380,270) — straight vertical -->
+  <!-- bottom centre of agent_def (380,210) → top centre of web_search (380,270) - straight vertical -->
   <path d="M 380,210 L 380,270"
         stroke="#6A1B9A" stroke-width="2" fill="none"
         marker-end="url(#ah-purple)"/>
@@ -170,7 +170,7 @@
         font-size="10" font-weight="bold">tool call</text>
 
   <!-- 6. Web Search Tool → Internet  (solid red, HTTP search) -->
-  <!-- bottom centre of web_search (380,342) → top of internet ellipse (380,405) — straight vertical -->
+  <!-- bottom centre of web_search (380,342) → top of internet ellipse (380,405) - straight vertical -->
   <path d="M 380,342 L 380,405"
         stroke="#B71C1C" stroke-width="2" fill="none"
         marker-end="url(#ah-red)"/>

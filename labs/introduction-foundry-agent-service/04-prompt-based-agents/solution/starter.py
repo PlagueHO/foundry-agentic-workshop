@@ -1,4 +1,4 @@
-"""Solution for Lab 04 — chat with the acl-remedy-advisor Prompt Agent."""
+"""Solution for Lab 04 - chat with the acl-remedy-advisor Prompt Agent."""
 
 import os
 
@@ -16,11 +16,11 @@ def run() -> None:
     client = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
     openai = client.get_openai_client()
 
-    # Create a new conversation thread — persists context across turns.
+    # Create a new conversation thread - persists context across turns.
     conversation = openai.conversations.create()
     print(f'Conversation started: {conversation.id}\n')
 
-    print('ACL Remedy Advisor — type your question, or "exit" to quit.\n')
+    print('ACL Remedy Advisor - type your question, or "exit" to quit.\n')
 
     while True:
         user_input = input('You: ').strip()

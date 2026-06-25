@@ -4,7 +4,7 @@ This document contains the design rationale for the infrastructure deployed to s
 
 ## Hosted agents and the container registry
 
-Some modules deploy a **hosted agent** — attendee container code that Foundry runs as a managed endpoint. Provisioning adds one shared **Azure Container Registry (ACR)** and the role assignments hosted agents need, so attendees can complete the module without any manual setup.
+Some modules deploy a **hosted agent** - attendee container code that Foundry runs as a managed endpoint. Provisioning adds one shared **Azure Container Registry (ACR)** and the role assignments hosted agents need, so attendees can complete the module without any manual setup.
 
 ### What gets deployed
 
@@ -15,7 +15,7 @@ Some modules deploy a **hosted agent** — attendee container code that Foundry 
 
 ### Why the constrained RBAC Administrator role
 
-Every hosted agent gets its own Microsoft Entra agent identity at deploy time, and that identity needs the **Foundry User** role on the Foundry account to call models at runtime. The identity does not exist until the agent version is created, so the role cannot be pre-assigned in Bicep — the attendee's deploy script assigns it. The constrained Role Based Access Control Administrator role (ABAC-conditioned) lets attendees make exactly that one assignment and nothing else, keeping the grant within least privilege.
+Every hosted agent gets its own Microsoft Entra agent identity at deploy time, and that identity needs the **Foundry User** role on the Foundry account to call models at runtime. The identity does not exist until the agent version is created, so the role cannot be pre-assigned in Bicep - the attendee's deploy script assigns it. The constrained Role Based Access Control Administrator role (ABAC-conditioned) lets attendees make exactly that one assignment and nothing else, keeping the grant within least privilege.
 
 ### Avoiding attendee collisions
 

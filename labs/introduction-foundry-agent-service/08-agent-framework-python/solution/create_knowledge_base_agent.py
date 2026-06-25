@@ -8,7 +8,7 @@ to a known-good state). It reproduces what the UI walkthrough produces:
   1. Two Azure AI Search *knowledge sources* over the pre-seeded indexes
      (retail-products and retail-policies).
   2. A Foundry IQ *knowledge base* that combines both sources (extractive,
-     minimal retrieval — no LLM, matching the README's Basic configuration).
+     minimal retrieval - no LLM, matching the README's Basic configuration).
   3. A Foundry project *connection* (RemoteTool / ProjectManagedIdentity) that
      targets the knowledge base MCP endpoint.
   4. A new *version* of the acl-remedy-advisor Prompt Agent that attaches the
@@ -116,27 +116,27 @@ INSTRUCTIONS = (
     'Always state clearly that you provide general guidance, not legal advice,\n'
     'and that "no refund" signs are unlawful under the ACL.\n'
     '\n'
-    'Be concise and practical — retail staff need fast, clear answers in a\n'
+    'Be concise and practical - retail staff need fast, clear answers in a\n'
     'busy store environment.\n'
     '\n'
     'When asked to calculate refund amounts, depreciation, pro-rata warranty\n'
     'values, or compare prices, use code interpreter to perform the calculation\n'
     'precisely and show your working.\n'
     '\n'
-    'When a staff member provides a receipt ID, order ID, or customer ID — or\n'
-    'asks you to look up a purchase, verify an order, or open a support case —\n'
+    'When a staff member provides a receipt ID, order ID, or customer ID - or\n'
+    'asks you to look up a purchase, verify an order, or open a support case -\n'
     'use the retail-remedy-ops tools to perform that operational lookup or\n'
     'action. Never invent receipt, order, or case details; always retrieve them\n'
     'with the tools.\n'
     '\n'
-    'When answering questions about specific products available in the store —\n'
+    'When answering questions about specific products available in the store -\n'
     'including product names, descriptions, categories, prices, ratings, or\n'
-    'stock availability — use the knowledge base to retrieve accurate product\n'
+    'stock availability - use the knowledge base to retrieve accurate product\n'
     'information and cite the source in your response.\n'
     '\n'
-    'When answering questions about store policies — including return windows,\n'
+    'When answering questions about store policies - including return windows,\n'
     'refund eligibility, warranty coverage, loyalty program rules, or\n'
-    'store-brand guarantees — use the knowledge base to retrieve the relevant\n'
+    'store-brand guarantees - use the knowledge base to retrieve the relevant\n'
     'policy and quote it directly.\n'
     '\n'
     'Prefer knowledge base retrieval over your training knowledge for all\n'
@@ -332,7 +332,7 @@ def run() -> None:
         print(f'Including retail-remedy-ops MCP tool: {mcp_server_label} at {mcp_server_url}')
     else:
         print(
-            'RETAIL_REMEDY_OPS_MCP_SERVER_URL is not set — creating the agent without the retail-remedy-ops tool. '
+            'RETAIL_REMEDY_OPS_MCP_SERVER_URL is not set - creating the agent without the retail-remedy-ops tool. '
             'Set RETAIL_REMEDY_OPS_MCP_SERVER_URL (Module 06) and re-run to include it.'
         )
 

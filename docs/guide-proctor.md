@@ -18,7 +18,7 @@ guide and the attendee assignment list handy throughout the session.
 
 ## During the session
 
-- Watch for blocked attendees during setup and the first lab — most issues surface there.
+- Watch for blocked attendees during setup and the first lab - most issues surface there.
 - Triage with the [Attendee Guide troubleshooting table](./guide-attendee.md#troubleshooting) before escalating.
 - Each lab is independently runnable, so help a blocked attendee move on and return later.
 - Escalate to the facilitator only when an issue affects multiple attendees.

@@ -5,7 +5,7 @@
 > [!TIP]
 > Tick the checkbox next to each step as you complete it to track your progress through this module.
 
-The **Foundry Toolkit for VS Code** extension brings Microsoft Foundry directly into your editor — no browser switching required. From the Activity Bar you can browse deployed models, open a live playground, create agents, inspect tool catalogs, and generate production-ready code without leaving VS Code.
+The **Foundry Toolkit for VS Code** extension brings Microsoft Foundry directly into your editor - no browser switching required. From the Activity Bar you can browse deployed models, open a live playground, create agents, inspect tool catalogs, and generate production-ready code without leaving VS Code.
 
 > **Reference:** [Work with the Microsoft Foundry Toolkit for Visual Studio Code extension](https://learn.microsoft.com/en-us/azure/foundry/how-to/develop/get-started-projects-vs-code)
 >
@@ -73,7 +73,7 @@ With the Azure identity confirmed, link the Foundry Toolkit to your assigned pro
 
   </details>
 
-  > **Tip:** Right-click on your project name to access the **Project Endpoint** and **API Key** — both are already saved in your `.env` file.
+  > **Tip:** Right-click on your project name to access the **Project Endpoint** and **API Key** - both are already saved in your `.env` file.
 
 ### 4. Tour the extension interface
 
@@ -94,7 +94,7 @@ The Foundry Toolkit sidebar has three collapsible sections.
 
 - [ ] Expand **My Resources** and note your project name. Expand it to see the sub-sections: **Models**, **Prompt Agents**, **Hosted Agents**, **Connections**, and **Knowledge Stores**.
 - [ ] Expand **Developer Tools** to see the **Discover** and **Build** groups.
-- [ ] Take a moment to scan the links under **Help and Feedback** — the documentation link opens the [Foundry Toolkit docs on `aka.ms/foundrytk/docs`](https://aka.ms/foundrytk/docs).
+- [ ] Take a moment to scan the links under **Help and Feedback** - the documentation link opens the [Foundry Toolkit docs on `aka.ms/foundrytk/docs`](https://aka.ms/foundrytk/docs).
 
   > **Tip:** Press <kbd>F1</kbd> and type **Foundry Toolkit** to see all available commands from the command palette.
 
@@ -105,7 +105,7 @@ The Foundry Toolkit sidebar has three collapsible sections.
 
   </details>
 
-### 5. Explore My Resources — deployed models
+### 5. Explore My Resources - deployed models
 
 - [ ] Under **My Resources**, expand your project, then expand **Models**.
 - [ ] You should see a model deployment called `chat` and one called `embedding` that were deployed when the workshop environment was provisioned. The names of the deployment does not have to match the model name. So the specific model that is deployed as `chat` and `embedding` is up to your lab organizer.
@@ -114,9 +114,9 @@ The Foundry Toolkit sidebar has three collapsible sections.
   - **Endpoint info**: target URI and authentication type.
   - **Useful links**: code sample repository and tutorial links.
 
-  > **Note:** The endpoint URI and key are already stored in your `.env` file — you don't need to copy them now.
+  > **Note:** The endpoint URI and key are already stored in your `.env` file - you don't need to copy them now.
 
-### 6. Explore Developer Tools — Model Catalog
+### 6. Explore Developer Tools - Model Catalog
 
 The Model Catalog lets you browse all models available across providers, not just the ones already deployed.
 
@@ -138,9 +138,9 @@ The Model Catalog lets you browse all models available across providers, not jus
 - [ ] Use the search bar at the top to find a specific model by name.
 - [ ] Click any model card to view its full description, context window, and supported inference tasks.
 
-  > **Note:** You do not need to deploy any additional models — the `chat` and `embedding` models are already available for this workshop.
+  > **Note:** You do not need to deploy any additional models - the `chat` and `embedding` models are already available for this workshop.
 
-### 7. Explore Developer Tools — Tool Catalog
+### 7. Explore Developer Tools - Tool Catalog
 
 The Tool Catalog is where you browse and connect MCP servers and built-in tools to your agents. You will use this more in Module 06 (MCP Tools).
 
@@ -169,7 +169,7 @@ Test a deployed model directly in VS Code without writing any code.
   What's your return policy for hiking boots, and do you have any waterproof options available?
   ```
 
-- [ ] Review the model's response — it should answer in the role of a Contoso Outdoors retail assistant.
+- [ ] Review the model's response - it should answer in the role of a Contoso Outdoors retail assistant.
 
   <details>
   <summary>📸 Screenshot: Model Playground response</summary>
@@ -202,7 +202,7 @@ Foundry Toolkit can generate a ready-to-run Python (or TypeScript) file that cal
 
 - [ ] Read through the generated code and note:
   - The project endpoint is pulled from your environment variable.
-  - Authentication uses `DefaultAzureCredential` — no hard-coded keys.
+  - Authentication uses `DefaultAzureCredential` - no hard-coded keys.
   - The code is ready to run after installing `azure-ai-projects`.
 
 ## Validation
@@ -215,11 +215,11 @@ Foundry Toolkit can generate a ready-to-run Python (or TypeScript) file that cal
 
 ## Congratulations 🎉
 
-You brought Foundry right into your editor. You installed and connected the Foundry Toolkit for VS Code, explored your project's models, prompt agents, tools, knowledge, and evaluations from **My Resources**, and drove the Model Playground — even generating runnable Python with **View Code**. Your local development loop is now wired directly to your Foundry project.
+You brought Foundry right into your editor. You installed and connected the Foundry Toolkit for VS Code, explored your project's models, prompt agents, tools, knowledge, and evaluations from **My Resources**, and drove the Model Playground - even generating runnable Python with **View Code**. Your local development loop is now wired directly to your Foundry project.
 
 > [!TIP]
 > **Next up → [Module 04: Create and chat with a Prompt Agent](../04-prompt-based-agents/README.md)**
-> Build your first real agent — `acl-remedy-advisor` — and chat with it in the portal and from code. No need to scroll — jump straight in!
+> Build your first real agent - `acl-remedy-advisor` - and chat with it in the portal and from code. No need to scroll - jump straight in!
 
 ## Troubleshooting
 

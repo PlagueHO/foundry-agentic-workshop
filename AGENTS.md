@@ -92,10 +92,10 @@ pnpm run lint:md:fix
 
 The `continuous-integration` workflow triggers on changes to `docs/**`, `labs/**`, `scripts/**`, `shared/**`, and `infra/**`. It runs:
 
-* **markdown-lint** — `pnpm run lint:md:ci`; blocks merge on any failure.
-* **docs-build** — `pnpm run docs:build`; blocks merge on build errors.
-* **lint-and-publish-bicep** — `az bicep lint` on all Bicep files; blocks merge.
-* **validate-infrastructure** — validates Bicep parameters and deploy config.
+* **markdown-lint** - `pnpm run lint:md:ci`; blocks merge on any failure.
+* **docs-build** - `pnpm run docs:build`; blocks merge on build errors.
+* **lint-and-publish-bicep** - `az bicep lint` on all Bicep files; blocks merge.
+* **validate-infrastructure** - validates Bicep parameters and deploy config.
 
 Treat local lint and validation commands as required quality gates before opening a PR.
 

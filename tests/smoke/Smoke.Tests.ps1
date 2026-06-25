@@ -119,7 +119,7 @@ BeforeDiscovery {
                         $orgGrpIdx++
                     }
                     default {
-                        # Standard group — covers foundry-user, foundry-project-manager,
+                        # Standard group - covers foundry-user, foundry-project-manager,
                         # foundry-account-owner, foundry-owner, and any attendee with no role.
                         $includesProject = -not $attendee.PSObject.Properties.Name.Contains('individualProject') -or
                             $attendee.individualProject -ne $false

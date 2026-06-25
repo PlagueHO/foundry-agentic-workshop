@@ -2,7 +2,7 @@
 
 **Estimated time:** 20 minutes
 
-![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars — Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/what-is-an-agent.png)
+![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars - Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/what-is-an-agent.png)
 
 > [!IMPORTANT]
 > This module builds on [Module 01](../01-setup/README.md). Complete Module 01 and confirm your `.env` is configured before starting here.
@@ -22,14 +22,14 @@
 
 ### What is AIProjectClient?
 
-`AIProjectClient` is the entry point to your Azure AI Foundry project from .NET. You construct it with your project endpoint and an Azure credential — no API keys required. Once created, the client gives you access to models, agents, and other Foundry resources inside the project.
+`AIProjectClient` is the entry point to your Azure AI Foundry project from .NET. You construct it with your project endpoint and an Azure credential - no API keys required. Once created, the client gives you access to models, agents, and other Foundry resources inside the project.
 
 ```csharp
 var credential = new AzureCliCredential();
 var client = new AIProjectClient(new Uri(endpoint), credential);
 ```
 
-`AzureCliCredential` authenticates using the identity from your active `az login` session. In environments where multiple credential sources are present — such as VS Code, GitHub Copilot, or managed identity — `DefaultAzureCredential` may resolve a different identity before reaching the CLI, which can cause permission errors. Using `AzureCliCredential` makes the authentication path explicit.
+`AzureCliCredential` authenticates using the identity from your active `az login` session. In environments where multiple credential sources are present - such as VS Code, GitHub Copilot, or managed identity - `DefaultAzureCredential` may resolve a different identity before reaching the CLI, which can cause permission errors. Using `AzureCliCredential` makes the authentication path explicit.
 
 ### What is AIAgent?
 
@@ -41,7 +41,7 @@ var agent = client.AsAIAgent(
     instructions: "You are a helpful travel assistant.");
 ```
 
-The agent holds no conversation state by default — each `RunAsync` call is an independent single turn. You add state in [Module 03](../03-multi-turn/README.md) using `AgentSession`.
+The agent holds no conversation state by default - each `RunAsync` call is an independent single turn. You add state in [Module 03](../03-multi-turn/README.md) using `AgentSession`.
 
 ### Single-turn vs streaming
 
@@ -58,7 +58,7 @@ For a deeper introduction to the framework, see the [Microsoft Agent Framework d
 
 ## Steps
 
-### Part 1 — Complete the starter code
+### Part 1 - Complete the starter code
 
 #### 1. Open the starter file
 
@@ -129,7 +129,7 @@ We will send a second prompt to the agent and stream the response token-by-token
 
   `RunStreamingAsync` returns each token as it is generated. The `await foreach` loop prints each chunk immediately, producing a live-streaming effect.
 
-### Part 2 — Run and verify
+### Part 2 - Run and verify
 
 #### 6. Run the starter
 
@@ -149,7 +149,7 @@ We will send a second prompt to the agent and stream the response token-by-token
 - Both responses address the passenger rights question about a cancelled flight.
 
 > [!NOTE]
-> The reference `solution/` includes additional diagnostic output — status lines, timing, and a completion message — added for readability. Your completed starter shows only the `[User]` and `[Agent]` blocks above.
+> The reference `solution/` includes additional diagnostic output - status lines, timing, and a completion message - added for readability. Your completed starter shows only the `[User]` and `[Agent]` blocks above.
 
 ## Congratulations 🎉
 
@@ -157,7 +157,7 @@ You created your first agent with the Microsoft Agent Framework. You connected t
 
 > [!TIP]
 > **Next up → [Module 03: Multi-turn Conversations](../03-multi-turn/README.md)**
-> Add an `AgentSession` so the agent remembers what Emma said earlier — no more repeating context across turns.
+> Add an `AgentSession` so the agent remembers what Emma said earlier - no more repeating context across turns.
 
 ## Troubleshooting
 
@@ -165,4 +165,4 @@ You created your first agent with the Microsoft Agent Framework. You connected t
 |---|---|
 | `FOUNDRY_PROJECT_ENDPOINT is not set` | Copy `shared/.env.example` to `.env` in the repository root and fill in your Foundry details |
 | `AuthenticationFailedException` | Run `az login` or confirm your managed identity has the correct role |
-| `NotImplementedException` | A TODO is still incomplete — check the starter code |
+| `NotImplementedException` | A TODO is still incomplete - check the starter code |

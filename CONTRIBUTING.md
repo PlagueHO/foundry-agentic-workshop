@@ -10,11 +10,11 @@ Opening an issue first lets maintainers confirm the change is in scope, avoids d
 
 ## Ways to contribute
 
-- **Bug reports** — incorrect lab steps, broken code, outdated screenshots
-- **Content improvements** — clearer wording, better examples, missing validation steps
-- **New lab content** — new lab modules that extend the existing progression
-- **Infrastructure fixes** — Bicep correctness, security, or reliability improvements
-- **Documentation** — guides, quickstarts, architecture docs
+- **Bug reports** - incorrect lab steps, broken code, outdated screenshots
+- **Content improvements** - clearer wording, better examples, missing validation steps
+- **New lab content** - new lab modules that extend the existing progression
+- **Infrastructure fixes** - Bicep correctness, security, or reliability improvements
+- **Documentation** - guides, quickstarts, architecture docs
 
 ## Raising an issue
 
@@ -31,11 +31,11 @@ Opening an issue first lets maintainers confirm the change is in scope, avoids d
 1. Fork the repository and create a branch from `main` with a descriptive name (for example, `fix/lab-04-missing-env-var` or `feat/lab-13-observability`).
 1. Make your changes following the conventions below.
 1. Verify your changes locally:
-   - `pnpm run lint:md` — no Markdown lint errors
-   - `az bicep lint --file infra/main.bicep` — no Bicep lint errors (if you changed Bicep)
-   - `python -m compileall labs scripts shared` — Python compiles cleanly
+   - `pnpm run lint:md` - no Markdown lint errors
+   - `az bicep lint --file infra/main.bicep` - no Bicep lint errors (if you changed Bicep)
+   - `python -m compileall labs scripts shared` - Python compiles cleanly
 1. Reference the issue your PR resolves in the PR description (for example, `Closes #42`).
-1. Keep PRs focused — one concern per PR. Large or sweeping changes are harder to review and more likely to be rejected.
+1. Keep PRs focused - one concern per PR. Large or sweeping changes are harder to review and more likely to be rejected.
 
 ## Repository conventions
 
@@ -54,8 +54,8 @@ Opening an issue first lets maintainers confirm the change is in scope, avoids d
 
 - Steps must be concrete and numbered so an attendee can follow them without ambiguity.
 - Validation sections must describe observable outcomes (commands, UI states, or printed output the attendee can verify).
-- Use real, working example prompts — no placeholder text such as "enter some text here".
-- Verify technical accuracy against [Microsoft Learn](https://learn.microsoft.com/azure/ai-foundry/) before adding or changing steps.
+- Use real, working example prompts - no placeholder text such as "enter some text here".
+- Verify technical accuracy against [Microsoft Learn](https://learn.microsoft.com/azure/foundry/) before adding or changing steps.
 
 ## Code of conduct
 

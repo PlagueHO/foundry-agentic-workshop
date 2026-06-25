@@ -13,6 +13,7 @@
     <PackageVersion Include="ModelContextProtocol" Version="*" />
     <PackageVersion Include="Microsoft.Agents.AI.Harness" Version="*-*" />
     <!-- Azure -->
+    <PackageVersion Include="Azure.AI.Projects.Agents" Version="*-*" />
     <PackageVersion Include="Azure.Identity" Version="*" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.Exporter" Version="*" />
     <PackageVersion Include="Azure.Search.Documents" Version="*" />

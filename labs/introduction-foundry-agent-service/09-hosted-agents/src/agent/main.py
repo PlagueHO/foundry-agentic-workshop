@@ -7,7 +7,7 @@ probes ``/readiness`` automatically.
 
 The agent calls the live **Retail Remedy Operations MCP server** from Module 06 over
 ``RETAIL_REMEDY_OPS_MCP_SERVER_URL`` (the same public dev-tunnel endpoint you used there), and also enables
-the Foundry hosted **web search** and **code interpreter** tools — matching the tool set of
+the Foundry hosted **web search** and **code interpreter** tools - matching the tool set of
 the ``acl-remedy-advisor`` Prompt Agent from Module 06.
 
 Because the MCP server is anonymous (no auth), the hosted agent needs no extra permissions
@@ -63,7 +63,7 @@ INSTRUCTIONS = (
     'Always state clearly that you provide general guidance, not legal advice, and\n'
     'that "no refund" signs are unlawful under the ACL.\n'
     '\n'
-    'Be concise and practical — retail staff need fast, clear answers in a busy\n'
+    'Be concise and practical - retail staff need fast, clear answers in a busy\n'
     'store environment.'
 )
 
@@ -87,7 +87,7 @@ def build_agent() -> Agent:
 
     # Module 06 tool set: the live retail_remedy_ops MCP server plus the Foundry hosted web
     # search and code interpreter tools (served by the model). The MCP server is anonymous,
-    # so the hosted agent only needs outbound access to the public tunnel URL — no RBAC.
+    # so the hosted agent only needs outbound access to the public tunnel URL - no RBAC.
     retail_remedy_ops = MCPStreamableHTTPTool(
         name=os.environ.get('RETAIL_REMEDY_OPS_MCP_SERVER_LABEL', 'retail_remedy_ops'),
         url=mcp_server_url,

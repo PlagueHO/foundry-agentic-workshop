@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="960" viewBox="0 0 1280 960" font-family="'Segoe UI',Arial,sans-serif">
-  <title>Microsoft Foundry Agentic Workshop — Azure Architecture</title>
+  <title>Microsoft Foundry Agentic Workshop - Azure Architecture</title>
   <desc>All workshop resources live in a single Azure resource group. A Microsoft Foundry (AI Services) account hosts one Foundry project per attendee, the model deployments (chat gpt-5.3-chat, embedding text-embedding-3-small, gpt-5.4, gpt-5.4-mini and gpt-5.4-nano) and the agent connections. The account always connects to Azure AI Search (search and vector store for Foundry IQ), Azure Container Registry (hosted agent images) and Application Insights (agent telemetry). Optional capability-host connections add Azure Cosmos DB (serverless, agent thread storage) and an Azure Storage account (agent file storage). An Azure Container Apps environment runs the Module 06 Retail Remedy Operations MCP server, which Foundry agents reach over HTTPS and which pulls its image from the container registry. Workshop attendees connect from GitHub Codespaces using the Python AIProjectClient SDK and push hosted-agent images to the registry. Azure Key Vault provides RBAC secret storage, and all resources emit diagnostics to a central Log Analytics workspace that backs Application Insights.</desc>
 
   <defs>
@@ -158,7 +158,7 @@
   <rect width="1280" height="960" fill="#FFFFFF"/>
 
   <!-- Title -->
-  <text x="640" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#1A1A1A">Microsoft Foundry Agentic Workshop — Azure Architecture</text>
+  <text x="640" y="32" text-anchor="middle" font-size="20" font-weight="700" fill="#1A1A1A">Microsoft Foundry Agentic Workshop - Azure Architecture</text>
   <text x="640" y="54" text-anchor="middle" font-size="12" fill="#607D8B">Provisioned by infra/main.bicep · single resource group · shared workshop services with per-attendee Foundry projects</text>
 
   <!-- External actor: Workshop attendee -->
@@ -172,13 +172,13 @@
   <rect x="40" y="196" width="1200" height="724" rx="10" fill="#FBFDFF" stroke="#0078D4" stroke-width="2" stroke-dasharray="9 5"/>
   <path d="M40 206 Q40 196 50 196 L470 196 L470 230 L40 230 Z" fill="url(#gSlate)"/>
   <use href="#icRg" x="50" y="200" width="26" height="26"/>
-  <text x="84" y="218" font-size="13" font-weight="700" fill="#FFFFFF">Resource Group — rg-&lt;environmentName&gt;</text>
+  <text x="84" y="218" font-size="13" font-weight="700" fill="#FFFFFF">Resource Group - rg-&lt;environmentName&gt;</text>
 
   <!-- ============ MICROSOFT FOUNDRY ACCOUNT ============ -->
   <rect x="64" y="252" width="556" height="520" rx="8" fill="#E3F2FD" stroke="#0078D4" stroke-width="2"/>
   <path d="M64 262 Q64 252 74 252 L610 252 Q620 252 620 262 L620 286 L64 286 Z" fill="#0078D4"/>
   <use href="#icFoundry" x="74" y="256" width="26" height="26"/>
-  <text x="108" y="274" font-size="14" font-weight="700" fill="#FFFFFF">Microsoft Foundry — AI Services account</text>
+  <text x="108" y="274" font-size="14" font-weight="700" fill="#FFFFFF">Microsoft Foundry - AI Services account</text>
 
   <!-- Foundry Projects card (stacked) -->
   <rect x="92" y="306" width="246" height="172" rx="8" fill="#FFFCF0" stroke="#FFB900" stroke-width="1.5" transform="translate(8 8)" opacity="0.55"/>
@@ -197,8 +197,8 @@
   <use href="#icModel" x="372" y="320" width="40" height="40"/>
   <text x="422" y="334" font-size="13" font-weight="700" fill="#1A1A1A">Model Deployments</text>
   <text x="422" y="352" font-size="10.5" fill="#666666">GlobalStandard · OpenAI</text>
-  <text x="378" y="382" font-size="11" fill="#444444">• chat — gpt-5.3-chat</text>
-  <text x="378" y="402" font-size="11" fill="#444444">• embedding — t-emb-3-small</text>
+  <text x="378" y="382" font-size="11" fill="#444444">• chat - gpt-5.3-chat</text>
+  <text x="378" y="402" font-size="11" fill="#444444">• embedding - t-emb-3-small</text>
   <text x="378" y="422" font-size="11" fill="#444444">• gpt-5.4 · mini · nano</text>
   <text x="378" y="465" font-size="10" fill="#888888">RAI: FoundryWorkshopContentPolicy</text>
 
@@ -216,9 +216,9 @@
 
   <text x="112" y="624" font-size="10.5" fill="#666666">Optional capability hosts (Agents kind)</text>
   <rect x="112" y="634" width="210" height="34" rx="6" fill="#FFFFFF" stroke="#5C6BC0" stroke-width="1.3" stroke-dasharray="5 3"/>
-  <text x="217" y="656" text-anchor="middle" font-size="11" fill="#3949AB">Cosmos DB — thread storage</text>
+  <text x="217" y="656" text-anchor="middle" font-size="11" fill="#3949AB">Cosmos DB - thread storage</text>
   <rect x="334" y="634" width="180" height="34" rx="6" fill="#FFFFFF" stroke="#5C6BC0" stroke-width="1.3" stroke-dasharray="5 3"/>
-  <text x="424" y="656" text-anchor="middle" font-size="11" fill="#3949AB">Storage — file storage</text>
+  <text x="424" y="656" text-anchor="middle" font-size="11" fill="#3949AB">Storage - file storage</text>
 
   <text x="112" y="700" font-size="10.5" fill="#444444" font-weight="600">Foundry IQ knowledge bases &amp; agent threads</text>
   <text x="112" y="718" font-size="10" fill="#888888">Vector store + thread + file connections power agentic retrieval</text>

@@ -11,7 +11,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 03: Multi-turn & Threads ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 03: Multi-turn & Threads ===");
 Console.WriteLine();
 
 // ── TODO 1 ───────────────────────────────────────────────────────────────────
@@ -23,7 +23,7 @@ Console.WriteLine();
 //     model: model,
 //     instructions:
 //         "You are the Trip Disruption Concierge. Help passengers with flight " +
-//         "disruptions. Remember everything from earlier in the conversation — " +
+//         "disruptions. Remember everything from earlier in the conversation - " +
 //         "the passenger must not need to repeat information they have already " +
 //         "provided.");
 //

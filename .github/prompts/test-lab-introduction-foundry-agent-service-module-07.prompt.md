@@ -13,11 +13,11 @@ You must test the steps in the #file:labs/introduction-foundry-agent-service/07-
 
 > **Important:** Any Azure or GitHub login dialogs that appear during the test must be completed by the user. Pause and prompt the user whenever a sign-in dialog is encountered. Do not attempt to enter credentials automatically.
 
-## Pre-flight — Verify the environment is ready
+## Pre-flight - Verify the environment is ready
 
-Before executing any lab steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** — report the failure and ask the user to resolve it.
+Before executing any lab steps, confirm all prerequisites are satisfied. **Do not proceed if any check fails** - report the failure and ask the user to resolve it.
 
-### Check 1 — Confirm the Foundry portal is open and authenticated
+### Check 1 - Confirm the Foundry portal is open and authenticated
 
 1. Use `open_browser_page` to list currently available pages and confirm a page is open at `https://ai.azure.com`.
 1. If no such page is available, use `open_browser_page` to navigate to `https://ai.azure.com`.
@@ -25,7 +25,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm the signed-in account displayed in the top-right corner matches `${input:attendeeUpn}`. If a login dialog or account-picker is shown, pause and instruct the user to sign in with `${input:attendeeUpn}` before continuing. Do not enter credentials automatically.
 1. Navigate to the attendee's Foundry project (use **All projects** to find the project assigned to `${input:attendeeUpn}` if needed) and note the project name.
 
-### Check 2 — Confirm the Codespace browser page is open and shared
+### Check 2 - Confirm the Codespace browser page is open and shared
 
 1. Use `open_browser_page` to confirm a page is open with a URL matching `*.github.dev/*` or `github.dev/*`, indicating a GitHub Codespace connected to VS Code in the browser.
 1. If no such page is available, pause and instruct the user to:
@@ -34,7 +34,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
    - Wait for the devcontainer to finish building, then share the resulting browser tab with this session.
 1. Take a screenshot of the Codespace page to confirm it is showing VS Code with the `foundry-agentic-workshop` repository open.
 
-### Check 3 — Confirm Azure authentication in the Codespace
+### Check 3 - Confirm Azure authentication in the Codespace
 
 1. Switch to the Codespace browser page and open a terminal (if one is not already open).
 1. Run:
@@ -46,7 +46,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm the output shows `${input:attendeeUpn}` as the signed-in user and that the subscription ID matches `AZURE_SUBSCRIPTION_ID` from the environment.
 1. If the command fails or shows a different identity, pause and ask the user to run `az login` in the Codespace terminal and complete the browser sign-in before continuing.
 
-### Check 4 — Confirm the `.env` file exists and contains required values
+### Check 4 - Confirm the `.env` file exists and contains required values
 
 1. In the Codespace terminal, run:
 
@@ -62,16 +62,16 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    **Check:** If `.env` does not exist, confirm with the user that Module 01 has been completed, then copy `shared/.env.example` to `.env` and populate `FOUNDRY_PROJECT_ENDPOINT`, `RETAIL_REMEDY_OPS_MCP_SERVER_URL`, and `KNOWLEDGE_BASE_NAME` from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`.
 
-### Check 5 — Confirm the attendee can create knowledge bases
+### Check 5 - Confirm the attendee can create knowledge bases
 
 Creating a Foundry IQ knowledge base requires the **`foundry-project-manager`** role or higher. The `foundry-user` role cannot create knowledge bases.
 
 1. In the Foundry portal, confirm the attendee can reach **Build → Knowledge** in the project's left navigation.
 1. If the **Create a knowledge base** action is disabled or returns an access error in Part 1, pause and ask the organizer to elevate `${input:attendeeUpn}` to `foundry-project-manager` (the recommended default is `AZURE_ATTENDEE_DEFAULT_ROLE=foundry-project-manager`). After elevation, have the user sign out of the portal and sign back in to refresh the token.
 
-### Check 6 — Confirm the `acl-remedy-advisor` agent exists at the end state of Module 06
+### Check 6 - Confirm the `acl-remedy-advisor` agent exists at the end state of Module 06
 
-This module requires the `acl-remedy-advisor` agent to already exist with three direct tools — **Web search**, **Code Interpreter**, and the **`retail-remedy-ops` MCP** server — saved as **v3** during Module 06.
+This module requires the `acl-remedy-advisor` agent to already exist with three direct tools - **Web search**, **Code Interpreter**, and the **`retail-remedy-ops` MCP** server - saved as **v3** during Module 06.
 
 1. In the Foundry portal, navigate to the attendee's project and click **Agents** (under **Build**) in the left navigation.
 1. Confirm `acl-remedy-advisor` is listed and open it.
@@ -87,7 +87,7 @@ This module requires the `acl-remedy-advisor` agent to already exist with three 
 
    Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set in `.env` first. Then re-verify the agent state before proceeding.
 
-### Check 7 — Confirm the search indexes exist and are populated
+### Check 7 - Confirm the search indexes exist and are populated
 
 Module 07 grounds the agent on two pre-seeded Azure AI Search indexes connected to the project.
 
@@ -106,9 +106,9 @@ Module 07 grounds the agent on two pre-seeded Azure AI Search indexes connected 
    python scripts/seed-document-index.py
    ```
 
-   **Check:** The workshop indexes live in the connected Azure AI Search service, not in Foundry, so they do **not** appear on the Foundry **Indexes** tab — this is expected. They are still selectable by name in the **Select search index** dropdown in Part 1.
+   **Check:** The workshop indexes live in the connected Azure AI Search service, not in Foundry, so they do **not** appear on the Foundry **Indexes** tab - this is expected. They are still selectable by name in the **Select search index** dropdown in Part 1.
 
-### Check 8 — Confirm the MCP server is reachable
+### Check 8 - Confirm the MCP server is reachable
 
 The agent routes operational lookups to the `retail-remedy-ops` MCP server (from Module 06). Confirm it is reachable before testing in Part 6.
 
@@ -131,9 +131,9 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
 
 ---
 
-## Part 1 — Create the knowledge base and add the first source
+## Part 1 - Create the knowledge base and add the first source
 
-### Step 1 — Open the Knowledge page
+### Step 1 - Open the Knowledge page
 
 1. In the Foundry portal, navigate to the attendee's project.
 1. In the left navigation under **Build**, click **Knowledge**.
@@ -142,7 +142,7 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
 
    **Check:** If **Knowledge** is not visible in the left navigation, confirm you are inside a project (not at the account or **All projects** level). If the **Create a knowledge base** button is disabled, revisit Check 5 (role elevation).
 
-### Step 2 — Choose the knowledge type
+### Step 2 - Choose the knowledge type
 
 1. Click **Create a knowledge base**. Confirm the **Choose a knowledge type** dialog opens, listing source types (Azure AI Search Index, Azure Blob Storage, Web, SharePoint, OneLake, Fabric IQ, Azure SQL, Work IQ, File, MCP Server).
 1. Select the **Azure AI Search Index** tile ("Enterprise scale search for app development").
@@ -152,7 +152,7 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
 
    **Check:** If the **Create a knowledge source** dialog does not appear automatically, look for an **Add sources** dropdown on the Create a new knowledge base page and choose **Azure AI Search Index** from it.
 
-### Step 3 — Create the retail-products knowledge source
+### Step 3 - Create the retail-products knowledge source
 
 1. In the **Create a knowledge source** dialog, set the fields:
    - **Name**: replace the default (for example `ks-searchindex-69`) with:
@@ -168,7 +168,7 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
      ```
 
    - **Select search index**: choose **retail-products** from the dropdown (use the value of `AZURE_SEARCH_PRODUCT_INDEX_NAME` if it differs from the default).
-1. Confirm there is **no field mapping step** — Foundry IQ reads the index's semantic configuration automatically. Confirm the dialog notes *"Search index must contain semantic configuration"*.
+1. Confirm there is **no field mapping step** - Foundry IQ reads the index's semantic configuration automatically. Confirm the dialog notes *"Search index must contain semantic configuration"*.
 1. Take a screenshot of the Create a knowledge source dialog with `retail-products` configured.
 1. Click **Create**. Confirm the source appears in the knowledge base's **Knowledge sources** list with type **Azure AI Search Index**.
 1. Take a screenshot of the Create a new knowledge base page showing the `retail-products` source listed.
@@ -179,9 +179,9 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
 
 ---
 
-## Part 2 — Add the retail-policies knowledge source
+## Part 2 - Add the retail-policies knowledge source
 
-### Step 4 — Add the second source
+### Step 4 - Add the second source
 
 1. On the **Create a new knowledge base** page, open the **Add sources** dropdown and choose **Azure AI Search Index** again.
 1. In the **Create a knowledge source** dialog, set the fields:
@@ -205,9 +205,9 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
 
 ---
 
-## Part 3 — Name and save the knowledge base
+## Part 3 - Name and save the knowledge base
 
-### Step 5 — Complete the basic configuration
+### Step 5 - Complete the basic configuration
 
 1. In the **Basic configuration** section, set:
    - **Name**: use the per-attendee knowledge base name from `KNOWLEDGE_BASE_NAME` (for example, `acl-remedy-knowledge-lab-attendee-1`).
@@ -226,19 +226,19 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
 
    **Check:** If either source shows a status other than **Active**, wait a few seconds and refresh. If a source remains inactive, remove and re-add it via the **Add sources** dropdown.
 
-### Step 6 — Save the knowledge base
+### Step 6 - Save the knowledge base
 
 1. Click **Save knowledge base** in the top-right.
 1. Wait for creation to complete. Confirm the knowledge base detail page opens (its heading is the knowledge base name) with **Save** and **Use in an agent** buttons in the top-right.
 1. Take a screenshot of the knowledge base detail page.
 
-   **Check:** If the save fails with an access error, revisit Check 5 — knowledge base creation requires the `foundry-project-manager` role. After elevation, sign out and back in, then retry from Step 1 (the partially configured knowledge base may need to be recreated).
+   **Check:** If the save fails with an access error, revisit Check 5 - knowledge base creation requires the `foundry-project-manager` role. After elevation, sign out and back in, then retry from Step 1 (the partially configured knowledge base may need to be recreated).
 
 ---
 
-## Part 4 — Attach the knowledge base to the agent
+## Part 4 - Attach the knowledge base to the agent
 
-### Step 7 — Use the knowledge base in an agent
+### Step 7 - Use the knowledge base in an agent
 
 1. On the knowledge base detail page, click **Use in an agent** in the top-right.
 1. In the **Recent agents** dropdown, select **acl-remedy-advisor** (use **View all agents** if it is not listed).
@@ -246,7 +246,7 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
 
    **Check:** If `acl-remedy-advisor` is not listed under Recent agents or View all agents, confirm the agent exists in the same project (revisit Check 6).
 
-### Step 8 — Confirm the Knowledge section
+### Step 8 - Confirm the Knowledge section
 
 1. Confirm you land on the **acl-remedy-advisor** agent's **Build** page.
 1. Scroll the configuration panel and confirm a **Knowledge** section now lists your knowledge base, separate from the **Tools** section (which still shows **Code interpreter**, **Web search**, and the `retail-remedy-ops` MCP server).
@@ -257,28 +257,28 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
 
 ---
 
-## Part 5 — Update the agent instructions
+## Part 5 - Update the agent instructions
 
-### Step 9 — Add tool-routing and grounding instructions
+### Step 9 - Add tool-routing and grounding instructions
 
 1. In the **Instructions** field, confirm the existing instructions from Modules 04–06 are present and intact (base ACL advisor text, the Code Interpreter paragraph, and the MCP tool-routing paragraph).
 1. Position the cursor at the end of the existing instructions and press **Enter** twice to create a blank line.
 1. Add the following paragraphs exactly:
 
    ```text
-   When a staff member provides a receipt ID, order ID, or customer ID — or asks
-   you to look up a purchase, verify an order, or open a support case — use the
+   When a staff member provides a receipt ID, order ID, or customer ID - or asks
+   you to look up a purchase, verify an order, or open a support case - use the
    retail-remedy-ops tools to perform that operational lookup or action. Never
    invent receipt, order, or case details; always retrieve them with the tools.
 
-   When answering questions about specific products available in the store —
+   When answering questions about specific products available in the store -
    including product names, descriptions, categories, prices, ratings, or stock
-   availability — use the knowledge base to retrieve accurate product information
+   availability - use the knowledge base to retrieve accurate product information
    and cite the source in your response.
 
-   When answering questions about store policies — including return windows,
+   When answering questions about store policies - including return windows,
    refund eligibility, warranty coverage, loyalty program rules, or store-brand
-   guarantees — use the knowledge base to retrieve the relevant policy and quote
+   guarantees - use the knowledge base to retrieve the relevant policy and quote
    it directly.
 
    Prefer knowledge base retrieval over your training knowledge for all product
@@ -295,7 +295,7 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
 
    **Check:** Confirm the original Modules 04–06 instructions remain intact above the new paragraphs. If any text was accidentally replaced, undo and retry.
 
-### Step 10 — Save the agent
+### Step 10 - Save the agent
 
 1. Click **Save** in the top-right.
 1. Wait for the save to complete and confirm the agent advances to a new version (for example, **Version 5** / **v5**).
@@ -305,11 +305,11 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
 
 ---
 
-## Part 6 — Test grounded retrieval
+## Part 6 - Test grounded retrieval
 
 > **Important:** Confirm the MCP server is still reachable before testing (Check 8). The agent routes operational lookups (Step 12) to the `retail-remedy-ops` server.
 
-### Step 11 — Run a combined policy query
+### Step 11 - Run a combined policy query
 
 1. Open the **Playground** (Chat) panel for the agent (ensure it targets the latest version saved in Step 10).
 1. Send the following message:
@@ -323,29 +323,29 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
    - Answers **14 days** for non-perishable returns with a receipt and **48 hours** for reporting spoiled perishable items.
    - Includes numbered citations (for example `[1]` `[2]`) that link to `mcp://searchindex/...` sources.
    - Shows the knowledge base tool chip (for example `kb-...`) in the response trace.
-1. Confirm the agent did **not** invoke the `retail-remedy-ops` MCP tools for this query — it has no receipt or customer ID, so it should ground from the knowledge base only.
+1. Confirm the agent did **not** invoke the `retail-remedy-ops` MCP tools for this query - it has no receipt or customer ID, so it should ground from the knowledge base only.
 
-   **Check:** If the response is not cited and uses generic retail conventions instead of the workshop data, re-read the instructions from Step 9. The phrase *"Prefer knowledge base retrieval over your training knowledge"* is required — without it the model may default to training knowledge. Confirm the **Knowledge** section still lists the knowledge base (Step 8).
+   **Check:** If the response is not cited and uses generic retail conventions instead of the workshop data, re-read the instructions from Step 9. The phrase *"Prefer knowledge base retrieval over your training knowledge"* is required - without it the model may default to training knowledge. Confirm the **Knowledge** section still lists the knowledge base (Step 8).
 
    **Check:** If the response returns an access error (HTTP 403) when retrieving from the knowledge base, the project's managed identity may be missing the **Search Index Data Reader** role on the Azure AI Search service. The workshop infrastructure assigns this automatically; data-plane assignments can take several minutes to propagate. Wait and retry, or ask the organizer to re-run `azd provision` to reconcile role assignments.
 
-### Step 12 — (Optional) Exercise the other tools
+### Step 12 - (Optional) Exercise the other tools
 
-1. **Product lookup (knowledge base):** send *"Recommend a healthy breakfast cereal with nuts, and include its price and rating."* — confirm a specific product from `retail-products` with a citation.
-1. **Operational lookup (retail-remedy-ops):** provide a receipt ID from Module 06 and ask the agent to look it up — confirm an MCP tool call appears in the trace.
-1. **Consumer law guidance (web search):** send *"What does the ACCC say about repair versus replacement for a major failure?"* — confirm a web-search-grounded answer citing accc.gov.au.
-1. **Calculation (Code Interpreter):** send *"A customer paid $480 for an appliance 18 months into a 36-month expected life. Calculate a pro-rata refund."* — confirm a worked calculation.
+1. **Product lookup (knowledge base):** send *"Recommend a healthy breakfast cereal with nuts, and include its price and rating."* - confirm a specific product from `retail-products` with a citation.
+1. **Operational lookup (retail-remedy-ops):** provide a receipt ID from Module 06 and ask the agent to look it up - confirm an MCP tool call appears in the trace.
+1. **Consumer law guidance (web search):** send *"What does the ACCC say about repair versus replacement for a major failure?"* - confirm a web-search-grounded answer citing accc.gov.au.
+1. **Calculation (Code Interpreter):** send *"A customer paid $480 for an appliance 18 months into a 36-month expected life. Calculate a pro-rata refund."* - confirm a worked calculation.
 1. Take a screenshot of any tool-exercising response and its trace.
 
    **Check:** If operational lookups do not call the MCP server, re-run the `curl` reachability check from Check 8 and confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` still points at a reachable endpoint. Adding the knowledge base must not displace the existing tools.
 
 ---
 
-## Part 7 (optional) — Recreate the end state from code
+## Part 7 (optional) - Recreate the end state from code
 
 If the portal walkthrough cannot be completed (for example in a Codespace with network restrictions, or to reset an attendee project to a known-good state), the Module 07 solution script reproduces the same end state: two knowledge sources, the knowledge base, the project connection, and a new agent version that attaches the knowledge base as an MCP tool with tool-routing instructions.
 
-### Step 13 — Run the solution script
+### Step 13 - Run the solution script
 
 1. In the Codespace terminal, confirm `FOUNDRY_PROJECT_ENDPOINT`, `AZURE_SEARCH_SERVICE_NAME`, `KNOWLEDGE_BASE_NAME`, and `RETAIL_REMEDY_OPS_MCP_SERVER_URL` are set in `.env`.
 1. Run the script from the repository root:
@@ -362,7 +362,7 @@ If the portal walkthrough cannot be completed (for example in a Codespace with n
 
 ---
 
-## Validation — confirm all criteria
+## Validation - confirm all criteria
 
 Work through each item in the lab's Validation section and confirm:
 
@@ -376,7 +376,7 @@ Work through each item in the lab's Validation section and confirm:
 
 ---
 
-## Step 14 — Report results
+## Step 14 - Report results
 
 Report the outcome of every check and step above. For each one state whether it **passed** or **failed**. For any failure, include:
 

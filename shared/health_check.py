@@ -458,7 +458,7 @@ def _check_roles(sub: str, rg: str, foundry: str) -> None:
 
     rg_scope = f'/subscriptions/{sub}/resourceGroups/{rg}'
 
-    # Foundry account — include inherited assignments so attendees whose Foundry role is
+    # Foundry account - include inherited assignments so attendees whose Foundry role is
     # granted on their individual project (foundry-user) or via the resource group still
     # register a result here.
     foundry_scope = f'{rg_scope}/providers/Microsoft.CognitiveServices/accounts/{foundry}'
@@ -466,7 +466,7 @@ def _check_roles(sub: str, rg: str, foundry: str) -> None:
         'Role assigned on Foundry account', user_id, foundry_scope, sub, include_inherited=True,
     )
 
-    # Dependent resources — main.bicep grants each resolved attendee a direct role on these.
+    # Dependent resources - main.bicep grants each resolved attendee a direct role on these.
     dependent_resources = [
         ('AI Search service', 'Microsoft.Search/searchServices'),
         ('Container Registry', 'Microsoft.ContainerRegistry/registries'),
@@ -493,7 +493,7 @@ def _check_endpoints(  # pylint: disable=too-many-locals,too-many-branches,too-m
     # The new Foundry v1 endpoints require the ai.azure.com audience, not cognitiveservices.
     foundry_token = _get_token('https://ai.azure.com')
 
-    # Foundry project endpoint — probe GET {endpoint}/connections
+    # Foundry project endpoint - probe GET {endpoint}/connections
     if foundry_token and endpoint:
         probe_url = endpoint.rstrip('/') + '/connections?api-version=2025-05-15-preview'
         try:
@@ -526,7 +526,7 @@ def _check_endpoints(  # pylint: disable=too-many-locals,too-many-branches,too-m
             f'URL {probe_url} | missing token or endpoint',
         )
 
-    # Azure OpenAI endpoint — probe GET {endpoint}/models
+    # Azure OpenAI endpoint - probe GET {endpoint}/models
     if foundry_token and openai_endpoint:
         probe_url = openai_endpoint.rstrip('/') + '/models'
         try:

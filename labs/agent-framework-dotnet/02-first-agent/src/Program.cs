@@ -12,7 +12,7 @@ var endpoint = Environment.GetEnvironmentVariable("FOUNDRY_PROJECT_ENDPOINT")
 
 var model = Environment.GetEnvironmentVariable("AGENT_MODEL") ?? "chat";
 
-Console.WriteLine("=== Trip Disruption Concierge — Module 02: Your First Agent ===");
+Console.WriteLine("=== Trip Disruption Concierge - Module 02: Your First Agent ===");
 Console.WriteLine();
 
 // ── TODO 1 ───────────────────────────────────────────────────────────────────

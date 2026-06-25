@@ -1,5 +1,5 @@
 """
-flight-ops MCP server — provides flight status, rebooking options, and
+flight-ops MCP server - provides flight status, rebooking options, and
 compensation claim tools for the Trip Disruption Concierge demo.
 
 Start with:
@@ -43,7 +43,7 @@ _FLIGHT_STATUS: dict[str, dict] = {
         'destination': 'SYD',
         'scheduled_departure': '2025-06-24T08:00:00+12:00',
         'status': 'CANCELLED',
-        'cancellation_reason': 'Aircraft unserviceable — maintenance fault',
+        'cancellation_reason': 'Aircraft unserviceable - maintenance fault',
         'notice_hours': 3,
     },
     'AU124': {

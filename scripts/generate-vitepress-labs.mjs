@@ -183,7 +183,7 @@ async function main() {
       const trackMarkdown = await fs.readFile(trackReadmePath, 'utf8')
       await writeGeneratedTrackIndex(trackName, trackReadmePath, trackMarkdown)
     } catch {
-      // No track-level README.md — skip
+      // No track-level README.md - skip
     }
 
     const sortedStepNames = stepEntries

@@ -1,4 +1,4 @@
-# Foundry Portal Browser Automation — Reference
+# Foundry Portal Browser Automation - Reference
 
 Detailed patterns for driving the Microsoft Foundry portal (`ai.azure.com`) and a
 GitHub Codespace VS Code workbench (`*.github.dev`) with the browser tools while
@@ -75,7 +75,7 @@ await page.waitForTimeout(800);
 await page.getByRole('option', { name: 'Unauthenticated' }).dispatchEvent('click');
 ```
 
-Validation errors surface as `alert` nodes — read them back to confirm a field was
+Validation errors surface as `alert` nodes - read them back to confirm a field was
 accepted:
 
 ```js
@@ -139,9 +139,9 @@ If either is not ready, stop and ask the user to sign in. Never enter credential
 These bit a real lab and are easy to trip over:
 
 - **Portal Custom MCP connection name**: only letters, digits, **dashes, and dots**
-  — **no underscores**. Error if violated: *"Connection name must be 1-64
+  - **no underscores**. Error if violated: *"Connection name must be 1-64
   characters long and can only contain alphanumeric characters, dashes, and dots."*
-- **Python SDK MCP `server_label`**: only letters, digits, and **underscores** —
+- **Python SDK MCP `server_label`**: only letters, digits, and **underscores** -
   **no dashes**.
 - These rules are mutually exclusive, so the same logical tool legitimately appears
   as `retail-remedy-ops` (portal) and `retail_remedy_ops` (SDK). Do not try to make

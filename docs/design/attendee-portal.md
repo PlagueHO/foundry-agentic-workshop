@@ -1,7 +1,7 @@
 # Attendee Onboarding Portal
 
 The Attendee Onboarding Portal gives every workshop attendee a single URL where they sign in
-with their lab Microsoft account and immediately see their personal `.env` configuration — no
+with their lab Microsoft account and immediately see their personal `.env` configuration - no
 file distribution, no spreadsheets, no manual lookup.
 
 ## Purpose
@@ -98,7 +98,7 @@ The `_upn_key()` function used to derive lookup keys must stay in sync between
 
 The portal is deployed in two stages:
 
-### Stage 1 — Infrastructure (`azd provision`)
+### Stage 1 - Infrastructure (`azd provision`)
 
 `infra/core/host/attendee-portal.bicep` provisions:
 
@@ -109,26 +109,26 @@ The portal is deployed in two stages:
 - Role assignments: Storage Blob Data Reader on the storage account, AcrPull on the container
   registry (assigned by `main.bicep`).
 
-### Stage 2 — Image deploy (`scripts/deploy-attendee-portal.py`)
+### Stage 2 - Image deploy (`scripts/deploy-attendee-portal.py`)
 
 Runs automatically as the `azd` post-provision hook. Steps:
 
-1. `az acr login` — authenticate to the shared Azure Container Registry.
-1. `docker build` — build the portal image from `tools/attendee-portal/`.
-1. `docker push` — push to the registry with a timestamp tag.
-1. `az containerapp update --image` — roll the Container App to the new revision.
+1. `az acr login` - authenticate to the shared Azure Container Registry.
+1. `docker build` - build the portal image from `tools/attendee-portal/`.
+1. `docker push` - push to the registry with a timestamp tag.
+1. `az containerapp update --image` - roll the Container App to the new revision.
 1. Find or create the Entra app registration (`<container_app_name>-easyauth`) with the
    correct redirect URI.
-1. `az ad app update --enable-id-token-issuance true` — required for Container Apps EasyAuth.
-1. `az ad sp create` — create the service principal if it does not exist.
-1. `az ad app credential reset` — get or rotate the client secret.
-1. `az containerapp secret set` — store the client secret in the Container App.
-1. `az containerapp auth microsoft update` — configure EasyAuth with the tenant ID and
+1. `az ad app update --enable-id-token-issuance true` - required for Container Apps EasyAuth.
+1. `az ad sp create` - create the service principal if it does not exist.
+1. `az ad app credential reset` - get or rotate the client secret.
+1. `az containerapp secret set` - store the client secret in the Container App.
+1. `az containerapp auth microsoft update` - configure EasyAuth with the tenant ID and
    client secret reference.
-1. `az containerapp auth update --enabled true --action RedirectToLoginPage` — enable
+1. `az containerapp auth update --enabled true --action RedirectToLoginPage` - enable
    authentication and set the default action.
 
-The script is idempotent — it can be re-run safely at any time to re-apply EasyAuth or push
+The script is idempotent - it can be re-run safely at any time to re-apply EasyAuth or push
 a new image.
 
 ### Prerequisites
@@ -141,7 +141,7 @@ To skip the portal deployment, set `AZURE_CONTAINER_APPS_DEPLOY=false` before pr
 
 ## Portal Application (`tools/attendee-portal/src/app.py`)
 
-The portal is a minimal FastAPI application. It is intentionally stateless — every request
+The portal is a minimal FastAPI application. It is intentionally stateless - every request
 loads `index.json` from blob storage.
 
 ### Endpoints
@@ -150,7 +150,7 @@ loads `index.json` from blob storage.
 |----------|--------------|-------------|
 | `GET /` | Yes (EasyAuth) | Renders the personalised onboarding page. |
 | `GET /download-env` | Yes (EasyAuth) | Returns the attendee's `.env` as a file download (`Content-Disposition: attachment; filename=".env"`). |
-| `GET /healthz` | No | Liveness probe — returns `ok`. |
+| `GET /healthz` | No | Liveness probe - returns `ok`. |
 
 ### Security
 
@@ -205,5 +205,5 @@ The portal renders a full workshop-branded HTML page with:
 
 ## Troubleshooting
 
-See the [Organizer Guide — Portal troubleshooting](../guide-organizer.md#portal-troubleshooting)
+See the [Organizer Guide - Portal troubleshooting](../guide-organizer.md#portal-troubleshooting)
 for a table of common symptoms and fixes.
