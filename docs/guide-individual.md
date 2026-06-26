@@ -87,7 +87,7 @@ If the UPN cannot be retrieved, the project name falls back to `attendee-01`.
 1. Open the [Microsoft Foundry portal](https://ai.azure.com) and confirm your project appears.
 
 1. Begin the labs. Start with
-   [Lab 01 – Setup](../labs/introduction-foundry-agent-service/01-setup/README.md).
+   [Lab 01 – Setup](./lab-steps/introduction-foundry-agent-service/01-setup.md).
 
 ## What is not available in individual mode
 
