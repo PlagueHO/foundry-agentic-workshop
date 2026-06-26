@@ -62,7 +62,7 @@ Run `azd provision`. The provision hooks run automatically.
 | Hook | What happens in individual mode |
 |---|---|
 | Pre-provision (`prepare-attendee-roles.py`) | Reads your signed-in UPN from `az account show`, derives the project name, and writes `AZURE_ATTENDEE_LIST_RESOLVED`. |
-| Post-provision (`generate-attendee-onboarding.py`) | Generates the onboarding index and writes `.env`. Blob storage upload is skipped. |
+| Post-provision (`generate-attendee-onboarding.py`) | Generates the onboarding index, uploads it to Blob Storage for the portal, and writes `.env`. |
 | Post-provision (`deploy-attendee-portal.py`) | Runs normally: builds and pushes the portal image, configures EasyAuth. |
 
 ```bash
