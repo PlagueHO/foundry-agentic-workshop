@@ -2,7 +2,7 @@
 Tests for the flight-ops MCP server tools.
 
 Run with:
-    pytest shared/mcp-servers/flight-ops/src/test_server.py -v
+    pytest shared/mcp-servers/flight-ops/src/test_flight_ops.py -v
 """
 
 import json

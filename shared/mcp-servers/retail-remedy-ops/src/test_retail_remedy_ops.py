@@ -1,11 +1,6 @@
 """Tests for Retail Remedy Operations MCP server tool functions."""
 
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).parent))
-
-from server import (  # noqa: E402
+from server import (
     create_remedy_case,
     draft_remedy_summary,
     find_replacement_options,

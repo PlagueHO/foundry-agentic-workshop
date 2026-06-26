@@ -32,6 +32,11 @@ dev = [
 # agent-framework-azure-ai-search and azure-search-documents.
 prerelease = "allow"
 
+[tool.pytest.ini_options]
+# importlib mode avoids sys.modules collisions between MCP servers that
+# each have a server.py with the same bare module name.
+addopts = "--import-mode=importlib"
+
 [tool.ruff]
 line-length = 88
 target-version = "py313"
