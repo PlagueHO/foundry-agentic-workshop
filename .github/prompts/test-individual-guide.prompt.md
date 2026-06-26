@@ -70,13 +70,11 @@ Inspect the output from `scripts/generate-attendee-onboarding.py` (#file:scripts
 1. An onboarding index (`index.json`) was written to `.azure/${input:environmentName}/`.
 1. The onboarding index (`index.json`) and per-attendee markdown files were uploaded to Azure Blob Storage (confirm from hook output that upload log lines appear for both the index and the markdown files).
 
-## Step 5 - Validate the portal deploy hook ran
+## Step 5 - Validate the portal deploy hook behaviour
 
 Inspect the output from `scripts/deploy-attendee-portal.py` (#file:scripts/deploy-attendee-portal.py) and confirm:
 
-1. The portal image was built and pushed to the container registry.
-1. The Container App was updated with the new image.
-1. EasyAuth was configured on the Container App.
+1. Either the hook was skipped with a clear message (individual mode), or it built/pushed the portal image, updated the Container App, and configured EasyAuth.
 
 ## Step 6 - Run the health check
 
