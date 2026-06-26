@@ -761,25 +761,30 @@ def main() -> int:  # pylint: disable=too-many-locals
             'No RBAC role assignments were created for those attendees by Bicep.'
         )
 
-    if individual_mode and len(resolved) == 1:
-        resolved_entry = resolved[0]
-        env_dict = _build_attendee_env_dict(
-            project_name=str(resolved_entry.get('projectName', '')),
-            subscription_id=subscription_id,
-            resource_group=resource_group,
-            foundry_name=foundry_name,
-            foundry_custom_domain_name=foundry_custom_domain_name,
-            search_service_name=search_service_name,
-            container_registry_name=container_registry_name,
-            container_registry_endpoint=container_registry_endpoint,
-            mcp_server_url=mcp_server_url,
-            flight_ops_mcp_server_url=flight_ops_mcp_server_url,
-        )
-        env_path = Path(__file__).resolve().parent.parent / '.env'
-        env_path.write_text(_env_dict_to_str(env_dict) + '\n', encoding='utf-8')
-        print(f'\nIndividual mode: environment written to {env_path}')
-        print('  Review .env and run: python scripts/health-check.py')
-
+    if individual_mode:
+        if len(resolved) != 1:
+            print(
+                f'\nWarning: AZURE_INDIVIDUAL_MODE is enabled but {len(resolved)} attendees were resolved; '
+                'skipping .env generation.'
+            )
+        else:
+            resolved_entry = resolved[0]
+            env_dict = _build_attendee_env_dict(
+                project_name=str(resolved_entry.get('projectName', '')),
+                subscription_id=subscription_id,
+                resource_group=resource_group,
+                foundry_name=foundry_name,
+                foundry_custom_domain_name=foundry_custom_domain_name,
+                search_service_name=search_service_name,
+                container_registry_name=container_registry_name,
+                container_registry_endpoint=container_registry_endpoint,
+                mcp_server_url=mcp_server_url,
+                flight_ops_mcp_server_url=flight_ops_mcp_server_url,
+            )
+            env_path = Path(__file__).resolve().parent.parent / '.env'
+            env_path.write_text(_env_dict_to_str(env_dict) + '\n', encoding='utf-8')
+            print(f'\nIndividual mode: environment written to {env_path}')
+            print('  Review .env and run: python scripts/health-check.py')
     return 0
 
 
