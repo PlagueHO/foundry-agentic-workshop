@@ -776,10 +776,10 @@ def main() -> int:  # pylint: disable=too-many-locals
             mcp_server_url=mcp_server_url,
             flight_ops_mcp_server_url=flight_ops_mcp_server_url,
         )
-        env_path = Path(__file__).resolve().parent.parent / 'shared' / '.env'
+        env_path = Path(__file__).resolve().parent.parent / '.env'
         env_path.write_text(_env_dict_to_str(env_dict) + '\n', encoding='utf-8')
         print(f'\n\u2705 Individual mode: environment written to {env_path}')
-        print('  Review shared/.env and run: python scripts/health-check.py')
+        print('  Review .env and run: python scripts/health-check.py')
 
     return 0
 
