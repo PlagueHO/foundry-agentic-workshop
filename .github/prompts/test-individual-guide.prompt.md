@@ -1,5 +1,5 @@
 ---
-description: "Test the individual guide end-to-end: provision as a solo learner, validate .env, health-check, confirm blob upload is skipped, and confirm portal deploys normally"
+description: "Test the individual guide end-to-end: provision as a solo learner, validate .env, health-check, confirm blob upload and portal deploy both ran normally"
 argument-hint: "azureLocation=... resourceGroup=... environmentName=..."
 ---
 
@@ -68,7 +68,7 @@ Inspect the output from `scripts/generate-attendee-onboarding.py` (#file:scripts
    * `AZURE_OPENAI_ENDPOINT`
 1. `FOUNDRY_PROJECT_NAME` in `.env` matches the derived project name verified in Step 3.
 1. An onboarding index (`index.json`) was written to `.azure/${input:environmentName}/`.
-1. Blob storage upload was **skipped** (confirm from hook output that no upload log lines appear).
+1. The onboarding index (`index.json`) and per-attendee markdown files were uploaded to Azure Blob Storage (confirm from hook output that upload log lines appear for both the index and the markdown files).
 
 ## Step 5 - Validate the portal deploy hook ran
 
@@ -95,7 +95,7 @@ Produce a summary table of all validation items:
 | Post-provision | `.env` written to repo root with required keys | |
 | Post-provision | `FOUNDRY_PROJECT_NAME` matches UPN derivation | |
 | Post-provision | `index.json` written to `.azure/${input:environmentName}/` | |
-| Post-provision | Blob storage upload skipped | |
+| Post-provision | Blob storage upload completed (index.json and markdowns) | |
 | Portal hook | Portal image built, pushed, and Container App updated | |
 | Health check | `python scripts/health-check.py` passes | |
 
