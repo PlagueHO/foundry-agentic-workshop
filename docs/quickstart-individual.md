@@ -83,4 +83,4 @@ azd down --force --purge
 
 > [!NOTE]
 > Individual mode does not deploy the Attendee Onboarding Portal or upload onboarding files
-> to Azure Blob Storage. The `shared/.env` file is the only onboarding artefact produced.
+> to Azure Blob Storage. The `.env` file is the only onboarding artefact produced.
