@@ -101,8 +101,8 @@ Individual mode is designed for solo learning. The following features are not av
 |---|---|
 | Multiple projects | One project is provisioned for your own identity |
 
-The Attendee Onboarding Portal runs the same as in workshop mode. The onboarding index
-blob storage upload is skipped. Your environment configuration is written to `.env` in
+The Attendee Onboarding Portal runs the same as in workshop mode. The onboarding index is
+uploaded to Blob Storage, and your environment configuration is written to `.env` in
 the repository root.
 
 To switch to multi-attendee mode, clear `AZURE_INDIVIDUAL_MODE` and provide an
