@@ -4,9 +4,9 @@ Individual mode lets a solo learner provision and run the entire workshop withou
 list or an organizer handoff. Set `AZURE_INDIVIDUAL_MODE=true` and run `azd provision` —
 your own identity becomes the sole attendee.
 
-The onboarding index blob storage upload is skipped in individual mode. As a solo learner
-you do not need to use the portal; your environment configuration is written directly to
-`.env` in the repository root.
+The onboarding index is uploaded to Blob Storage in individual mode (it is used by the Attendee
+Onboarding Portal). As a solo learner you do not need to use the portal; your environment
+configuration is written directly to `.env` in the repository root.
 
 For the abbreviated flow, see the [Individual Quickstart](./quickstart-individual.md).
 
