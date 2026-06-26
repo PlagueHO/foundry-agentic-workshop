@@ -389,7 +389,13 @@ def main() -> int:  # pylint: disable=too-many-locals
         print('Azure CLI is not authenticated. Run `az login` then re-run the provision.')
         return 1
 
-    if _is_truthy(os.getenv('AZURE_INDIVIDUAL_MODE', '')):
+    try:
+        attendees = _parse_attendee_list(os.getenv('AZURE_ATTENDEE_LIST', ''))
+    except (json.JSONDecodeError, ValueError) as error:
+        print(f'Invalid AZURE_ATTENDEE_LIST: {error}')
+        return 1
+
+    if _is_truthy(os.getenv('AZURE_INDIVIDUAL_MODE', '')) and not attendees:
         attendee_prefix = (
             os.getenv('AZURE_ATTENDEE_PROJECT_PREFIX', 'attendee').strip() or 'attendee'
         )
@@ -403,12 +409,6 @@ def main() -> int:  # pylint: disable=too-many-locals
             default_role=default_role,
             env_name=env_name,
         )
-
-    try:
-        attendees = _parse_attendee_list(os.getenv('AZURE_ATTENDEE_LIST', ''))
-    except (json.JSONDecodeError, ValueError) as error:
-        print(f'Invalid AZURE_ATTENDEE_LIST: {error}')
-        return 1
 
     if not attendees:
         print('AZURE_ATTENDEE_LIST is not set or empty. Skipping UPN resolution.')
