@@ -85,4 +85,4 @@ azd down --force --purge
 > [!NOTE]
 > The Attendee Onboarding Portal is deployed in individual mode, but you do not need to use
 > it. Your environment configuration is written directly to `.env` in the repository root.
-> The blob storage upload step is skipped.
+> The onboarding index is still uploaded to Blob Storage for the portal.
