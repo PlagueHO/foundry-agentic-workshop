@@ -76,7 +76,7 @@ If the UPN cannot be retrieved, the project name falls back to `attendee-01`.
 
 ## After provisioning
 
-1. Review `shared/.env`. This file is overwritten each time you re-provision.
+1. Review `.env`. This file is overwritten each time you re-provision.
 
 1. Validate your setup.
 
