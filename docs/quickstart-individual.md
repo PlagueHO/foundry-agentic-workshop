@@ -3,7 +3,7 @@
 Use this quickstart when you want to run the workshop labs on your own — no team, no attendee
 list, and no shared provisioning. Individual mode (`AZURE_INDIVIDUAL_MODE=true`) provisions
 a single Foundry project scoped to your own Azure identity, and writes your `.env`
-configuration to `shared/.env` automatically after provisioning.
+configuration to `.env` automatically after provisioning.
 
 See the [Individual Guide](./guide-individual.md) for detailed steps and troubleshooting.
 
@@ -55,13 +55,13 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
    ```
 
    The pre-provision hook detects individual mode, derives your Foundry project name from your
-   signed-in UPN, and writes `AZURE_ATTENDEE_LIST_RESOLVED`. The post-provision hooks write
-   your environment configuration to `shared/.env`, upload the onboarding index to blob
-   storage, and deploy the Attendee Onboarding Portal.
+   signed-in UPN, and writes `AZURE_ATTENDEE_LIST_RESOLVED`. The post-provision hook writes
+   your environment configuration to `.env`. The blob storage upload step is skipped.
+   The Attendee Onboarding Portal is deployed as normal.
 
 ## After provisioning
 
-1. Review `shared/.env` — your environment configuration is ready to use.
+1. Review `.env` — your environment configuration is ready to use.
 
 1. Validate your setup.
 
@@ -84,4 +84,5 @@ azd down --force --purge
 
 > [!NOTE]
 > The Attendee Onboarding Portal is deployed in individual mode, but you do not need to use
-> it. Your environment configuration is written directly to `shared/.env`.
+> it. Your environment configuration is written directly to `.env` in the repository root.
+> The blob storage upload step is skipped.

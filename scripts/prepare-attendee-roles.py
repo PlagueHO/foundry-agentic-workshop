@@ -352,7 +352,7 @@ def _run_individual_mode(
     )
 
     entry: dict[str, object] = {
-        'upn': upn or principal_id,
+        'upn': upn or project_name,
         'objectId': principal_id,
         'projectName': project_name,
         'role': default_role,

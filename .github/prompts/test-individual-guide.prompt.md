@@ -1,5 +1,5 @@
 ---
-description: "Test the individual guide end-to-end: provision as a solo learner, validate shared/.env, health-check, and confirm portal/blob steps are skipped"
+description: "Test the individual guide end-to-end: provision as a solo learner, validate .env, health-check, confirm blob upload is skipped, and confirm portal deploys normally"
 argument-hint: "azureLocation=... resourceGroup=... environmentName=..."
 ---
 
@@ -59,16 +59,16 @@ Inspect the output from `scripts/prepare-attendee-roles.py` (#file:scripts/prepa
 
 Inspect the output from `scripts/generate-attendee-onboarding.py` (#file:scripts/generate-attendee-onboarding.py) and confirm:
 
-1. `shared/.env` was written and contains the following keys with non-empty values:
+1. `.env` was written to the repository root and contains the following keys with non-empty values:
    * `AZURE_SUBSCRIPTION_ID`
    * `AZURE_RESOURCE_GROUP`
    * `FOUNDRY_RESOURCE_NAME`
    * `FOUNDRY_PROJECT_NAME`
    * `FOUNDRY_PROJECT_ENDPOINT`
    * `AZURE_OPENAI_ENDPOINT`
-1. `FOUNDRY_PROJECT_NAME` in `shared/.env` matches the derived project name verified in Step 3.
+1. `FOUNDRY_PROJECT_NAME` in `.env` matches the derived project name verified in Step 3.
 1. An onboarding index (`index.json`) was written to `.azure/${input:environmentName}/`.
-1. The onboarding index and markdown files were uploaded to Azure Blob Storage (confirm from hook output that upload log lines appear).
+1. Blob storage upload was **skipped** (confirm from hook output that no upload log lines appear).
 
 ## Step 5 - Validate the portal deploy hook ran
 
@@ -92,10 +92,10 @@ Produce a summary table of all validation items:
 | Pre-provision | Resolved entry synthesised with correct projectName | |
 | Pre-provision | Resolved entry objectId is non-empty | |
 | Pre-provision | Resolution audit CSV written | |
-| Post-provision | `shared/.env` written with required keys | |
+| Post-provision | `.env` written to repo root with required keys | |
 | Post-provision | `FOUNDRY_PROJECT_NAME` matches UPN derivation | |
 | Post-provision | `index.json` written to `.azure/${input:environmentName}/` | |
-| Post-provision | Onboarding index uploaded to blob storage | |
+| Post-provision | Blob storage upload skipped | |
 | Portal hook | Portal image built, pushed, and Container App updated | |
 | Health check | `python scripts/health-check.py` passes | |
 

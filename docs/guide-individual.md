@@ -4,9 +4,9 @@ Individual mode lets a solo learner provision and run the entire workshop withou
 list or an organizer handoff. Set `AZURE_INDIVIDUAL_MODE=true` and run `azd provision` —
 your own identity becomes the sole attendee.
 
-The Attendee Onboarding Portal is deployed and the onboarding index is uploaded to blob
-storage, the same as in workshop mode. As a solo learner you do not need to use the portal;
-your environment configuration is written directly to `shared/.env`.
+The onboarding index blob storage upload is skipped in individual mode. As a solo learner
+you do not need to use the portal; your environment configuration is written directly to
+`.env` in the repository root.
 
 For the abbreviated flow, see the [Individual Quickstart](./quickstart-individual.md).
 
@@ -62,7 +62,7 @@ Run `azd provision`. The provision hooks run automatically.
 | Hook | What happens in individual mode |
 |---|---|
 | Pre-provision (`prepare-attendee-roles.py`) | Reads your signed-in UPN from `az account show`, derives the project name, and writes `AZURE_ATTENDEE_LIST_RESOLVED`. |
-| Post-provision (`generate-attendee-onboarding.py`) | Generates the onboarding index, uploads it to Azure Blob Storage, and writes `shared/.env`. |
+| Post-provision (`generate-attendee-onboarding.py`) | Generates the onboarding index and writes `.env`. Blob storage upload is skipped. |
 | Post-provision (`deploy-attendee-portal.py`) | Runs normally: builds and pushes the portal image, configures EasyAuth. |
 
 ```bash
@@ -101,8 +101,9 @@ Individual mode is designed for solo learning. The following features are not av
 |---|---|
 | Multiple projects | One project is provisioned for your own identity |
 
-The Attendee Onboarding Portal and Azure Blob Storage upload run the same as in workshop mode.
-You do not need to use the portal — `shared/.env` is your primary configuration artefact.
+The Attendee Onboarding Portal runs the same as in workshop mode. The onboarding index
+blob storage upload is skipped. Your environment configuration is written to `.env` in
+the repository root.
 
 To switch to multi-attendee mode, clear `AZURE_INDIVIDUAL_MODE` and provide an
 `AZURE_ATTENDEE_LIST`:

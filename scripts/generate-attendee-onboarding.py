@@ -724,16 +724,17 @@ def main() -> int:  # pylint: disable=too-many-locals
         attendee_portal_url=attendee_portal_url,
     )
 
-    _upload_onboarding_markdowns(
-        audit_dir=audit_dir,
-        storage_account_name=storage_account_name,
-        onboarding_container=onboarding_container,
-    )
-    _upload_onboarding_index(
-        index=index,
-        storage_account_name=storage_account_name,
-        onboarding_container=onboarding_container,
-    )
+    if not individual_mode:
+        _upload_onboarding_markdowns(
+            audit_dir=audit_dir,
+            storage_account_name=storage_account_name,
+            onboarding_container=onboarding_container,
+        )
+        _upload_onboarding_index(
+            index=index,
+            storage_account_name=storage_account_name,
+            onboarding_container=onboarding_container,
+        )
 
     audit_path = _write_provisioning_summary(
         resolved=resolved,
