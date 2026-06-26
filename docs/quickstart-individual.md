@@ -55,8 +55,9 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
    ```
 
    The pre-provision hook detects individual mode, derives your Foundry project name from your
-   signed-in UPN, and writes `AZURE_ATTENDEE_LIST_RESOLVED`. The post-provision hook writes
-   your environment configuration to `shared/.env`.
+   signed-in UPN, and writes `AZURE_ATTENDEE_LIST_RESOLVED`. The post-provision hooks write
+   your environment configuration to `shared/.env`, upload the onboarding index to blob
+   storage, and deploy the Attendee Onboarding Portal.
 
 ## After provisioning
 
@@ -82,5 +83,5 @@ azd down --force --purge
 ```
 
 > [!NOTE]
-> Individual mode does not deploy the Attendee Onboarding Portal or upload onboarding files
-> to Azure Blob Storage. The `.env` file is the only onboarding artefact produced.
+> The Attendee Onboarding Portal is deployed in individual mode, but you do not need to use
+> it. Your environment configuration is written directly to `shared/.env`.

@@ -1,8 +1,12 @@
 # Individual Guide
 
 Individual mode lets a solo learner provision and run the entire workshop without an attendee
-list, an Attendee Onboarding Portal, or an organizer handoff. Set `AZURE_INDIVIDUAL_MODE=true`
-and run `azd provision` — your own identity becomes the sole attendee.
+list or an organizer handoff. Set `AZURE_INDIVIDUAL_MODE=true` and run `azd provision` —
+your own identity becomes the sole attendee.
+
+The Attendee Onboarding Portal is deployed and the onboarding index is uploaded to blob
+storage, the same as in workshop mode. As a solo learner you do not need to use the portal;
+your environment configuration is written directly to `shared/.env`.
 
 For the abbreviated flow, see the [Individual Quickstart](./quickstart-individual.md).
 
@@ -58,8 +62,8 @@ Run `azd provision`. The provision hooks run automatically.
 | Hook | What happens in individual mode |
 |---|---|
 | Pre-provision (`prepare-attendee-roles.py`) | Reads your signed-in UPN from `az account show`, derives the project name, and writes `AZURE_ATTENDEE_LIST_RESOLVED`. |
-| Post-provision (`generate-attendee-onboarding.py`) | Generates the onboarding index and writes `shared/.env`. Blob upload is skipped. |
-| Post-provision (`deploy-attendee-portal.py`) | Skipped entirely. |
+| Post-provision (`generate-attendee-onboarding.py`) | Generates the onboarding index, uploads it to Azure Blob Storage, and writes `shared/.env`. |
+| Post-provision (`deploy-attendee-portal.py`) | Runs normally: builds and pushes the portal image, configures EasyAuth. |
 
 ```bash
 azd provision
@@ -95,12 +99,13 @@ Individual mode is designed for solo learning. The following features are not av
 
 | Feature | Reason |
 |---|---|
-| Attendee Onboarding Portal | Requires an attendee list and Azure Container Apps deployment |
-| Azure Blob Storage upload | Only needed when sharing onboarding files with multiple attendees |
 | Multiple projects | One project is provisioned for your own identity |
 
-To re-enable the Attendee Onboarding Portal and blob storage (for example, to switch to
-multi-attendee mode), clear `AZURE_INDIVIDUAL_MODE` and provide an `AZURE_ATTENDEE_LIST`:
+The Attendee Onboarding Portal and Azure Blob Storage upload run the same as in workshop mode.
+You do not need to use the portal — `shared/.env` is your primary configuration artefact.
+
+To switch to multi-attendee mode, clear `AZURE_INDIVIDUAL_MODE` and provide an
+`AZURE_ATTENDEE_LIST`:
 
 ```bash
 azd env set AZURE_INDIVIDUAL_MODE false

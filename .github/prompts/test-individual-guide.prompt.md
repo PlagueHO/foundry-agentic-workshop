@@ -68,15 +68,15 @@ Inspect the output from `scripts/generate-attendee-onboarding.py` (#file:scripts
    * `AZURE_OPENAI_ENDPOINT`
 1. `FOUNDRY_PROJECT_NAME` in `shared/.env` matches the derived project name verified in Step 3.
 1. An onboarding index (`index.json`) was written to `.azure/${input:environmentName}/`.
-1. No blob upload was attempted (confirm from hook output that the upload step was skipped or no upload log lines appear).
+1. The onboarding index and markdown files were uploaded to Azure Blob Storage (confirm from hook output that upload log lines appear).
 
-## Step 5 - Validate the portal deploy hook was skipped
+## Step 5 - Validate the portal deploy hook ran
 
 Inspect the output from `scripts/deploy-attendee-portal.py` (#file:scripts/deploy-attendee-portal.py) and confirm:
 
-1. The hook printed a skip message indicating individual mode is enabled.
-1. No Docker image build or push was attempted.
-1. No Container App update was attempted.
+1. The portal image was built and pushed to the container registry.
+1. The Container App was updated with the new image.
+1. EasyAuth was configured on the Container App.
 
 ## Step 6 - Run the health check
 
@@ -95,8 +95,8 @@ Produce a summary table of all validation items:
 | Post-provision | `shared/.env` written with required keys | |
 | Post-provision | `FOUNDRY_PROJECT_NAME` matches UPN derivation | |
 | Post-provision | `index.json` written to `.azure/${input:environmentName}/` | |
-| Post-provision | No blob upload attempted | |
-| Portal hook | Skip message printed, no build/push attempted | |
+| Post-provision | Onboarding index uploaded to blob storage | |
+| Portal hook | Portal image built, pushed, and Container App updated | |
 | Health check | `python scripts/health-check.py` passes | |
 
 Mark each result as ✅ Pass, ❌ Fail, or ⚠️ Warning. For any failure, include the exact error output below the table.

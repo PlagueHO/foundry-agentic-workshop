@@ -24,10 +24,6 @@ TICK = '\u2705'
 CROSS = '\u274c'
 
 
-def _is_truthy(value: object) -> bool:
-    return str(value).strip().lower() not in ('', 'false', '0', 'no', 'off')
-
-
 def _load_azd_env() -> dict[str, str]:
     result = subprocess.run(
         [_AZD_CMD, 'env', 'get-values', '--output', 'json'],
@@ -46,10 +42,6 @@ def _load_azd_env() -> dict[str, str]:
 def main() -> int:
     """Delete the EasyAuth Entra app registration and clear the stored app ID."""
     env = _load_azd_env()
-
-    if _is_truthy(env.get('AZURE_INDIVIDUAL_MODE', '')):
-        print(f'{TICK} Individual mode enabled. Skipping attendee portal delete.')
-        return 0
 
     app_id = env.get('AZURE_ATTENDEE_PORTAL_APP_ID', '').strip()
 

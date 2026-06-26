@@ -724,17 +724,16 @@ def main() -> int:  # pylint: disable=too-many-locals
         attendee_portal_url=attendee_portal_url,
     )
 
-    if not individual_mode:
-        _upload_onboarding_markdowns(
-            audit_dir=audit_dir,
-            storage_account_name=storage_account_name,
-            onboarding_container=onboarding_container,
-        )
-        _upload_onboarding_index(
-            index=index,
-            storage_account_name=storage_account_name,
-            onboarding_container=onboarding_container,
-        )
+    _upload_onboarding_markdowns(
+        audit_dir=audit_dir,
+        storage_account_name=storage_account_name,
+        onboarding_container=onboarding_container,
+    )
+    _upload_onboarding_index(
+        index=index,
+        storage_account_name=storage_account_name,
+        onboarding_container=onboarding_container,
+    )
 
     audit_path = _write_provisioning_summary(
         resolved=resolved,
@@ -778,7 +777,7 @@ def main() -> int:  # pylint: disable=too-many-locals
         )
         env_path = Path(__file__).resolve().parent.parent / '.env'
         env_path.write_text(_env_dict_to_str(env_dict) + '\n', encoding='utf-8')
-        print(f'\n\u2705 Individual mode: environment written to {env_path}')
+        print(f'\nIndividual mode: environment written to {env_path}')
         print('  Review .env and run: python scripts/health-check.py')
 
     return 0

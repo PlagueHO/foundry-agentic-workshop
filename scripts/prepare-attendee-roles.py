@@ -389,6 +389,21 @@ def main() -> int:  # pylint: disable=too-many-locals
         print('Azure CLI is not authenticated. Run `az login` then re-run the provision.')
         return 1
 
+    if _is_truthy(os.getenv('AZURE_INDIVIDUAL_MODE', '')):
+        attendee_prefix = (
+            os.getenv('AZURE_ATTENDEE_PROJECT_PREFIX', 'attendee').strip() or 'attendee'
+        )
+        default_role = (
+            os.getenv('AZURE_ATTENDEE_DEFAULT_ROLE', DEFAULT_ROLE_KEY).strip()
+            or DEFAULT_ROLE_KEY
+        )
+        env_name = os.getenv('AZURE_ENV_NAME', 'workshop').strip() or 'workshop'
+        return _run_individual_mode(
+            attendee_prefix=attendee_prefix,
+            default_role=default_role,
+            env_name=env_name,
+        )
+
     try:
         attendees = _parse_attendee_list(os.getenv('AZURE_ATTENDEE_LIST', ''))
     except (json.JSONDecodeError, ValueError) as error:
@@ -396,20 +411,6 @@ def main() -> int:  # pylint: disable=too-many-locals
         return 1
 
     if not attendees:
-        if _is_truthy(os.getenv('AZURE_INDIVIDUAL_MODE', '')):
-            attendee_prefix = (
-                os.getenv('AZURE_ATTENDEE_PROJECT_PREFIX', 'attendee').strip() or 'attendee'
-            )
-            default_role = (
-                os.getenv('AZURE_ATTENDEE_DEFAULT_ROLE', DEFAULT_ROLE_KEY).strip()
-                or DEFAULT_ROLE_KEY
-            )
-            env_name = os.getenv('AZURE_ENV_NAME', 'workshop').strip() or 'workshop'
-            return _run_individual_mode(
-                attendee_prefix=attendee_prefix,
-                default_role=default_role,
-                env_name=env_name,
-            )
         print('AZURE_ATTENDEE_LIST is not set or empty. Skipping UPN resolution.')
         print(
             'Bicep will use attendeeCount for sequential project names; '
