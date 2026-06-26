@@ -54,10 +54,10 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
    azd provision
    ```
 
-   The pre-provision hook detects individual mode, derives your Foundry project name from your
-   signed-in UPN, and writes `AZURE_ATTENDEE_LIST_RESOLVED`. The post-provision hook writes
-   your environment configuration to `.env`. The blob storage upload step is skipped.
-   The Attendee Onboarding Portal is deployed as normal.
+    The pre-provision hook detects individual mode, derives your Foundry project name from your
+    signed-in UPN, and writes `AZURE_ATTENDEE_LIST_RESOLVED`. The post-provision hook writes
+    your environment configuration to `.env` and uploads the onboarding index to Blob Storage
+    (used by the Attendee Onboarding Portal).
 
 ## After provisioning
 
