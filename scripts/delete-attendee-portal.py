@@ -42,6 +42,7 @@ def _load_azd_env() -> dict[str, str]:
 def main() -> int:
     """Delete the EasyAuth Entra app registration and clear the stored app ID."""
     env = _load_azd_env()
+
     app_id = env.get('AZURE_ATTENDEE_PORTAL_APP_ID', '').strip()
 
     if not app_id:

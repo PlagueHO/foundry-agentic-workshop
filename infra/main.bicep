@@ -307,6 +307,12 @@ var defaultAttendeeProjectName = !empty(effectiveStandardProjectNames) ? effecti
 // Attendees whose UPNs were successfully resolved to Entra object IDs.
 var resolvedAttendeesWithIds = filter(resolvedAttendeeList, a => !empty(a.objectId))
 
+// True when the deploying principal is already present in the resolved attendee list.
+// Used to suppress the developer search-role assignments that would otherwise produce
+// the same ARM role-assignment GUID as the per-attendee block, causing an
+// InvalidTemplate error (individual mode: principalId == attendee.objectId).
+var principalAlreadyInResolvedList = !empty(filter(resolvedAttendeesWithIds, a => a.objectId == principalId))
+
 // Project-scoped entries (foundry-user → role is assigned on the individual Foundry project).
 // Flattened to {projectName, roleAssignment} pairs so attendeeProjects can group by name.
 var attendeeProjectRoleEntries = flatten(map(
@@ -1008,8 +1014,9 @@ var aiSearchRoleAssignmentsArray = [
       principalId: aiFoundryAccount.outputs.?systemAssignedMIPrincipalId ?? ''
     }
   ] : [])
-  // Developer role assignments
-  ...(!empty(principalId) ? [
+  // Developer role assignments — omitted when principalId is already covered by the
+  // per-attendee block to avoid duplicate ARM role-assignment resource names.
+  ...(!empty(principalId) && !principalAlreadyInResolvedList ? [
     {
       roleDefinitionIdOrName: 'Search Service Contributor'
       principalType: principalIdType

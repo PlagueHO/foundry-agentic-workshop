@@ -72,6 +72,7 @@ export default defineConfig({
       { text: 'Home', link: '/' },
       { text: 'Organizer Quickstart', link: '/quickstart-organizer' },
       { text: 'Organizer Quickstart w/ GitHub Copilot', link: '/quickstart-organizer-github-copilot' },
+      { text: 'Individual Quickstart', link: '/quickstart-individual' },
       { text: 'Attendee Quickstart', link: '/quickstart-attendee' },
       { text: 'Facilitator Quickstart', link: '/quickstart-facilitator' },
       { text: 'Proctor Guide', link: '/guide-proctor' },
@@ -82,6 +83,7 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/' },
           { text: 'Organizer Quickstart', link: '/quickstart-organizer' },
+          { text: 'Individual Quickstart', link: '/quickstart-individual' },
           { text: 'Attendee Quickstart', link: '/quickstart-attendee' },
           { text: 'Facilitator Quickstart', link: '/quickstart-facilitator' },
         ],
@@ -90,6 +92,7 @@ export default defineConfig({
         text: 'Role Guides',
         items: [
           { text: 'Organizer Guide', link: '/guide-organizer' },
+          { text: 'Individual Guide', link: '/guide-individual' },
           { text: 'Attendee Guide', link: '/guide-attendee' },
           { text: 'Facilitator Guide', link: '/guide-facilitator' },
           { text: 'Proctor Guide', link: '/guide-proctor' },
