@@ -80,18 +80,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Setup Python
-        uses: actions/setup-python@v6
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: '3.13'
 
       - name: Install dependencies
-        run: python -m pip install -r shared/requirements.txt
+        run: uv sync --frozen
 
       - name: Run E2E test suite when present
         run: |
           if [ -d "tests/e2e" ]; then
-            python -m pytest tests/e2e
+            uv run pytest tests/e2e
           else
             echo "No tests/e2e directory yet. Skipping E2E test execution."
           fi

@@ -2,9 +2,9 @@ version: 2
 
 # Dependabot configuration for Microsoft Foundry Agentic Workshop
 updates:
-  # Python dependencies in shared requirements file
+  # Root Python project (pyproject.toml + uv.lock — workshop runtime + dev deps)
   - package-ecosystem: pip
-    directory: /shared
+    directory: /
     schedule:
       interval: weekly
       time: "06:00"
@@ -14,10 +14,10 @@ updates:
       prefix: deps
     labels:
       - dependencies
-      - pip
+      - python
     rebase-strategy: auto
     groups:
-      pip-dependencies:
+      python-dependencies:
         patterns:
           - "*"
 
@@ -33,10 +33,48 @@ updates:
       prefix: deps
     labels:
       - dependencies
-      - pip
+      - python
     rebase-strategy: auto
     groups:
-      pip-dependencies:
+      python-dependencies:
+        patterns:
+          - "*"
+
+  # Python dependencies for the MCP server container (flight-ops)
+  - package-ecosystem: pip
+    directory: /shared/mcp-servers/flight-ops
+    schedule:
+      interval: weekly
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: deps
+    labels:
+      - dependencies
+      - python
+    rebase-strategy: auto
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+
+  # Python dependencies for the attendee portal container
+  - package-ecosystem: pip
+    directory: /tools/attendee-portal
+    schedule:
+      interval: weekly
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: deps
+    labels:
+      - dependencies
+      - python
+    rebase-strategy: auto
+    groups:
+      python-dependencies:
         patterns:
           - "*"
 
@@ -52,16 +90,46 @@ updates:
       prefix: deps
     labels:
       - dependencies
-      - pip
+      - python
     rebase-strategy: auto
     groups:
-      pip-dependencies:
+      python-dependencies:
         patterns:
           - "*"
 
   # Docker base image for the containerized MCP server (retail-remedy-ops)
   - package-ecosystem: docker
     directory: /shared/mcp-servers/retail-remedy-ops
+    schedule:
+      interval: weekly
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: deps
+    labels:
+      - dependencies
+      - docker
+    rebase-strategy: auto
+
+  # Docker base image for the containerized MCP server (flight-ops)
+  - package-ecosystem: docker
+    directory: /shared/mcp-servers/flight-ops
+    schedule:
+      interval: weekly
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: deps
+    labels:
+      - dependencies
+      - docker
+    rebase-strategy: auto
+
+  # Docker base image for the attendee portal container
+  - package-ecosystem: docker
+    directory: /tools/attendee-portal
     schedule:
       interval: weekly
       time: "06:00"

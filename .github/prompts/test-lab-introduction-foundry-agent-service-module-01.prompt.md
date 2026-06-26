@@ -41,10 +41,10 @@ Follow and validate each step from #file:labs/introduction-foundry-agent-service
 
 1. Confirm the onboarding file exists at the expected path and contains all required environment variables.
 1. Confirm the `.env` file has been correctly populated from the onboarding file values.
-1. Confirm `shared/requirements.txt` exists and is non-empty.
-1. Run `python -m pip install -r shared/requirements.txt` and confirm it succeeds with no errors.
+1. Confirm `pyproject.toml` exists at the repo root and contains the expected dependencies.
+1. Run `uv sync` from the repo root and confirm it succeeds with no errors.
 1. Run `az login` and confirm it succeeds; confirm the active subscription matches `AZURE_SUBSCRIPTION_ID` from the onboarding file.
-1. Run `python scripts/health-check.py` and confirm it passes with no errors.
+1. Run `uv run python scripts/health-check.py` and confirm it passes with no errors.
 1. Confirm the `FOUNDRY_PROJECT_NAME` from the onboarding file matches the expected project name pattern for the attendee's UPN (local part of UPN, dots/underscores replaced with hyphens, lowercased, capped at 32 characters) or the configured sequential name pattern.
 
 ## Step 4 - Validate the Validation criteria
@@ -53,6 +53,6 @@ Confirm each item listed in the **Validation** section of the lab README is sati
 
 1. `az login` succeeded and the active subscription matches the workshop subscription.
 1. All required `.env` values are populated and non-empty.
-1. `python scripts/health-check.py` reported a healthy environment.
+1. `uv run python scripts/health-check.py` reported a healthy environment.
 
 Report the result of each step clearly, noting any failures with the exact error output.

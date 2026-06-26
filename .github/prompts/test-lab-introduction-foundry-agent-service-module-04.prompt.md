@@ -190,7 +190,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm the Python dependencies are installed:
 
    ```bash
-   pip install -r shared/requirements.txt
+   uv sync
    ```
 
    Confirm the command completes without error. If `azure-ai-projects` is not installed, report this and run the install command again.

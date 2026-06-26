@@ -41,7 +41,7 @@ Follow and validate each step from #file:docs/guide-attendee.md:
 
 1. Confirm the onboarding file exists at the expected path and contains all required environment variables.
 1. Confirm the `.env` file has been correctly populated from the onboarding file values.
-1. Run `python scripts/health-check.py` and confirm it passes with no errors.
+1. Run `uv run python scripts/health-check.py` and confirm it passes with no errors.
 1. Confirm the `FOUNDRY_PROJECT_NAME` from the onboarding file matches the expected project name pattern for the attendee's UPN (local part of UPN, dots/underscores replaced with hyphens, lowercased, capped at 32 characters) or the configured sequential name pattern.
 
 Report the result of each step clearly, noting any failures with the exact error output.

@@ -97,7 +97,7 @@ their personal onboarding page. The page includes:
 
 - **Your environment variables** - all `.env` values in a copyable code block, plus a **Download .env** button to save the file directly.
 - **Sign in to Azure** - `az login` and `az account set` commands pre-populated with the subscription ID.
-- **Validate setup** - the `python scripts/health-check.py` command ready to copy.
+- **Validate setup** - the `uv run python scripts/health-check.py` command ready to copy.
 - **Next steps** and **Workshop Resources** - links to the Attendee Quickstart, lab modules, and Microsoft Foundry documentation.
 - A role badge showing the attendee's assigned Foundry role.
 - A **Sign out** button.

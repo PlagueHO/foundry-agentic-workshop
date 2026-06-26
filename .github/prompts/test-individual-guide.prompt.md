@@ -78,7 +78,7 @@ Inspect the output from `scripts/deploy-attendee-portal.py` (#file:scripts/deplo
 
 ## Step 6 - Run the health check
 
-Run `python scripts/health-check.py` and confirm it passes with no errors. Report any failures with the exact error output.
+Run `uv run python scripts/health-check.py` and confirm it passes with no errors. Report any failures with the exact error output.
 
 ## Step 7 - Report results
 
@@ -95,6 +95,6 @@ Produce a summary table of all validation items:
 | Post-provision | `index.json` written to `.azure/${input:environmentName}/` | |
 | Post-provision | Blob storage upload completed (index.json and markdowns) | |
 | Portal hook | Portal image built, pushed, and Container App updated | |
-| Health check | `python scripts/health-check.py` passes | |
+| Health check | `uv run python scripts/health-check.py` passes | |
 
 Mark each result as ✅ Pass, ❌ Fail, or ⚠️ Warning. For any failure, include the exact error output below the table.

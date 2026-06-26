@@ -5,8 +5,8 @@
         {
             "label": "python: ruff check",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["-m", "ruff", "check", "labs/", "scripts/", "shared/"],
+            "command": "uv",
+            "args": ["run", "ruff", "check", "labs/", "scripts/", "shared/"],
             "group": {
                 "kind": "build",
                 "isDefault": false
@@ -21,8 +21,8 @@
         {
             "label": "python: flake8",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["-m", "flake8", "labs/", "scripts/", "shared/"],
+            "command": "uv",
+            "args": ["run", "flake8", "labs/", "scripts/", "shared/"],
             "group": {
                 "kind": "build",
                 "isDefault": false
@@ -37,8 +37,8 @@
         {
             "label": "python: pylint",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["-m", "pylint", "labs/", "scripts/", "shared/"],
+            "command": "uv",
+            "args": ["run", "pylint", "labs/", "scripts/", "shared/"],
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -52,8 +52,8 @@
         {
             "label": "python: mypy",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["-m", "mypy", "labs/", "scripts/", "shared/"],
+            "command": "uv",
+            "args": ["run", "mypy", "labs/", "scripts/", "shared/"],
             "group": {
                 "kind": "build",
                 "isDefault": false
@@ -69,8 +69,8 @@
         {
             "label": "python: test",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["-m", "pytest", "labs/", "scripts/", "shared/"],
+            "command": "uv",
+            "args": ["run", "pytest", "labs/", "scripts/", "shared/"],
             "group": {
                 "kind": "test",
                 "isDefault": true

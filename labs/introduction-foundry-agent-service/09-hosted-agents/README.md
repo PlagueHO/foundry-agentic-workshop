@@ -111,15 +111,12 @@ agent is scoped to your own project, so attendees never overwrite each other.
 
 ## Steps
 
-> [!NOTE]
-> The scripts in this module run Python. Confirm your `.venv` virtual environment is active before running them - look for the `(.venv)` prefix in your terminal prompt. If it is not active, run `.venv\Scripts\Activate.ps1` (Windows PowerShell) or `source .venv/bin/activate` (macOS / Linux) from the repository root.
-
 ### Prepare
 
-- [ ] Activate the `.venv` virtual environment from the repository root and confirm the shared dependencies are installed:
+- [ ] Confirm the shared dependencies are installed:
 
    ```bash
-   python -m pip install -r shared/requirements.txt
+   uv sync
    ```
 
 - [ ] Sign in with the Azure CLI so `DefaultAzureCredential` can authenticate, and load your environment values:

@@ -141,7 +141,7 @@ Install the following tools manually:
 Then install the shared Python dependencies:
 
 ```bash
-python -m pip install -r shared/requirements.txt
+uv sync
 ```
 
 ### Configure and validate
@@ -157,7 +157,7 @@ python -m pip install -r shared/requirements.txt
 1. Validate:
 
    ```bash
-   python scripts/health-check.py
+   uv run python scripts/health-check.py
    ```
 
 See the [Attendee Quickstart](./docs/quickstart-attendee.md) for the full flow.

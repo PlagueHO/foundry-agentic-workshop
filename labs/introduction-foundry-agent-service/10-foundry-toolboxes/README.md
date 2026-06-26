@@ -252,12 +252,7 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
 
   > The agent reads `FOUNDRY_PROJECT_ENDPOINT` from the runtime environment Foundry injects, and `AZURE_AI_MODEL_DEPLOYMENT_NAME` and `TOOLBOX_NAME` from the values baked in at deploy time. It carries **no** MCP server URL - every tool now lives behind the toolbox.
 
-#### 11. Activate the environment and sign in
-
-- [ ] Activate the `.venv` virtual environment from the repository root:
-
-  - **Windows (PowerShell):** `.venv\Scripts\Activate.ps1`
-  - **macOS / Linux:** `source .venv/bin/activate`
+#### 11. Sign in
 
 - [ ] Confirm you are signed in with the Azure CLI - the deploy and invoke scripts authenticate with `DefaultAzureCredential`, which relies on your CLI session:
 

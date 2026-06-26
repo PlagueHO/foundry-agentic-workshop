@@ -33,30 +33,14 @@ cd foundry-agentic-workshop
 1. Install the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
 1. *(Optional)* Install [Docker](https://www.docker.com/products/docker-desktop/). Docker is required only for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which deploys a hosted agent from a container image. Every other module, including Module 09 Part 2 (deploy from source code), runs without it.
 1. *(Optional)* Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0). Required only for the [Agent Framework for .NET](./labs/agent-framework-dotnet) lab series. All Python-based labs (`introduction-foundry-agent-service`) run without it.
-1. Create a Python virtual environment in the repository root:
-
-   ```bash
-   python -m venv .venv
-   ```
-
-   A virtual environment isolates the workshop's Python packages from your system Python and from other projects on your machine. This prevents version conflicts with packages you may already have installed and keeps your global Python installation clean.
-
-   Activate the virtual environment before installing packages or running any lab scripts:
-
-   - **Windows (PowerShell):** `.venv\Scripts\Activate.ps1`
-   - **Windows (cmd):** `.venv\Scripts\activate.bat`
-   - **macOS / Linux:** `source .venv/bin/activate`
-
-   When activated, your terminal prompt shows `(.venv)` as a prefix, confirming the environment is active.
-
-   > [!IMPORTANT]
-   > You must activate the virtual environment in every new terminal session before running lab scripts or installing packages. If you open a new terminal and the `(.venv)` prefix is absent, run the activate command again before continuing.
-
 1. Install the workshop Python dependencies:
 
    ```bash
-   python -m pip install -r shared/requirements.txt
+   uv sync
    ```
+
+   > [!NOTE]
+   > `uv sync` creates and manages the `.venv` virtual environment automatically. You do not need to activate it manually — use `uv run python scripts/...` for all lab scripts.
 
 > [!NOTE]
 > Docker is optional. You only need it for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which builds a hosted agent locally and pushes it to the workshop container registry. If Docker is not available, you can still complete every other module - including Module 09 Part 2, which deploys the same agent from source code without Docker. The GitHub Codespaces and dev container environments include Docker automatically.
@@ -93,7 +77,7 @@ enough - no keys required.
 ## Validate setup
 
 ```bash
-python scripts/health-check.py
+uv run python scripts/health-check.py
 ```
 
 Resolve any reported issues before starting. If the check reports a missing value, confirm
@@ -219,7 +203,6 @@ environment locally without installing Python, the Azure CLI, or other dependenc
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| `pip install` fails with `externally-managed-environment` | Python 3.13 on Linux/macOS enforces PEP 668. | Create and activate the `.venv` virtual environment first (see prerequisites). |
 | `health-check.py` reports authentication failure | Not signed in or wrong subscription. | Re-run `az login` and `az account set --subscription <id>`. |
 | Project not visible in the portal | Role not yet assigned, or wrong project name. | Confirm your `FOUNDRY_PROJECT_NAME` with your organizer or proctor. |
 | Cannot deploy a model | Expected with the `foundry-user` role. | Use the models your organizer pre-deployed. |

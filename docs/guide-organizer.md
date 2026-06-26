@@ -141,7 +141,7 @@ The portal is an authenticated Azure Container Apps web application backed by Co
 
 - **Your environment variables** - all `.env` values in a copyable code block, plus a **Download .env** button to save the file directly.
 - **Sign in to Azure** - `az login` and `az account set` commands pre-populated with the workshop subscription ID.
-- **Validate setup** - the `python scripts/health-check.py` command ready to copy.
+- **Validate setup** - the `uv run python scripts/health-check.py` command ready to copy.
 - **Next steps** - a link to the Attendee Quickstart to complete setup.
 - **Workshop Resources** - links to the GitHub repo, lab modules, and Microsoft Foundry documentation.
 - A role badge showing the attendee's assigned Foundry role.
@@ -298,7 +298,7 @@ new entries get projects and role assignments; role changes are applied.
 Use `check-jsonschema` to catch typos and invalid role keys before provisioning:
 
 ```bash
-pip install check-jsonschema
+uvx check-jsonschema
 azd env get-value AZURE_ATTENDEE_LIST > /tmp/attendee-list.json
 check-jsonschema --schemafile shared/schemas/attendee-list.schema.json /tmp/attendee-list.json
 ```

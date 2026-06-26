@@ -61,7 +61,7 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
 1. Validate your setup.
 
    ```bash
-   python scripts/health-check.py
+   uv run python scripts/health-check.py
    ```
 
 1. Open the [Microsoft Foundry portal](https://ai.azure.com) and confirm your project appears.

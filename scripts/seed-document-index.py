@@ -135,7 +135,7 @@ def main() -> int:
             f'Data file not found: {data_path}\n'
             'Run the data generator to create it:\n'
             f'  cd tools/python\n'
-            f'  python -m data_generator --scenario retail-policy --count 50 '
+            f'  uv run python -m data_generator --scenario retail-policy --count 50 '
             f'--industry supermarket --out-file ../../{rel}'
         )
         return 1

@@ -96,8 +96,8 @@ This module uses two Azure AI Search indexes that the workshop provisioning scri
 > The **Indexes** tab on the Knowledge page lists only indexes created *inside* Foundry. The workshop indexes live in the connected Azure AI Search service, so they will **not** appear on that tab - this is expected. You select them directly by name when you add knowledge sources in Part 2. If you need to confirm they exist, view the indexes in the [Azure portal](https://portal.azure.com) under the AI Search resource, or ask your proctor. To recreate them if necessary:
 >
 > ```bash
-> python scripts/seed-product-index.py
-> python scripts/seed-document-index.py
+> uv run python scripts/seed-product-index.py
+> uv run python scripts/seed-document-index.py
 > ```
 
 <!-- markdownlint-disable-next-line MD028 -->
@@ -390,8 +390,8 @@ The `retail-products` and `retail-policies` indexes live in the connected Azure 
 1. If an index is missing, run the seed scripts from the repository root:
 
    ```bash
-   python scripts/seed-product-index.py
-   python scripts/seed-document-index.py
+   uv run python scripts/seed-product-index.py
+   uv run python scripts/seed-document-index.py
    ```
 
 1. Reopen the **Create a knowledge source** dialog and confirm both indexes are now selectable.

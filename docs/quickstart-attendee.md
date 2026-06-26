@@ -24,16 +24,7 @@ cd foundry-agentic-workshop
 ## Install dependencies
 
 ```bash
-python -m venv .venv
-```
-
-Activate the virtual environment:
-
-- **Windows:** `.venv\Scripts\activate`
-- **macOS / Linux:** `source .venv/bin/activate`
-
-```bash
-python -m pip install -r shared/requirements.txt
+uv sync
 ```
 
 ## Get your environment configuration
@@ -43,7 +34,7 @@ Microsoft account, and follow the instructions on the page. The portal shows:
 
 - Your personal `.env` values in a copyable code block, plus a **Download .env** button to save the file directly.
 - Pre-populated `az login` and `az account set` commands for the workshop subscription.
-- The `python scripts/health-check.py` validation command.
+- The `uv run python scripts/health-check.py` validation command.
 
 If the portal is unavailable, copy the values from the onboarding file your organizer sent:
 
@@ -67,7 +58,7 @@ az account set --subscription <your-subscription-id>
 ## Validate setup
 
 ```bash
-python scripts/health-check.py
+uv run python scripts/health-check.py
 ```
 
 ## Open your project

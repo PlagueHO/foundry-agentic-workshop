@@ -31,27 +31,21 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 1. Confirm all three paths resolve without error.
 
-### Check 2 - Activate the virtual environment and confirm dependencies
+### Check 2 - Confirm dependencies are installed
 
-1. Activate the `.venv` virtual environment from the repository root:
-
-   - **Windows (PowerShell):** `.venv\Scripts\Activate.ps1`
-   - **macOS / Linux:** `source .venv/bin/activate`
-
-1. Confirm the terminal prompt now shows the `(.venv)` prefix.
-1. Confirm the shared dependencies (which include `agent-framework`) are installed:
+1. Confirm the shared dependencies (which include `agent-framework`) are installed by running `uv sync` from the repo root if not already done:
 
    ```bash
-   python -m pip install -r shared/requirements.txt
+   uv sync
    ```
 
 1. Confirm `agent_framework` imports cleanly:
 
    ```bash
-   python -c "from agent_framework.foundry import FoundryAgent; print('agent_framework OK')"
+   uv run python -c "from agent_framework.foundry import FoundryAgent; print('agent_framework OK')"
    ```
 
-   **Check:** If the import raises `ModuleNotFoundError`, reinstall `shared/requirements.txt` in the active environment and retry. Confirm the `(.venv)` prefix is present so the install targets the correct interpreter.
+   **Check:** If the import raises `ModuleNotFoundError`, run `uv sync` from the repo root and retry.
 
 ### Check 3 - Confirm the `.env` file exists and contains required values
 

@@ -134,7 +134,7 @@ jobs:
           EOF
 
       - name: Python syntax smoke checks
-        run: python -m compileall labs scripts shared
+        run: uv run --no-sync python -m compileall labs scripts shared
 
       - name: Get infrastructure outputs
         id: get_infrastructure_outputs

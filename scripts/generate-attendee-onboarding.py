@@ -265,7 +265,7 @@ def _build_attendee_markdown_content(
         '## Validate Setup\n'
         '\n'
         '```bash\n'
-        'python scripts/health-check.py\n'
+        'uv run python scripts/health-check.py\n'
         '```\n'
         '\n'
         '## Next Steps\n'
@@ -784,7 +784,7 @@ def main() -> int:  # pylint: disable=too-many-locals
             env_path = Path(__file__).resolve().parent.parent / '.env'
             env_path.write_text(_env_dict_to_str(env_dict) + '\n', encoding='utf-8')
             print(f'\nIndividual mode: environment written to {env_path}')
-            print('  Review .env and run: python scripts/health-check.py')
+            print('  Review .env and run: uv run python scripts/health-check.py')
     return 0
 
 

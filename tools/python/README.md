@@ -40,7 +40,7 @@ CLI ──▶ DataGeneratorTool (prompt + post-process)
 From this folder (`tools/python`):
 
 ```bash
-python -m pip install -e .
+uv sync
 ```
 
 ## Configuration
@@ -62,7 +62,7 @@ When no API key is supplied the engine authenticates with `AzureCliCredential`.
 Generate a single aggregated JSON Lines file (recommended for search indexing):
 
 ```bash
-python -m data_generator \
+uv run python -m data_generator \
   --scenario retail-product \
   --count 100 \
   --industry supermarket \
@@ -73,7 +73,7 @@ python -m data_generator \
 Generate the matching policy documents:
 
 ```bash
-python -m data_generator \
+uv run python -m data_generator \
   --scenario retail-policy \
   --count 20 \
   --industry supermarket \
@@ -84,7 +84,7 @@ python -m data_generator \
 Generate per-record files for any generic scenario:
 
 ```bash
-python -m data_generator \
+uv run python -m data_generator \
   --scenario tech-support \
   --count 50 \
   --output-format yaml \

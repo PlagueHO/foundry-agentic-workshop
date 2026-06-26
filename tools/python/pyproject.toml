@@ -29,6 +29,11 @@ generate-data = "data_generator.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.uv]
+# agent-framework transitively requires pre-release versions of
+# agent-framework-azure-ai-search and azure-search-documents.
+prerelease = "allow"
+
 [tool.ruff]
 line-length = 88
 target-version = "py313"

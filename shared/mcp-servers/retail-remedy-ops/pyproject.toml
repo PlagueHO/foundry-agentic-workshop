@@ -1,0 +1,8 @@
+[project]
+name = "mcp-server-retail-remedy-ops"
+version = "0.1.0"
+description = "Retail Remedy Operations MCP server container image dependencies."
+requires-python = ">=3.13"
+dependencies = [
+    "mcp",
+]

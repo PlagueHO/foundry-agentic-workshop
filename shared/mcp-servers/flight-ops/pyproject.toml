@@ -1,0 +1,8 @@
+[project]
+name = "mcp-server-flight-ops"
+version = "0.1.0"
+description = "Flight Operations MCP server container image dependencies."
+requires-python = ">=3.13"
+dependencies = [
+    "mcp[cli]>=1.0.0",
+]
