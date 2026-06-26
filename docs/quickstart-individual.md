@@ -54,11 +54,6 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
    azd provision
    ```
 
-    The pre-provision hook detects individual mode, derives your Foundry project name from your
-    signed-in UPN, and writes `AZURE_ATTENDEE_LIST_RESOLVED`. The post-provision hook writes
-    your environment configuration to `.env` and uploads the onboarding index to Blob Storage
-    (used by the Attendee Onboarding Portal).
-
 ## After provisioning
 
 1. Review `.env` — your environment configuration is ready to use.
@@ -81,8 +76,3 @@ Remove all provisioned resources when you are done.
 ```bash
 azd down --force --purge
 ```
-
-> [!NOTE]
-> The Attendee Onboarding Portal is deployed in individual mode, but you do not need to use
-> it. Your environment configuration is written directly to `.env` in the repository root.
-> The onboarding index is still uploaded to Blob Storage for the portal.

@@ -4,10 +4,6 @@ Individual mode lets a solo learner provision and run the entire workshop withou
 list or an organizer handoff. Set `AZURE_INDIVIDUAL_MODE=true` and run `azd provision` —
 your own identity becomes the sole attendee.
 
-The onboarding index is uploaded to Blob Storage in individual mode (it is used by the Attendee
-Onboarding Portal). As a solo learner you do not need to use the portal; your environment
-configuration is written directly to `.env` in the repository root.
-
 For the abbreviated flow, see the [Individual Quickstart](./quickstart-individual.md).
 
 ## Prerequisites
@@ -61,9 +57,8 @@ Run `azd provision`. The provision hooks run automatically.
 
 | Hook | What happens in individual mode |
 |---|---|
-| Pre-provision (`prepare-attendee-roles.py`) | Reads your signed-in UPN from `az account show`, derives the project name, and writes `AZURE_ATTENDEE_LIST_RESOLVED`. |
-| Post-provision (`generate-attendee-onboarding.py`) | Generates the onboarding index, uploads it to Blob Storage for the portal, and writes `.env`. |
-| Post-provision (`deploy-attendee-portal.py`) | Runs normally: builds and pushes the portal image, configures EasyAuth. |
+| Pre-provision (`prepare-attendee-roles.py`) | Reads your signed-in UPN from `az account show` and derives the Foundry project name. |
+| Post-provision (`generate-attendee-onboarding.py`) | Writes your environment configuration to `.env`. |
 
 ```bash
 azd provision
@@ -92,25 +87,6 @@ If the UPN cannot be retrieved, the project name falls back to `attendee-01`.
 
 1. Begin the labs. Start with
    [Lab 01 – Setup](./lab-steps/introduction-foundry-agent-service/01-setup.md).
-
-## What is not available in individual mode
-
-Individual mode is designed for solo learning. The following features are not available.
-
-| Feature | Reason |
-|---|---|
-| Multiple projects | One project is provisioned for your own identity |
-
-The Attendee Onboarding Portal runs the same as in workshop mode. The onboarding index is
-uploaded to Blob Storage, and your environment configuration is written to `.env` in
-the repository root.
-
-To switch to multi-attendee mode, clear `AZURE_INDIVIDUAL_MODE` and provide an
-`AZURE_ATTENDEE_LIST`:
-
-```bash
-azd env set AZURE_INDIVIDUAL_MODE false
-```
 
 ## Tear down
 
