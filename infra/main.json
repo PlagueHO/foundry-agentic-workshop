@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "14352922866993726351"
+      "templateHash": "5862707088542462798"
     }
   },
   "definitions": {
@@ -673,6 +673,7 @@
     "allProjectNames": "[concat(variables('effectiveStandardProjectNames'), variables('effectiveFacilitatorProjectNames'), variables('effectiveProctorProjectNames'), variables('effectiveOrganizerProjectNames'))]",
     "defaultAttendeeProjectName": "[if(not(empty(variables('effectiveStandardProjectNames'))), variables('effectiveStandardProjectNames')[0], '')]",
     "resolvedAttendeesWithIds": "[filter(parameters('resolvedAttendeeList'), lambda('a', not(empty(lambdaVariables('a').objectId))))]",
+    "principalAlreadyInResolvedList": "[not(empty(filter(variables('resolvedAttendeesWithIds'), lambda('a', equals(lambdaVariables('a').objectId, parameters('principalId'))))))]",
     "attendeeProjectRoleEntries": "[flatten(map(filter(variables('resolvedAttendeesWithIds'), lambda('a', and(and(equals(lambdaVariables('a').role, 'foundry-user'), coalesce(tryGet(lambdaVariables('a'), 'individualProject'), true())), not(empty(lambdaVariables('a').projectName))))), lambda('a', createArray(createObject('projectName', lambdaVariables('a').projectName, 'roleAssignment', createObject('roleDefinitionIdOrName', variables('foundryRoleCatalog')['foundry-user'], 'principalId', lambdaVariables('a').objectId, 'principalType', 'User'))))))]",
     "attendeeFoundryAccountRoleAssignments": "[map(filter(variables('resolvedAttendeesWithIds'), lambda('a', not(equals(lambdaVariables('a').role, 'foundry-user')))), lambda('a', createObject('roleDefinitionIdOrName', variables('foundryRoleCatalog')[lambdaVariables('a').role], 'principalId', lambdaVariables('a').objectId, 'principalType', 'User')))]",
     "attendeeSearchRoleAssignments": "[flatten(map(variables('resolvedAttendeesWithIds'), lambda('a', map(variables('searchRoleCatalog')[lambdaVariables('a').role], lambda('roleId', createObject('roleDefinitionIdOrName', lambdaVariables('roleId'), 'principalId', lambdaVariables('a').objectId, 'principalType', 'User'))))))]",
@@ -35011,7 +35012,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.44.1.10279",
-              "templateHash": "4584470556756958664"
+              "templateHash": "1010131665722702909"
             },
             "name": "Attendee Onboarding Portal (Azure Container Apps)",
             "description": "Deploys the Attendee Onboarding Portal as an authenticated Container App into the shared Azure Container Apps environment. Attendees visit the published URL, sign in with their lab Entra ID account, and see their personal onboarding configuration. Authentication is handled by Container Apps built-in EasyAuth - no custom auth code is required in the application."
@@ -46258,7 +46259,7 @@
             "value": "[variables('aiSearchName')]"
           },
           "roleAssignments": {
-            "value": "[flatten(createArray(if(not(empty(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'))), createArray(createObject('roleDefinitionIdOrName', 'Search Index Data Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')), createObject('roleDefinitionIdOrName', 'Search Index Data Reader', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')), createObject('roleDefinitionIdOrName', 'Search Service Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'), ''))), createArray()), if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', 'Search Service Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Search Index Data Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray()), variables('attendeeSearchRoleAssignments')))]"
+            "value": "[flatten(createArray(if(not(empty(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'))), createArray(createObject('roleDefinitionIdOrName', 'Search Index Data Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')), createObject('roleDefinitionIdOrName', 'Search Index Data Reader', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')), createObject('roleDefinitionIdOrName', 'Search Service Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiFoundryAccount').outputs, 'systemAssignedMIPrincipalId'), 'value'), ''))), createArray()), if(and(not(empty(parameters('principalId'))), not(variables('principalAlreadyInResolvedList'))), createArray(createObject('roleDefinitionIdOrName', 'Search Service Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Search Index Data Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray()), variables('attendeeSearchRoleAssignments')))]"
           }
         },
         "template": {

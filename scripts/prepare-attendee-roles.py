@@ -363,6 +363,16 @@ def _run_individual_mode(
     _emit_resolved_list([entry])
     print('AZURE_ATTENDEE_LIST_RESOLVED written to azd environment.')
 
+    # Also write AZURE_ATTENDEE_LIST so Bicep derives the correct UPN-based project name.
+    # Without this, Bicep falls back to attendeeCount sequential names (e.g. attendee-01)
+    # and the created Foundry project name would not match FOUNDRY_PROJECT_NAME in shared/.env.
+    attendee_list_value = json.dumps([{'upn': entry['upn']}], separators=(',', ':'))
+    subprocess.run(
+        [_AZD_CMD, 'env', 'set', 'AZURE_ATTENDEE_LIST', attendee_list_value],
+        check=True,
+    )
+    print('AZURE_ATTENDEE_LIST written to azd environment.')
+
     audit_dir = Path('.azure') / env_name
     audit_dir.mkdir(parents=True, exist_ok=True)
     audit_path = _write_resolution_audit([entry], audit_dir, env_name)
