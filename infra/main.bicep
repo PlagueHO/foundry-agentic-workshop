@@ -863,6 +863,7 @@ module containerAppsStorageRoleAssignments './core/security/role_storage.bicep' 
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
     resourceGroup
+    storageAccount
   ]
   params: {
     storageAccountName: storageAccounName
@@ -885,6 +886,7 @@ module deployerStorageRoleAssignment './core/security/role_storage.bicep' = {
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
     resourceGroup
+    storageAccount
   ]
   params: {
     storageAccountName: storageAccounName

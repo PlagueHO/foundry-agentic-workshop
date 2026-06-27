@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "5862707088542462798"
+      "templateHash": "6715882046469208912"
     }
   },
   "definitions": {
@@ -37706,7 +37706,8 @@
       },
       "dependsOn": [
         "attendeePortal",
-        "resourceGroup"
+        "resourceGroup",
+        "storageAccount"
       ]
     },
     "deployerStorageRoleAssignment": {
@@ -37909,7 +37910,8 @@
         }
       },
       "dependsOn": [
-        "resourceGroup"
+        "resourceGroup",
+        "storageAccount"
       ]
     },
     "aiFoundryAccount": {
