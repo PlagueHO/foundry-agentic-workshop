@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="960" viewBox="0 0 1280 960" font-family="'Segoe UI',Arial,sans-serif">
   <title>Microsoft Foundry Agentic Workshop - Azure Architecture</title>
-  <desc>All workshop resources live in a single Azure resource group. A Microsoft Foundry (AI Services) account hosts one Foundry project per attendee, the model deployments (chat gpt-5.3-chat, embedding text-embedding-3-small, gpt-5.4, gpt-5.4-mini and gpt-5.4-nano) and the agent connections. The account always connects to Azure AI Search (search and vector store for Foundry IQ), Azure Container Registry (hosted agent images) and Application Insights (agent telemetry). Optional capability-host connections add Azure Cosmos DB (serverless, agent thread storage) and an Azure Storage account (agent file storage). An Azure Container Apps environment runs the Module 06 Retail Remedy Operations MCP server, which Foundry agents reach over HTTPS and which pulls its image from the container registry. Workshop attendees connect from GitHub Codespaces using the Python AIProjectClient SDK and push hosted-agent images to the registry. Azure Key Vault provides RBAC secret storage, and all resources emit diagnostics to a central Log Analytics workspace that backs Application Insights.</desc>
+  <desc>All workshop resources live in a single Azure resource group. A Microsoft Foundry (AI Services) account hosts one Foundry project per attendee, the model deployments (chat gpt-5.4-mini, embedding text-embedding-3-small, gpt-5.4, gpt-5.4-mini and gpt-5.4-nano) and the agent connections. The account always connects to Azure AI Search (search and vector store for Foundry IQ), Azure Container Registry (hosted agent images) and Application Insights (agent telemetry). Optional capability-host connections add Azure Cosmos DB (serverless, agent thread storage) and an Azure Storage account (agent file storage). An Azure Container Apps environment runs the Module 06 Retail Remedy Operations MCP server, which Foundry agents reach over HTTPS and which pulls its image from the container registry. Workshop attendees connect from GitHub Codespaces using the Python AIProjectClient SDK and push hosted-agent images to the registry. Azure Key Vault provides RBAC secret storage, and all resources emit diagnostics to a central Log Analytics workspace that backs Application Insights.</desc>
 
   <defs>
     <!-- Service icon gradients -->
@@ -197,7 +197,7 @@
   <use href="#icModel" x="372" y="320" width="40" height="40"/>
   <text x="422" y="334" font-size="13" font-weight="700" fill="#1A1A1A">Model Deployments</text>
   <text x="422" y="352" font-size="10.5" fill="#666666">GlobalStandard · OpenAI</text>
-  <text x="378" y="382" font-size="11" fill="#444444">• chat - gpt-5.3-chat</text>
+  <text x="378" y="382" font-size="11" fill="#444444">• chat - gpt-5.4-mini</text>
   <text x="378" y="402" font-size="11" fill="#444444">• embedding - t-emb-3-small</text>
   <text x="378" y="422" font-size="11" fill="#444444">• gpt-5.4 · mini · nano</text>
   <text x="378" y="465" font-size="10" fill="#888888">RAI: FoundryWorkshopContentPolicy</text>

@@ -25,6 +25,7 @@ from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 
 # TODO 1: Import the FoundryAgent client from the Agent Framework Foundry package.
+from agent_framework.foundry import FoundryAgent
 
 
 # A retail-staff question the acl-remedy-advisor agent is designed to answer.
@@ -48,11 +49,23 @@ async def run() -> None:
 
     # TODO 2: Connect to the existing Prompt Agent by name.
     # Build a FoundryAgent from endpoint, agent_name, agent_version, and credential.
-    agent = None  # replace with the FoundryAgent created in snippet 2
+    agent = FoundryAgent(
+        project_endpoint=endpoint,
+        agent_name=agent_name,
+        agent_version=agent_version,
+        credential=credential,
+    )
 
     # TODO 3: Run the agent once and print the full response.
+    result = await agent.run(QUERY)
+    print(f'\nAgent:\n{result.text}\n')
 
     # TODO 4: Run the agent again and stream the response as it is generated.
+    print('Agent (streaming): ', end='', flush=True)
+    async for chunk in agent.run(QUERY, stream=True):
+        if chunk.text:
+            print(chunk.text, end='', flush=True)
+    print('\n')
 
     credential.close()
 
