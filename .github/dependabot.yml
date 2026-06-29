@@ -2,7 +2,7 @@ version: 2
 
 # Dependabot configuration for Microsoft Foundry Agentic Workshop
 updates:
-  # Root Python project (pyproject.toml + uv.lock — workshop runtime + dev deps)
+  # Root Python project (pyproject.toml + uv.lock - workshop runtime + dev deps)
   - package-ecosystem: pip
     directory: /
     schedule:

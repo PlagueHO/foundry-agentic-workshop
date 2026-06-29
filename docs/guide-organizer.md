@@ -11,6 +11,7 @@ This guide covers standing up and tearing down a shared Microsoft Foundry worksh
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. [Docker](https://www.docker.com/) running locally. Provisioning uses it to build and publish the shared MCP server image to Azure Container Apps (only needed when `AZURE_CONTAINER_APPS_DEPLOY` is `true`, the default).
 1. Python 3.13 or later (the pre-provision hook resolves attendee UPNs to Microsoft Entra object IDs before Bicep assigns roles).
+1. [uv](https://docs.astral.sh/uv/getting-started/installation/) - the `azd provision` hooks run all scripts via `uv run`.
 1. [Foundry Model quota](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits) in your target region for the models the labs use.
 1. The Microsoft Entra ID UPN for each attendee, organizer, facilitator and proctor. The organizer, facilitator and proctors are optional.
 

@@ -34,6 +34,7 @@ detailed steps, the RBAC model, and troubleshooting.
    and [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. Install [Python 3.13 or later](https://www.python.org/downloads/) (used by the pre-provision hook to
    resolve attendee UPNs to Microsoft Entra object IDs).
+1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) - all scripts run via `uv run`, including the `azd provision` hooks.
 1. Install and start [Docker](https://www.docker.com/) (used to build and publish the shared MCP server
    image to Azure Container Apps; only required when `AZURE_CONTAINER_APPS_DEPLOY` is `true`, the default).
 1. Collect the Microsoft Entra ID UPN for each attendee, organizer, facilitator, and proctor.

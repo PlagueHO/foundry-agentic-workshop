@@ -31,6 +31,7 @@ Install the following before continuing:
 
 1. [.NET 10 SDK](https://dot.net/download).
 1. [Python 3.13 or later](https://www.python.org/downloads/).
+1. [uv](https://docs.astral.sh/uv/getting-started/installation/).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. [Docker](https://www.docker.com/products/docker-desktop/) (optional) - required only for [Module 12](../12-observability/README.md), which runs the Aspire Dashboard as a local container.
 

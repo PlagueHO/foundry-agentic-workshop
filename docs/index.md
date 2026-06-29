@@ -55,7 +55,7 @@ Pick the path that matches your role.
 | Role | Required | Start with | Then read |
 |------|----------|------------|----------|
 | Organizer | Yes | [Organizer Quickstart](./quickstart-organizer.md) | [Organizer Guide](./guide-organizer.md) |
-| Individual learner | — | [Individual Quickstart](./quickstart-individual.md) | [Individual Guide](./guide-individual.md) |
+| Individual learner | - | [Individual Quickstart](./quickstart-individual.md) | [Individual Guide](./guide-individual.md) |
 | Attendee | Yes | [Attendee Quickstart](./quickstart-attendee.md) | [Attendee Guide](./guide-attendee.md) |
 | Facilitator | No | [Facilitator Quickstart](./quickstart-facilitator.md) | [Facilitator Guide](./guide-facilitator.md) |
-| Proctor | No | [Proctor Guide](./guide-proctor.md) | — |
+| Proctor | No | [Proctor Guide](./guide-proctor.md) | - |

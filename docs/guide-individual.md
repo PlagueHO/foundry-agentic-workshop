@@ -1,7 +1,7 @@
 # Individual Guide
 
 Individual mode lets a solo learner provision and run the entire workshop without an attendee
-list or an organizer handoff. Set `AZURE_INDIVIDUAL_MODE=true` and run `azd provision` —
+list or an organizer handoff. Set `AZURE_INDIVIDUAL_MODE=true` and run `azd provision` -
 your own identity becomes the sole attendee.
 
 For the abbreviated flow, see the [Individual Quickstart](./quickstart-individual.md).
@@ -15,6 +15,7 @@ For the abbreviated flow, see the [Individual Quickstart](./quickstart-individua
 | [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd) | v1.11 or later |
 | [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) | v2.60 or later |
 | [Python 3.13](https://www.python.org/downloads/) | Used by the provision hooks |
+| [uv](https://docs.astral.sh/uv/getting-started/installation/) | Python package manager; all scripts and provision hooks run via `uv run` |
 | [Docker Desktop](https://www.docker.com/products/docker-desktop/) | Required for MCP server image builds (skip by setting `AZURE_CONTAINER_APPS_DEPLOY=false`) |
 
 ## Set up the environment

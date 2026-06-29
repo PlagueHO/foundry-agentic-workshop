@@ -1016,7 +1016,7 @@ var aiSearchRoleAssignmentsArray = [
       principalId: aiFoundryAccount.outputs.?systemAssignedMIPrincipalId ?? ''
     }
   ] : [])
-  // Developer role assignments — omitted when principalId is already covered by the
+  // Developer role assignments - omitted when principalId is already covered by the
   // per-attendee block to avoid duplicate ARM role-assignment resource names.
   ...(!empty(principalId) && !principalAlreadyInResolvedList ? [
     {
