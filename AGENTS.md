@@ -39,7 +39,7 @@ uv run python scripts/health-check.py
 ```
 
 ```bash
-python -m compileall labs scripts shared
+uv run python -m compileall labs scripts shared
 ```
 
 ```bash
