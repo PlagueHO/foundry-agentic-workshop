@@ -60,13 +60,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.13'
-
       - name: Setup uv
         uses: astral-sh/setup-uv@v6
+        with:
+          python-version: '3.13'
 
       - name: Install Azure Developer CLI
         uses: Azure/setup-azd@v2.3.0
