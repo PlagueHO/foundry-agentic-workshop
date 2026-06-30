@@ -85,10 +85,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Setup Python
-        uses: actions/setup-python@v6
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: '3.13'
 
       - name: Compile Python sources
-        run: python -m compileall labs scripts shared
+        run: uv run --no-sync python -m compileall labs scripts shared

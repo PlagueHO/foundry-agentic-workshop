@@ -25,4 +25,4 @@ You must validate that:
 1. The RBAC roles are assigned correctly.
 1. The CSV and MD outputs produced by the pre-provision #file:scripts/prepare-attendee-roles.py and post-provision #file:scripts/generate-attendee-onboarding.py are complete and show the correct output and are in the right place (`.azure/<envname>`).
 1. The onboarding index (`index.json`) and per-attendee markdown files were uploaded to Azure Blob Storage by #file:scripts/generate-attendee-onboarding.py (confirm from hook output that upload log lines appear for both the index and the markdown backups).
-1. The Attendee Onboarding Portal was deployed by #file:scripts/deploy-attendee-portal.py — confirm the portal image was built and pushed to the container registry, the Container App was updated, and EasyAuth was configured.
+1. The Attendee Onboarding Portal was deployed by #file:scripts/deploy-attendee-portal.py - confirm the portal image was built and pushed to the container registry, the Container App was updated, and EasyAuth was configured.

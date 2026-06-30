@@ -23,6 +23,7 @@ import os
 import re
 import subprocess
 import sys
+import tomllib
 
 import requests
 from dotenv import load_dotenv
@@ -196,9 +197,9 @@ def _check_prerequisites() -> bool:
 def _check_venv() -> None:
     """Check that a Python virtual environment is active.
 
-    The Attendee Guide requires attendees to create and activate a .venv
-    virtual environment before running lab scripts so workshop packages are
-    isolated from the system Python.
+    When running via 'uv run python ...', uv activates the project virtual
+    environment automatically.  If invoked without uv, activate the .venv
+    manually or re-run the script via uv.
     """
     in_venv = sys.prefix != sys.base_prefix
     if in_venv:
@@ -211,24 +212,28 @@ def _check_venv() -> None:
         check(
             'Python virtual environment active',
             False,
-            f'not active \u2014 activate with: {activate_cmd}',
+            f'not active \u2014 re-run via: uv run python scripts/health-check.py\n'
+            f'or activate manually with: {activate_cmd}',
         )
 
 
 def _check_python_dependencies() -> None:
-    """Check that the workshop Python packages from shared/requirements.txt are installed.
+    """Check that the workshop Python packages declared in pyproject.toml are installed.
 
-    Verifies that each package listed in the requirements file can be imported
-    or is present in the active Python environment, without requiring pip to be
-    invoked at runtime.
+    Verifies that each package listed under [project] dependencies in pyproject.toml
+    can be imported in the active Python environment.  Run 'uv sync' to install
+    missing packages.
     """
-    req_path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        'shared', 'requirements.txt',
-    )
-    if not os.path.exists(req_path):
-        check('Workshop Python dependencies installed', False, f'{req_path} not found')
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    pyproject_path = os.path.join(repo_root, 'pyproject.toml')
+    if not os.path.exists(pyproject_path):
+        check('Workshop Python dependencies installed', False, f'{pyproject_path} not found')
         return
+
+    with open(pyproject_path, 'rb') as fh:
+        pyproject = tomllib.load(fh)
+
+    raw_deps: list[str] = pyproject.get('project', {}).get('dependencies', [])
 
     # Map requirement names to importable module names where they differ.
     _import_map: dict[str, str] = {
@@ -244,11 +249,8 @@ def _check_python_dependencies() -> None:
         'requests': 'requests',
     }
 
-    with open(req_path, encoding='utf-8') as fh:
-        raw_lines = [ln.strip() for ln in fh if ln.strip() and not ln.startswith('#')]
-
     # Strip version specifiers (e.g. '>=2.2.0') to get bare package names.
-    pkg_names = [re.split(r'[>=<!]', ln)[0].strip() for ln in raw_lines]
+    pkg_names = [re.split(r'[>=<!;\[]', dep)[0].strip() for dep in raw_deps if dep.strip()]
 
     missing: list[str] = []
     for pkg in pkg_names:
@@ -262,13 +264,13 @@ def _check_python_dependencies() -> None:
         check(
             'Workshop Python dependencies installed',
             False,
-            f'missing: {", ".join(missing)} \u2014 run: python -m pip install -r shared/requirements.txt',
+            f'missing: {", ".join(missing)} \u2014 run: uv sync',
         )
     else:
         check(
             'Workshop Python dependencies installed',
             True,
-            f'{len(pkg_names)} package(s) from shared/requirements.txt',
+            f'{len(pkg_names)} package(s) from pyproject.toml',
         )
 
 

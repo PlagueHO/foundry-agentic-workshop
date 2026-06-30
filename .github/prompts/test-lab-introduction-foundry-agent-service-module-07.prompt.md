@@ -94,7 +94,7 @@ Module 07 grounds the agent on two pre-seeded Azure AI Search indexes connected 
 1. In the Codespace terminal, confirm both indexes contain documents (substitute the index names from Check 4 if they differ from the defaults):
 
    ```bash
-   python scripts/health-check.py
+   uv run python scripts/health-check.py
    ```
 
 1. Confirm the health check reports the Azure AI Search service is reachable and that both the `retail-products` and `retail-policies` indexes exist with a non-zero document count.
@@ -102,8 +102,8 @@ Module 07 grounds the agent on two pre-seeded Azure AI Search indexes connected 
    **Check:** If either index is missing or empty, seed it from the repository root, then re-run the health check:
 
    ```bash
-   python scripts/seed-product-index.py
-   python scripts/seed-document-index.py
+   uv run python scripts/seed-product-index.py
+   uv run python scripts/seed-document-index.py
    ```
 
    **Check:** The workshop indexes live in the connected Azure AI Search service, not in Foundry, so they do **not** appear on the Foundry **Indexes** tab - this is expected. They are still selectable by name in the **Select search index** dropdown in Part 1.
@@ -175,7 +175,7 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
 
    **Check:** If `retail-products` is not selectable in the **Select search index** dropdown, return to Check 7 and confirm the index exists and is populated. The index lives in the connected Azure AI Search service, so it will not appear on the Foundry **Indexes** tab.
 
-   **Check:** If the dialog reports *"Search index must contain semantic configuration"*, the index was created without one. Re-run `python scripts/seed-product-index.py` from the repository root to recreate it with its semantic configuration, then reopen the dialog.
+   **Check:** If the dialog reports *"Search index must contain semantic configuration"*, the index was created without one. Re-run `uv run python scripts/seed-product-index.py` from the repository root to recreate it with its semantic configuration, then reopen the dialog.
 
 ---
 
@@ -201,7 +201,7 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
 1. Click **Create**. Confirm both `retail-products` and `retail-policies` now appear in the **Knowledge sources** list.
 1. Take a screenshot of the Knowledge sources list showing both sources.
 
-   **Check:** If `retail-policies` is not selectable, return to Check 7 and confirm the index exists. Re-run `python scripts/seed-document-index.py` if it is missing or empty.
+   **Check:** If `retail-policies` is not selectable, return to Check 7 and confirm the index exists. Re-run `uv run python scripts/seed-document-index.py` if it is missing or empty.
 
 ---
 

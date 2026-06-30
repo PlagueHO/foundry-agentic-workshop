@@ -11,6 +11,7 @@ This guide covers standing up and tearing down a shared Microsoft Foundry worksh
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. [Docker](https://www.docker.com/) running locally. Provisioning uses it to build and publish the shared MCP server image to Azure Container Apps (only needed when `AZURE_CONTAINER_APPS_DEPLOY` is `true`, the default).
 1. Python 3.13 or later (the pre-provision hook resolves attendee UPNs to Microsoft Entra object IDs before Bicep assigns roles).
+1. [uv](https://docs.astral.sh/uv/getting-started/installation/) - the `azd provision` hooks run all scripts via `uv run`.
 1. [Foundry Model quota](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits) in your target region for the models the labs use.
 1. The Microsoft Entra ID UPN for each attendee, organizer, facilitator and proctor. The organizer, facilitator and proctors are optional.
 
@@ -141,7 +142,7 @@ The portal is an authenticated Azure Container Apps web application backed by Co
 
 - **Your environment variables** - all `.env` values in a copyable code block, plus a **Download .env** button to save the file directly.
 - **Sign in to Azure** - `az login` and `az account set` commands pre-populated with the workshop subscription ID.
-- **Validate setup** - the `python scripts/health-check.py` command ready to copy.
+- **Validate setup** - the `uv run python scripts/health-check.py` command ready to copy.
 - **Next steps** - a link to the Attendee Quickstart to complete setup.
 - **Workshop Resources** - links to the GitHub repo, lab modules, and Microsoft Foundry documentation.
 - A role badge showing the attendee's assigned Foundry role.
@@ -298,9 +299,8 @@ new entries get projects and role assignments; role changes are applied.
 Use `check-jsonschema` to catch typos and invalid role keys before provisioning:
 
 ```bash
-pip install check-jsonschema
 azd env get-value AZURE_ATTENDEE_LIST > /tmp/attendee-list.json
-check-jsonschema --schemafile shared/schemas/attendee-list.schema.json /tmp/attendee-list.json
+uvx check-jsonschema --schemafile shared/schemas/attendee-list.schema.json /tmp/attendee-list.json
 ```
 
 ## Role catalog

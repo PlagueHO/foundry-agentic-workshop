@@ -135,13 +135,14 @@ Install the following tools manually:
 
 - [VS Code Insiders](https://code.visualstudio.com/insiders/) with the [Foundry Toolkit for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-windows-ai-studio.windows-ai-studio)
 - [Python 3.13 or later](https://www.python.org/downloads/)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
 
 Then install the shared Python dependencies:
 
 ```bash
-python -m pip install -r shared/requirements.txt
+uv sync
 ```
 
 ### Configure and validate
@@ -157,7 +158,7 @@ python -m pip install -r shared/requirements.txt
 1. Validate:
 
    ```bash
-   python scripts/health-check.py
+   uv run python scripts/health-check.py
    ```
 
 See the [Attendee Quickstart](./docs/quickstart-attendee.md) for the full flow.

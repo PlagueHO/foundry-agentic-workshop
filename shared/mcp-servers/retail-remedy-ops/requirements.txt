@@ -1,3 +1,0 @@
-# Runtime dependency for the containerized MCP server fallback (Azure Container Apps).
-# Kept minimal and independent of shared/requirements.txt so the image stays small.
-mcp

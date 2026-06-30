@@ -1,6 +1,6 @@
 ---
 description: 'Instructions for building Model Context Protocol (MCP) servers using the Python SDK'
-applyTo: '**/*.py, **/pyproject.toml, **/requirements.txt'
+applyTo: '**/*.py, **/pyproject.toml'
 ---
 
 # Python MCP Server Development

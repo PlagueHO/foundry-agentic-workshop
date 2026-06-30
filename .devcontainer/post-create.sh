@@ -13,11 +13,10 @@ git config --global core.fileMode false
 
 # Install Python development dependencies
 echo "🐍 Installing Python development dependencies..."
-# Install for Python 3.13 (the default interpreter that supports all dependencies)
-if [ -f "./requirements-dev.txt" ]; then
-    python3 -m pip install -r ./requirements-dev.txt
+if command -v uv >/dev/null 2>&1; then
+    uv sync --group dev
 else
-    echo "  requirements-dev.txt not found; skipping Python dev dependency install"
+    echo "  Warning: uv not found; skipping Python dev dependency install"
 fi
 
 # Ensure Bicep CLI is available through Azure CLI

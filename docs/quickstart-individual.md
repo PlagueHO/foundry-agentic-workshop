@@ -1,6 +1,6 @@
 # Individual Quickstart
 
-Use this quickstart when you want to run the workshop labs on your own — no team, no attendee
+Use this quickstart when you want to run the workshop labs on your own - no team, no attendee
 list, and no shared provisioning. Individual mode (`AZURE_INDIVIDUAL_MODE=true`) provisions
 a single Foundry project scoped to your own Azure identity, and writes your `.env`
 configuration to `.env` automatically after provisioning.
@@ -14,6 +14,7 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
 - [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Python 3.13 or later](https://www.python.org/downloads/)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (required to build
   and publish the shared MCP server images; only needed when `AZURE_CONTAINER_APPS_DEPLOY=true`,
   which is the default)
@@ -56,12 +57,12 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
 
 ## After provisioning
 
-1. Review `.env` — your environment configuration is ready to use.
+1. Review `.env` - your environment configuration is ready to use.
 
 1. Validate your setup.
 
    ```bash
-   python scripts/health-check.py
+   uv run python scripts/health-check.py
    ```
 
 1. Open the [Microsoft Foundry portal](https://ai.azure.com) and confirm your project appears.

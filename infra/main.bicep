@@ -863,6 +863,7 @@ module containerAppsStorageRoleAssignments './core/security/role_storage.bicep' 
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
     resourceGroup
+    storageAccount
   ]
   params: {
     storageAccountName: storageAccounName
@@ -885,6 +886,7 @@ module deployerStorageRoleAssignment './core/security/role_storage.bicep' = {
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
     resourceGroup
+    storageAccount
   ]
   params: {
     storageAccountName: storageAccounName
@@ -1014,7 +1016,7 @@ var aiSearchRoleAssignmentsArray = [
       principalId: aiFoundryAccount.outputs.?systemAssignedMIPrincipalId ?? ''
     }
   ] : [])
-  // Developer role assignments — omitted when principalId is already covered by the
+  // Developer role assignments - omitted when principalId is already covered by the
   // per-attendee block to avoid duplicate ARM role-assignment resource names.
   ...(!empty(principalId) && !principalAlreadyInResolvedList ? [
     {

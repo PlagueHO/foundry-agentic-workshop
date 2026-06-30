@@ -13,7 +13,7 @@ guide and the attendee assignment list handy throughout the session.
    ```
 
 1. Get the attendee assignment list from the organizer (UPN to `FOUNDRY_PROJECT_NAME`).
-1. Confirm the environment is provisioned: run `python scripts/list-attendee-projects.py` to see the expected project names.
+1. Confirm the environment is provisioned: run `uv run python scripts/list-attendee-projects.py` to see the expected project names.
 1. Keep one demo project as a fallback for an attendee whose assignment is blocked.
 
 ## During the session

@@ -60,7 +60,7 @@ def _run(command: list[str], *, cwd: Path | None = None) -> int:
 _CAE_HINT = (
     'Your Azure CLI token has expired or requires re-authentication (CAE challenge).\n'
     '  Run: az login\n'
-    '  Then re-run: python scripts/deploy-attendee-portal.py'
+    '  Then re-run: uv run python scripts/deploy-attendee-portal.py'
 )
 
 

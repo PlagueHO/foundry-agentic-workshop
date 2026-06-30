@@ -6,7 +6,7 @@ knowledge base or AF .NET agent can provide embedding generation at query time.
 
 To add vector search, run the data generator to generate embeddings and re-seed:
   cd tools/python
-  python -m data_generator --scenario airline-policy --count 20 \\
+  uv run python -m data_generator --scenario airline-policy --count 20 \\
       --out-file ../../shared/data/passenger-rights.jsonl
 
 Environment variables:
@@ -117,7 +117,7 @@ def main() -> int:
             f'Data file not found: {data_path}\n'
             'Run the data generator to create it:\n'
             f'  cd tools/python\n'
-            f'  python -m data_generator --scenario airline-policy --count 20 '
+            f'  uv run python -m data_generator --scenario airline-policy --count 20 '
             f'--out-file ../../{rel}'
         )
         return 1

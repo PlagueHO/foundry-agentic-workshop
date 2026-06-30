@@ -78,22 +78,16 @@ your code.
 
 ## Steps
 
-- [ ] Activate the `.venv` virtual environment from the repository root, then confirm the shared dependencies (which include `agent-framework`) are installed:
-
-  - **Windows (PowerShell):** `.venv\Scripts\Activate.ps1`
-  - **macOS / Linux:** `source .venv/bin/activate`
+- [ ] Confirm the shared dependencies (which include `agent-framework`) are installed:
 
    ```bash
-   python -m pip install -r shared/requirements.txt
+   uv sync
    ```
-
-   > [!NOTE]
-   > If you completed an earlier module in the same terminal session, your virtual environment may already be active. Look for the `(.venv)` prefix in the terminal prompt to confirm.
 
 - [ ] Confirm the `acl-remedy-advisor` agent exists in your Foundry project. If you did not finish Module 07, recreate its end state from the solution folder:
 
    ```bash
-   python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
+   uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
    ```
 
 - [ ] Sign in with the Azure CLI so `DefaultAzureCredential` can authenticate, and confirm your `.env` file sets `FOUNDRY_PROJECT_ENDPOINT`:
@@ -190,5 +184,4 @@ You took your agent from the portal into code. Using the Microsoft Agent Framewo
 - **Version error on a Prompt Agent** - leave `AGENT_VERSION` empty to use the
   latest published version, or set it to a specific version shown on the agent's
   page in the Foundry portal.
-- **`agent_framework` is not installed** - reinstall `shared/requirements.txt`
-  in your active Python environment.
+- **`agent_framework` is not installed** - run `uv sync` from the repo root to reinstall all dependencies.

@@ -75,7 +75,7 @@ preview or unlisted entries.
 
 ## Suggested pacing
 
-The full workshop runs 3–4 hours. Work through labs in sequence, time-boxing each module. Block on setup until every attendee passes `python scripts/health-check.py` before moving on; unresolved setup issues compound throughout the session.
+The full workshop runs 3–4 hours. Work through labs in sequence, time-boxing each module. Block on setup until every attendee passes `uv run python scripts/health-check.py` before moving on; unresolved setup issues compound throughout the session.
 
 Protect time for the core agent-building labs. Treat later optional labs as depth-adds and trim their scope when the session is running behind. If attendees are on the default `foundry-user` role, some labs may not be completable independently; treat those as live demonstrations.
 

@@ -8,6 +8,7 @@ detailed setup and troubleshooting.
 
 1. [VS Code Insiders](https://code.visualstudio.com/insiders/) with the [Foundry Toolkit for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-windows-ai-studio.windows-ai-studio).
 1. [Python 3.13 or later](https://www.python.org/downloads/).
+1. [uv](https://docs.astral.sh/uv/getting-started/installation/).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
 1. [Docker](https://www.docker.com/products/docker-desktop/) (optional) - required only for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which deploys a hosted agent from a container image. Every other module, including Module 09 Part 2 (deploy from source code), runs without it.
@@ -24,16 +25,7 @@ cd foundry-agentic-workshop
 ## Install dependencies
 
 ```bash
-python -m venv .venv
-```
-
-Activate the virtual environment:
-
-- **Windows:** `.venv\Scripts\activate`
-- **macOS / Linux:** `source .venv/bin/activate`
-
-```bash
-python -m pip install -r shared/requirements.txt
+uv sync
 ```
 
 ## Get your environment configuration
@@ -43,7 +35,7 @@ Microsoft account, and follow the instructions on the page. The portal shows:
 
 - Your personal `.env` values in a copyable code block, plus a **Download .env** button to save the file directly.
 - Pre-populated `az login` and `az account set` commands for the workshop subscription.
-- The `python scripts/health-check.py` validation command.
+- The `uv run python scripts/health-check.py` validation command.
 
 If the portal is unavailable, copy the values from the onboarding file your organizer sent:
 
@@ -67,7 +59,7 @@ az account set --subscription <your-subscription-id>
 ## Validate setup
 
 ```bash
-python scripts/health-check.py
+uv run python scripts/health-check.py
 ```
 
 ## Open your project

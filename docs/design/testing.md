@@ -51,7 +51,7 @@ Pass criteria:
 1. `.env` is populated from onboarding values.
 1. Dependency installation succeeds.
 1. `az login` and subscription checks succeed.
-1. `python scripts/health-check.py` passes.
+1. `uv run python scripts/health-check.py` passes.
 1. Validation section checks in Lab 01 pass.
 
 ### 2. Validate attendee guide
@@ -62,7 +62,7 @@ Pass criteria:
 
 1. Required onboarding variables are present.
 1. `.env` mapping is correct.
-1. `python scripts/health-check.py` passes.
+1. `uv run python scripts/health-check.py` passes.
 1. Project naming expectation is satisfied.
 
 ### 3. Validate organizer guide

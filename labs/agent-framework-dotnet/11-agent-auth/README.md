@@ -5,7 +5,7 @@
 ![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars - Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
 
 > [!IMPORTANT]
-> This module builds on [Module 02](../02-first-agent/README.md). You should already be comfortable with `DefaultAzureCredential` from the earlier modules before exploring credential chaining here. Your `.env` file must contain `FOUNDRY_PROJECT_ENDPOINT` — see [Module 01](../01-setup/README.md) or copy `shared/.env.example`.
+> This module builds on [Module 02](../02-first-agent/README.md). You should already be comfortable with `DefaultAzureCredential` from the earlier modules before exploring credential chaining here. Your `.env` file must contain `FOUNDRY_PROJECT_ENDPOINT` - see [Module 01](../01-setup/README.md) or copy `shared/.env.example`.
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!TIP]
@@ -76,7 +76,7 @@ For more information, see [Credential chains in the Azure Identity client librar
   ```
 
   > [!NOTE]
-  > `DefaultAzureCredential` tries credential sources in order — environment variables, workload identity, managed identity, Azure Developer CLI, **Azure CLI**, VS Code, and PowerShell. On machines where VS Code is signed in to a different account, `DefaultAzureCredential` may resolve to that identity rather than your `az login` session. Run `az account show` to confirm which identity is active.
+  > `DefaultAzureCredential` tries credential sources in order - environment variables, workload identity, managed identity, Azure Developer CLI, **Azure CLI**, VS Code, and PowerShell. On machines where VS Code is signed in to a different account, `DefaultAzureCredential` may resolve to that identity rather than your `az login` session. Run `az account show` to confirm which identity is active.
 
 ### Part 2 - Use a ChainedTokenCredential
 

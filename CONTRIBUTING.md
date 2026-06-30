@@ -33,7 +33,7 @@ Opening an issue first lets maintainers confirm the change is in scope, avoids d
 1. Verify your changes locally:
    - `pnpm run lint:md` - no Markdown lint errors
    - `az bicep lint --file infra/main.bicep` - no Bicep lint errors (if you changed Bicep)
-   - `python -m compileall labs scripts shared` - Python compiles cleanly
+   - `uv run python -m compileall labs scripts shared` - Python compiles cleanly
 1. Reference the issue your PR resolves in the PR description (for example, `Closes #42`).
 1. Keep PRs focused - one concern per PR. Large or sweeping changes are harder to review and more likely to be rejected.
 

@@ -5,8 +5,8 @@
         {
             "label": "python: ruff check",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["-m", "ruff", "check", "labs/", "scripts/", "shared/"],
+            "command": "uv",
+            "args": ["run", "ruff", "check", "labs/", "scripts/", "shared/"],
             "group": {
                 "kind": "build",
                 "isDefault": false
@@ -21,8 +21,8 @@
         {
             "label": "python: flake8",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["-m", "flake8", "labs/", "scripts/", "shared/"],
+            "command": "uv",
+            "args": ["run", "flake8", "labs/", "scripts/", "shared/"],
             "group": {
                 "kind": "build",
                 "isDefault": false
@@ -37,8 +37,8 @@
         {
             "label": "python: pylint",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["-m", "pylint", "labs/", "scripts/", "shared/"],
+            "command": "uv",
+            "args": ["run", "pylint", "labs/", "scripts/", "shared/"],
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -52,8 +52,8 @@
         {
             "label": "python: mypy",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["-m", "mypy", "labs/", "scripts/", "shared/"],
+            "command": "uv",
+            "args": ["run", "mypy", "labs/", "scripts/", "shared/"],
             "group": {
                 "kind": "build",
                 "isDefault": false
@@ -69,8 +69,8 @@
         {
             "label": "python: test",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["-m", "pytest", "labs/", "scripts/", "shared/"],
+            "command": "uv",
+            "args": ["run", "pytest", "labs/", "scripts/", "shared/"],
             "group": {
                 "kind": "test",
                 "isDefault": true
@@ -298,8 +298,8 @@
         {
             "label": "lab: health-check",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["scripts/health-check.py"],
+            "command": "uv",
+            "args": ["run", "python", "scripts/health-check.py"],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
@@ -321,8 +321,8 @@
         {
             "label": "lab: seed product index",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["scripts/seed-product-index.py"],
+            "command": "uv",
+            "args": ["run", "python", "scripts/seed-product-index.py"],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
@@ -339,8 +339,8 @@
         {
             "label": "lab: seed document index",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["scripts/seed-document-index.py"],
+            "command": "uv",
+            "args": ["run", "python", "scripts/seed-document-index.py"],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
@@ -357,8 +357,8 @@
         {
             "label": "lab: seed passenger-rights index",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": ["scripts/seed-passenger-rights-index.py"],
+            "command": "uv",
+            "args": ["run", "python", "scripts/seed-passenger-rights-index.py"],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
@@ -376,8 +376,9 @@
         {
             "label": "introduction-foundry-agent-service: lab 04- create agent (solution)",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
+            "command": "uv",
             "args": [
+                "run", "python",
                 "labs/introduction-foundry-agent-service/04-prompt-based-agents/solution/create_agent.py"
             ],
             "options": {
@@ -396,8 +397,9 @@
         {
             "label": "introduction-foundry-agent-service: lab 05- create agent (solution)",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
+            "command": "uv",
             "args": [
+                "run", "python",
                 "labs/introduction-foundry-agent-service/05-agent-tools-and-evaluations/solution/create_agent.py"
             ],
             "options": {
@@ -416,8 +418,9 @@
         {
             "label": "introduction-foundry-agent-service: lab 06- create agent with mcp (solution)",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
+            "command": "uv",
             "args": [
+                "run", "python",
                 "labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py"
             ],
             "options": {
@@ -436,8 +439,9 @@
         {
             "label": "mcp: run retail-remedy-ops server",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
+            "command": "uv",
             "args": [
+                "run", "python",
                 "shared/mcp-servers/retail-remedy-ops/src/server.py"
             ],
             "options": {
@@ -457,8 +461,9 @@
         {
             "label": "mcp: run flight-ops server",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
+            "command": "uv",
             "args": [
+                "run", "python",
                 "shared/mcp-servers/flight-ops/src/server.py"
             ],
             "options": {
@@ -478,8 +483,9 @@
         {
             "label": "introduction-foundry-agent-service: lab 07- create knowledge base agent (solution)",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
+            "command": "uv",
             "args": [
+                "run", "python",
                 "labs/introduction-foundry-agent-service/07-foundry-iq/solution/create_knowledge_base_agent.py"
             ],
             "options": {
@@ -498,8 +504,9 @@
         {
             "label": "introduction-foundry-agent-service: lab 08- run prompt agent (solution)",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
+            "command": "uv",
             "args": [
+                "run", "python",
                 "labs/introduction-foundry-agent-service/08-agent-framework-python/solution/run_prompt_agent.py"
             ],
             "options": {
@@ -518,8 +525,9 @@
         {
             "label": "introduction-foundry-agent-service: lab 08- create knowledge base agent (solution)",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
+            "command": "uv",
             "args": [
+                "run", "python",
                 "labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py"
             ],
             "options": {
@@ -538,8 +546,9 @@
         {
             "label": "introduction-foundry-agent-service: lab 10- deploy hosted agent (code)",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
+            "command": "uv",
             "args": [
+                "run", "python",
                 "labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/deploy_hosted_agent_code.py"
             ],
             "options": {
@@ -558,8 +567,9 @@
         {
             "label": "introduction-foundry-agent-service: lab 10- invoke hosted agent (solution)",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
+            "command": "uv",
             "args": [
+                "run", "python",
                 "labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py"
             ],
             "options": {

@@ -169,7 +169,7 @@ Both produce the same agent. This module uses Agent Builder so you can see the c
 - [ ] Install dependencies if needed:
 
   ```bash
-  pip install -r shared/requirements.txt
+  uv sync
   ```
 
 #### 6. Complete the starter code

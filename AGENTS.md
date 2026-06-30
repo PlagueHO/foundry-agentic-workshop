@@ -22,7 +22,7 @@ This repository hosts a facilitator-led Microsoft Foundry workshop with numbered
 | labs/introduction-foundry-agent-service/ | All 12 numbered lab modules (01–12) |
 | labs/introduction-foundry-agent-service/NN-name/ | Each lab: README.md, src/starter.py, solution/ |
 | scripts/ | Operational helpers: health-check, attendee provisioning, data seeding |
-| shared/ | Python deps (requirements.txt), .env.example, data/, schemas/ |
+| shared/ | .env.example, data/, schemas/ |
 | tests/smoke/ | PowerShell smoke tests (Smoke.Tests.ps1) |
 | tools/ | Python data-generator tooling |
 
@@ -31,15 +31,15 @@ This repository hosts a facilitator-led Microsoft Foundry workshop with numbered
 Run from the repository root unless noted.
 
 ```bash
-python -m pip install -r shared/requirements.txt
+uv sync
 ```
 
 ```bash
-python scripts/health-check.py
+uv run python scripts/health-check.py
 ```
 
 ```bash
-python -m compileall labs scripts shared
+uv run python -m compileall labs scripts shared
 ```
 
 ```bash

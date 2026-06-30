@@ -1,0 +1,45 @@
+[project]
+name = "foundry-agentic-workshop"
+version = "0.1.0"
+description = "Microsoft Foundry Agentic Workshop - shared Python runtime dependencies."
+requires-python = ">=3.13"
+license = { text = "MIT" }
+authors = [{ name = "Foundry Agentic Workshop Maintainers" }]
+dependencies = [
+    "agent-framework",
+    "agent-framework-foundry-hosting",
+    "azure-ai-projects>=2.2.0",
+    "azure-identity",
+    "azure-mgmt-authorization",
+    "azure-search-documents",
+    "azure-storage-blob",
+    "mcp",
+    "python-dotenv",
+    "requests",
+]
+
+[dependency-groups]
+dev = [
+    "flake8>=7.0.0",
+    "mypy>=1.11.0",
+    "pylint>=3.0.0",
+    "pytest>=8.0.0",
+    "ruff>=0.6.0",
+]
+
+[tool.uv]
+# agent-framework transitively requires pre-release versions of
+# agent-framework-azure-ai-search and azure-search-documents.
+prerelease = "allow"
+
+[tool.pytest.ini_options]
+# importlib mode avoids sys.modules collisions between MCP servers that
+# each have a server.py with the same bare module name.
+addopts = "--import-mode=importlib"
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.format]
+quote-style = "single"

@@ -252,12 +252,7 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
 
   > The agent reads `FOUNDRY_PROJECT_ENDPOINT` from the runtime environment Foundry injects, and `AZURE_AI_MODEL_DEPLOYMENT_NAME` and `TOOLBOX_NAME` from the values baked in at deploy time. It carries **no** MCP server URL - every tool now lives behind the toolbox.
 
-#### 11. Activate the environment and sign in
-
-- [ ] Activate the `.venv` virtual environment from the repository root:
-
-  - **Windows (PowerShell):** `.venv\Scripts\Activate.ps1`
-  - **macOS / Linux:** `source .venv/bin/activate`
+#### 11. Sign in
 
 - [ ] Confirm you are signed in with the Azure CLI - the deploy and invoke scripts authenticate with `DefaultAzureCredential`, which relies on your CLI session:
 
@@ -284,7 +279,7 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
 - [ ] Run the deploy script from the repository root:
 
   ```bash
-  python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/deploy_hosted_agent_code.py
+  uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/deploy_hosted_agent_code.py
   ```
 
 - [ ] The script zips `src/agent/`, uploads it, and Foundry builds the container remotely. Wait for it to report the new version as **active** - the remote build takes a few minutes. The script then grants the agent's per-deploy identity the **Foundry User** role so it can call the model and the toolbox.
@@ -308,7 +303,7 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
 - [ ] Run the invoke script from the repository root:
 
   ```bash
-  python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py
+  uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py
   ```
 
 - [ ] The script selects the latest active version, routes 100% of the agent endpoint traffic to it, and runs a two-turn Australian Consumer Law conversation for receipt `R-1007` (a laptop battery that failed about 14 months after a 12-month warranty). The first turn asks the agent to look up the purchase; the second adds that the customer still has the original box and charger.

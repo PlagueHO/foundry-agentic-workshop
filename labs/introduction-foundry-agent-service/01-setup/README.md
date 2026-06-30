@@ -31,6 +31,7 @@ Install the following before continuing:
 
 1. [VS Code Insiders](https://code.visualstudio.com/insiders/) with the [Foundry Toolkit for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-windows-ai-studio.windows-ai-studio) extension.
 1. [Python 3.13 or later](https://www.python.org/downloads/).
+1. [uv](https://docs.astral.sh/uv/getting-started/installation/).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
 1. [Docker](https://www.docker.com/products/docker-desktop/) (optional) - required only for [Module 09](../09-hosted-agents/README.md) Part 1, which deploys a hosted agent from a container image. Every other module, including Module 09 Part 2 (deploy from source code), runs without it.
@@ -48,19 +49,10 @@ Install the following before continuing:
    code-insiders .
    ```
 
-- [ ] Create a Python virtual environment in the repository root and activate it:
-
-  ```bash
-  python -m venv .venv
-  ```
-
-  - **Windows:** `.venv\Scripts\activate`
-  - **macOS / Linux:** `source .venv/bin/activate`
-
 - [ ] Install the shared Python dependencies:
 
    ```bash
-   python -m pip install -r shared/requirements.txt
+   uv sync
    ```
 
 - [ ] Get your environment variables from the **Attendee Portal URL** your organizer shared. Sign in with your lab Microsoft account, then copy the values or click **Download .env** to save the file directly.
@@ -87,7 +79,7 @@ Install the following before continuing:
 - [ ] Run the health check to validate your environment:
 
    ```bash
-   python labs/introduction-foundry-agent-service/shared/health-check.py
+   uv run python labs/introduction-foundry-agent-service/shared/health-check.py
    ```
 
 - [ ] Sign in to the [Foundry portal](https://ai.azure.com).
@@ -119,12 +111,12 @@ Install the following before continuing:
 
 - `az login` succeeds and the active subscription matches the workshop subscription.
 - All required `.env` values are populated.
-- `python labs/introduction-foundry-agent-service/shared/health-check.py` reports a healthy environment.
+- `uv run python labs/introduction-foundry-agent-service/shared/health-check.py` reports a healthy environment.
 - Your assigned project is visible in the [Foundry portal](https://ai.azure.com).
 
 ## Congratulations 🎉
 
-You built a solid foundation for the rest of the workshop. You created and activated a Python virtual environment, installed the shared dependencies, populated your `.env` file, signed in to Azure, and confirmed access to your assigned Foundry project - with the health check passing and your project visible in the portal. Everything is in place to start building agents.
+You built a solid foundation for the rest of the workshop. You installed the shared dependencies with `uv sync`, populated your `.env` file, signed in to Azure, and confirmed access to your assigned Foundry project - with the health check passing and your project visible in the portal. Everything is in place to start building agents.
 
 > [!TIP]
 > **Next up → [Module 02: Foundry portal walkthrough](../02-foundry-portal-walkthrough/README.md)**
@@ -134,7 +126,6 @@ You built a solid foundation for the rest of the workshop. You created and activ
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| `pip install` fails with `externally-managed-environment` | Python 3.13 on Linux/macOS enforces PEP 668. | Create and activate the `.venv` virtual environment first (see step 2). |
 | `health-check.py` reports authentication failure | Not signed in or wrong subscription. | Re-run `az login` and `az account set --subscription <id>`. |
 | Project not visible in the portal | Role not yet assigned, or wrong project name. | Confirm your `FOUNDRY_PROJECT_NAME` with your organizer or proctor. |
 | Cannot deploy a model | Expected with the `foundry-user` role. | Use the models your organizer pre-deployed or request your organizer provides you with the necessary permissions. |

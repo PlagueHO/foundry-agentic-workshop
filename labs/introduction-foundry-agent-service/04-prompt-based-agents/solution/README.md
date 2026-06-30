@@ -5,7 +5,7 @@ This folder contains the reference solution for facilitators and proctors.
 ## Agent definition
 
 **Name:** `acl-remedy-advisor`
-**Model:** `chat` (gpt-5.3-chat, deployed as `chat` in the workshop Foundry account)
+**Model:** `chat` (gpt-5.4-mini, deployed as `chat` in the workshop Foundry account)
 **Tool:** Web Search (built-in, Microsoft Foundry)
 
 **Instructions:**

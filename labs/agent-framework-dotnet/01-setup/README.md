@@ -31,6 +31,7 @@ Install the following before continuing:
 
 1. [.NET 10 SDK](https://dot.net/download).
 1. [Python 3.13 or later](https://www.python.org/downloads/).
+1. [uv](https://docs.astral.sh/uv/getting-started/installation/).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. [Docker](https://www.docker.com/products/docker-desktop/) (optional) - required only for [Module 12](../12-observability/README.md), which runs the Aspire Dashboard as a local container.
 
@@ -50,26 +51,15 @@ Install the following before continuing:
   cd foundry-agentic-workshop
   ```
 
-#### 2. Create a Python virtual environment
-
-- [ ] Create and activate a Python virtual environment in the repository root:
-
-  ```bash
-  python -m venv .venv
-  ```
-
-  - **Windows:** `.venv\Scripts\activate`
-  - **macOS / Linux:** `source .venv/bin/activate`
-
-#### 3. Install Python dependencies
+#### 2. Install Python dependencies
 
 - [ ] Install the shared Python dependencies:
 
   ```bash
-  python -m pip install -r shared/requirements.txt
+  uv sync
   ```
 
-#### 4. Restore .NET packages
+#### 3. Restore .NET packages
 
 - [ ] Restore the NuGet packages for all lab projects:
 
@@ -79,7 +69,7 @@ Install the following before continuing:
 
 ### Part 2 - Configure your environment
 
-#### 5. Populate your .env file
+#### 4. Populate your .env file
 
 - [ ] Get your environment variables from the **Attendee Portal URL** your organizer shared. Sign in with your lab Microsoft account, then copy the values or click **Download .env** to save the file directly.
 
@@ -97,7 +87,7 @@ Install the following before continuing:
 
 ### Part 3 - Sign in and verify
 
-#### 6. Sign in to Azure
+#### 5. Sign in to Azure
 
 - [ ] Sign in to Azure and select your subscription:
 
@@ -106,12 +96,12 @@ Install the following before continuing:
   az account set --subscription <your-subscription-id>
   ```
 
-#### 7. Run the health check
+#### 6. Run the health check
 
 - [ ] Confirm all environment variables and Azure connectivity are working:
 
   ```bash
-  python labs/agent-framework-dotnet/shared/health-check.py
+  uv run python labs/agent-framework-dotnet/shared/health-check.py
   ```
 
 ## Validation
@@ -119,11 +109,11 @@ Install the following before continuing:
 - `az login` succeeds and the active subscription matches the workshop subscription.
 - All required `.env` values are populated.
 - `dotnet --version` outputs `10.x.x`.
-- `python labs/agent-framework-dotnet/shared/health-check.py` reports a healthy environment.
+- `uv run python labs/agent-framework-dotnet/shared/health-check.py` reports a healthy environment.
 
 ## Congratulations 🎉
 
-You built a solid foundation for the rest of the lab. You created and activated a Python virtual environment, installed the shared dependencies, restored the .NET packages, populated your `.env` file, and signed in to Azure - with the health check passing. Everything is in place to start building agents.
+You built a solid foundation for the rest of the lab. You installed the shared dependencies with `uv sync`, restored the .NET packages, populated your `.env` file, and signed in to Azure - with the health check passing. Everything is in place to start building agents.
 
 > [!TIP]
 > **Next up → [Module 02: Your First Agent](../02-first-agent/README.md)**
@@ -133,7 +123,6 @@ You built a solid foundation for the rest of the lab. You created and activated 
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| `pip install` fails with `externally-managed-environment` | Python 3.13 on Linux/macOS enforces PEP 668. | Create and activate the `.venv` virtual environment first (see step 2). |
 | `health-check.py` reports authentication failure | Not signed in or wrong subscription. | Re-run `az login` and `az account set --subscription <id>`. |
 | `FOUNDRY_PROJECT_ENDPOINT is not set` | `.env` file missing or endpoint not populated. | Confirm `.env` exists in the repository root with your endpoint value. |
 | `dotnet: command not found` | .NET 10 SDK not installed. | Install the [.NET 10 SDK](https://dot.net/download). |
