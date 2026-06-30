@@ -13,7 +13,9 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
   in your target region, and **Owner or Contributor** rights to create resources and assign roles
 - [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
-- [Python 3.13 or later](https://www.python.org/downloads/)- [uv](https://docs.astral.sh/uv/getting-started/installation/)- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (required to build
+- [Python 3.13 or later](https://www.python.org/downloads/)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (required to build
   and publish the shared MCP server images; only needed when `AZURE_CONTAINER_APPS_DEPLOY=true`,
   which is the default)
 

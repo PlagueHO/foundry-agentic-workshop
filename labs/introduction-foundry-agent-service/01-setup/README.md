@@ -30,7 +30,7 @@ With the default `foundry-user` role you can build agents and use the models you
 Install the following before continuing:
 
 1. [VS Code Insiders](https://code.visualstudio.com/insiders/) with the [Foundry Toolkit for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-windows-ai-studio.windows-ai-studio) extension.
-1. [Python 3.13 or later](https://www.python.org/downloads()).
+1. [Python 3.13 or later](https://www.python.org/downloads/).
 1. [uv](https://docs.astral.sh/uv/getting-started/installation/).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).

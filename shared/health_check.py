@@ -212,7 +212,7 @@ def _check_venv() -> None:
         check(
             'Python virtual environment active',
             False,
-            f'not active \u2014 re-run via: uv run python scripts/health-check.py  '
+            f'not active \u2014 re-run via: uv run python scripts/health-check.py\n'
             f'or activate manually with: {activate_cmd}',
         )
 

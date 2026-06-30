@@ -65,6 +65,9 @@ jobs:
         with:
           python-version: '3.13'
 
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
+
       - name: Install Azure Developer CLI
         uses: Azure/setup-azd@v2.3.0
 
