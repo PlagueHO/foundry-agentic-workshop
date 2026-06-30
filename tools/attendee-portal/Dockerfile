@@ -1,5 +1,5 @@
 # Container image for the Attendee Onboarding Portal.
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 # Install uv from the official distroless image.
 COPY --from=ghcr.io/astral-sh/uv:0.11.25 /uv /usr/local/bin/uv
