@@ -279,7 +279,7 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
 - [ ] Run the deploy script from the repository root:
 
   ```bash
-  python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/deploy_hosted_agent_code.py
+  uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/deploy_hosted_agent_code.py
   ```
 
 - [ ] The script zips `src/agent/`, uploads it, and Foundry builds the container remotely. Wait for it to report the new version as **active** - the remote build takes a few minutes. The script then grants the agent's per-deploy identity the **Foundry User** role so it can call the model and the toolbox.
@@ -303,7 +303,7 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
 - [ ] Run the invoke script from the repository root:
 
   ```bash
-  python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py
+  uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py
   ```
 
 - [ ] The script selects the latest active version, routes 100% of the agent endpoint traffic to it, and runs a two-turn Australian Consumer Law conversation for receipt `R-1007` (a laptop battery that failed about 14 months after a 12-month warranty). The first turn asks the agent to look up the purchase; the second adds that the customer still has the original box and charger.

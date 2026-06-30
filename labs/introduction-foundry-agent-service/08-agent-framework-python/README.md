@@ -87,7 +87,7 @@ your code.
 - [ ] Confirm the `acl-remedy-advisor` agent exists in your Foundry project. If you did not finish Module 07, recreate its end state from the solution folder:
 
    ```bash
-   python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
+   uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
    ```
 
 - [ ] Sign in with the Azure CLI so `DefaultAzureCredential` can authenticate, and confirm your `.env` file sets `FOUNDRY_PROJECT_ENDPOINT`:

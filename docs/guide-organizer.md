@@ -299,9 +299,8 @@ new entries get projects and role assignments; role changes are applied.
 Use `check-jsonschema` to catch typos and invalid role keys before provisioning:
 
 ```bash
-uvx check-jsonschema
 azd env get-value AZURE_ATTENDEE_LIST > /tmp/attendee-list.json
-check-jsonschema --schemafile shared/schemas/attendee-list.schema.json /tmp/attendee-list.json
+uvx check-jsonschema --schemafile shared/schemas/attendee-list.schema.json /tmp/attendee-list.json
 ```
 
 ## Role catalog
