@@ -3,7 +3,7 @@ version: 2
 # Dependabot configuration for Microsoft Foundry Agentic Workshop
 updates:
   # Root Python project (pyproject.toml + uv.lock - workshop runtime + dev deps)
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: /
     schedule:
       interval: weekly
@@ -41,7 +41,7 @@ updates:
           - "*"
 
   # Python dependencies for the MCP server container (flight-ops)
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: /shared/mcp-servers/flight-ops
     schedule:
       interval: weekly
@@ -60,7 +60,7 @@ updates:
           - "*"
 
   # Python dependencies for the attendee portal container
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: /tools/attendee-portal
     schedule:
       interval: weekly
