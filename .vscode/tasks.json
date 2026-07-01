@@ -818,6 +818,61 @@
                 "reveal": "always",
                 "panel": "shared"
             }
+        },
+        {
+            "label": "agent-framework-dotnet: module 14- evaluation (solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/14-evaluation/solution"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "agent-framework-dotnet: module 15- compensation service (server-solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run", "--urls", "http://localhost:5000"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/15-agent-to-agent/server-solution"
+            },
+            "problemMatcher": [],
+            "isBackground": true,
+            "icon": {
+                "id": "plug",
+                "color": "terminal.ansiCyan"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "agent-framework-dotnet: module 15- agent-to-agent (solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/15-agent-to-agent/solution"
+            },
+            "problemMatcher": [],
+            "icon": {
+                "id": "robot",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
         }
     ]
 }

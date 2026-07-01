@@ -3,6 +3,7 @@ using Azure.Identity;
 using Azure.AI.Projects;
 using Azure.Monitor.OpenTelemetry.Exporter;
 using DotNetEnv;
+using Microsoft.Agents.AI;
 using Microsoft.Agents.AI.Foundry;
 using OpenTelemetry;
 using OpenTelemetry.Exporter;
@@ -72,7 +73,9 @@ var agent = client
         instructions:
             "You are the Trip Disruption Concierge. " +
             "Help passengers with flight disruptions concisely.")
-    .WithOpenTelemetry();  // Enables AF's built-in instrumentation
+    .AsBuilder()
+    .UseOpenTelemetry()  // Enables AF's built-in instrumentation
+    .Build();
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine("[Loop] Agent ready - every RunAsync call will produce a trace span.");

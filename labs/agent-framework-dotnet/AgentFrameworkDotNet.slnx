@@ -101,4 +101,26 @@
       <Project Path="13-concierge-claw/solution/TripConcierge.ConciergeClaw.csproj" />
     </Folder>
   </Folder>
+  <Folder Name="14-evaluation">
+    <Folder Name="src">
+      <Project Path="14-evaluation/src/TripConcierge.Evaluation.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="14-evaluation/solution/TripConcierge.Evaluation.csproj" />
+    </Folder>
+  </Folder>
+  <Folder Name="15-agent-to-agent">
+    <Folder Name="src">
+      <Project Path="15-agent-to-agent/src/TripConcierge.AgentToAgent.csproj" />
+    </Folder>
+    <Folder Name="solution">
+      <Project Path="15-agent-to-agent/solution/TripConcierge.AgentToAgent.csproj" />
+    </Folder>
+    <Folder Name="server-src">
+      <Project Path="15-agent-to-agent/server-src/TripConcierge.CompensationService.csproj" />
+    </Folder>
+    <Folder Name="server-solution">
+      <Project Path="15-agent-to-agent/server-solution/TripConcierge.CompensationService.csproj" />
+    </Folder>
+  </Folder>
 </Solution>

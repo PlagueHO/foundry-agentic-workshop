@@ -14,7 +14,7 @@
 ## Objectives
 
 - Create specialist agents as discrete `AIAgent` instances.
-- Register specialists as skills on the orchestrating concierge with `.WithAgentSkill()`.
+- Expose specialists as callable tools on the orchestrating concierge with `.AsAIFunction()`.
 - Observe the concierge routing to the correct specialist for each query.
 - See the `[Agent →]` delegation lines in the terminal showing the routing decisions.
 
@@ -121,7 +121,7 @@ The [Azure Architecture Center guidance](https://learn.microsoft.com/en-us/azure
 
 ### Part 2 - Build the orchestrating concierge
 
-#### 3. Create the concierge with agent skills (TODO 2)
+#### 3. Create the concierge with specialist tools (TODO 2)
 
 - [ ] Locate `// ── TODO 2` and replace the commented-out block with:
 
@@ -135,22 +135,28 @@ The [Azure Architecture Center guidance](https://learn.microsoft.com/en-us/azure
               "always call RebookFlight. For hotel accommodation, call FindHotel. " +
               "For compensation questions, call CalculateCompensation. " +
               "Never answer these topics yourself - always delegate to the " +
-              "appropriate specialist.")
-      .WithAgentSkill(
-          rebookingSpecialist,
-          "RebookFlight",
-          "Find alternative flight options for a disrupted passenger.")
-      .WithAgentSkill(
-          accommodationSpecialist,
-          "FindHotel",
-          "Find hotel accommodation options near the airport for a stranded passenger.")
-      .WithAgentSkill(
-          compensationSpecialist,
-          "CalculateCompensation",
-          "Explain and calculate the passenger's compensation entitlement.");
+              "appropriate specialist.",
+          tools:
+          [
+              rebookingSpecialist.AsAIFunction(new AIFunctionFactoryOptions
+              {
+                  Name = "RebookFlight",
+                  Description = "Find alternative flight options for a disrupted passenger.",
+              }),
+              accommodationSpecialist.AsAIFunction(new AIFunctionFactoryOptions
+              {
+                  Name = "FindHotel",
+                  Description = "Find hotel accommodation options near the airport for a stranded passenger.",
+              }),
+              compensationSpecialist.AsAIFunction(new AIFunctionFactoryOptions
+              {
+                  Name = "CalculateCompensation",
+                  Description = "Explain and calculate the passenger's compensation entitlement.",
+              }),
+          ]);
 
   Console.ForegroundColor = ConsoleColor.DarkGray;
-  Console.WriteLine("[Loop] Concierge created with 3 specialist skills.");
+  Console.WriteLine("[Loop] Concierge created with 3 specialist tools.");
   Console.ResetColor();
   Console.WriteLine();
   ```

@@ -33,7 +33,9 @@ using var tracerProvider = Sdk.CreateTracerProviderBuilder()
 
 var agent = client
     .AsAIAgent(model: model, instructions: "...")
-    .WithOpenTelemetry();
+    .AsBuilder()
+    .UseOpenTelemetry()
+    .Build();
 ```
 
 Each agent run, tool call, and model response becomes a span in the trace.
@@ -112,10 +114,12 @@ After running the module, the Aspire Dashboard Traces view shows one trace per `
           model: model,
           instructions:
               "You are the Trip Disruption Concierge. Be concise and practical.")
-      .WithOpenTelemetry();
+      .AsBuilder()
+      .UseOpenTelemetry()
+      .Build();
   ```
 
-  `.WithOpenTelemetry()` registers the framework's built-in instrumentation, which emits a span for every agent run, model call, and tool invocation.
+  `.AsBuilder().UseOpenTelemetry().Build()` registers the framework's built-in instrumentation, which emits a span for every agent run, model call, and tool invocation.
 
 #### 5. Run a few queries to generate traces (TODO 3)
 

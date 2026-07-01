@@ -2,7 +2,9 @@ using System.Diagnostics;
 using Azure.Identity;
 using Azure.AI.Projects;
 using DotNetEnv;
+using Microsoft.Agents.AI;
 using Microsoft.Agents.AI.Foundry;
+using Microsoft.Extensions.AI;
 
 Env.TraversePath().Load();
 
@@ -70,19 +72,25 @@ var concierge = client
             "For all hotel and accommodation queries: delegate to FindHotel. " +
             "For all compensation and refund queries: delegate to CalculateCompensation. " +
             "Never answer these specialist topics yourself - always delegate. " +
-            "You may provide a brief introduction or closing summary.")
-    .WithAgentSkill(
-        rebookingSpecialist,
-        "RebookFlight",
-        "Find alternative flight options for a disrupted passenger.")
-    .WithAgentSkill(
-        accommodationSpecialist,
-        "FindHotel",
-        "Find hotel accommodation near the airport for a stranded passenger.")
-    .WithAgentSkill(
-        compensationSpecialist,
-        "CalculateCompensation",
-        "Explain and calculate the passenger's compensation entitlement.");
+            "You may provide a brief introduction or closing summary.",
+        tools:
+        [
+            rebookingSpecialist.AsAIFunction(new AIFunctionFactoryOptions
+            {
+                Name = "RebookFlight",
+                Description = "Find alternative flight options for a disrupted passenger.",
+            }),
+            accommodationSpecialist.AsAIFunction(new AIFunctionFactoryOptions
+            {
+                Name = "FindHotel",
+                Description = "Find hotel accommodation near the airport for a stranded passenger.",
+            }),
+            compensationSpecialist.AsAIFunction(new AIFunctionFactoryOptions
+            {
+                Name = "CalculateCompensation",
+                Description = "Explain and calculate the passenger's compensation entitlement.",
+            }),
+        ]);
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
 Console.WriteLine("[Loop] Concierge ready - 3 specialist skills registered.");

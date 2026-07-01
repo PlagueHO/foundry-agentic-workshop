@@ -1,6 +1,7 @@
 using Azure.Identity;
 using Azure.AI.Projects;
 using DotNetEnv;
+using Microsoft.Agents.AI;
 using Microsoft.Agents.AI.Foundry;
 using OpenTelemetry;
 using OpenTelemetry.Exporter;
@@ -54,7 +55,8 @@ Console.WriteLine();
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── TODO 2 ───────────────────────────────────────────────────────────────────
-// Create the agent and enable built-in OTel instrumentation with .WithOpenTelemetry().
+// Create the agent and enable built-in OTel instrumentation via the
+// AIAgentBuilder fluent pattern's UseOpenTelemetry().
 //
 // var credential = new AzureCliCredential();
 // var client = new AIProjectClient(new Uri(endpoint), credential);
@@ -64,7 +66,9 @@ Console.WriteLine();
 //         instructions:
 //             "You are the Trip Disruption Concierge. " +
 //             "Help passengers with flight disruptions concisely.")
-//     .WithOpenTelemetry();
+//     .AsBuilder()
+//     .UseOpenTelemetry()
+//     .Build();
 //
 // Console.ForegroundColor = ConsoleColor.DarkGray;
 // Console.WriteLine("[Loop] Agent created with OpenTelemetry instrumentation.");

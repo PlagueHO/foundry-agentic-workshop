@@ -1,7 +1,9 @@
 using Azure.Identity;
 using Azure.AI.Projects;
 using DotNetEnv;
+using Microsoft.Agents.AI;
 using Microsoft.Agents.AI.Foundry;
+using Microsoft.Extensions.AI;
 
 Env.TraversePath().Load();
 
@@ -50,8 +52,8 @@ var client = new AIProjectClient(new Uri(endpoint), credential);
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── TODO 2 ───────────────────────────────────────────────────────────────────
-// Create the orchestrating concierge and attach specialists as skills using
-// .WithAgentSkill(). The concierge will route queries to the right specialist.
+// Create the orchestrating concierge and expose the specialists as tools using
+// AsAIFunction(). The concierge will route queries to the right specialist.
 //
 // var concierge = client
 //     .AsAIAgent(
@@ -62,22 +64,28 @@ var client = new AIProjectClient(new Uri(endpoint), credential);
 //             "always call RebookFlight. For hotel accommodation, call FindHotel. " +
 //             "For compensation questions, call CalculateCompensation. " +
 //             "Never answer these topics yourself - always delegate to the " +
-//             "appropriate specialist.")
-//     .WithAgentSkill(
-//         rebookingSpecialist,
-//         "RebookFlight",
-//         "Find alternative flight options for a disrupted passenger.")
-//     .WithAgentSkill(
-//         accommodationSpecialist,
-//         "FindHotel",
-//         "Find hotel accommodation options near the airport for a stranded passenger.")
-//     .WithAgentSkill(
-//         compensationSpecialist,
-//         "CalculateCompensation",
-//         "Explain and calculate the passenger's compensation entitlement.");
+//             "appropriate specialist.",
+//         tools:
+//         [
+//             rebookingSpecialist.AsAIFunction(new AIFunctionFactoryOptions
+//             {
+//                 Name = "RebookFlight",
+//                 Description = "Find alternative flight options for a disrupted passenger.",
+//             }),
+//             accommodationSpecialist.AsAIFunction(new AIFunctionFactoryOptions
+//             {
+//                 Name = "FindHotel",
+//                 Description = "Find hotel accommodation options near the airport for a stranded passenger.",
+//             }),
+//             compensationSpecialist.AsAIFunction(new AIFunctionFactoryOptions
+//             {
+//                 Name = "CalculateCompensation",
+//                 Description = "Explain and calculate the passenger's compensation entitlement.",
+//             }),
+//         ]);
 //
 // Console.ForegroundColor = ConsoleColor.DarkGray;
-// Console.WriteLine("[Loop] Concierge created with 3 specialist skills.");
+// Console.WriteLine("[Loop] Concierge created with 3 specialist tools.");
 // Console.ResetColor();
 // Console.WriteLine();
 //

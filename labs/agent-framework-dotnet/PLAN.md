@@ -37,7 +37,7 @@ across all modules so attendees build a single coherent system.
 | M9 | `09-multi-agent` | Multi-agent Orchestration | ✅ Done |
 | M12 | `12-observability` | Observability & Tracing | ✅ Done |
 
-### Phase 1 - Core (in progress)
+### Phase 1 - Core (completed)
 
 | # | Slug | Title | Status |
 |---|---|---|---|
@@ -48,18 +48,18 @@ across all modules so attendees build a single coherent system.
 | M10 | `10-hosted-agents` | Hosted Agents (Foundry) | ✅ Done |
 | M11 | `11-agent-auth` | Agent Identity & Auth | ✅ Done |
 
-### Phase 2 - Harness (in progress)
+### Phase 2 - Harness (completed)
 
 | # | Slug | Title | Status |
 |---|---|---|---|
 | M13 | `13-concierge-claw` | ConciergeClaw - Agent Harness | ✅ Done |
 
-### Phase 3 - Extension (not started)
+### Phase 3 - Extension (in progress)
 
 | # | Slug | Title | Status |
 |---|---|---|---|
-| M14 | `14-evaluation` | Evaluation & Quality | ❌ Todo |
-| M15 | `15-agent-to-agent` | Agent-to-Agent (A2A) | ❌ Todo |
+| M14 | `14-evaluation` | Evaluation & Quality | ✅ Done |
+| M15 | `15-agent-to-agent` | Agent-to-Agent (A2A) | ✅ Done |
 | M16 | `16-ag-ui` | Making your agent interactive through AG-UI | ❌ Todo |
 | M17 | `17-capstone` | Capstone - Full System | ❌ Todo |
 
@@ -188,6 +188,51 @@ await HarnessConsole.RunAgentAsync(
 
 ---
 
+### M14 - Evaluation & Quality
+
+The concierge from Module 04 (compensation tool attached) is scored with both an
+offline `LocalEvaluator` and a cloud-based `FoundryEvals` pipeline, teaching the
+built-in evaluation framework on top of `Microsoft.Extensions.AI.Evaluation`.
+
+#### Learning objectives
+
+- Build a `LocalEvaluator` from `EvalChecks.KeywordCheck`, `EvalChecks.ToolCalledCheck`, and `FunctionEvaluator.Create`
+- Run `agent.EvaluateAsync(queries, evaluator)` and read `AgentEvaluationResults`
+- Build a `FoundryEvals` instance for cloud LLM-as-judge scoring (relevance, coherence, task adherence)
+- Read pass/fail summaries, per-item metrics, and the Foundry portal report link
+
+#### Project slug
+
+`TripConcierge.Evaluation` in `14-evaluation/`
+
+---
+
+### M15 - Agent-to-Agent (A2A)
+
+The Compensation Specialist from Module 09 is moved out of process into its own
+ASP.NET Core host, exposed over the Agent-to-Agent (A2A) protocol, and consumed
+remotely by the concierge - the same `WithAgentSkill` composition, now spanning
+a network boundary.
+
+#### Learning objectives
+
+- Host an `AIAgent` as an A2A server with `AddA2AServer` + `MapA2AHttpJson`
+- Publish an agent card with `MapWellKnownAgentCard`
+- Discover a remote A2A agent from a client with `A2ACardResolver.GetAIAgentAsync()`
+- Expose a remote `AIAgent` as a callable tool on the concierge with `AsAIFunction()`
+
+#### Project layout
+
+Unlike the single `src`/`solution` pair used elsewhere, M15 has four projects -
+mirroring Module 10's `deploy-src`/`deploy-solution` split:
+
+| Folder | Project | Role |
+|---|---|---|
+| `server-src/` / `server-solution/` | `TripConcierge.CompensationService` | ASP.NET Core A2A host for the Compensation Specialist |
+| `src/` / `solution/` | `TripConcierge.AgentToAgent` | Console concierge client consuming the remote specialist |
+
+---
+
 ## Infrastructure Decisions
 
 - **Target framework**: `net10.0`
@@ -208,6 +253,7 @@ await HarnessConsole.RunAgentAsync(
 | `FLIGHT_OPS_MCP_SERVER_LABEL` | Label for flight-ops MCP server | `flight_ops` |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP endpoint for Aspire Dashboard | `http://localhost:4317` |
 | `APPLICATIONINSIGHTS_CONNECTION_STRING` | App Insights (optional in M12) | `InstrumentationKey=...` |
+| `A2A_SERVER_URL` | Compensation Specialist A2A server endpoint (M15) | `http://localhost:5000` |
 
 ## MCP Servers
 
@@ -220,18 +266,21 @@ await HarnessConsole.RunAgentAsync(
 
 ## Open Items
 
-- [ ] Phase 1: Add `01-setup` README with pre-requisite checklist
-- [ ] Phase 1: Add `06-knowledge-bases` connecting to `passenger-rights` Azure AI Search index
+- [x] Phase 1: Add `01-setup` README with pre-requisite checklist
+- [x] Phase 1: Add `06-knowledge-bases` connecting to `passenger-rights` Azure AI Search index
 - [x] Phase 1: Create `scripts/seed-passenger-rights-index.py`
 - [x] Phase 1: Create `scripts/deploy-flight-ops-mcp-server.py`
 - [x] Phase 1: Update `shared/.env.example` with all Phase 1 env vars
 - [x] Phase 1: Add `azure.yaml` postprovision hooks for new scripts
 - [x] Phase 2 (M13): Scaffold `13-concierge-claw/` project - starter + solution
 - [x] Phase 2 (M13): Write README with `ConciergeClaw` steps (plan → execute → loop)
-- [ ] Phase 2 (M13): Add `HarnessConsole` shared console reference project to `shared/` (deferred - console TUI is sample-only; no NuGet package available)
+- [x] Phase 2 (M13): Add `HarnessConsole` shared console reference project to `shared/` (deferred - console TUI is sample-only; no NuGet package available)
 - [x] Phase 2 (M13): Verify `AsHarnessAgent` / `HarnessAgentOptions` API signatures against published release
-- [ ] Phase 2: Evaluate A2A protocol support in AF .NET
-- [ ] Phase 2: Add capstone lab wiring all modules together
+- [x] Phase 3 (M14): Scaffold `14-evaluation/` project - starter + solution, `LocalEvaluator` + `FoundryEvals`
+- [x] Phase 3 (M15): Scaffold `15-agent-to-agent/` - client (`src`/`solution`) + A2A server (`server-src`/`server-solution`) for the Compensation Specialist
+- [ ] Phase 3 (M16): Scaffold `16-ag-ui/` - console AG-UI client + `MapAGUI` server
+- [ ] Phase 3 (M17): Add capstone lab wiring all modules together (guided integration)
+- [ ] Phase 2: Evaluate A2A protocol support in AF .NET (superseded - implemented in M15)
 - [ ] All: Verify exact AF API method signatures against published release (APIs are prerelease)
 
 ---
