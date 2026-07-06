@@ -33,7 +33,11 @@ Labs are organized by series. Work through each lab in sequence within a series;
 
 ## Roles
 
-Each workshop delivery involves up to four roles. Only the organizer and attendee are required.
+Each workshop delivery involves up to four roles. Only the organizer and attendee are required for group lab mode. Individual learners work solo without any of the group roles.
+
+### Individual learner (solo)
+
+The individual learner provisions their own Foundry environment using individual mode (`AZURE_INDIVIDUAL_MODE=true`) and works through the labs at their own pace. No organizer, attendee list, or group setup is needed.
 
 ### Organizer (required)
 
