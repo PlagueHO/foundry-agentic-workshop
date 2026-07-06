@@ -28,7 +28,8 @@ Labs are organized by series. Work through each lab in sequence within a series;
 
 | Lab series | Description | Modules | Total time |
 |------------|-------------|---------|------------|
-| [Introduction to Foundry Agent Service](./labs/introduction-foundry-agent-service.md) | Build agents from first principles using Foundry Agent Service, MCP tools, Foundry IQ, the Microsoft Agent Framework, and hosted agents and Agent ID. | 12 | ~4.5 hours |
+| [Introduction to Foundry Agent Service](./labs/introduction-foundry-agent-service.md) | Build a production-grade agent from first principles: prompt agents, tools and evaluations, MCP tools, Foundry IQ, the Python Agent Framework, hosted agents, Foundry Toolboxes, Agent Ops, and Agent ID. | 12 | ~3–4 hours |
+| [Introduction to Microsoft Agent Framework (.NET)](./labs/agent-framework-dotnet.md) | Build agentic .NET applications end-to-end: first agent, multi-turn, function tools, MCP tools, knowledge bases, memory, chat history, multi-agent orchestration, hosted agents, auth, observability, Agent Harness, evaluation, and Agent-to-Agent (A2A). | 15 | ~5–6 hours |
 
 ## Roles
 
