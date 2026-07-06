@@ -23,6 +23,7 @@ import os
 import re
 import subprocess
 import sys
+import threading
 import tomllib
 
 import requests
@@ -57,10 +58,37 @@ _opt_failures: list[str] = []
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
-def _az(cmd: str) -> tuple[int, str, str]:
-    """Run an az CLI command and return (returncode, stdout, stderr)."""
-    result = subprocess.run(cmd, shell=True, text=True, capture_output=True, check=False)
-    return result.returncode, result.stdout.strip(), result.stderr.strip()
+def _az(cmd: str, timeout: int | None = None) -> tuple[int, str, str]:
+    """Run an az CLI command and return (returncode, stdout, stderr).
+
+    When *timeout* is given, a daemon thread imposes a wall-clock limit so that
+    commands like ``docker --version`` or ``docker info`` cannot hang the script
+    indefinitely on Windows (where ``subprocess.run`` with ``shell=True`` can
+    block in post-kill cleanup when the spawned process ignores SIGTERM/kill).
+    """
+    if timeout is None:
+        result = subprocess.run(cmd, shell=True, text=True, capture_output=True, check=False)
+        return result.returncode, result.stdout.strip(), result.stderr.strip()
+
+    outcome: dict[str, object] = {
+        'rc': 1, 'out': '', 'err': f'command timed out after {timeout}s'
+    }
+    done = threading.Event()
+
+    def _run() -> None:
+        try:
+            r = subprocess.run(cmd, shell=True, text=True, capture_output=True, check=False)
+            outcome['rc'] = r.returncode
+            outcome['out'] = r.stdout.strip()
+            outcome['err'] = r.stderr.strip()
+        except Exception as exc:  # noqa: BLE001
+            outcome['err'] = str(exc)
+        finally:
+            done.set()
+
+    threading.Thread(target=_run, daemon=True).start()
+    done.wait(timeout)
+    return int(outcome['rc']), str(outcome['out']), str(outcome['err'])
 
 
 def _az_json(cmd: str) -> tuple[bool, dict | list, str]:
@@ -304,18 +332,20 @@ def _check_docker() -> None:
         'all other modules run without it'
     )
 
-    rc, out, _ = _az('docker --version')
+    rc, out, _ = _az('docker --version', timeout=10)
     if rc != 0:
         print(f'  {WARN}  Docker (optional)  (not installed \u2014 {only_note})')
         return
 
     docker_ver = out.splitlines()[0]
-    rc_info, _, _ = _az('docker info')
+    rc_info, _, err_info = _az('docker info', timeout=10)
     if rc_info == 0:
-        check('Docker (optional)', True, docker_ver)
+        check_optional('Docker (optional)', True, docker_ver)
     else:
+        timed_out = 'timed out' in err_info
+        reason = 'timed out waiting for daemon' if timed_out else 'daemon not running'
         print(
-            f'  {WARN}  Docker (optional)  ({docker_ver}; daemon not running'
+            f'  {WARN}  Docker (optional)  ({docker_ver}; {reason}'
             ' \u2014 start Docker for introduction-foundry-agent-service Module 09 Part 1'
             ' or agent-framework-dotnet Module 12)'
         )
