@@ -11,6 +11,8 @@ Build and deliver a 3–4 hour, facilitator-led workshop for agentic application
 
 ## Jump in
 
+![Workshop roles jump-in guide — animated carousel cycling through Individual Learner, Organizer, Attendee, Facilitator, and Proctor roles](./assets/carousels/jump-in.svg)
+
 Not sure where to start? Pick your situation:
 
 - 🧑‍💻 **Learning solo (no team, no attendee list)?** Use individual mode to provision your own environment with a single command. Start with the [Individual Quickstart](./quickstart-individual.md).

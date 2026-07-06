@@ -1,0 +1,200 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="800" height="200"
+  role="img" aria-label="Workshop jump-in guide: animated carousel cycling through the five workshop roles — Individual Learner, Organizer, Attendee, Facilitator, and Proctor">
+  <title>Workshop Roles — Jump In Guide</title>
+  <defs>
+    <clipPath id="clip-jump-in">
+      <rect width="800" height="200" rx="10" ry="10"/>
+    </clipPath>
+    <style>
+      /* ── slide animations (25 s cycle; each slot = 5 s = 20 %) ─────────────── */
+      /* fade-in at 2 %, hold, fade-out to leave a brief cross-fade with the next */
+      @keyframes a1 {
+        0%   { opacity: 0; }
+        2%   { opacity: 1; }
+        18%  { opacity: 1; }
+        20%  { opacity: 0; }
+        100% { opacity: 0; }
+      }
+      @keyframes a2 {
+        0%   { opacity: 0; }
+        20%  { opacity: 0; }
+        22%  { opacity: 1; }
+        38%  { opacity: 1; }
+        40%  { opacity: 0; }
+        100% { opacity: 0; }
+      }
+      @keyframes a3 {
+        0%   { opacity: 0; }
+        40%  { opacity: 0; }
+        42%  { opacity: 1; }
+        58%  { opacity: 1; }
+        60%  { opacity: 0; }
+        100% { opacity: 0; }
+      }
+      @keyframes a4 {
+        0%   { opacity: 0; }
+        60%  { opacity: 0; }
+        62%  { opacity: 1; }
+        78%  { opacity: 1; }
+        80%  { opacity: 0; }
+        100% { opacity: 0; }
+      }
+      @keyframes a5 {
+        0%   { opacity: 0; }
+        80%  { opacity: 0; }
+        82%  { opacity: 1; }
+        98%  { opacity: 1; }
+        100% { opacity: 0; }
+      }
+      .s1 { animation: a1 25s infinite; }
+      .s2 { animation: a2 25s infinite; }
+      .s3 { animation: a3 25s infinite; }
+      .s4 { animation: a4 25s infinite; }
+      .s5 { animation: a5 25s infinite; }
+
+      /* ── indicator dot animations ───────────────────────────────────────────── */
+      @keyframes d1 {
+        0%,  18% { fill: #58a6ff; }
+        20%, 100% { fill: #30363d; }
+      }
+      @keyframes d2 {
+        0%,  20% { fill: #30363d; }
+        22%, 38% { fill: #58a6ff; }
+        40%, 100% { fill: #30363d; }
+      }
+      @keyframes d3 {
+        0%,  40% { fill: #30363d; }
+        42%, 58% { fill: #58a6ff; }
+        60%, 100% { fill: #30363d; }
+      }
+      @keyframes d4 {
+        0%,  60% { fill: #30363d; }
+        62%, 78% { fill: #58a6ff; }
+        80%, 100% { fill: #30363d; }
+      }
+      @keyframes d5 {
+        0%,  80% { fill: #30363d; }
+        82%, 98% { fill: #58a6ff; }
+        100% { fill: #30363d; }
+      }
+      .d1 { animation: d1 25s infinite; }
+      .d2 { animation: d2 25s infinite; }
+      .d3 { animation: d3 25s infinite; }
+      .d4 { animation: d4 25s infinite; }
+      .d5 { animation: d5 25s infinite; }
+
+      /* ── reduced-motion: show slide 1 statically ────────────────────────────── */
+      @media (prefers-reduced-motion: reduce) {
+        .s1 { animation: none; opacity: 1; }
+        .s2, .s3, .s4, .s5 { animation: none; opacity: 0; }
+        .d1 { animation: none; fill: #58a6ff; }
+        .d2, .d3, .d4, .d5 { animation: none; fill: #30363d; }
+      }
+    </style>
+  </defs>
+
+  <!-- Card background -->
+  <rect width="800" height="200" rx="10" ry="10" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+
+  <!-- All slide content clipped to the rounded card shape -->
+  <g clip-path="url(#clip-jump-in)">
+
+    <!-- ━━ SLIDE 1 · Individual Learner ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <g class="s1">
+      <rect x="0" y="0" width="7" height="200" fill="#7c3aed"/>
+      <circle cx="57" cy="96" r="33" fill="#1a0a3d"/>
+      <text x="57" y="110" text-anchor="middle" font-size="25"
+        font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif">🧑‍💻</text>
+      <text x="106" y="49" font-size="11" font-weight="600" letter-spacing="1"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#9461fa">INDIVIDUAL MODE</text>
+      <text x="106" y="76" font-size="19" font-weight="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#e6edf3">Learning Solo</text>
+      <text x="106" y="105" font-size="13"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#8b949e">Provision your own Foundry environment and work through</text>
+      <text x="106" y="123" font-size="13"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#8b949e">the labs at your own pace. No team or organizer required.</text>
+      <text x="106" y="157" font-size="12"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#58a6ff">→ Start with the Individual Quickstart</text>
+    </g>
+
+    <!-- ━━ SLIDE 2 · Organizer ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <g class="s2">
+      <rect x="0" y="0" width="7" height="200" fill="#0078d4"/>
+      <circle cx="57" cy="96" r="33" fill="#001a33"/>
+      <text x="57" y="110" text-anchor="middle" font-size="25"
+        font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif">🏗️</text>
+      <text x="106" y="49" font-size="11" font-weight="600" letter-spacing="1"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#3399ff">ORGANIZER · GROUP LAB</text>
+      <text x="106" y="76" font-size="19" font-weight="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#e6edf3">Setting Up for Your Team</text>
+      <text x="106" y="105" font-size="13"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#8b949e">Provision a shared Azure environment with a dedicated Foundry</text>
+      <text x="106" y="123" font-size="13"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#8b949e">project per attendee. Assign access and share connection details.</text>
+      <text x="106" y="157" font-size="12"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#58a6ff">→ Start with the Organizer Quickstart</text>
+    </g>
+
+    <!-- ━━ SLIDE 3 · Attendee ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <g class="s3">
+      <rect x="0" y="0" width="7" height="200" fill="#0ea5e9"/>
+      <circle cx="57" cy="96" r="33" fill="#001c2e"/>
+      <text x="57" y="110" text-anchor="middle" font-size="25"
+        font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif">🎓</text>
+      <text x="106" y="49" font-size="11" font-weight="600" letter-spacing="1"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#38bdf8">ATTENDEE · GROUP LAB</text>
+      <text x="106" y="76" font-size="19" font-weight="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#e6edf3">Attending a Lab</text>
+      <text x="106" y="105" font-size="13"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#8b949e">Use the shared environment your organizer provisions. No</text>
+      <text x="106" y="123" font-size="13"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#8b949e">Azure setup needed — just focus on building agents.</text>
+      <text x="106" y="157" font-size="12"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#58a6ff">→ Start with the Attendee Quickstart</text>
+    </g>
+
+    <!-- ━━ SLIDE 4 · Facilitator ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <g class="s4">
+      <rect x="0" y="0" width="7" height="200" fill="#10b981"/>
+      <circle cx="57" cy="96" r="33" fill="#002018"/>
+      <text x="57" y="110" text-anchor="middle" font-size="25"
+        font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif">🎤</text>
+      <text x="106" y="49" font-size="11" font-weight="600" letter-spacing="1"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#34d399">FACILITATOR · GROUP LAB</text>
+      <text x="106" y="76" font-size="19" font-weight="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#e6edf3">Delivering the Session Live</text>
+      <text x="106" y="105" font-size="13"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#8b949e">Introduce each lab, manage pacing and time-boxes, and</text>
+      <text x="106" y="123" font-size="13"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#8b949e">coordinate proctors to keep every attendee on track.</text>
+      <text x="106" y="157" font-size="12"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#58a6ff">→ Start with the Facilitator Quickstart</text>
+    </g>
+
+    <!-- ━━ SLIDE 5 · Proctor ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <g class="s5">
+      <rect x="0" y="0" width="7" height="200" fill="#f59e0b"/>
+      <circle cx="57" cy="96" r="33" fill="#1f1500"/>
+      <text x="57" y="110" text-anchor="middle" font-size="25"
+        font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif">🔍</text>
+      <text x="106" y="49" font-size="11" font-weight="600" letter-spacing="1"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#fbbf24">PROCTOR · GROUP LAB</text>
+      <text x="106" y="76" font-size="19" font-weight="700"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#e6edf3">Supporting Attendees</text>
+      <text x="106" y="105" font-size="13"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#8b949e">Provide 1:1 floor support so the facilitator keeps teaching.</text>
+      <text x="106" y="123" font-size="13"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#8b949e">Triage issues and help attendees who fall behind.</text>
+      <text x="106" y="157" font-size="12"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#58a6ff">→ Read the Proctor Guide</text>
+    </g>
+
+  </g>
+
+  <!-- Indicator dots — drawn outside the clip group so they always appear sharp -->
+  <circle class="d1" cx="372" cy="183" r="4"/>
+  <circle class="d2" cx="386" cy="183" r="4"/>
+  <circle class="d3" cx="400" cy="183" r="4"/>
+  <circle class="d4" cx="414" cy="183" r="4"/>
+  <circle class="d5" cx="428" cy="183" r="4"/>
+</svg>

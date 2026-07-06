@@ -48,6 +48,8 @@ One **organizer** provisions a single shared Foundry environment with a dedicate
 
 ## Roles and where to start
 
+![Workshop roles jump-in guide — animated carousel cycling through Individual Learner, Organizer, Attendee, Facilitator, and Proctor roles](./docs/assets/carousels/jump-in.svg)
+
 Every delivery involves up to four roles. Only the organizer and attendee are required. Pick your role and follow its quickstart and guide - all steps live in [`docs/`](./docs).
 
 | Role | Mode | Required | Responsible for | Start here | Then read |

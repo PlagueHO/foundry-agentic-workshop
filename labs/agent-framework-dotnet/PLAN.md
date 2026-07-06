@@ -60,8 +60,8 @@ across all modules so attendees build a single coherent system.
 |---|---|---|---|
 | M14 | `14-evaluation` | Evaluation & Quality | ✅ Done |
 | M15 | `15-agent-to-agent` | Agent-to-Agent (A2A) | ✅ Done |
-| M16 | `16-ag-ui` | Making your agent interactive through AG-UI | ❌ Todo |
-| M17 | `17-capstone` | Capstone - Full System | ❌ Todo |
+| M16 | `16-ag-ui` | AG-UI: Browser Chat with CopilotKit | 🔄 In progress |
+| M17 | `17-capstone` | Capstone: Full System over AG-UI | 🔄 In progress |
 
 ---
 
@@ -92,6 +92,7 @@ Recommended delivery order for a live 30-minute demo:
 | `dotenv.net` | `.env` file loading - `Env.TraversalSearch()` |
 | `OpenTelemetry.Exporter.OpenTelemetryProtocol` | OTLP exporter (Aspire Dashboard) |
 | `Azure.Monitor.OpenTelemetry.Exporter` | App Insights exporter (M12) |
+| `Microsoft.Agents.AI.Hosting.AGUI.AspNetCore` | AG-UI server - `AddAGUI()` + `MapAGUI()` (M16, M17) |
 
 All versions managed centrally in `Directory.Packages.props`.
 
@@ -233,6 +234,203 @@ mirroring Module 10's `deploy-src`/`deploy-solution` split:
 
 ---
 
+### M16 - AG-UI: Browser Chat with CopilotKit
+
+The Trip Disruption Concierge from earlier modules is exposed over the AG-UI protocol using
+`MapAGUI`, and connected to a React/CopilotKit frontend via the CopilotKit runtime proxy.
+Attendees wire up the .NET backend first, then the Next.js UI in three focused steps.
+
+#### Learning objectives
+
+- Expose an `AIAgent` as an AG-UI server endpoint with `AddAGUI()` + `MapAGUI()`
+- Understand the AG-UI event protocol (SSE streaming, `RUN_STARTED`, `TEXT_MESSAGE_CONTENT`, tool events)
+- Register a `GetFlightStatus` backend tool (scalar in/out) that streams its result to the client
+- Wire up a Next.js `CopilotRuntime` proxy that points at the MAF AG-UI server via `HttpAgent`
+- Add the `<CopilotKit>` provider and `<CopilotSidebar>` to a React app with zero extra configuration
+- Trace the full request path: browser → CopilotKit runtime → `HttpAgent` → MAF `MapAGUI` → agent
+
+#### Architecture
+
+```text
+Browser (React :3000)
+  └─► /api/copilotkit  [Next.js CopilotRuntime + HttpAgent]
+          └─► http://localhost:8888  [MapAGUI → AIAgent]
+```
+
+#### Project layout
+
+M16 introduces a hybrid layout: two C# projects plus one React/Next.js app (`ui/`).
+The `ui/` folder is **not** included in the `.slnx` — it is a standalone Node project.
+
+| Folder | Project | Role |
+|---|---|---|
+| `server-src/` | `TripConcierge.ConciergeService` | ASP.NET Core AG-UI server (starter — 3 TODOs) |
+| `server-solution/` | `TripConcierge.ConciergeService` | ASP.NET Core AG-UI server (complete) |
+| `ui/` | `trip-concierge-ui` (package.json name) | Next.js 14 React app with CopilotKit (solution quality) |
+
+#### Key .NET packages (server)
+
+| Package | Purpose |
+|---|---|
+| `Microsoft.Agents.AI.Hosting.AGUI.AspNetCore` | `AddAGUI()` + `MapAGUI()` |
+| `Microsoft.Agents.AI.Foundry` | `AsAIAgent()` |
+| `Azure.Identity` | `DefaultAzureCredential` |
+| `DotNetEnv` | `.env` file loading |
+
+#### Key JavaScript packages (ui/)
+
+| Package | Purpose |
+|---|---|
+| `@copilotkit/react-core` | `<CopilotKit>` provider, `useCoAgent` hook |
+| `@copilotkit/react-ui` | `<CopilotSidebar>` prebuilt chat UI |
+| `@copilotkit/runtime` | `CopilotRuntime`, `ExperimentalEmptyAdapter` |
+| `@ag-ui/client` | `HttpAgent` pointing at MAF AG-UI server |
+
+#### Server API pattern
+
+```csharp
+// TODO 1 — register AG-UI services
+builder.Services.AddHttpClient().AddLogging();
+builder.Services.AddAGUI();
+
+// TODO 2 — create agent with a scalar flight-status tool
+AIAgent agent = new AIProjectClient(new Uri(endpoint), new DefaultAzureCredential())
+    .AsAIAgent(
+        model: model,
+        name: "trip-disruption-concierge",
+        instructions: "You are the Trip Disruption Concierge...",
+        tools: [AIFunctionFactory.Create(GetFlightStatus)]);
+
+// TODO 3 — map AG-UI endpoint and run
+app.MapAGUI("/", agent);
+await app.RunAsync();
+
+[Description("Get the current status of a flight.")]
+static string GetFlightStatus(
+    [Description("Flight number, e.g. AU123")] string flightNumber) =>
+    $"Flight {flightNumber}: delayed 45 min, new departure 14:30 AKL.";
+```
+
+#### CopilotKit runtime proxy (app/api/copilotkit/route.ts)
+
+```typescript
+import { CopilotRuntime, ExperimentalEmptyAdapter,
+  copilotRuntimeNextJSAppRouterEndpoint } from "@copilotkit/runtime";
+import { HttpAgent } from "@ag-ui/client";
+import { NextRequest } from "next/server";
+
+const serverUrl = process.env.AGUI_SERVER_URL ?? "http://localhost:8888";
+const runtime = new CopilotRuntime({
+  agents: { default: new HttpAgent({ url: serverUrl }) },
+});
+
+export const POST = async (req: NextRequest) => {
+  const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
+    runtime,
+    serviceAdapter: new ExperimentalEmptyAdapter(),
+    endpoint: "/api/copilotkit",
+  });
+  return handleRequest(req);
+};
+```
+
+#### Notes
+
+- No CopilotKit account or license key required — uses the OSS path with `ExperimentalEmptyAdapter`
+- No CORS configuration needed — the Next.js API route calls the MAF server server-to-server
+- Node.js 20+ required for `ui/`; `npm install` is run locally inside the `ui/` directory
+- The `.slnx` receives only `server-src` and `server-solution` C# projects
+
+---
+
+### M17 - Capstone: Full System over AG-UI
+
+The complete Trip Disruption Concierge — orchestrator + 3 specialists (M09), flight function
+tool (M04), and OpenTelemetry tracing (M12) — exposed as a single AG-UI endpoint backed by
+CopilotKit + React. The M17 UI adds a `useCoAgent` specialist status strip so multi-agent
+routing is **visible** in the browser.
+
+#### Learning objectives
+
+- Integrate all prior module patterns: multi-agent orchestration (M09), function tools (M04),
+  observability (M12), and AG-UI (M16) into a single server
+- Build 3 specialist `AIAgent` instances and expose them as `AsAIFunction` tools on the orchestrator
+- Add an OpenTelemetry `TracerProvider` and wrap the orchestrator with
+  `.AsBuilder().UseOpenTelemetry().Build()` to trace all agent-to-agent calls
+- Serve the full orchestrator over AG-UI with `MapAGUI` on port 8889
+- Use `useCoAgent` in the React UI to display which specialist the orchestrator is currently delegating to
+
+#### Architecture
+
+```text
+Browser (React :3000)
+  └─► /api/copilotkit  [Next.js CopilotRuntime + HttpAgent]
+          └─► http://localhost:8889  [MapAGUI → orchestrator]
+                  ├─► RebookFlight           [rebooking-specialist AIAgent]
+                  ├─► FindHotel             [accommodation-specialist AIAgent]
+                  └─► CalculateCompensation  [compensation-specialist AIAgent]
+```
+
+#### Project layout
+
+Same hybrid layout as M16 — two C# projects plus one Next.js app.
+
+| Folder | Project | Role |
+|---|---|---|
+| `server-src/` | `TripConcierge.CapstoneService` | ASP.NET Core AG-UI server (starter — 5 TODOs) |
+| `server-solution/` | `TripConcierge.CapstoneService` | ASP.NET Core AG-UI server (complete) |
+| `ui/` | `trip-concierge-capstone` (package.json name) | Next.js 14 React app with `useCoAgent` specialist strip |
+
+#### C# server TODOs
+
+| TODO | Builds on | Purpose |
+|---|---|---|
+| TODO 1 | M09 | Create 3 specialist `AIAgent` instances (rebooking, accommodation, compensation) |
+| TODO 2 | M09 | Create orchestrator with `AsAIFunction` specialist tools + flight tool |
+| TODO 3 | M12 | Build `TracerProvider` + wrap orchestrator with `.AsBuilder().UseOpenTelemetry().Build()` |
+| TODO 4 | M16 | Register `AddAGUI()` services |
+| TODO 5 | M16 | Map `MapAGUI("/", orchestrator)` and run on `:8889` |
+
+#### React UI — `useCoAgent` specialist status strip
+
+The M17 `page.tsx` adds a status strip above the sidebar that reacts to which specialist
+the orchestrator is calling, making multi-agent routing visible to the user:
+
+```tsx
+// app/page.tsx — specialist routing strip (added over M16 pattern)
+import { useCoAgent } from "@copilotkit/react-core";
+import { CopilotSidebar } from "@copilotkit/react-ui";
+
+function SpecialistStatus() {
+  const { state } = useCoAgent({ name: "default" });
+  const specialist = (state as { activeSpecialist?: string })?.activeSpecialist;
+  if (!specialist) return null;
+  return (
+    <p role="status" aria-live="polite" aria-atomic="true">
+      Consulting {specialist}\u2026
+    </p>
+  );
+}
+
+export default function Page() {
+  return (
+    <main>
+      <SpecialistStatus />
+      <CopilotSidebar defaultOpen />
+    </main>
+  );
+}
+```
+
+#### Notes
+
+- Aspire Dashboard (port 18888) is optional but recommended for viewing M12-style traces
+- `OTEL_EXPORTER_OTLP_ENDPOINT` defaults to `http://localhost:4317` if not set
+- `AGUI_SERVER_URL` in `ui/.env.local` must point to `:8889` (not `:8888`) to distinguish from M16
+- The `.slnx` receives only `server-src` and `server-solution` C# projects
+
+---
+
 ## Infrastructure Decisions
 
 - **Target framework**: `net10.0`
@@ -254,6 +452,7 @@ mirroring Module 10's `deploy-src`/`deploy-solution` split:
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP endpoint for Aspire Dashboard | `http://localhost:4317` |
 | `APPLICATIONINSIGHTS_CONNECTION_STRING` | App Insights (optional in M12) | `InstrumentationKey=...` |
 | `A2A_SERVER_URL` | Compensation Specialist A2A server endpoint (M15) | `http://localhost:5000` |
+| `AGUI_SERVER_URL` | AG-UI server URL — set in `ui/.env.local` for M16/M17 React app | `http://localhost:8888` |
 
 ## MCP Servers
 
@@ -278,9 +477,21 @@ mirroring Module 10's `deploy-src`/`deploy-solution` split:
 - [x] Phase 2 (M13): Verify `AsHarnessAgent` / `HarnessAgentOptions` API signatures against published release
 - [x] Phase 3 (M14): Scaffold `14-evaluation/` project - starter + solution, `LocalEvaluator` + `FoundryEvals`
 - [x] Phase 3 (M15): Scaffold `15-agent-to-agent/` - client (`src`/`solution`) + A2A server (`server-src`/`server-solution`) for the Compensation Specialist
-- [ ] Phase 3 (M16): Scaffold `16-ag-ui/` - console AG-UI client + `MapAGUI` server
-- [ ] Phase 3 (M17): Add capstone lab wiring all modules together (guided integration)
-- [ ] Phase 2: Evaluate A2A protocol support in AF .NET (superseded - implemented in M15)
+- [ ] Phase 3 (M16): Add `Microsoft.Agents.AI.Hosting.AGUI.AspNetCore` to `Directory.Packages.props`
+- [ ] Phase 3 (M16): Scaffold `16-ag-ui/server-src` + `server-solution` — `TripConcierge.ConciergeService` with `AddAGUI()` + `MapAGUI()` + scalar `GetFlightStatus` tool
+- [ ] Phase 3 (M16): Scaffold `16-ag-ui/ui/` — Next.js 14 app with CopilotKit (`route.ts`, `layout.tsx`, `page.tsx`)
+- [ ] Phase 3 (M16): Write `16-ag-ui/README.md`
+- [ ] Phase 3 (M16): Add M16 C# projects to `AgentFrameworkDotNet.slnx`
+- [ ] Phase 3 (M16): Add M16 server + ui tasks to `.vscode/tasks.json`
+- [ ] Phase 3 (M16): Add `AGUI_SERVER_URL` to `shared/.env.example`
+- [ ] Phase 3 (M16): Add Node.js 20+ prerequisite to `01-setup/README.md`
+- [ ] Phase 3 (M17): Scaffold `17-capstone/server-src` + `server-solution` — `TripConcierge.CapstoneService` (M09 specialists + M12 OTel + M16 AG-UI, port 8889)
+- [ ] Phase 3 (M17): Scaffold `17-capstone/ui/` — Next.js 14 app with `useCoAgent` specialist strip
+- [ ] Phase 3 (M17): Write `17-capstone/README.md`
+- [ ] Phase 3 (M17): Add M17 C# projects to `AgentFrameworkDotNet.slnx`
+- [ ] Phase 3 (M17): Add M17 server + ui tasks to `.vscode/tasks.json`
+- [ ] Phase 3 (M16 + M17): Run `pnpm run docs:generate-labs && pnpm run docs:build` — confirm CI clean
+- [x] Phase 2: Evaluate A2A protocol support in AF .NET (superseded - implemented in M15)
 - [ ] All: Verify exact AF API method signatures against published release (APIs are prerelease)
 
 ---
@@ -306,3 +517,10 @@ mirroring Module 10's `deploy-src`/`deploy-solution` split:
 - MCP samples: <https://github.com/microsoft/agent-framework/tree/main/dotnet/samples/02-agents/ModelContextProtocol>
 - OTel samples: <https://github.com/microsoft/agent-framework/tree/main/dotnet/samples/02-agents/AgentOpenTelemetry>
 - Hosting samples: <https://github.com/microsoft/agent-framework/tree/main/dotnet/samples/04-hosting>
+- AG-UI integration overview: <https://learn.microsoft.com/en-us/agent-framework/integrations/ag-ui/>
+- AG-UI getting started (.NET): <https://learn.microsoft.com/en-us/agent-framework/integrations/ag-ui/getting-started>
+- AG-UI backend tool rendering: <https://learn.microsoft.com/en-us/agent-framework/integrations/ag-ui/backend-tool-rendering>
+- CopilotKit + Microsoft Agent Framework: <https://docs.copilotkit.ai/ms-agent-dotnet>
+- CopilotKit quickstart (.NET): <https://docs.copilotkit.ai/ms-agent-dotnet/quickstart>
+- CopilotKit Copilot Runtime: <https://docs.copilotkit.ai/ms-agent-dotnet/copilot-runtime>
+- CopilotKit AG-UI protocol: <https://docs.copilotkit.ai/ms-agent-dotnet/ag-ui>
