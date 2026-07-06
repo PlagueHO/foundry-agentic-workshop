@@ -127,6 +127,9 @@ The skill executes these steps automatically:
 1. **Confirms** the validated roster with you before making any changes.
 1. **Configures** the azd environment with all required variables.
 1. **Provisions** with `azd provision`, which:
+   * Runs the **model-quota preflight** — validates model availability and quota for the selected
+     profile (`AZURE_MODEL_DEPLOYMENT_PROFILE`, default `default`) and blocks with copy-paste
+     remediation on shortfall. Skip with `AZURE_MODEL_QUOTA_CHECK=false` if needed.
    * Resolves each UPN to a Microsoft Entra object ID.
    * Deploys the Foundry account, per-attendee projects, and RBAC role assignments.
    * Seeds the Azure AI Search indexes with lab data.

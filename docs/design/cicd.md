@@ -208,7 +208,7 @@ This derivation produces identical names to those Bicep creates in Azure, so the
 | `Resource Group` | Never | Exists and `provisioningState=Succeeded` |
 | `Foundry Account` | Never | Exists and `provisioningState=Succeeded` |
 | `Foundry Projects` | Never | Each name in `$script:ProjectNames` exists and is `Succeeded` |
-| `Model Deployments` | Never | `chat` and `embedding` deployments exist and are `Succeeded` |
+| `Model Deployments` | Never | `chat` and `embedding` deployments exist and are `Succeeded` (the exact set varies by `AZURE_MODEL_DEPLOYMENT_PROFILE`; only these two are required by all labs) |
 | `Attendee Role Assignments` | `$script:AttendeeTestCases.Count -eq 0` | Each UPN has the correct Foundry role at the correct scope |
 | `Key Vault` | Never | Exists and `provisioningState=Succeeded` |
 | `AI Search` | `-not $AiSearchEnabled` | Exists and `provisioningState=Succeeded` |

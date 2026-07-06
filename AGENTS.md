@@ -51,10 +51,6 @@ az bicep lint --file infra/main.bicep
 ```
 
 ```bash
-azd provision
-```
-
-```bash
 azd env get-values
 ```
 
@@ -83,7 +79,7 @@ pnpm run lint:md:fix
 * Keep lab numbering and progression intact across files and folders.
 * **New labs must include** `README.md`, `src/starter.py`, and `solution/` directory.
 * Preserve runnable Python starter and solution structure for each lab.
-* **Run** `az bicep build --file infra/main.bicep` **and** `az bicep lint --file infra/main.bicep` **after Bicep edits.**
+* **Run** `az bicep build --file infra/main.bicep` **and** `az bicep lint --file infra/main.bicep` **after Bicep edits** to validate; `main.json` is a generated artifact not committed to the repo.
 * **Run** `pnpm run lint:md` **after editing any** `.md` **file.**
 * Do not commit secrets, tokens, keys, or connection strings.
 * Keep `shared/.env.example` synchronized with all environment variable usage.

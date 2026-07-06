@@ -45,3 +45,13 @@ param azureStorageAccountCapabilityHost = toLower(readEnvironmentVariable('AZURE
 // Azure Container Apps deployment. When true (the default), deploys the shared Container Apps
 // environment and the services that run in it, such as the Module 06 MCP server.
 param azureContainerAppsDeploy = toLower(readEnvironmentVariable('AZURE_CONTAINER_APPS_DEPLOY', 'true')) == 'true'
+
+// Model-deployment profile. The preprovision hook (scripts/check-model-quota.py) writes the
+// mode-appropriate default: 'default' for individual mode (AZURE_INDIVIDUAL_MODE=true),
+// 'workshop' for organizer/shared deployments. Explicit AZURE_MODEL_DEPLOYMENT_PROFILE
+// overrides both. Falls back to 'workshop' when the hook is skipped.
+param modelDeploymentProfile = readEnvironmentVariable('AZURE_MODEL_DEPLOYMENT_PROFILE', 'workshop')
+
+// Inline JSON override. When set, overrides the profile entirely. Set AZURE_MODEL_DEPLOYMENTS to
+// a JSON array of deployment objects (same schema as model-deployments.*.json) to use a custom set.
+param modelDeploymentsOverride = json(readEnvironmentVariable('AZURE_MODEL_DEPLOYMENTS', '[]'))

@@ -10,7 +10,10 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
 ## Prerequisites
 
 - Azure subscription with [Foundry model quota](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits)
-  in your target region, and **Owner or Contributor** rights to create resources and assign roles
+  in your target region, and **Owner or Contributor** rights to create resources and assign roles.
+  With `AZURE_INDIVIDUAL_MODE=true` the preprovision quota check automatically selects the `default`
+  profile (50 K TPM), which fits most subscriptions. Use `AZURE_MODEL_DEPLOYMENT_PROFILE=minimal`
+  for lower-quota environments.
 - [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - [Python 3.13 or later](https://www.python.org/downloads/)

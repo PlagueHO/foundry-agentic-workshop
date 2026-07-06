@@ -1,6 +1,7 @@
 targetScope = 'subscription'
 
 import { capabilityHostType } from './cognitive-services/accounts/capabilityHost/main.bicep'
+import { deploymentType } from './cognitive-services/accounts/main.bicep'
 
 @description('A single workshop attendee parsed from AZURE_ATTENDEE_LIST.')
 type attendeeType = {
@@ -141,8 +142,28 @@ param containerRegistrySku string = 'Basic'
 @description('Deploy the shared Azure Container Apps environment and the services that run in it (such as the Module 06 MCP server). Enabled by default; set to false to skip all Container Apps resources.')
 param azureContainerAppsDeploy bool = true
 
+@description('Model-deployment profile to use when AZURE_MODEL_DEPLOYMENTS override is not set. minimal = chat + embedding only (lowest quota); default = minimal + gpt54mini at cap 50 (individual learners); workshop = default models at cap 200 (shared workshops); broad = full 6-model set. The preprovision quota-check script resolves "auto" and sets the mode-appropriate default before Bicep runs.')
+@allowed([
+  'minimal'
+  'default'
+  'workshop'
+  'broad'
+])
+param modelDeploymentProfile string = 'workshop'
+
+@description('Inline JSON override for model deployments. When non-empty this takes precedence over modelDeploymentProfile. Set AZURE_MODEL_DEPLOYMENTS to a JSON array of deployment objects to use a custom set.')
+param modelDeploymentsOverride deploymentType[] = []
+
 var abbrs = loadJsonContent('./abbreviations.json')
-var modelDeployments = loadJsonContent('./model-deployments.json')
+var modelDeployments = !empty(modelDeploymentsOverride)
+  ? modelDeploymentsOverride
+  : (modelDeploymentProfile == 'minimal'
+      ? loadJsonContent('./model-deployments.minimal.json')
+      : (modelDeploymentProfile == 'default'
+          ? loadJsonContent('./model-deployments.default.json')
+          : (modelDeploymentProfile == 'broad'
+              ? loadJsonContent('./model-deployments.broad.json')
+              : loadJsonContent('./model-deployments.workshop.json'))))
 
 // Role definition GUIDs for per-attendee Foundry RBAC assignments. Mirrors ROLE_DEFINITION_IDS
 // in scripts/generate-attendee-onboarding.py. Bicep owns this catalog as the authoritative

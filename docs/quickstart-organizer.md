@@ -29,7 +29,10 @@ detailed steps, the RBAC model, and troubleshooting.
 1. Confirm an Azure subscription where you hold **Owner or Contributor** to create resources
    and **Owner or User Access Administrator** to assign roles, with sufficient
    [Foundry model quota](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits)
-   in your target region.
+   in your target region. The organizer default profile (`workshop`) needs capacity for `chat` (200),
+   `embedding` (200), and `gpt54mini` (200) — use `AZURE_MODEL_DEPLOYMENT_PROFILE=default` (50 each)
+   for lower-quota environments. The preprovision quota check runs automatically and prints
+   copy-paste remediation on shortfall.
 1. Install [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
    and [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. Install [Python 3.13 or later](https://www.python.org/downloads/) (used by the pre-provision hook to

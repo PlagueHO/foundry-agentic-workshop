@@ -2,6 +2,44 @@
 
 This document contains the design rationale for the infrastructure deployed to support the labs in this repository.
 
+## Model-deployment profiles and quota preflight
+
+Bicep cannot resolve a file path at deploy time from a parameter, so profile selection uses three
+literal `loadJsonContent` calls chosen by a ternary expression gated on the `modelDeploymentProfile`
+param. A custom inline set (`AZURE_MODEL_DEPLOYMENTS`) is injected via
+`json(readEnvironmentVariable(...,'[]'))` and overrides the profile when non-empty.
+
+### Profiles
+
+| Profile | File | Deployments | Capacity |
+|---|---|---|---|
+| `minimal` | `infra/model-deployments.minimal.json` | `chat`, `embedding` | 50 each |
+| `default` | `infra/model-deployments.default.json` | `chat`, `embedding`, `gpt54mini` | 50 each |
+| `workshop` | `infra/model-deployments.workshop.json` | `chat`, `embedding`, `gpt54mini` | 200 each |
+| `broad` | `infra/model-deployments.broad.json` | `chat`, `embedding`, `gpt54`, `gpt54mini`, `gpt54nano`, `gpt53codex` | 500 each |
+
+`chat` and `embedding` are present in every profile - all labs depend only on these two
+deployment names and are unaffected by profile choice.
+
+### Selection
+
+`AZURE_MODEL_DEPLOYMENT_PROFILE` selects the profile. The first preprovision hook
+(`scripts/check-model-quota.py`) resolves `auto` to a concrete value by querying
+`az cognitiveservices usage list` and picking the largest profile that fits, then
+writing the result via `azd env set` before Bicep runs.
+
+When no explicit profile is set, the script applies a mode-appropriate default: `default`
+(50 K TPM) when `AZURE_INDIVIDUAL_MODE=true` (single learner), and `workshop` (200 K TPM)
+for organizer deployments. An explicit `AZURE_MODEL_DEPLOYMENT_PROFILE` always overrides both.
+
+### Quota preflight
+
+The script validates model availability (`az cognitiveservices model list`) and quota
+(`az cognitiveservices usage list`, matched by `OpenAI.<sku>.<model>`) for each deployment
+in the selected profile. On shortfall it prints a required-vs-available table, recommends
+the largest fitting profile, suggests an alternate region, and exits non-zero to block
+`azd provision`. Set `AZURE_MODEL_QUOTA_CHECK=false` to skip.
+
 ## Hosted agents and the container registry
 
 Some modules deploy a **hosted agent** - attendee container code that Foundry runs as a managed endpoint. Provisioning adds one shared **Azure Container Registry (ACR)** and the role assignments hosted agents need, so attendees can complete the module without any manual setup.

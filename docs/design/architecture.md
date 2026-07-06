@@ -10,7 +10,7 @@ All workshop resources are provisioned into a single Azure resource group by [in
 
 ### Components
 
-- **Microsoft Foundry account** - the AI Services account that owns one Foundry project per attendee (plus facilitator, proctor, and organizer projects), the model deployments (`chat`, `embedding`, `gpt-5.4`, `gpt-5.4-mini`, `gpt-5.4-nano`), the content safety (RAI) policy, and all shared connections.
+- **Microsoft Foundry account** - the AI Services account that owns one Foundry project per attendee (plus facilitator, proctor, and organizer projects), the model deployments, the content safety (RAI) policy, and all shared connections. The exact deployments depend on the selected profile: `chat` and `embedding` are always present with at least 50K TPM for each model; `default` also includes `gpt54mini`; `broad` includes all six models from the original set, but with 500K TPM per model. `workshop` is the multiuser lab default profile, which includes `chat`, `embedding`, and `gpt54mini`, but 200K TPM for each model.
 - **Azure AI Search** - search and vector store used for Foundry IQ knowledge bases and agentic retrieval. Connected to the Foundry account for every deployment.
 - **Azure Container Registry** - stores the hosted agent images attendees build and push in Module 09. Uses ABAC repository permissions and is connected to the Foundry account.
 - **Application Insights** - receives agent telemetry and traces over OpenTelemetry. It is workspace-based and backed by the Log Analytics workspace.

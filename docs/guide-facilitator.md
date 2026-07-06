@@ -36,32 +36,50 @@ attendees hit most often. For the condensed flow, see the
 
 ## Configuring models
 
-The workshop deploys a fixed set of models defined in [`infra/model-deployments.json`](../infra/model-deployments.json). To add or change deployed models, edit that file before running `azd provision`.
+The workshop uses selectable **model-deployment profiles** to match your subscription's available quota. Three built-in profiles are provided:
 
-Each entry in the file follows this structure:
+| Profile | Deployments | Capacity each | Use when |
+|---|---|---|---|
+| `minimal` | `chat`, `embedding` | 50 | Low quota or minimal setups |
+| `default` | `chat`, `embedding`, `gpt54mini` | 50 | Individual learners (`AZURE_INDIVIDUAL_MODE=true`) |
+| `workshop` | `chat`, `embedding`, `gpt54mini` | 200 | Shared workshops — organizer default |
+| `broad` | All 6 models from the original set | 500 | High-quota shared environments |
 
-```json
-{
-  "name": "chat",
-  "model": {
-    "format": "OpenAI",
-    "name": "gpt-4o",
-    "version": "2024-11-20"
-  },
-  "sku": {
-    "name": "GlobalStandard",
-    "capacity": 120
-  },
-  "raiPolicyName": "FoundryWorkshopContentPolicy"
-}
+Set the profile before running `azd provision`:
+
+```bash
+azd env set AZURE_MODEL_DEPLOYMENT_PROFILE workshop   # or minimal, default, broad, auto
+```
+
+Use `auto` to let the preprovision quota check pick the largest profile that fits your quota automatically.
+
+> [!NOTE]
+> When `AZURE_INDIVIDUAL_MODE=true` is set, the preprovision quota check defaults to the `default`
+> profile (50 capacity). When it is not set (organizer deployment), it defaults to `workshop` (200
+> capacity). An explicit `AZURE_MODEL_DEPLOYMENT_PROFILE` always wins over both.
+
+To supply a completely custom deployment set, provide a JSON array as an inline override. This takes precedence over the profile:
+
+```bash
+azd env set AZURE_MODEL_DEPLOYMENTS '[{"name":"chat","model":{"format":"OpenAI","name":"gpt-5.4-mini","version":"2026-03-17"},"sku":{"name":"GlobalStandard","capacity":50},"raiPolicyName":"FoundryWorkshopContentPolicy"}]'
 ```
 
 Two deployments are required for all lab sample code to work without modification:
 
-- A deployment named `chat` pointing to a ChatCompletions-compatible model (for example, `gpt-4o`).
+- A deployment named `chat` pointing to a ChatCompletions-compatible model (for example, `gpt-5.4-mini`).
 - A deployment named `embedding` pointing to an Embeddings-compatible model (for example, `text-embedding-3-small`).
 
 Additional models can be added alongside these two as long as they are available in your target region.
+
+### Quota preflight check
+
+The first preprovision hook (`scripts/check-model-quota.py`) validates model availability and quota before Bicep runs. On a shortfall it prints a required-vs-available table with copy-paste `azd env set` remediation commands and suggests an alternate region, then blocks the deployment.
+
+To skip the check (not recommended):
+
+```bash
+azd env set AZURE_MODEL_QUOTA_CHECK false
+```
 
 To discover which models are available in your target region, run:
 

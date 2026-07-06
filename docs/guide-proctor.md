@@ -22,7 +22,10 @@ guide and the attendee assignment list handy throughout the session.
 - Triage with the [Attendee Guide troubleshooting table](./guide-attendee.md#troubleshooting) before escalating.
 - Each lab is independently runnable, so help a blocked attendee move on and return later.
 - Escalate to the facilitator only when an issue affects multiple attendees.
-- Watch for model 503 issues and increase quotas as needed.
+- Watch for model 503 issues. The preprovision quota check (`scripts/check-model-quota.py`) should
+  have caught shortfalls before deployment, but if 503s appear at runtime the organizer can
+  re-provision with a different region (`azd env set AZURE_LOCATION <region>`) or a smaller
+  profile (`azd env set AZURE_MODEL_DEPLOYMENT_PROFILE minimal`).
 
 ## Common requests
 

@@ -11,7 +11,7 @@ For the abbreviated flow, see the [Individual Quickstart](./quickstart-individua
 | Prerequisite | Notes |
 |---|---|
 | Azure subscription | **Owner or Contributor** to create resources; **Owner or User Access Administrator** to assign roles |
-| Foundry model quota | Check [quota limits](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits) for your target region |
+| Foundry model quota | Check [quota limits](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits) for your target region. When `AZURE_INDIVIDUAL_MODE=true`, the preprovision quota check defaults to the `default` profile (50 K TPM per model), which fits most subscriptions. Use `AZURE_MODEL_DEPLOYMENT_PROFILE=minimal` for lower-quota environments. |
 | [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd) | v1.11 or later |
 | [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) | v2.60 or later |
 | [Python 3.13](https://www.python.org/downloads/) | Used by the provision hooks |
