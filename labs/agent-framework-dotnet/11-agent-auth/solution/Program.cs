@@ -20,64 +20,60 @@ Console.WriteLine("Comparing Azure credential strategies for agent applications.
 Console.ResetColor();
 Console.WriteLine();
 
-// ── Strategy 1: DefaultAzureCredential ────────────────────────────────────────
-// DefaultAzureCredential automatically tries a preset sequence of credentials:
-//   EnvironmentCredential → WorkloadIdentityCredential → ManagedIdentityCredential
-//   → AzureDeveloperCliCredential → AzureCliCredential → AzurePowerShellCredential
-//   → AzureApplicationCredential
+// ── Strategy 1: AzureCliCredential ────────────────────────────────────────────
+// AzureCliCredential authenticates using the active az login session.
+// This is the explicit, dev-only credential every prior module has used.
 //
-// Best for: getting started quickly; works in most environments without changes.
-// Trade-off: the long chain can add latency on first authentication.
+// Best for: developer laptops where az login has been run.
+// Trade-off: not available in production (no Azure CLI on Container Apps or AKS).
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine("[Auth] Strategy 1: DefaultAzureCredential");
-Console.WriteLine("[Auth] Tries: EnvironmentCredential → WorkloadIdentity →");
-Console.WriteLine("[Auth]        ManagedIdentity → AzureDeveloperCLI → AzureCLI → ...");
+Console.WriteLine("[Auth] Strategy 1: AzureCliCredential");
+Console.WriteLine("[Auth] Uses the active az login session on this machine.");
 Console.ResetColor();
 Console.WriteLine();
 
-var defaultCredential = new DefaultAzureCredential();
+var cliCredential = new AzureCliCredential();
 
-AIAgent agentDefault = new AIProjectClient(new Uri(endpoint), defaultCredential)
+AIAgent agentCli = new AIProjectClient(new Uri(endpoint), cliCredential)
     .AsAIAgent(
         model: model,
-        instructions:
-            "You are the Trip Disruption Concierge. Provide concise, direct answers.");
+        instructions: "You are the Trip Disruption Concierge. Be concise.");
 
 Console.ForegroundColor = ConsoleColor.Green;
 Console.WriteLine(
-    $"[Agent] {(await agentDefault.RunAsync(
-        "My flight AU123 was cancelled with 3 hours' notice. What should I do first?")).Text}");
+    $"[Agent] {(await agentCli.RunAsync(
+        "My flight AU123 was cancelled. What is the first thing I should do?")).Text}");
 Console.ResetColor();
 Console.WriteLine();
 
-// ── Strategy 2: ChainedTokenCredential (recommended pattern) ─────────────────
+// ── Strategy 2: ChainedTokenCredential ──────────────────────────────────────
 // ChainedTokenCredential tries credentials in the order you specify, stopping
 // at the first success.
 //
-// ManagedIdentityCredential → works on Azure (Container Apps, AKS, VMs).
+// WorkloadIdentityCredential → OIDC federation (GitHub Actions, AKS workload identity).
+//   Throws CredentialUnavailableException immediately when AZURE_CLIENT_ID /
+//   AZURE_TENANT_ID / AZURE_FEDERATED_TOKEN_FILE are not set — so on a dev
+//   laptop the chain falls through to AzureCliCredential with no delay.
 // AzureCliCredential         → falls back to `az login` on developer laptops.
 //
-// This two-step chain is the recommended pattern for agent applications because:
-//   - It is explicit: you control exactly which credentials are attempted.
-//   - It works without code changes across dev and production.
-//   - ManagedIdentityCredential fails fast when no identity is assigned, so the
-//     fallback to AzureCliCredential adds negligible latency on dev machines.
+// For a production Hosted Agent (Module 10), swap WorkloadIdentityCredential
+// for ManagedIdentityCredential(ManagedIdentityId.SystemAssigned) — Foundry
+// provisions the managed identity automatically and IMDS is always reachable.
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine("[Auth] Strategy 2: ChainedTokenCredential (ManagedIdentity → AzureCLI)");
-Console.WriteLine("[Auth] On Azure: uses managed identity (Entra Agent Identity for Hosted Agents).");
-Console.WriteLine("[Auth] On dev:   falls through to az login session.");
+Console.WriteLine("[Auth] Strategy 2: ChainedTokenCredential (WorkloadIdentity → AzureCLI)");
+Console.WriteLine("[Auth] In CI/CD: uses OIDC WorkloadIdentityCredential.");
+Console.WriteLine("[Auth] On dev:   WorkloadIdentity unavailable, falls through to az login.");
 Console.ResetColor();
 Console.WriteLine();
 
 var chainedCredential = new ChainedTokenCredential(
-    new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned),
+    new WorkloadIdentityCredential(),   // CI/CD with OIDC — throws CredentialUnavailableException fast on dev
     new AzureCliCredential());
 
 AIAgent agentChained = new AIProjectClient(new Uri(endpoint), chainedCredential)
     .AsAIAgent(
         model: model,
-        instructions:
-            "You are the Trip Disruption Concierge. Provide concise, direct answers.");
+        instructions: "You are the Trip Disruption Concierge. Be concise.");
 
 Console.ForegroundColor = ConsoleColor.Green;
 Console.WriteLine(

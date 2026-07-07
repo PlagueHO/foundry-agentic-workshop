@@ -2,10 +2,10 @@
 
 **Estimated time:** 20 minutes
 
-![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars - Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-framework-introduction.png)
+![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars - Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-identity-anatomy.png)
 
 > [!IMPORTANT]
-> This module builds on [Module 02](../02-first-agent/README.md). You should already be comfortable with `DefaultAzureCredential` from the earlier modules before exploring credential chaining here. Your `.env` file must contain `FOUNDRY_PROJECT_ENDPOINT` - see [Module 01](../01-setup/README.md) or copy `shared/.env.example`.
+> This module builds on [Module 02](../02-first-agent/README.md). You have used `AzureCliCredential` in every module since Module 02 — this module explains why, then shows the recommended production-ready upgrade. Your `.env` file must contain `FOUNDRY_PROJECT_ENDPOINT` - see [Module 01](../01-setup/README.md) or copy `shared/.env.example`.
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!TIP]
@@ -13,10 +13,10 @@
 
 ## Objectives
 
-- Compare `DefaultAzureCredential` and `ChainedTokenCredential` (combining `ManagedIdentityCredential` and `AzureCliCredential`) as the recommended dev-to-production pattern.
-- Build a `ChainedTokenCredential` that works in both dev and production.
+- Compare `AzureCliCredential` (explicit, dev-only) and `ChainedTokenCredential` (combining `ManagedIdentityCredential` and `AzureCliCredential`) as the recommended dev-to-production pattern.
+- Build a `ChainedTokenCredential` that works on a developer laptop and in production without any code changes.
 - Understand Entra Agent Identity - the service principal automatically assigned to every Azure AI Foundry Hosted Agent.
-- Run the agent with each credential variant and observe which succeeds.
+- Run the agent with each credential strategy and observe that both succeed on a developer laptop.
 
 ## Concepts
 
@@ -39,7 +39,10 @@ When you deploy a Hosted Agent to Azure AI Foundry, the platform provisions a **
 // Works on a developer laptop (AzureCliCredential) and in production
 // (ManagedIdentityCredential), without changing any code:
 var credential = new ChainedTokenCredential(
-    new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned),
+    new ManagedIdentityCredential(new ManagedIdentityCredentialOptions(ManagedIdentityId.SystemAssigned)
+    {
+        Retry = { MaxRetries = 0 }    // Fail fast on dev laptops; on Azure, IMDS responds immediately
+    }),
     new AzureCliCredential());
 ```
 
@@ -47,36 +50,33 @@ For more information, see [Credential chains in the Azure Identity client librar
 
 ## Steps
 
-### Part 1 - Use DefaultAzureCredential
+### Part 1 - Use AzureCliCredential
 
 #### 1. Open the starter file
 
 - [ ] Open `src/Program.cs` in the editor.
 
-#### 2. Create an agent with DefaultAzureCredential (TODO 1)
+#### 2. Create an agent with AzureCliCredential (TODO 1)
 
 - [ ] Locate `// ── TODO 1` and replace the commented-out block with:
 
   ```csharp
   Console.ForegroundColor = ConsoleColor.DarkGray;
-  Console.WriteLine("[Auth] Strategy 1: DefaultAzureCredential");
+  Console.WriteLine("[Auth] Strategy 1: AzureCliCredential");
   Console.ResetColor();
 
-  var defaultCredential = new DefaultAzureCredential();
-  AIAgent agentDefault = new AIProjectClient(new Uri(endpoint), defaultCredential)
+  var cliCredential = new AzureCliCredential();
+  AIAgent agentCli = new AIProjectClient(new Uri(endpoint), cliCredential)
       .AsAIAgent(
           model: model,
           instructions: "You are the Trip Disruption Concierge. Be concise.");
 
   Console.ForegroundColor = ConsoleColor.Green;
-  Console.WriteLine($"[Agent] {(await agentDefault.RunAsync(
+  Console.WriteLine($"[Agent] {(await agentCli.RunAsync(
       "My flight AU123 was cancelled. What is the first thing I should do?")).Text}");
   Console.ResetColor();
   Console.WriteLine();
   ```
-
-  > [!NOTE]
-  > `DefaultAzureCredential` tries credential sources in order - environment variables, workload identity, managed identity, Azure Developer CLI, **Azure CLI**, VS Code, and PowerShell. On machines where VS Code is signed in to a different account, `DefaultAzureCredential` may resolve to that identity rather than your `az login` session. Run `az account show` to confirm which identity is active.
 
 ### Part 2 - Use a ChainedTokenCredential
 
@@ -87,11 +87,11 @@ For more information, see [Credential chains in the Azure Identity client librar
   ```csharp
   Console.ForegroundColor = ConsoleColor.DarkGray;
   Console.WriteLine("[Auth] Strategy 2: ChainedTokenCredential " +
-                    "(ManagedIdentity → AzureCLI)");
+                    "(WorkloadIdentity → AzureCLI)");
   Console.ResetColor();
 
   var chainedCredential = new ChainedTokenCredential(
-      new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned),
+      new WorkloadIdentityCredential(),   // CI/CD with OIDC (GitHub Actions, AKS) — fails fast on dev
       new AzureCliCredential());
 
   AIAgent agentChained = new AIProjectClient(new Uri(endpoint), chainedCredential)
@@ -107,7 +107,7 @@ For more information, see [Credential chains in the Azure Identity client librar
   ```
 
   > [!NOTE]
-  > On a developer laptop, `ManagedIdentityCredential` is unavailable. The chain falls through to `AzureCliCredential` automatically - no code change is needed when you deploy to a managed-identity environment.
+  > `WorkloadIdentityCredential` throws `CredentialUnavailableException` immediately when `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, and `AZURE_FEDERATED_TOKEN_FILE` are not set, which lets `ChainedTokenCredential` fall through to `AzureCliCredential` with no delay on your dev laptop. In a production **Hosted Agent** (Module 10), replace it with `ManagedIdentityCredential(ManagedIdentityId.SystemAssigned)` as shown in the Concepts section — Foundry provisions the managed identity automatically so IMDS is always reachable.
 
 ### Part 3 - Run and verify
 
@@ -121,13 +121,13 @@ For more information, see [Credential chains in the Azure Identity client librar
 
 ## Validation
 
-- The output shows which credential variant was used (`[Auth]` lines).
-- Both `DefaultAzureCredential` and `ChainedTokenCredential` succeed in making a model call on a developer laptop after `az login`.
+- The output shows `[Auth] Strategy 1: AzureCliCredential` and `[Auth] Strategy 2: ChainedTokenCredential (WorkloadIdentity → AzureCLI)` lines.
+- Both strategies succeed in making a model call on a developer laptop after `az login`.
 - No tokens or secrets appear in the console output.
 
 ## Congratulations 🎉
 
-You compared three Azure credential strategies and built the recommended `ChainedTokenCredential` pattern that works on a developer laptop and in a production Hosted Agent without any code changes. You also understand Entra Agent Identity and how Foundry provisions it automatically when you deploy.
+You compared two credential strategies — the explicit `AzureCliCredential` used throughout this workshop and the production-ready `ChainedTokenCredential` — and built the recommended pattern that works on a developer laptop and in a production Hosted Agent without any code changes. You also understand Entra Agent Identity and how Foundry provisions it automatically when you deploy.
 
 > [!TIP]
 > **Next up → [Module 12: Observability & Tracing](../12-observability/README.md)**
@@ -137,7 +137,6 @@ You compared three Azure credential strategies and built the recommended `Chaine
 
 | Symptom | Fix |
 |---|---|
-| `AuthenticationFailedException` with `AzureCliCredential` | Run `az login` |
-| HTTP 403 with `DefaultAzureCredential` | `DefaultAzureCredential` resolved to a VS Code or environment credential that lacks Foundry User access. Run `az login` and confirm with `az account show` that the correct identity is active. |
-| `CredentialUnavailableException` with `ManagedIdentityCredential` | Expected on a dev laptop - ensure the `ChainedTokenCredential` fallback to `AzureCliCredential` is in place |
+| `AuthenticationFailedException` with `AzureCliCredential` | Run `az login` and confirm with `az account show` that the correct subscription is active |
+| `CredentialUnavailableException` with `ManagedIdentityCredential` | Expected on a dev laptop — ensure the `ChainedTokenCredential` fallback to `AzureCliCredential` is in place |
 | `NotImplementedException` | A TODO is still incomplete |

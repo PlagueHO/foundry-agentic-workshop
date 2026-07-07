@@ -22,21 +22,22 @@ Console.ResetColor();
 Console.WriteLine();
 
 // ── TODO 1 ───────────────────────────────────────────────────────────────────
-// Create an agent using DefaultAzureCredential and run one turn.
-// DefaultAzureCredential tries a chain of credential sources automatically.
+// Create an agent using AzureCliCredential and run one turn.
+// AzureCliCredential authenticates using the active az login session —
+// the same credential every prior module has used.
 //
 // Console.ForegroundColor = ConsoleColor.DarkGray;
-// Console.WriteLine("[Auth] Strategy 1: DefaultAzureCredential");
+// Console.WriteLine("[Auth] Strategy 1: AzureCliCredential");
 // Console.ResetColor();
 //
-// var defaultCredential = new DefaultAzureCredential();
-// AIAgent agentDefault = new AIProjectClient(new Uri(endpoint), defaultCredential)
+// var cliCredential = new AzureCliCredential();
+// AIAgent agentCli = new AIProjectClient(new Uri(endpoint), cliCredential)
 //     .AsAIAgent(
 //         model: model,
 //         instructions: "You are the Trip Disruption Concierge. Be concise.");
 //
 // Console.ForegroundColor = ConsoleColor.Green;
-// Console.WriteLine($"[Agent] {(await agentDefault.RunAsync(
+// Console.WriteLine($"[Agent] {(await agentCli.RunAsync(
 //     "My flight AU123 was cancelled. What is the first thing I should do?")).Text}");
 // Console.ResetColor();
 // Console.WriteLine();
@@ -44,18 +45,20 @@ Console.WriteLine();
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── TODO 2 ───────────────────────────────────────────────────────────────────
-// Create an agent using a ChainedTokenCredential that combines
-// ManagedIdentityCredential (production) and AzureCliCredential (dev).
-// On a developer laptop the managed identity is unavailable, so the chain
-// falls through to the CLI credential automatically.
+// Create an agent using a ChainedTokenCredential.
+// WorkloadIdentityCredential covers CI/CD environments (GitHub Actions, AKS OIDC).
+// It throws CredentialUnavailableException immediately on dev (env vars not set),
+// so the chain falls through to AzureCliCredential with no delay.
+// In a production Hosted Agent, swap WorkloadIdentityCredential for
+// ManagedIdentityCredential(ManagedIdentityId.SystemAssigned) — see Concepts.
 //
 // Console.ForegroundColor = ConsoleColor.DarkGray;
 // Console.WriteLine("[Auth] Strategy 2: ChainedTokenCredential " +
-//                   "(ManagedIdentity → AzureCLI)");
+//                   "(WorkloadIdentity → AzureCLI)");
 // Console.ResetColor();
 //
 // var chainedCredential = new ChainedTokenCredential(
-//     new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned),
+//     new WorkloadIdentityCredential(),   // CI/CD with OIDC — fails fast on dev
 //     new AzureCliCredential());
 //
 // AIAgent agentChained = new AIProjectClient(new Uri(endpoint), chainedCredential)
