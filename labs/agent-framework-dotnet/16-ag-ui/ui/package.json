@@ -1,0 +1,26 @@
+{
+  "name": "trip-concierge-ui",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ag-ui/client": "^0",
+    "@copilotkit/react-core": "^1",
+    "@copilotkit/react-ui": "^1",
+    "@copilotkit/runtime": "^1",
+    "next": "^15",
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  }
+}

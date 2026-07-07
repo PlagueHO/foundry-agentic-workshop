@@ -15,6 +15,7 @@
     <PackageVersion Include="Microsoft.Agents.AI.A2A" Version="*-*" />
     <PackageVersion Include="Microsoft.Agents.AI.Hosting.A2A.AspNetCore" Version="*-*" />
     <PackageVersion Include="A2A.AspNetCore" Version="*-*" />
+    <PackageVersion Include="Microsoft.Agents.AI.Hosting.AGUI.AspNetCore" Version="*-*" />
     <PackageVersion Include="Microsoft.Extensions.AI.Evaluation" Version="*" />
     <!-- Azure -->
     <PackageVersion Include="Azure.AI.Projects.Agents" Version="*-*" />

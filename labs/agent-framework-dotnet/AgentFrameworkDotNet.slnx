@@ -123,4 +123,12 @@
       <Project Path="15-agent-to-agent/server-solution/TripConcierge.CompensationService.csproj" />
     </Folder>
   </Folder>
+  <Folder Name="16-ag-ui">
+    <Folder Name="server-src">
+      <Project Path="16-ag-ui/server-src/TripConcierge.ConciergeService.csproj" />
+    </Folder>
+    <Folder Name="server-solution">
+      <Project Path="16-ag-ui/server-solution/TripConcierge.ConciergeService.csproj" />
+    </Folder>
+  </Folder>
 </Solution>

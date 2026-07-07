@@ -477,20 +477,20 @@ export default function Page() {
 - [x] Phase 2 (M13): Verify `AsHarnessAgent` / `HarnessAgentOptions` API signatures against published release
 - [x] Phase 3 (M14): Scaffold `14-evaluation/` project - starter + solution, `LocalEvaluator` + `FoundryEvals`
 - [x] Phase 3 (M15): Scaffold `15-agent-to-agent/` - client (`src`/`solution`) + A2A server (`server-src`/`server-solution`) for the Compensation Specialist
-- [ ] Phase 3 (M16): Add `Microsoft.Agents.AI.Hosting.AGUI.AspNetCore` to `Directory.Packages.props`
-- [ ] Phase 3 (M16): Scaffold `16-ag-ui/server-src` + `server-solution` — `TripConcierge.ConciergeService` with `AddAGUI()` + `MapAGUI()` + scalar `GetFlightStatus` tool
-- [ ] Phase 3 (M16): Scaffold `16-ag-ui/ui/` — Next.js 14 app with CopilotKit (`route.ts`, `layout.tsx`, `page.tsx`)
-- [ ] Phase 3 (M16): Write `16-ag-ui/README.md`
-- [ ] Phase 3 (M16): Add M16 C# projects to `AgentFrameworkDotNet.slnx`
-- [ ] Phase 3 (M16): Add M16 server + ui tasks to `.vscode/tasks.json`
-- [ ] Phase 3 (M16): Add `AGUI_SERVER_URL` to `shared/.env.example`
-- [ ] Phase 3 (M16): Add Node.js 20+ prerequisite to `01-setup/README.md`
+- [x] Phase 3 (M16): Add `Microsoft.Agents.AI.Hosting.AGUI.AspNetCore` to `Directory.Packages.props`
+- [x] Phase 3 (M16): Scaffold `16-ag-ui/server-src` + `server-solution` — `TripConcierge.ConciergeService` with `AddAGUI()` + `MapAGUI()` + scalar `GetFlightStatus` tool
+- [x] Phase 3 (M16): Scaffold `16-ag-ui/ui/` — Next.js 14 app with CopilotKit (`route.ts`, `layout.tsx`, `page.tsx`)
+- [x] Phase 3 (M16): Write `16-ag-ui/README.md`
+- [x] Phase 3 (M16): Add M16 C# projects to `AgentFrameworkDotNet.slnx`
+- [x] Phase 3 (M16): Add M16 server + ui tasks to `.vscode/tasks.json`
+- [x] Phase 3 (M16): Add `AGUI_SERVER_URL` to `shared/.env.example`
+- [x] Phase 3 (M16): Add Node.js 20+ prerequisite to `01-setup/README.md`
 - [ ] Phase 3 (M17): Scaffold `17-capstone/server-src` + `server-solution` — `TripConcierge.CapstoneService` (M09 specialists + M12 OTel + M16 AG-UI, port 8889)
 - [ ] Phase 3 (M17): Scaffold `17-capstone/ui/` — Next.js 14 app with `useCoAgent` specialist strip
 - [ ] Phase 3 (M17): Write `17-capstone/README.md`
 - [ ] Phase 3 (M17): Add M17 C# projects to `AgentFrameworkDotNet.slnx`
 - [ ] Phase 3 (M17): Add M17 server + ui tasks to `.vscode/tasks.json`
-- [ ] Phase 3 (M16 + M17): Run `pnpm run docs:generate-labs && pnpm run docs:build` — confirm CI clean
+- [x] Phase 3 (M16 + M17): Run `pnpm run docs:generate-labs && pnpm run docs:build` — confirm CI clean
 - [x] Phase 2: Evaluate A2A protocol support in AF .NET (superseded - implemented in M15)
 - [ ] All: Verify exact AF API method signatures against published release (APIs are prerelease)
 

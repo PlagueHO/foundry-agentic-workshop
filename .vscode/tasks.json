@@ -873,6 +873,44 @@
                 "reveal": "always",
                 "panel": "shared"
             }
+        },
+        {
+            "label": "agent-framework-dotnet: module 16- ag-ui server (server-solution)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": ["run", "--urls", "http://localhost:8888"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/16-ag-ui/server-solution"
+            },
+            "problemMatcher": [],
+            "isBackground": true,
+            "icon": {
+                "id": "plug",
+                "color": "terminal.ansiCyan"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "agent-framework-dotnet: module 16- ag-ui ui (npm run dev)",
+            "type": "shell",
+            "command": "npm",
+            "args": ["run", "dev"],
+            "options": {
+                "cwd": "${workspaceFolder}/labs/agent-framework-dotnet/16-ag-ui/ui"
+            },
+            "problemMatcher": [],
+            "isBackground": true,
+            "icon": {
+                "id": "browser",
+                "color": "terminal.ansiGreen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
         }
     ]
 }

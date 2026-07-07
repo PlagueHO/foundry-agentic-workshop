@@ -33,6 +33,7 @@ Install the following before continuing:
 1. [Python 3.13 or later](https://www.python.org/downloads/).
 1. [uv](https://docs.astral.sh/uv/getting-started/installation/).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
+1. [Node.js 20 or later](https://nodejs.org/) - required for the React/CopilotKit UI in [Module 16](../16-ag-ui/README.md) and [Module 17](../17-capstone/README.md).
 1. [Docker](https://www.docker.com/products/docker-desktop/) (optional) - required only for [Module 12](../12-observability/README.md), which runs the Aspire Dashboard as a local container.
 
 > [!NOTE]
