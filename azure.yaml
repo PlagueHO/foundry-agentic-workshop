@@ -26,6 +26,8 @@ hooks:
         uv run python scripts/seed-passenger-rights-index.py &&
         uv run python scripts/deploy-retail-remedy-ops-mcp-server.py &&
         uv run python scripts/deploy-flight-ops-mcp-server.py &&
+        uv run python scripts/deploy-blob-relay-mcp-server.py &&
+        uv run python scripts/provision-agent-identity-demo.py &&
         uv run python scripts/generate-attendee-onboarding.py &&
         uv run python scripts/deploy-attendee-portal.py
     windows:
@@ -36,6 +38,8 @@ hooks:
         uv run python scripts/seed-passenger-rights-index.py
         uv run python scripts/deploy-retail-remedy-ops-mcp-server.py
         uv run python scripts/deploy-flight-ops-mcp-server.py
+        uv run python scripts/deploy-blob-relay-mcp-server.py
+        uv run python scripts/provision-agent-identity-demo.py
         uv run python scripts/generate-attendee-onboarding.py
         uv run python scripts/deploy-attendee-portal.py
   predown:

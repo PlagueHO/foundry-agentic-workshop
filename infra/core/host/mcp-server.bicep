@@ -1,5 +1,5 @@
 metadata name = 'MCP Server (Azure Container Apps)'
-metadata description = 'Deploys the Module 06 Retail Remedy Operations MCP server as a publicly reachable HTTPS Container App into the shared Azure Container Apps environment. The cloud-hosted Foundry agent connects to this endpoint when a local dev tunnel is unreachable.'
+metadata description = 'Deploys an MCP server as a publicly reachable HTTPS Container App into the shared Azure Container Apps environment. Shared by the Retail Remedy Operations, Flight Operations, and Blob Relay MCP servers; callers vary the image, port variable, and additional environment variables.'
 
 @description('Required. Name of the Container App that hosts the MCP server.')
 @maxLength(32)
@@ -26,8 +26,14 @@ param containerImage string = 'mcr.microsoft.com/k8se/quickstart:latest'
 @description('Optional. Port the MCP server listens on inside the container.')
 param targetPort int = 8080
 
+@description('Optional. Name of the container within the Container App. Set a descriptive per-server name so logs and metrics clearly identify which MCP server emitted them.')
+param containerName string = 'mcp-server'
+
 @description('Optional. Name of the environment variable the MCP server reads for the port number. Must match the variable the server process reads at startup.')
 param portEnvVarName string = 'PORT'
+
+@description('Optional. Additional environment variables to set on the container, beyond the port variable. Each item is an object with name and value.')
+param additionalEnv array = []
 
 @description('Required. Resource ID of the Log Analytics workspace to send diagnostic logs and metrics to.')
 param logAnalyticsWorkspaceResourceId string
@@ -82,18 +88,18 @@ module containerApp 'br/public:avm/res/app/container-app:0.22.1' = {
     ]
     containers: [
       {
-        name: 'mcp-server'
+        name: containerName
         image: containerImage
         resources: {
           cpu: json('0.5')
           memory: '1.0Gi'
         }
-        env: [
+        env: concat([
           {
             name: portEnvVarName
             value: string(targetPort)
           }
-        ]
+        ], additionalEnv)
       }
     ]
   }
