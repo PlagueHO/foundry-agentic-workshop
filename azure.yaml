@@ -41,7 +41,7 @@ hooks:
   predown:
     posix:
       shell: sh
-      run: uv run python scripts/delete-attendee-portal.py
+      run: uv run --no-project python scripts/delete-attendee-portal.py
     windows:
       shell: pwsh
-      run: uv run python scripts/delete-attendee-portal.py
+      run: uv run --no-project python scripts/delete-attendee-portal.py
