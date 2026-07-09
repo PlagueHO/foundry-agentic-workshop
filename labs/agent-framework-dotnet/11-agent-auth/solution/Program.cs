@@ -1,5 +1,6 @@
 using Azure.Identity;
 using Azure.AI.Projects;
+using Azure.AI.Projects.Agents;
 using DotNetEnv;
 using Microsoft.Agents.AI;
 using Microsoft.Agents.AI.Foundry;
@@ -82,20 +83,43 @@ Console.WriteLine(
 Console.ResetColor();
 Console.WriteLine();
 
-// ── Entra Agent Identity (informational) ─────────────────────────────────────
-// When you deploy an agent to Azure AI Foundry as a Hosted Agent, the platform
-// automatically provisions a system-assigned managed identity for the Container
-// App that runs your agent code (the web service from Module 10).
+// ── Part 2: Unattended agent identity -> Azure Storage ──────────────────────
+// Everything above authenticates YOUR code to Foundry. This part shows Foundry
+// authenticating the AGENT to a downstream service using the agent's own Entra
+// instance identity - the unattended (application-only) flow. No user, no secrets.
 //
-// That identity is granted:
-//   - Azure AI Foundry User (to call models)
-//   - Search Index Data Reader (if a vector store is attached)
+// The 'trip-concierge-storage' agent was provisioned server-side with an MCP tool
+// bound to a project connection whose auth type is AgenticIdentityToken and whose
+// audience is https://storage.azure.com. When the agent calls the tool, Agent
+// Service exchanges the agent's identity for a Storage-scoped token and passes it
+// to the Blob Relay MCP server, which forwards it to Azure Blob Storage. Access is
+// governed solely by the RBAC role assigned to the agent identity - your code
+// never sees a token.
 //
-// You do not manage secrets or rotate credentials.  The ChainedTokenCredential
-// above uses that identity transparently when running in Foundry.
+// Agent Framework connects to the existing server-side agent by name and wraps it
+// as an AIAgent, so the whole agent loop (including the token exchange) runs in
+// Agent Service. You just call RunAsync.
+var storageAgentName = Environment.GetEnvironmentVariable("AGENT_NAME_STORAGE")
+    ?? "trip-concierge-storage";
+
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine("[Auth] Entra Agent Identity: automatically provisioned by Foundry when");
-Console.WriteLine("[Auth] deploying a Hosted Agent. No secrets to manage in production.");
+Console.WriteLine($"[Auth] Part 2: connecting to server-side agent '{storageAgentName}' (unattended identity).");
+Console.WriteLine("[Auth] The agent reaches Azure Storage as its OWN Entra identity - no user, no secrets.");
+Console.ResetColor();
+Console.WriteLine();
+
+var projectClient = new AIProjectClient(new Uri(endpoint), new DefaultAzureCredential());
+var storageAgentRecord = await projectClient.AgentAdministrationClient.GetAgentAsync(storageAgentName);
+AIAgent storageAgent = projectClient.AsAIAgent(storageAgentRecord);
+
+Console.ForegroundColor = ConsoleColor.Green;
+Console.WriteLine(
+    $"[Agent] {(await storageAgent.RunAsync(
+        "Read the passenger case file 'welcome.txt' and summarise the entitlements it records.")).Text}");
+Console.WriteLine();
+Console.WriteLine(
+    $"[Agent] {(await storageAgent.RunAsync(
+        "Write a new case file 'case-au123.txt' recording that the passenger chose a refund.")).Text}");
 Console.ResetColor();
 Console.WriteLine();
 

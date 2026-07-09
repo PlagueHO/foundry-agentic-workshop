@@ -224,6 +224,8 @@ var retailRemedyOpsMcpServerContainerAppName = take(toLower('${abbrs.appContaine
 var retailRemedyOpsMcpServerIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}retail-remedy-ops-${environmentName}'
 var flightOpsMcpServerContainerAppName = take(toLower('${abbrs.appContainerApps}flight-ops-${environmentName}'), 32)
 var flightOpsMcpServerIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}flight-ops-${environmentName}'
+var blobRelayMcpServerContainerAppName = take(toLower('${abbrs.appContainerApps}blob-relay-${environmentName}'), 32)
+var blobRelayMcpServerIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}blob-relay-${environmentName}'
 var attendeePortalContainerAppName = take(toLower('${abbrs.appContainerApps}portal-${environmentName}'), 32)
 var attendeePortalIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}portal-${environmentName}'
 
@@ -600,6 +602,13 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.1' = {
           name: 'retail-products'
           publicAccess: 'None'
         }
+        // This container backs the agent-framework-dotnet Module 11 unattended agent
+        // identity demo. The published agent's Entra instance identity reads and writes
+        // blobs here via the Blob Relay MCP server.
+        {
+          name: 'agent-identity-demo'
+          publicAccess: 'None'
+        }
       ]
     }
     diagnosticSettings: [
@@ -788,6 +797,7 @@ module retailRemedyOpsMcpServer './core/host/mcp-server.bicep' = if (azureContai
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     location: location
     tags: tags
+    containerName: 'retail-remedy-ops'
     portEnvVarName: 'RETAIL_REMEDY_OPS_MCP_SERVER_PORT'
   }
 }
@@ -809,7 +819,44 @@ module flightOpsMcpServer './core/host/mcp-server.bicep' = if (azureContainerApp
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     location: location
     tags: tags
+    containerName: 'flight-ops'
     portEnvVarName: 'PORT'
+  }
+}
+
+// Module agent-framework-dotnet Blob Relay MCP server, published into the shared environment.
+// Demonstrates the unattended (application-only) agent identity flow: the relay forwards the
+// agent identity's Storage-scoped access token straight to Azure Blob Storage. The agent
+// identity is minted per agent at deploy time, so its Storage RBAC role is granted post-deploy
+// by scripts/provision-agent-identity-demo.py (it cannot be assigned in Bicep).
+module blobRelayMcpServer './core/host/mcp-server.bicep' = if (azureContainerAppsDeploy) {
+  name: 'blob-relay-mcp-server-deployment-${deploymentId}'
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [
+    resourceGroup
+  ]
+  params: {
+    containerAppName: blobRelayMcpServerContainerAppName
+    #disable-next-line BCP318 // containerAppsEnvironment is gated by the same azureContainerAppsDeploy condition as this module
+    containerAppsEnvironmentResourceId: containerAppsEnvironment.outputs.resourceId
+    userAssignedIdentityName: blobRelayMcpServerIdentityName
+    containerRegistryLoginServer: containerRegistry.outputs.loginServer
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    location: location
+    tags: tags
+    containerName: 'blob-relay'
+    portEnvVarName: 'BLOB_RELAY_MCP_SERVER_PORT'
+    // The relay forwards the agent-identity token to this pinned account and container.
+    additionalEnv: [
+      {
+        name: 'BLOB_RELAY_STORAGE_ACCOUNT'
+        value: storageAccounName
+      }
+      {
+        name: 'BLOB_RELAY_CONTAINER'
+        value: 'agent-identity-demo'
+      }
+    ]
   }
 }
 
@@ -861,6 +908,12 @@ module containerAppsAcrRoleAssignments './core/security/role_acr.bicep' = if (az
         principalType: 'ServicePrincipal'
         #disable-next-line BCP318 // flightOpsMcpServer is gated by the same azureContainerAppsDeploy condition as this module
         principalId: flightOpsMcpServer.outputs.userAssignedIdentityPrincipalId
+      }
+      {
+        roleDefinitionIdOrName: 'Container Registry Repository Reader'
+        principalType: 'ServicePrincipal'
+        #disable-next-line BCP318 // blobRelayMcpServer is gated by the same azureContainerAppsDeploy condition as this module
+        principalId: blobRelayMcpServer.outputs.userAssignedIdentityPrincipalId
       }
       {
         roleDefinitionIdOrName: 'Container Registry Repository Reader'
@@ -1372,6 +1425,14 @@ output AZURE_FLIGHT_OPS_MCP_SERVER_CONTAINER_APP_NAME string = azureContainerApp
 @description('The public HTTPS Flight Operations MCP endpoint (including the /mcp path) for the deployed server. Empty when Container Apps deployment is disabled.')
 #disable-next-line BCP318 // flightOpsMcpServer output is only dereferenced when azureContainerAppsDeploy is true
 output FLIGHT_OPS_MCP_SERVER_URL string = azureContainerAppsDeploy ? flightOpsMcpServer.outputs.mcpEndpoint : ''
+
+@description('The name of the Module 11 Blob Relay MCP server Container App. Empty when Container Apps deployment is disabled. Consumed by scripts/deploy-blob-relay-mcp-server.py.')
+#disable-next-line BCP318 // blobRelayMcpServer output is only dereferenced when azureContainerAppsDeploy is true
+output AZURE_BLOB_RELAY_MCP_SERVER_CONTAINER_APP_NAME string = azureContainerAppsDeploy ? blobRelayMcpServer.outputs.containerAppName : ''
+
+@description('The public HTTPS Blob Relay MCP endpoint (including the /mcp path) for the deployed relay. Empty when Container Apps deployment is disabled.')
+#disable-next-line BCP318 // blobRelayMcpServer output is only dereferenced when azureContainerAppsDeploy is true
+output BLOB_RELAY_MCP_SERVER_URL string = azureContainerAppsDeploy ? blobRelayMcpServer.outputs.mcpEndpoint : ''
 
 @description('The name of the Attendee Onboarding Portal Container App. Empty when Container Apps deployment is disabled. Consumed by scripts/deploy-attendee-portal.py.')
 #disable-next-line BCP318 // attendeePortal output is only dereferenced when azureContainerAppsDeploy is true

@@ -1,0 +1,10 @@
+[project]
+name = "mcp-server-blob-relay"
+version = "0.1.0"
+description = "Blob Relay MCP server (agent-identity passthrough) container image dependencies."
+requires-python = ">=3.13"
+dependencies = [
+    "mcp>=1.0.0,<2.0.0",
+    "httpx>=0.27.0,<1.0.0",
+    "uvicorn>=0.30.0,<1.0.0",
+]
