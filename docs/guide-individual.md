@@ -114,3 +114,83 @@ Remove all provisioned resources when you are done.
 ```bash
 azd down --force --purge
 ```
+
+## Troubleshooting
+
+### Insufficient model quota
+
+During provisioning, Azure returns an error similar to the following when the target region does
+not have enough quota for the requested model:
+
+```text
+This operation require 200 new capacity in quota One Thousand Tokens Per Minute
+- gpt-5.4-mini - GlobalStandard, which is bigger than the current available capacity 0.
+The current quota usage is 0 and the quota limit is 0 for quota One Thousand Tokens
+Per Minute - gpt-5.4-mini - GlobalStandard. (Code: InsufficientQuota)
+```
+
+This means the subscription has no allocated quota for that model and SKU tier in the selected
+region. The `default` profile requests 50 K TPM for each of its model deployments, which
+exceeds the quota limit of zero shown above.
+
+#### Check available quota
+
+Run the quota viewer to inspect what capacity is available in your target region:
+
+```bash
+uv run python scripts/show-model-quota.py --location australiaeast --provider openai
+```
+
+Replace `australiaeast` with your chosen region. Each row shows the quota limit, current usage,
+and remaining TPM. Look for the `gpt-5.4-mini` row under the `GlobalStandard` SKU.
+
+To scan the default candidate regions and show only entries that have remaining capacity:
+
+```bash
+uv run python scripts/show-model-quota.py --filter gpt-5.4-mini --available-only
+```
+
+Once you find a region with sufficient quota, switch to it and re-provision:
+
+```bash
+azd env set AZURE_LOCATION <region>
+azd provision
+```
+
+#### Switch to a smaller model profile
+
+The `default` profile requests 50 K TPM per model. If your subscription has lower quota limits,
+switch to the `minimal` profile (10 K TPM) instead:
+
+```bash
+azd env set AZURE_MODEL_DEPLOYMENT_PROFILE minimal
+azd provision
+```
+
+#### Reduce capacity manually
+
+If neither a region change nor a built-in profile resolves the shortfall, edit
+`infra/model-deployments.default.json` and lower the `capacity` values to fit your available
+quota. The `capacity` field is measured in thousands of tokens per minute (K TPM).
+
+```json
+{
+  "name": "chat",
+  "model": { "format": "OpenAI", "name": "gpt-5.4-mini", "version": "2026-03-17" },
+  "sku": {
+    "name": "GlobalStandard",
+    "capacity": 10
+  }
+}
+```
+
+Reduce `capacity` for every deployment entry in the file, then run `azd provision`.
+
+> [!NOTE]
+> The `check-model-quota.py` script runs automatically as a pre-provision hook and prints a
+> detailed shortfall table when quota is insufficient. Run it manually at any time to preview
+> the result without provisioning:
+>
+> ```bash
+> uv run python scripts/check-model-quota.py
+> ```

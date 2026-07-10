@@ -1,8 +1,8 @@
-"""Show available Azure OpenAI / Foundry model quota across one or more regions.
+"""Show available Azure AI / Foundry model quota across one or more regions.
 
 Fetches quota usage from 'az cognitiveservices usage list' and displays a clean
 summary table showing TPM limits, current usage, and remaining capacity for every
-OpenAI model quota entry in each requested region.
+model quota entry in each requested region, grouped by provider (OpenAI, etc.).
 
 Usage:
     python scripts/show-model-quota.py
@@ -10,6 +10,7 @@ Usage:
     python scripts/show-model-quota.py --location eastus --all
     python scripts/show-model-quota.py --filter gpt-4o
     python scripts/show-model-quota.py --available-only
+    python scripts/show-model-quota.py --provider openai
 """
 
 from __future__ import annotations
@@ -41,8 +42,6 @@ _DEFAULT_LOCATIONS: list[str] = [
 ]
 
 _AZ_CMD: str = shutil.which('az') or 'az'
-
-_OPENAI_PREFIX = 'OpenAI.'
 
 
 # ---------------------------------------------------------------------------
@@ -104,6 +103,7 @@ _COL_BAR = 20
 @dataclass
 class QuotaEntry:
     location: str
+    provider: str
     model: str
     sku: str
     limit: int
@@ -161,16 +161,20 @@ def _fetch_usages(location: str) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 
-def _parse_quota_name(raw_name: str) -> tuple[str, str] | None:
-    """Parse 'OpenAI.<sku>.<model>' into (sku, model). Returns None if not OpenAI."""
-    if not raw_name.startswith(_OPENAI_PREFIX):
-        return None
-    remainder = raw_name[len(_OPENAI_PREFIX):]
-    # The SKU is the first segment; the model name is everything after.
-    parts = remainder.split('.', 1)
-    if len(parts) != 2:
-        return None
-    return parts[0], parts[1]
+def _parse_quota_name(raw_name: str) -> tuple[str, str, str] | None:
+    """Parse a quota name into (provider, sku, model).
+
+    Handles:
+      '<Provider>.<SKU>.<Model>' -> (provider, sku, model)
+      '<Provider>.<Name>'        -> (provider, '', name)
+    Single-segment names (e.g. bare counters) are skipped.
+    """
+    parts = raw_name.split('.', 2)
+    if len(parts) == 3:
+        return parts[0], parts[1], parts[2]
+    if len(parts) == 2:
+        return parts[0], '', parts[1]
+    return None
 
 
 def _parse_usages(location: str, raw: list[dict]) -> list[QuotaEntry]:
@@ -180,17 +184,18 @@ def _parse_usages(location: str, raw: list[dict]) -> list[QuotaEntry]:
         parsed = _parse_quota_name(raw_name)
         if parsed is None:
             continue
-        sku, model = parsed
+        provider, sku, model = parsed
         limit = int(item.get('limit') or 0)
         used = int(item.get('currentValue') or 0)
         entries.append(QuotaEntry(
             location=location,
+            provider=provider,
             model=model,
             sku=sku,
             limit=limit,
             used=used,
         ))
-    return sorted(entries, key=lambda e: (e.model.lower(), e.sku.lower()))
+    return sorted(entries, key=lambda e: (0 if e.provider == 'OpenAI' else 1, e.provider.lower(), e.model.lower(), e.sku.lower()))
 
 
 # ---------------------------------------------------------------------------
@@ -220,23 +225,20 @@ def _fmt_tpm(value: int) -> str:
     return str(value)
 
 
-def _print_location_table(location: str, entries: list[QuotaEntry]) -> None:
-    sep = '─' * (_COL_MODEL + _COL_SKU + _COL_LIMIT + _COL_USED + _COL_AVAIL + _COL_BAR + 14)
-    print()
-    print(f'  ┌─ {_C.bold}{_C.cyan}{location.upper()}{_C.reset} {"─" * max(0, len(sep) - len(location) - 4)}')
-
-    if not entries:
-        print(f'  │  {_C.dim}(no OpenAI quota entries found){_C.reset}')
-        print(f'  └{"─" * (len(sep) - 1)}')
-        return
+def _print_provider_section(provider: str, entries: list[QuotaEntry]) -> None:
+    """Print one provider's rows within a location table."""
+    inner_sep = _COL_MODEL + _COL_SKU + _COL_LIMIT + _COL_USED + _COL_AVAIL + _COL_BAR + 14
+    provider_label = f' {provider} '
+    dash_tail = '─' * max(0, inner_sep - len(provider_label) - 4)
+    print(f'  │  {_C.bold}{_C.white}── {provider}{_C.reset}{_C.dim} {dash_tail}{_C.reset}')
 
     header = (
-        f"  │  {_C.bold}{'Model':<{_COL_MODEL}}  {'SKU':<{_COL_SKU}}  "
+        f"  │    {_C.bold}{'Model':<{_COL_MODEL}}  {'SKU':<{_COL_SKU}}  "
         f"{'Limit':>{_COL_LIMIT}}  {'Used':>{_COL_USED}}  {'Available':>{_COL_AVAIL}}  "
         f"{'Usage':^{_COL_BAR}}{_C.reset}"
     )
     divider = (
-        f"  │  {_C.dim}{'─' * _COL_MODEL}  {'─' * _COL_SKU}  "
+        f"  │    {_C.dim}{'─' * _COL_MODEL}  {'─' * _COL_SKU}  "
         f"{'─' * _COL_LIMIT}  {'─' * _COL_USED}  {'─' * _COL_AVAIL}  "
         f"{'─' * _COL_BAR}{_C.reset}"
     )
@@ -255,12 +257,35 @@ def _print_location_table(location: str, entries: list[QuotaEntry]) -> None:
             avail_marker = '  '
             avail_str = f'{_C.green}{_fmt_tpm(e.available):>{_COL_AVAIL}}{_C.reset}'
         row = (
-            f"  │{avail_marker} {e.model:<{_COL_MODEL}}  {_C.dim}{e.sku:<{_COL_SKU}}{_C.reset}  "
+            f"  │  {avail_marker} {e.model:<{_COL_MODEL}}  {_C.dim}{e.sku:<{_COL_SKU}}{_C.reset}  "
             f"{_fmt_tpm(e.limit):>{_COL_LIMIT}}  {_fmt_tpm(e.used):>{_COL_USED}}  "
             f"{avail_str}  "
             f"{_bar(e.used_pct)}"
         )
         print(row)
+
+
+def _print_location_table(location: str, entries: list[QuotaEntry]) -> None:
+    sep = '─' * (_COL_MODEL + _COL_SKU + _COL_LIMIT + _COL_USED + _COL_AVAIL + _COL_BAR + 14)
+    print()
+    print(f'  ┌─ {_C.bold}{_C.cyan}{location.upper()}{_C.reset} {"─" * max(0, len(sep) - len(location) - 4)}')
+
+    if not entries:
+        print(f'  │  {_C.dim}(no quota entries found){_C.reset}')
+        print(f'  └{"─" * (len(sep) - 1)}')
+        return
+
+    # Group by provider, preserving the already-sorted order.
+    providers: dict[str, list[QuotaEntry]] = {}
+    for e in entries:
+        providers.setdefault(e.provider, []).append(e)
+
+    first = True
+    for provider, group in providers.items():
+        if not first:
+            print('  │')
+        first = False
+        _print_provider_section(provider, group)
 
     print(f'  └{"─" * (len(sep) - 1)}')
 
@@ -298,6 +323,7 @@ def _build_parser() -> argparse.ArgumentParser:
             '  python scripts/show-model-quota.py\n'
             '  python scripts/show-model-quota.py --location eastus swedencentral\n'
             '  python scripts/show-model-quota.py --filter gpt-4o --available-only\n'
+            '  python scripts/show-model-quota.py --provider openai\n'
             '  python scripts/show-model-quota.py --all\n'
         ),
     )
@@ -326,6 +352,12 @@ def _build_parser() -> argparse.ArgumentParser:
         default=False,
         help='Include entries with zero quota limit (hidden by default).',
     )
+    parser.add_argument(
+        '--provider', '-p',
+        metavar='TEXT',
+        default=None,
+        help='Case-insensitive substring filter applied to provider names (e.g. openai).',
+    )
     return parser
 
 
@@ -335,8 +367,15 @@ def main() -> int:
 
     locations: list[str] = args.location or _DEFAULT_LOCATIONS
     name_filter: str | None = args.filter.lower() if args.filter else None
+    provider_filter: str | None = args.provider.lower() if args.provider else None
     available_only: bool = args.available_only
     show_all: bool = args.all
+
+    # Ensure UTF-8 output on Windows where the default console encoding may be CP1252.
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    if hasattr(sys.stderr, 'reconfigure'):
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
     global _C  # noqa: PLW0603
     _C = _make_colors(_colors_enabled())
@@ -347,8 +386,8 @@ def main() -> int:
         return 1
 
     print()
-    print(f'  {_C.bold}{_C.cyan}Azure OpenAI / Foundry Model Quota{_C.reset}')
-    print(f'  {_C.cyan}════════════════════════════════════{_C.reset}')
+    print(f'  {_C.bold}{_C.cyan}Azure AI / Foundry Model Quota{_C.reset}')
+    print(f'  {_C.cyan}══════════════════════════════{_C.reset}')
     print(f'  Querying {_C.white}{len(locations)}{_C.reset} region(s)...', flush=True)
 
     all_entries: list[QuotaEntry] = []
@@ -363,6 +402,8 @@ def main() -> int:
             entries = [e for e in entries if e.limit > 0]
         if name_filter:
             entries = [e for e in entries if name_filter in e.model.lower()]
+        if provider_filter:
+            entries = [e for e in entries if provider_filter in e.provider.lower()]
         if available_only:
             entries = [e for e in entries if e.available > 0]
 
