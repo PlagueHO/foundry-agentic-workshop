@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -42,6 +43,49 @@ _DEFAULT_LOCATIONS: list[str] = [
 _AZ_CMD: str = shutil.which('az') or 'az'
 
 _OPENAI_PREFIX = 'OpenAI.'
+
+
+# ---------------------------------------------------------------------------
+# Colour support
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class _Colors:
+    reset: str = ''
+    bold: str = ''
+    dim: str = ''
+    cyan: str = ''
+    green: str = ''
+    yellow: str = ''
+    red: str = ''
+    white: str = ''
+
+
+def _make_colors(enabled: bool) -> _Colors:
+    if not enabled:
+        return _Colors()
+    return _Colors(
+        reset='\033[0m',
+        bold='\033[1m',
+        dim='\033[2m',
+        cyan='\033[36m',
+        green='\033[32m',
+        yellow='\033[33m',
+        red='\033[31m',
+        white='\033[97m',
+    )
+
+
+def _colors_enabled() -> bool:
+    """Return True when the terminal supports ANSI colour codes."""
+    if os.environ.get('NO_COLOR'):
+        return False
+    return sys.stdout.isatty()
+
+
+# Populated in main() once we know whether colour is available.
+_C: _Colors = _Colors()
 
 # Column widths for the output table.
 _COL_MODEL = 40
@@ -155,10 +199,18 @@ def _parse_usages(location: str, raw: list[dict]) -> list[QuotaEntry]:
 
 
 def _bar(used_pct: float, width: int = _COL_BAR) -> str:
-    """Render a usage bar like '[████░░░░░░░░░░░░░░░░]'."""
+    """Render a coloured usage bar like '[████░░░░░░░░░░░░░░░░]'."""
     filled = round(used_pct / 100 * width)
     filled = max(0, min(width, filled))
-    return '[' + '█' * filled + '░' * (width - filled) + ']'
+    if used_pct >= 80:
+        colour = _C.red
+    elif used_pct >= 50:
+        colour = _C.yellow
+    else:
+        colour = _C.green
+    bar_fill = colour + '█' * filled + _C.reset
+    bar_empty = _C.dim + '░' * (width - filled) + _C.reset
+    return '[' + bar_fill + bar_empty + ']'
 
 
 def _fmt_tpm(value: int) -> str:
@@ -171,32 +223,41 @@ def _fmt_tpm(value: int) -> str:
 def _print_location_table(location: str, entries: list[QuotaEntry]) -> None:
     sep = '─' * (_COL_MODEL + _COL_SKU + _COL_LIMIT + _COL_USED + _COL_AVAIL + _COL_BAR + 14)
     print()
-    print(f'  ┌─ {location.upper()} {"─" * max(0, len(sep) - len(location) - 4)}')
+    print(f'  ┌─ {_C.bold}{_C.cyan}{location.upper()}{_C.reset} {"─" * max(0, len(sep) - len(location) - 4)}')
 
     if not entries:
-        print('  │  (no OpenAI quota entries found)')
+        print(f'  │  {_C.dim}(no OpenAI quota entries found){_C.reset}')
         print(f'  └{"─" * (len(sep) - 1)}')
         return
 
     header = (
-        f"  │  {'Model':<{_COL_MODEL}}  {'SKU':<{_COL_SKU}}  "
+        f"  │  {_C.bold}{'Model':<{_COL_MODEL}}  {'SKU':<{_COL_SKU}}  "
         f"{'Limit':>{_COL_LIMIT}}  {'Used':>{_COL_USED}}  {'Available':>{_COL_AVAIL}}  "
-        f"{'Usage':^{_COL_BAR}}"
+        f"{'Usage':^{_COL_BAR}}{_C.reset}"
     )
     divider = (
-        f"  │  {'─' * _COL_MODEL}  {'─' * _COL_SKU}  "
+        f"  │  {_C.dim}{'─' * _COL_MODEL}  {'─' * _COL_SKU}  "
         f"{'─' * _COL_LIMIT}  {'─' * _COL_USED}  {'─' * _COL_AVAIL}  "
-        f"{'─' * _COL_BAR}"
+        f"{'─' * _COL_BAR}{_C.reset}"
     )
     print(header)
     print(divider)
 
     for e in entries:
-        avail_marker = ' !' if e.available == 0 and e.limit > 0 else '  '
+        exhausted = e.available == 0 and e.limit > 0
+        if exhausted:
+            avail_marker = f' {_C.red}!{_C.reset}'
+            avail_str = f'{_C.red}{_fmt_tpm(e.available):>{_COL_AVAIL}}{_C.reset}'
+        elif e.used > 0:
+            avail_marker = '  '
+            avail_str = f'{_C.yellow}{_fmt_tpm(e.available):>{_COL_AVAIL}}{_C.reset}'
+        else:
+            avail_marker = '  '
+            avail_str = f'{_C.green}{_fmt_tpm(e.available):>{_COL_AVAIL}}{_C.reset}'
         row = (
-            f"  │{avail_marker} {e.model:<{_COL_MODEL}}  {e.sku:<{_COL_SKU}}  "
+            f"  │{avail_marker} {e.model:<{_COL_MODEL}}  {_C.dim}{e.sku:<{_COL_SKU}}{_C.reset}  "
             f"{_fmt_tpm(e.limit):>{_COL_LIMIT}}  {_fmt_tpm(e.used):>{_COL_USED}}  "
-            f"{_fmt_tpm(e.available):>{_COL_AVAIL}}  "
+            f"{avail_str}  "
             f"{_bar(e.used_pct)}"
         )
         print(row)
@@ -213,12 +274,12 @@ def _print_summary(all_entries: list[QuotaEntry]) -> None:
     locations_with_avail = len({e.location for e in all_entries if e.available > 0})
 
     print()
-    print('  ┌─ SUMMARY ──────────────────────────────────────')
-    print(f'  │  Regions queried    : {len({e.location for e in all_entries})}')
-    print(f'  │  Regions with quota : {locations_with_avail}')
-    print(f'  │  Total limit (TPM)  : {_fmt_tpm(total_limit)}')
-    print(f'  │  Total used (TPM)   : {_fmt_tpm(total_used)}')
-    print(f'  │  Total available    : {_fmt_tpm(total_avail)}')
+    print(f'  ┌─ {_C.bold}SUMMARY{_C.reset} ──────────────────────────────────────')
+    print(f'  │  Regions queried    : {_C.white}{len({e.location for e in all_entries})}{_C.reset}')
+    print(f'  │  Regions with quota : {_C.white}{locations_with_avail}{_C.reset}')
+    print(f'  │  Total limit (TPM)  : {_C.white}{_fmt_tpm(total_limit)}{_C.reset}')
+    print(f'  │  Total used (TPM)   : {_C.yellow}{_fmt_tpm(total_used)}{_C.reset}')
+    print(f'  │  Total available    : {_C.green}{_fmt_tpm(total_avail)}{_C.reset}')
     print('  └────────────────────────────────────────────────')
     print()
 
@@ -277,15 +338,18 @@ def main() -> int:
     available_only: bool = args.available_only
     show_all: bool = args.all
 
+    global _C  # noqa: PLW0603
+    _C = _make_colors(_colors_enabled())
+
     # Verify az login.
     if not _check_az_login():
         print('Error: not logged in to Azure CLI. Run: az login', file=sys.stderr)
         return 1
 
     print()
-    print('  Azure OpenAI / Foundry Model Quota')
-    print('  ════════════════════════════════════')
-    print(f'  Querying {len(locations)} region(s)...', flush=True)
+    print(f'  {_C.bold}{_C.cyan}Azure OpenAI / Foundry Model Quota{_C.reset}')
+    print(f'  {_C.cyan}════════════════════════════════════{_C.reset}')
+    print(f'  Querying {_C.white}{len(locations)}{_C.reset} region(s)...', flush=True)
 
     all_entries: list[QuotaEntry] = []
 
