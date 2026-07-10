@@ -13,7 +13,7 @@
 - Verify the pre-provisioned environment so you can focus on building agents.
 
 > [!NOTE]
-> **Individual mode:** If you completed the [Individual Quickstart](../../../docs/quickstart-individual.md), skip to [Part 2 - Restore .NET packages](#part-2---restore-net-packages).
+> **Individual mode:** If you completed the [Individual Quickstart](../../../docs/quickstart-individual.md), skip to [Part 2 - Restore .NET packages](#part-2-restore-net-packages).
 
 ## What your organizer provides
 
@@ -47,7 +47,7 @@ Install the following before continuing:
 ### Part 1 - Environment setup
 
 > [!NOTE]
-> **Individual mode:** If you completed the [Individual Quickstart](../../../docs/quickstart-individual.md), skip to [Part 2 - Restore .NET packages](#part-2---restore-net-packages).
+> **Individual mode:** If you completed the [Individual Quickstart](../../../docs/quickstart-individual.md), skip to [Part 2 - Restore .NET packages](#part-2-restore-net-packages).
 
 #### 1. Clone the repository
 
