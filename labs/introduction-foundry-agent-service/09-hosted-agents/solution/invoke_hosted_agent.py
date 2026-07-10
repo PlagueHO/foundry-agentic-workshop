@@ -5,7 +5,7 @@ agent endpoint to that version, then runs a short multi-turn conversation. Sessi
 work with hosted agents and are a preview feature accessed via ``project.beta.agents``.
 
 Usage:
-    python labs/introduction-foundry-agent-service/09-hosted-agents/solution/invoke_hosted_agent.py
+    uv run python labs/introduction-foundry-agent-service/09-hosted-agents/solution/invoke_hosted_agent.py
 """
 
 import os

@@ -262,7 +262,7 @@ After completing all four TODOs, save the file (<kbd>Ctrl</kbd>+<kbd>S</kbd>). C
 1. Run the script:
 
    ```bash
-   python labs/introduction-foundry-agent-service/04-prompt-based-agents/src/starter.py
+   uv run python labs/introduction-foundry-agent-service/04-prompt-based-agents/src/starter.py
    ```
 
 1. Confirm the output begins with `Conversation started:` followed by a UUID-format conversation ID. Record this ID for use in Step 8.

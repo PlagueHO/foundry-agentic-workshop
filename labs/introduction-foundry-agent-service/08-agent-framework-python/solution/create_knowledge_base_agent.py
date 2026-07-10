@@ -59,7 +59,7 @@ Optional environment variables:
                              KNOWLEDGE_BASE_CONNECTION_NAME without recreating it.
 
 Usage:
-    python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
+    uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
 """
 
 import os

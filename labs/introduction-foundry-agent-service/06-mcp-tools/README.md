@@ -298,7 +298,7 @@ The **Traces** tab in the Foundry portal shows each agent conversation as a stru
 - [ ] In a new terminal, start the chat client:
 
   ```bash
-  python labs/introduction-foundry-agent-service/06-mcp-tools/src/starter.py
+  uv run python labs/introduction-foundry-agent-service/06-mcp-tools/src/starter.py
   ```
 
 - [ ] Send the same battery-failure prompt.

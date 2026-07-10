@@ -6,7 +6,7 @@ runs it as a hosted agent - no local Docker required. After the version becomes 
 grants the agent's per-deploy identity the Foundry User role so the agent can call models.
 
 Usage:
-    python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_code.py
+    uv run python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_code.py
 """
 
 import hashlib

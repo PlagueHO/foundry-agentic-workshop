@@ -13,7 +13,7 @@ Foundry portal, exactly like a playground conversation.
 Prerequisites:
   - acl-remedy-advisor exists in your Foundry project. If you did not finish
     Module 07, recreate its end state first:
-        python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
+        uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
   - Sign in with the Azure CLI so DefaultAzureCredential can authenticate:
         az login
   - FOUNDRY_PROJECT_ENDPOINT (and optionally AGENT_NAME / AGENT_VERSION) are set
@@ -27,7 +27,7 @@ Environment variables (.env):
                              version; set it to pin a specific version.
 
 Usage:
-    python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/run_prompt_agent.py
+    uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/run_prompt_agent.py
 """
 
 import asyncio

@@ -203,7 +203,7 @@ You complete [`src/starter.py`](https://github.com/PlagueHO/foundry-agentic-work
 - [ ] Run your completed starter to deploy the agent from source code. Foundry zips `src/agent/`, builds the image remotely, and runs it as a hosted agent:
 
    ```bash
-   python labs/introduction-foundry-agent-service/09-hosted-agents/src/starter.py
+   uv run python labs/introduction-foundry-agent-service/09-hosted-agents/src/starter.py
    ```
 
    > [!TIP]
@@ -220,7 +220,7 @@ You complete [`src/starter.py`](https://github.com/PlagueHO/foundry-agentic-work
 - [ ] Chat with the source-code hosted agent (`acl-remedy-advisor-hosted-code`). The script selects its latest active version, opens a session, and runs a two-turn conversation over the Responses API:
 
    ```bash
-   python labs/introduction-foundry-agent-service/09-hosted-agents/solution/invoke_hosted_agent.py
+   uv run python labs/introduction-foundry-agent-service/09-hosted-agents/solution/invoke_hosted_agent.py
    ```
 
 - [ ] Confirm the second turn (the follow-up about the original box and charger) builds on the answer from the first turn.

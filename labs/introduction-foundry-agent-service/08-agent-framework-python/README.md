@@ -146,7 +146,7 @@ your code.
 - [ ] Run the completed starter and confirm it connects to your project and returns a response:
 
    ```bash
-   python labs/introduction-foundry-agent-service/08-agent-framework-python/src/starter.py
+   uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/src/starter.py
    ```
 
 - [ ] Change the `QUERY` string to a different retail scenario and rerun to observe a different grounded response.

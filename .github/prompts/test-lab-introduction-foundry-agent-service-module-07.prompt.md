@@ -82,7 +82,7 @@ This module requires the `acl-remedy-advisor` agent to already exist with three 
    **Check:** If the agent does not exist or is not at v3 with three tools, run the Module 06 solution script from the Codespace terminal to restore the v3 three-tool agent before continuing:
 
    ```bash
-   python labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py
+   uv run python labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py
    ```
 
    Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set in `.env` first. Then re-verify the agent state before proceeding.
@@ -351,7 +351,7 @@ If the portal walkthrough cannot be completed (for example in a Codespace with n
 1. Run the script from the repository root:
 
    ```bash
-   python labs/introduction-foundry-agent-service/07-foundry-iq/solution/create_knowledge_base_agent.py
+   uv run python labs/introduction-foundry-agent-service/07-foundry-iq/solution/create_knowledge_base_agent.py
    ```
 
 1. Confirm the script completes without error and reports the knowledge base, the knowledge sources, the project connection, and a new agent version.

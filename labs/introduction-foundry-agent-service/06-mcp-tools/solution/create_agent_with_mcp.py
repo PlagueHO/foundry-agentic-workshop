@@ -11,7 +11,7 @@ Prerequisites:
     for example: https://abc123-8080.devtunnels.ms/mcp
 
 Usage:
-    python labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py
+    uv run python labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py
 """
 
 import os

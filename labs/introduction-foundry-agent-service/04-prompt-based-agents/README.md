@@ -223,7 +223,7 @@ print(f'\nAdvisor: {response.output_text}\n')
 - [ ] Open a terminal and run:
 
   ```bash
-  python labs/introduction-foundry-agent-service/04-prompt-based-agents/src/starter.py
+  uv run python labs/introduction-foundry-agent-service/04-prompt-based-agents/src/starter.py
   ```
 
 - [ ] When prompted, type the same question you used in the playground:
@@ -289,7 +289,7 @@ You built your first real agent. You created the `acl-remedy-advisor` prompt age
 - **Save to Foundry fails** - confirm your Default Project is set correctly via the Foundry Toolkit **Set Default Project** action in My Resources. If the Codespace cannot reach the endpoint, create the agent from code using `PromptAgentDefinition` by running `solution/create_agent.py`:
 
   ```bash
-  python labs/introduction-foundry-agent-service/04-prompt-based-agents/solution/create_agent.py
+  uv run python labs/introduction-foundry-agent-service/04-prompt-based-agents/solution/create_agent.py
   ```
 
 - **Web search does not fire** - rephrase your prompt to explicitly request current information, for example: *Search accc.gov.au for the current rules on major failures.*

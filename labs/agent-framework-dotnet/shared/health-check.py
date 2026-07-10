@@ -6,7 +6,7 @@ Runs the shared core checks then adds lab-specific validation:
 
 Run from the repository root:
 
-    python labs/agent-framework-dotnet/shared/health-check.py
+    uv run python labs/agent-framework-dotnet/shared/health-check.py
 """
 
 from __future__ import annotations

@@ -19,7 +19,7 @@ Prerequisites:
     Example: RETAIL_REMEDY_OPS_MCP_SERVER_URL=https://abc123-8080.devtunnels.ms/mcp
 
 Usage:
-    python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py
+    uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py
 """
 
 import os

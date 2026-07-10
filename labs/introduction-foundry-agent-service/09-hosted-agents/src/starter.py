@@ -5,7 +5,7 @@ The completed reference implementation lives in
 ``solution/deploy_hosted_agent_code.py`` - try to finish this file before peeking.
 
 Usage:
-    python labs/introduction-foundry-agent-service/09-hosted-agents/src/starter.py
+    uv run python labs/introduction-foundry-agent-service/09-hosted-agents/src/starter.py
 """
 
 import hashlib

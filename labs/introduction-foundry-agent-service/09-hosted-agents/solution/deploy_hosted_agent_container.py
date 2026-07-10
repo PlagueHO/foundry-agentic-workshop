@@ -9,7 +9,7 @@ shows what Foundry does under the hood and is useful when you want full control 
 image. The image is tagged per project so attendees sharing one registry never collide.
 
 Usage:
-    python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_container.py
+    uv run python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_container.py
 """
 
 import os

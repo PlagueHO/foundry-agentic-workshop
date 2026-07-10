@@ -252,7 +252,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 1. From the repository root, run:
 
    ```bash
-   python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/consume_toolbox.py
+   uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/consume_toolbox.py
    ```
 
 1. Let the script run to completion. Retry messages are expected on cold start and do not indicate failure.

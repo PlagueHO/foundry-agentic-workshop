@@ -8,14 +8,14 @@ single response, then as a streamed response.
 Prerequisites:
   - acl-remedy-advisor exists in your Foundry project. If you did not finish
     Module 07, recreate its end state from the solution folder first:
-        python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
+        uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
   - Sign in with the Azure CLI so DefaultAzureCredential can authenticate:
         az login
   - FOUNDRY_PROJECT_ENDPOINT (and optionally AGENT_NAME / AGENT_VERSION) are set
     in your .env file.
 
 Usage:
-    python labs/introduction-foundry-agent-service/08-agent-framework-python/src/starter.py
+    uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/src/starter.py
 """
 
 import asyncio

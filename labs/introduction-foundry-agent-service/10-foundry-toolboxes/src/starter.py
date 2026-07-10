@@ -6,7 +6,7 @@ the ``acl-remedy-advisor-hosted-code`` hosted agent - this version answers entir
 ``solution/deploy_hosted_agent_code.py`` - try to finish this file before peeking.
 
 Usage:
-    python labs/introduction-foundry-agent-service/10-foundry-toolboxes/src/starter.py
+    uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/src/starter.py
 """
 
 import hashlib

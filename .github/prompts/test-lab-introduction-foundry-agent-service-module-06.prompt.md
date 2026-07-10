@@ -73,7 +73,7 @@ This module requires the `acl-remedy-advisor` agent to already exist with both *
    **Check:** If the agent does not exist or is not at v2 with both tools, run the module 05 solution script before continuing:
 
    ```bash
-   python labs/introduction-foundry-agent-service/05-agent-tools-and-evaluations/solution/create_agent.py
+   uv run python labs/introduction-foundry-agent-service/05-agent-tools-and-evaluations/solution/create_agent.py
    ```
 
    Then re-verify the agent state before proceeding.
@@ -172,7 +172,7 @@ If the shared Azure Container Apps server is unavailable, or you want to run and
    **Check:** If the tool picker does not show an MCP or Custom MCP option, the Foundry Toolkit version may not support MCP tools via the UI. Use the code fallback:
 
    ```bash
-   python labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py
+   uv run python labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py
    ```
 
    Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set in `.env` before running. After the script completes, re-open `acl-remedy-advisor` in Agent Builder and verify the six tools are listed.
@@ -266,7 +266,7 @@ If the shared Azure Container Apps server is unavailable, or you want to run and
 1. Run the chat client:
 
    ```bash
-   python labs/introduction-foundry-agent-service/06-mcp-tools/src/starter.py
+   uv run python labs/introduction-foundry-agent-service/06-mcp-tools/src/starter.py
    ```
 
 1. Confirm the output begins with `Conversation started:` followed by a UUID-format conversation ID.

@@ -5,7 +5,7 @@ endpoint (for example in a Codespace with network restrictions) and you cannot
 use 'Save to Foundry' from the UI.
 
 Usage:
-    python labs/introduction-foundry-agent-service/04-prompt-based-agents/solution/create_agent.py
+    uv run python labs/introduction-foundry-agent-service/04-prompt-based-agents/solution/create_agent.py
 """
 
 import os

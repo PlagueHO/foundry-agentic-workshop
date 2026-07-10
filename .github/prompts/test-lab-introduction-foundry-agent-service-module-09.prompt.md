@@ -126,7 +126,7 @@ This part needs **Docker** and the **Azure CLI**. If Docker is not available, sk
 1. From the repository root, run:
 
    ```bash
-   python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_container.py
+   uv run python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_container.py
    ```
 
 1. Watch the status messages: the script builds for `linux/amd64`, logs in to the shared registry, pushes the image under the project-specific tag, creates the hosted agent version, waits for it to become active, and assigns the agent identity the Foundry User role.
@@ -192,7 +192,7 @@ This is the primary deployment path. Foundry zips `src/agent/`, builds the image
 1. From the repository root, run:
 
    ```bash
-   python labs/introduction-foundry-agent-service/09-hosted-agents/src/starter.py
+   uv run python labs/introduction-foundry-agent-service/09-hosted-agents/src/starter.py
    ```
 
 1. Confirm the output includes `Built code archive from ...`, then `Created hosted agent acl-remedy-advisor-hosted-code version <n>; Foundry is building it.`, and finally `Hosted agent acl-remedy-advisor-hosted-code is active.`.
@@ -205,7 +205,7 @@ This is the primary deployment path. Foundry zips `src/agent/`, builds the image
    **Check:** If you get stuck, run the reference implementation instead and continue:
 
    ```bash
-   python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_code.py
+   uv run python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_code.py
    ```
 
 ---
@@ -217,7 +217,7 @@ This is the primary deployment path. Foundry zips `src/agent/`, builds the image
 1. From the repository root, run:
 
    ```bash
-   python labs/introduction-foundry-agent-service/09-hosted-agents/solution/invoke_hosted_agent.py
+   uv run python labs/introduction-foundry-agent-service/09-hosted-agents/solution/invoke_hosted_agent.py
    ```
 
 1. Confirm the script prints `Using hosted agent acl-remedy-advisor-hosted-code version <n>.` and `Session created (...)`.

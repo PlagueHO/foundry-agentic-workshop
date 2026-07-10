@@ -90,7 +90,7 @@ This module connects to the grounded `acl-remedy-advisor` Prompt Agent built acr
    **Check:** If the agent does not exist (Module 07 was not completed), recreate its end state from the solution folder before continuing:
 
    ```bash
-   python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
+   uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
    ```
 
    This script requires the additional environment variables documented in its header (for example `AZURE_SEARCH_SERVICE_NAME` and `KNOWLEDGE_BASE_NAME`). Confirm those are present in `.env` before running. After it completes, re-verify the agent exists, then continue.
@@ -106,7 +106,7 @@ The solution script `run_prompt_agent.py` is the completed version of `starter.p
 1. From the repository root, run:
 
    ```bash
-   python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/run_prompt_agent.py
+   uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/run_prompt_agent.py
    ```
 
 1. Wait for the script to complete.
@@ -182,7 +182,7 @@ This part confirms the learner-facing path (completing the TODOs in `starter.py`
 1. From the repository root, run:
 
    ```bash
-   python labs/introduction-foundry-agent-service/08-agent-framework-python/src/starter.py
+   uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/src/starter.py
    ```
 
 1. Confirm it produces the same two blocks as the solution: a complete `Agent:` response followed by an incremental `Agent (streaming):` response.
@@ -209,7 +209,7 @@ This part confirms the learner-facing path (completing the TODOs in `starter.py`
 1. Rerun the starter:
 
    ```bash
-   python labs/introduction-foundry-agent-service/08-agent-framework-python/src/starter.py
+   uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/src/starter.py
    ```
 
 1. Confirm the response is clearly about the new scenario and differs from the fridge response, demonstrating that the query drives the grounded answer.

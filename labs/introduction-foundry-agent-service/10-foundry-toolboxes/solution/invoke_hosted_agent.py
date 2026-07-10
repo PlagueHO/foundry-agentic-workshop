@@ -8,7 +8,7 @@ interpreter behind the single toolbox endpoint. Sessions only work with hosted a
 are a preview feature accessed via ``project.beta.agents``.
 
 Usage:
-    python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py
+    uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py
 """
 
 import os

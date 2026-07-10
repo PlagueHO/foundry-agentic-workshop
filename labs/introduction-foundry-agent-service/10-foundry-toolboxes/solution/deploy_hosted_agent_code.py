@@ -9,7 +9,7 @@ agent's per-deploy identity the Foundry User role so the agent can call models a
 to the toolbox MCP endpoint.
 
 Usage:
-    python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/deploy_hosted_agent_code.py
+    uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/deploy_hosted_agent_code.py
 """
 
 import hashlib

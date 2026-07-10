@@ -11,8 +11,8 @@ Run directly to execute core checks only:
 For lab-specific checks run the health-check script in the lab's shared/
 folder instead:
 
-    python labs/introduction-foundry-agent-service/shared/health-check.py
-    python labs/agent-framework-dotnet/shared/health-check.py
+    uv run python labs/introduction-foundry-agent-service/shared/health-check.py
+    uv run python labs/agent-framework-dotnet/shared/health-check.py
 """
 
 from __future__ import annotations
@@ -782,8 +782,8 @@ def main() -> int:
     For lab-specific checks run the health-check script in the lab's
     shared/ folder instead:
 
-        python labs/introduction-foundry-agent-service/shared/health-check.py
-        python labs/agent-framework-dotnet/shared/health-check.py
+        uv run python labs/introduction-foundry-agent-service/shared/health-check.py
+        uv run python labs/agent-framework-dotnet/shared/health-check.py
     """
     print('Workshop Environment Health Check')
     print('\u2550' * 34)

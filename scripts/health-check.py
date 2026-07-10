@@ -4,8 +4,8 @@ Runs the core set of environment checks required for all workshop labs.
 For lab-specific checks (additional env vars, MCP servers, .NET SDK, etc.)
 run the health-check script in the lab's shared/ folder instead:
 
-    python labs/introduction-foundry-agent-service/shared/health-check.py
-    python labs/agent-framework-dotnet/shared/health-check.py
+    uv run python labs/introduction-foundry-agent-service/shared/health-check.py
+    uv run python labs/agent-framework-dotnet/shared/health-check.py
 """
 
 from __future__ import annotations
