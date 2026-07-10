@@ -48,6 +48,7 @@ export default defineConfig({
   base: '/foundry-agentic-workshop/',
   outDir: 'dist',
   appearance: 'auto',
+  ignoreDeadLinks: 'localhostLinks',
   markdown: {
     config: (md: any) => {
       // Add v-pre to all inline code elements so that content such as

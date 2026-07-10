@@ -254,8 +254,8 @@ thin streaming client that required zero agent-specific code — just a provider
 a sidebar component.
 
 > [!TIP]
-> **Next up → [Module 17: Capstone](../17-capstone/README.md)**
-> Wire the full multi-agent concierge — orchestrator, three specialists, and OpenTelemetry tracing — into a single AG-UI endpoint and enhance the React UI to show which specialist is active.
+> **You have completed the Agent Framework .NET lab series!**
+> Module 17 (Capstone) is coming soon — wire the full multi-agent concierge into a single AG-UI endpoint.
 
 ## Troubleshooting
 
