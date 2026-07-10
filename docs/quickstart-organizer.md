@@ -19,13 +19,6 @@ detailed steps, the RBAC model, and troubleshooting.
 
 ## Before the workshop
 
-1. Clone this repository to your machine.
-
-   ```bash
-   git clone https://github.com/PlagueHO/foundry-agentic-workshop.git
-   cd foundry-agentic-workshop
-   ```
-
 1. Confirm an Azure subscription where you hold **Owner or Contributor** to create resources
    and **Owner or User Access Administrator** to assign roles, with sufficient
    [Foundry model quota](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits)
@@ -42,17 +35,31 @@ detailed steps, the RBAC model, and troubleshooting.
    image to Azure Container Apps; only required when `AZURE_CONTAINER_APPS_DEPLOY` is `true`, the default).
 1. Collect the Microsoft Entra ID UPN for each attendee, organizer, facilitator, and proctor.
 1. Decide the default Foundry role for attendees (see [Attendee access](#attendee-access)).
+1. Provision the Lab Environment (see [Provision the Lab Environment](#provision-the-lab-environment)).
 
 ## Provision the Lab Environment
 
-> [!NOTE]
-> 🆕 An interactive setup wizard is available (`uv run python scripts/configure-workshop.py`). Organizer mode — including `AZURE_ATTENDEE_LIST` configuration — has not yet been fully validated in the wizard. Use the manual steps below for organizer deployments.
+1. Clone this repository to your machine.
+
+   ```bash
+   git clone https://github.com/PlagueHO/foundry-agentic-workshop.git
+   cd foundry-agentic-workshop
+   ```
+
+1. Install Python dependencies.
+
+   ```bash
+   uv sync
+   ```
 
 1. Sign in.
 
    ```bash
    az login
    ```
+
+> [!NOTE]
+> 🆕 An interactive setup wizard is available (`uv run python scripts/configure-workshop.py`). Organizer mode — including `AZURE_ATTENDEE_LIST` configuration — has not yet been fully validated in the wizard. Use the manual steps below for organizer deployments.
 
 1. Create an environment and set core variables.
 
@@ -62,7 +69,12 @@ detailed steps, the RBAC model, and troubleshooting.
    azd env set AZURE_RESOURCE_GROUP rg-foundry-hol-shared
    ```
 
-1. Configure [attendee access](#attendee-access).
+1. Configure [attendee access](#attendee-access) - see below for details on the `AZURE_ATTENDEE_LIST` JSON array.
+
+  ```bash
+  azd env set AZURE_ATTENDEE_DEFAULT_ROLE foundry-project-manager
+  azd env set AZURE_ATTENDEE_LIST '⚠️ Replace with your attendee list JSON array ⚠️'
+  ```
 
 1. Provision.
 

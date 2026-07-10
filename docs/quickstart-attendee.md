@@ -53,7 +53,6 @@ If the portal is unavailable, copy the values from the onboarding file your orga
 
 ```bash
 az login
-az account set --subscription <your-subscription-id>
 ```
 
 ## Validate setup

@@ -31,6 +31,12 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
    cd foundry-agentic-workshop
    ```
 
+1. Install Python dependencies.
+
+   ```bash
+   uv sync
+   ```
+
 1. Sign in.
 
    ```bash
