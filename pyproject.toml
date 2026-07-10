@@ -6,7 +6,7 @@ requires-python = ">=3.13"
 license = { text = "MIT" }
 authors = [{ name = "Foundry Agentic Workshop Maintainers" }]
 dependencies = [
-    "agent-framework",
+    "agent-framework-foundry",
     "agent-framework-foundry-hosting",
     "azure-ai-projects>=2.3.0",
     "azure-identity",
@@ -28,6 +28,10 @@ dev = [
 ]
 
 [tool.uv]
+# Prefer uv-managed Python so build virtualenvs (needed for sdist packages like
+# agent-framework-core) are created from a real executable rather than the
+# Windows App Store stub, which cannot be copied and causes os error 1920.
+python-preference = "managed"
 # agent-framework transitively requires pre-release versions of
 # agent-framework-azure-ai-search and azure-search-documents.
 prerelease = "allow"

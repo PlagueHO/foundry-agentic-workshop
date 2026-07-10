@@ -1,4 +1,8 @@
 # pylint: disable=invalid-name
+# /// script
+# requires-python = ">=3.13"
+# dependencies = []
+# ///
 
 """Configure and optionally provision a Microsoft Foundry workshop environment.
 
@@ -193,7 +197,6 @@ def _check_azure_access(az: str) -> dict[str, str]:
         '--scope',
         scope,
         '--include-inherited',
-        '--all',
         '--output',
         'json',
     ])
@@ -230,7 +233,11 @@ def _check_azure_access(az: str) -> dict[str, str]:
             + '. Ask a subscription administrator to grant the required role(s).'
         )
 
-    return {'subscription_id': account['subscriptionId'], 'tenant_id': account['tenantId']}
+    return {
+        'subscription_id': account['subscriptionId'],
+        'tenant_id': account['tenantId'],
+        'principal_id': principal_id,
+    }
 
 
 def _select_environment(azd: str) -> str:
@@ -333,6 +340,95 @@ def _set_environment(azd: str, settings: dict[str, str]) -> None:
         _print(f'  ✅ {name} = {display}', color=COLORS.green)
 
 
+DOCKER_INSTALL_URL = 'https://docs.docker.com/get-started/get-docker/'
+
+
+def _check_docker() -> bool:
+    """Return True if the Docker daemon is reachable, False otherwise."""
+    docker = shutil.which('docker')
+    if not docker:
+        return False
+    result = _run([docker, 'info'])
+    return result.returncode == 0
+
+
+def _warn_docker_not_running() -> bool:
+    """Print a prominent Docker warning and ask whether to continue.
+
+    Returns True if the user chooses to continue despite Docker not running.
+    """
+    _print()
+    _print('  ╔══════════════════════════════════════════════════════════╗', color=COLORS.red)
+    _print('  ║  🐳  DOCKER IS NOT RUNNING — DEPLOYMENT WILL FAIL  🐳   ║', color=COLORS.red)
+    _print('  ╠══════════════════════════════════════════════════════════╣', color=COLORS.red)
+    _print('  ║  The post-provision hooks build and push the MCP Server  ║', color=COLORS.red)
+    _print('  ║  container images to Azure Container Registry. Without   ║', color=COLORS.red)
+    _print('  ║  a running Docker daemon those steps will fail and the   ║', color=COLORS.red)
+    _print('  ║  Container Apps services will not be deployed.           ║', color=COLORS.red)
+    _print('  ╠══════════════════════════════════════════════════════════╣', color=COLORS.red)
+    _print('  ║  Install / start Docker Desktop, then re-run this        ║', color=COLORS.red)
+    _print(f'  ║  wizard.  👉  {DOCKER_INSTALL_URL}  ║', color=COLORS.red)
+    _print('  ╚══════════════════════════════════════════════════════════╝', color=COLORS.red)
+    _print()
+    return _ask_yes_no(
+        '⚠️  Continue anyway and provision without working Docker?',
+        False,
+    )
+
+
+LABS_URL = 'https://danielscottraynsford.com/foundry-agentic-workshop/#available-labs'
+
+
+def _get_env_value(azd: str, key: str) -> str:
+    """Return the value of an azd environment variable, or '' if absent."""
+    result = _run([azd, 'env', 'get-value', key])
+    return result.stdout.strip() if result.returncode == 0 else ''
+
+
+def _show_post_provision_summary(
+    azd: str,
+    *,
+    individual_mode: bool,
+    environment: str,
+) -> None:
+    """Print a post-provisioning summary of key outputs and next steps."""
+    subscription_id = _get_env_value(azd, 'AZURE_SUBSCRIPTION_ID')
+    resource_group = _get_env_value(azd, 'AZURE_RESOURCE_GROUP')
+    portal_url = '' if individual_mode else _get_env_value(azd, 'ATTENDEE_PORTAL_URL')
+
+    _print()
+    _print('╭────────────────────────────────────────────────────────────╮', color=COLORS.cyan)
+    _print('│  📋 Deployment summary                                     │', color=COLORS.cyan)
+    _print('╰────────────────────────────────────────────────────────────╯', color=COLORS.cyan)
+    _print(f'\n  Environment   : {environment}')
+    if subscription_id:
+        _print(f'  Subscription  : {subscription_id}')
+    if resource_group:
+        _print(f'  Resource group: {resource_group}')
+    if subscription_id and resource_group:
+        rg_url = (
+            f'https://portal.azure.com/#resource/subscriptions/{subscription_id}'
+            f'/resourceGroups/{resource_group}/overview'
+        )
+        _print(f'  Azure portal  : {rg_url}')
+    _print('  Foundry portal: https://ai.azure.com')
+    if not individual_mode and portal_url:
+        _print(f'  Attendee portal: {portal_url}', color=COLORS.cyan)
+
+    _print('\n▶  What to do next', color=COLORS.bold)
+    step = 1
+    if not individual_mode and portal_url:
+        _print(f'  {step}. Share the attendee portal URL with your attendees:')
+        _print(f'       {portal_url}', color=COLORS.cyan)
+        step += 1
+    _print(f'  {step}. Run the health check to validate the environment:')
+    _print( '       uv run python scripts/health-check.py')
+    step += 1
+    _print(f'  {step}. Open the workshop and begin the labs:')
+    _print(f'       {LABS_URL}', color=COLORS.cyan)
+    _print()
+
+
 def _provision(azd: str) -> int:
     _print(
         '\n🚀 Starting `azd provision`. Azure output will appear below.\n',
@@ -380,6 +476,7 @@ def main() -> int:
         settings = {
             'AZURE_LOCATION': location,
             'AZURE_RESOURCE_GROUP': resource_group,
+            'AZURE_PRINCIPAL_ID': account['principal_id'],
             'AZURE_INDIVIDUAL_MODE': str(individual_mode).lower(),
             'AZURE_MODEL_DEPLOYMENT_PROFILE': profile,
             'AZURE_CONTAINER_APPS_DEPLOY': str(container_apps).lower(),
@@ -403,12 +500,13 @@ def main() -> int:
 
         _set_environment(azd, settings)
         _print('\n✅ Configuration saved.', color=COLORS.green)
-        if container_apps:
-            _print(
-                '  Docker must be running before provisioning because the '
-                'post-provision hooks publish services.',
-                color=COLORS.yellow,
-            )
+        if container_apps and not _check_docker():
+            if not _warn_docker_not_running():
+                _print(
+                    'Start Docker Desktop, then run `azd provision` when ready. 👋',
+                    color=COLORS.yellow,
+                )
+                return 0
         if not _ask_yes_no(
             '\nWould you like to start provisioning now? '
             'This creates Azure resources.',
@@ -416,7 +514,14 @@ def main() -> int:
         ):
             _print('Run `azd provision` later from this repository when you are ready. 👋')
             return 0
-        return _provision(azd)
+        rc = _provision(azd)
+        if rc == 0:
+            _show_post_provision_summary(
+                azd,
+                individual_mode=individual_mode,
+                environment=environment,
+            )
+        return rc
     except (KeyboardInterrupt, EOFError):
         _print('\n\nSetup cancelled. No provisioning was started.', color=COLORS.yellow)
         return 130

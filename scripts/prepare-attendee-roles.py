@@ -336,11 +336,14 @@ def _run_individual_mode(
     """
     principal_id = os.getenv('AZURE_PRINCIPAL_ID', '').strip()
     if not principal_id:
-        print(
-            'AZURE_INDIVIDUAL_MODE is enabled but AZURE_PRINCIPAL_ID is not set. '
-            'Run `azd auth login` then re-run `azd provision`.'
-        )
-        return 1
+        result = _run_az(['ad', 'signed-in-user', 'show', '--query', 'id', '-o', 'tsv'])
+        if result.returncode != 0 or not result.stdout.strip():
+            print(
+                'AZURE_INDIVIDUAL_MODE is enabled but AZURE_PRINCIPAL_ID could not be '
+                'determined. Ensure you are signed in with `az login`.'
+            )
+            return 1
+        principal_id = result.stdout.strip()
 
     upn = _get_current_upn()
     project_name = _upn_to_project_name(upn) if upn else f'{attendee_prefix}-01'
@@ -372,6 +375,14 @@ def _run_individual_mode(
         check=True,
     )
     print('AZURE_ATTENDEE_LIST written to azd environment.')
+
+    # Suppress the facilitator-01 project in individual mode. The default is 'true' (organizer
+    # mode always provisions a facilitator project), but a solo learner has no use for it.
+    subprocess.run(
+        [_AZD_CMD, 'env', 'set', 'AZURE_ENSURE_FACILITATOR_PROJECT', 'false'],
+        check=True,
+    )
+    print('AZURE_ENSURE_FACILITATOR_PROJECT set to false (individual mode).')
 
     audit_dir = Path('.azure') / env_name
     audit_dir.mkdir(parents=True, exist_ok=True)

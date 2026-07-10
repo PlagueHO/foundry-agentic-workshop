@@ -24,6 +24,7 @@ import json
 import shutil
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -55,9 +56,30 @@ def _is_truthy(value: object) -> bool:
     return str(value).strip().lower() not in ('', 'false', '0', 'no', 'off')
 
 
+def _wait_for_docker(*, retries: int = 10, delay: float = 3.0) -> bool:
+    """Wait for the Docker daemon to be ready. Returns True when ready, False on timeout."""
+    print('Waiting for Docker daemon to be ready...')
+    sys.stdout.flush()
+    for attempt in range(1, retries + 1):
+        result = subprocess.run(
+            [_DOCKER_CMD, 'info'],
+            capture_output=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            print(f'{TICK} Docker daemon is ready.')
+            sys.stdout.flush()
+            return True
+        print(f'  Docker not ready yet (attempt {attempt}/{retries}), retrying in {delay:.0f}s...')
+        sys.stdout.flush()
+        time.sleep(delay)
+    return False
+
+
 def _run(command: list[str], *, cwd: Path | None = None) -> int:
     """Run a command, streaming its output. Return its exit code."""
     print(f'$ {" ".join(command)}')
+    sys.stdout.flush()
     return subprocess.run(command, cwd=cwd, check=False).returncode
 
 
@@ -118,20 +140,25 @@ def main() -> int:  # pylint: disable=too-many-return-statements
     image = f'{login_server}/mcp-server:{tag}'
 
     print(f'Deploying MCP server image {image} to Container App {container_app_name}...')
+    sys.stdout.flush()
 
-    steps: list[list[str]] = [
-        [_AZ_CMD, 'acr', 'login', '--name', registry_name],
-        [_DOCKER_CMD, 'build', '--tag', image, '--file', str(_DOCKERFILE), str(_MCP_SERVER_DIR)],
-        [_DOCKER_CMD, 'push', image],
-        [
+    if not _wait_for_docker():
+        return _fail('Docker daemon did not become ready in time. Ensure Docker Desktop is running.')
+
+    steps: list[tuple[str, list[str]]] = [
+        ('Step 1/4: Authenticating with Container Registry...', [_AZ_CMD, 'acr', 'login', '--name', registry_name]),
+        ('Step 2/4: Building Docker image (this may take a few minutes)...', [_DOCKER_CMD, 'build', '--tag', image, '--file', str(_DOCKERFILE), str(_MCP_SERVER_DIR)]),
+        ('Step 3/4: Pushing image to registry...', [_DOCKER_CMD, 'push', image]),
+        ('Step 4/4: Rolling Container App to new revision...', [
             _AZ_CMD, 'containerapp', 'update',
             '--name', container_app_name,
             '--resource-group', resource_group,
             '--image', image,
-        ],
+        ]),
     ]
 
-    for step in steps:
+    for label, step in steps:
+        print(label)
         if _run(step) != 0:
             return _fail(f'Command failed: {" ".join(step)}')
 

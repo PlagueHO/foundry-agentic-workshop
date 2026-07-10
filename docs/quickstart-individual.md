@@ -22,7 +22,7 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
   and publish the shared MCP server images; only needed when `AZURE_CONTAINER_APPS_DEPLOY=true`,
   which is the default)
 
-## Deploy
+## Provision the Lab Environment
 
 1. Clone this repository.
 
@@ -35,28 +35,29 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
 
    ```bash
    az login
-   azd auth login
    ```
 
-1. Create an environment and set core variables.
+1. 🆕 Run the setup wizard (recommended). It prompts for your environment name, location, and resource group,
+   enables individual mode, and runs `azd provision`.
 
    ```bash
-   azd env new my-foundry-lab
-   azd env set AZURE_LOCATION australiaeast
-   azd env set AZURE_RESOURCE_GROUP rg-foundry-lab
+   uv run python scripts/configure-workshop.py
    ```
 
-1. Enable individual mode.
+   See the [Individual Guide](./guide-individual.md) for details and a screenshot.
 
-   ```bash
-   azd env set AZURE_INDIVIDUAL_MODE true
-   ```
+<details>
+<summary>Manual setup (alternative to the wizard)</summary>
 
-1. Provision.
+```bash
+azd env new my-foundry-lab
+azd env set AZURE_LOCATION australiaeast
+azd env set AZURE_RESOURCE_GROUP rg-foundry-lab
+azd env set AZURE_INDIVIDUAL_MODE true
+azd provision
+```
 
-   ```bash
-   azd provision
-   ```
+</details>
 
 ## After provisioning
 

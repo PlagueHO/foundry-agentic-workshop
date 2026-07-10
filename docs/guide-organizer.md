@@ -19,6 +19,9 @@ This guide covers standing up and tearing down a shared Microsoft Foundry worksh
 
 This section walks through the most common scenario: a handful of standard attendees and one facilitator. The whole flow takes about five minutes. A single command - `azd provision` - deploys the Azure resources and assigns all roles; re-run it any time the roster changes.
 
+> [!NOTE]
+> 🆕 An interactive setup wizard (`scripts/configure-workshop.py`) is available. Organizer mode — including `AZURE_ATTENDEE_LIST` configuration in the wizard — has not yet been fully tested. Manual configuration (steps 3–5 below) remains the recommended approach for organizer deployments. The wizard can handle basic environment and region setup, but set `AZURE_ATTENDEE_LIST` manually as described in step 4.
+
 ### 1. Clone the repository
 
 ```bash
@@ -33,7 +36,6 @@ Administrator rights.
 
 ```bash
 az login
-azd auth login
 ```
 
 > [!INFORMATION]

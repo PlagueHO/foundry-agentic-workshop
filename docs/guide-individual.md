@@ -37,8 +37,28 @@ For the abbreviated flow, see the [Individual Quickstart](./quickstart-individua
 
    ```bash
    az login
-   azd auth login
    ```
+
+### Using the setup wizard 🆕 (Recommended)
+
+> [!TIP]
+> 🆕 After signing in, run the interactive setup wizard to handle the remaining configuration and provisioning in one step. The wizard checks your Azure permissions, prompts for environment name, region, resource group, and model profile, then optionally starts provisioning.
+
+```bash
+uv run python scripts/configure-workshop.py
+```
+
+<details>
+<summary>📸 Screenshot: configure-workshop wizard in individual mode</summary>
+
+![The configure-workshop wizard running in individual mode.](./assets/screenshots/configure-workshop-wizard.png)
+*The wizard checks your Azure access, prompts for all settings, writes the azd environment variables, and optionally starts provisioning.*
+
+</details>
+
+If provisioning completed in the wizard, skip to [project naming](#project-naming).
+
+### Manual configuration (fallback)
 
 1. Create the azd environment and configure variables.
 
@@ -52,9 +72,7 @@ For the abbreviated flow, see the [Individual Quickstart](./quickstart-individua
    Replace `australiaeast` with a region that has sufficient Foundry model quota, and choose a
    resource group name that is unique in your subscription.
 
-## Provision
-
-Run `azd provision`. The provision hooks run automatically.
+1. Run `azd provision`. The provision hooks run automatically.
 
 | Hook | What happens in individual mode |
 |---|---|

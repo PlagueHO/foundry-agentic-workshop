@@ -43,13 +43,15 @@ detailed steps, the RBAC model, and troubleshooting.
 1. Collect the Microsoft Entra ID UPN for each attendee, organizer, facilitator, and proctor.
 1. Decide the default Foundry role for attendees (see [Attendee access](#attendee-access)).
 
-## Deploy
+## Provision the Lab Environment
+
+> [!NOTE]
+> 🆕 An interactive setup wizard is available (`uv run python scripts/configure-workshop.py`). Organizer mode — including `AZURE_ATTENDEE_LIST` configuration — has not yet been fully validated in the wizard. Use the manual steps below for organizer deployments.
 
 1. Sign in.
 
    ```bash
    az login
-   azd auth login
    ```
 
 1. Create an environment and set core variables.
