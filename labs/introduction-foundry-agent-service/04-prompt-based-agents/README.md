@@ -156,23 +156,7 @@ Both produce the same agent. This module uses Agent Builder so you can see the c
 
 ### Part 2 - Chat with the agent from code
 
-#### 5. Set up your environment
-
-- [ ] Copy `shared/.env.example` to `.env` in the repository root (if you have not already done so in Module 01).
-- [ ] Open `.env` and confirm or set these two values:
-
-  ```env
-  FOUNDRY_PROJECT_ENDPOINT=<your value from the onboarding file>
-  AGENT_NAME=acl-remedy-advisor
-  ```
-
-- [ ] Install dependencies if needed:
-
-  ```bash
-  uv sync
-  ```
-
-#### 6. Complete the starter code
+#### 5. Complete the starter code
 
 Open `src/starter.py`. The file contains the program structure and four `TODO` comments. Work through each one below, then run the finished script in step 7.
 
@@ -234,7 +218,7 @@ print(f'\nAdvisor: {response.output_text}\n')
 
 `response.output` contains all the items the agent loop produced - tool calls, run steps, and the final message. Checking for `web_search_call` lets you show an indicator when the agent searched the web. `response.output_text` is the agent's final text response.
 
-#### 7. Run the starter script
+#### 6. Run the starter script
 
 - [ ] Open a terminal and run:
 
@@ -254,7 +238,7 @@ print(f'\nAdvisor: {response.output_text}\n')
 
 - [ ] Type `exit` to quit.
 
-#### 8. Inspect the conversation in Agent Builder
+#### 7. Inspect the conversation in Agent Builder
 
 Every conversation your code creates is recorded by Foundry Agent Service and visible in the Agent Builder. This lets you inspect exactly what the agent loop did - which tool calls were made, in what order, and how the response was assembled - without adding any observability code.
 
