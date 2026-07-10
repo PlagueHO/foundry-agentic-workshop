@@ -12,6 +12,9 @@
 - Sign in to Azure and confirm access to your assigned Foundry project.
 - Verify the pre-provisioned environment so you can focus on building agents.
 
+> [!NOTE]
+> **Individual mode:** If you completed the [Individual Quickstart](../../../docs/quickstart-individual.md), skip to [Part 2 - Restore .NET packages](#part-2---restore-net-packages).
+
 ## What your organizer provides
 
 Your organizer provisions the shared Foundry environment and assigns you a project. Before you start, you should have received:
@@ -41,7 +44,10 @@ Install the following before continuing:
 
 ## Steps
 
-### Part 1 - Clone and install dependencies
+### Part 1 - Environment setup
+
+> [!NOTE]
+> **Individual mode:** If you completed the [Individual Quickstart](../../../docs/quickstart-individual.md), skip to [Part 2 - Restore .NET packages](#part-2---restore-net-packages).
 
 #### 1. Clone the repository
 
@@ -60,17 +66,7 @@ Install the following before continuing:
   uv sync
   ```
 
-#### 3. Restore .NET packages
-
-- [ ] Restore the NuGet packages for all lab projects:
-
-  ```bash
-  dotnet restore labs/agent-framework-dotnet
-  ```
-
-### Part 2 - Configure your environment
-
-#### 4. Populate your .env file
+#### 3. Populate your .env file
 
 - [ ] Get your environment variables from the **Attendee Portal URL** your organizer shared. Sign in with your lab Microsoft account, then copy the values or click **Download .env** to save the file directly.
 
@@ -86,9 +82,7 @@ Install the following before continuing:
   - `AZURE_OPENAI_ENDPOINT`
   - `AZURE_SEARCH_SERVICE_NAME`
 
-### Part 3 - Sign in and verify
-
-#### 5. Sign in to Azure
+#### 4. Sign in to Azure
 
 - [ ] Sign in to Azure and select your subscription:
 
@@ -97,12 +91,29 @@ Install the following before continuing:
   az account set --subscription <your-subscription-id>
   ```
 
-#### 6. Run the health check
+#### 5. Run the health check
 
 - [ ] Confirm all environment variables and Azure connectivity are working:
 
   ```bash
   uv run python labs/agent-framework-dotnet/shared/health-check.py
+  ```
+
+### Part 2 - Restore .NET packages
+
+> [!NOTE]
+> **Individual mode:** If you haven't already, open the repository in VS Code Insiders:
+>
+> ```bash
+> code-insiders .
+> ```
+
+#### 6. Restore .NET packages
+
+- [ ] Restore the NuGet packages for all lab projects:
+
+  ```bash
+  dotnet restore labs/agent-framework-dotnet
   ```
 
 ## Validation
