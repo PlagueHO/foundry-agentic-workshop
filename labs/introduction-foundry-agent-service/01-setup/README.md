@@ -12,6 +12,9 @@
 - Sign in to Azure and confirm access to your assigned Foundry project.
 - Verify the pre-provisioned environment so you can focus on building agents.
 
+> [!NOTE]
+> **Individual mode:** If you completed the [Individual Quickstart](../../../docs/quickstart-individual.md), skip to [Part 2 - Access the Foundry portal](#part-2---access-the-foundry-portal).
+
 ## What your organizer provides
 
 Your organizer provisions the shared Foundry environment and assigns you a project. Before you start, you should have received:
@@ -40,6 +43,11 @@ Install the following before continuing:
 > Docker is only needed for the container-image deployment path in Module 09. You can complete the rest of the workshop without it. GitHub Codespaces and local dev containers are fully supported, include Docker, and install all other prerequisites automatically. See the [Attendee Guide](../../../docs/guide-attendee.md) for setup steps.
 
 ## Steps
+
+### Part 1 - Environment setup
+
+> [!NOTE]
+> **Individual mode:** If you completed the [Individual Quickstart](../../../docs/quickstart-individual.md), skip to [Part 2 - Access the Foundry portal](#part-2---access-the-foundry-portal).
 
 - [ ] Clone the repository and open it in VS Code Insiders:
 
@@ -73,7 +81,6 @@ Install the following before continuing:
 
    ```bash
    az login
-   az account set --subscription <your-subscription-id>
    ```
 
 - [ ] Run the health check to validate your environment:
@@ -81,6 +88,16 @@ Install the following before continuing:
    ```bash
    uv run python labs/introduction-foundry-agent-service/shared/health-check.py
    ```
+
+### Part 2 - Access the Foundry portal
+
+> [!NOTE]
+> **Individual mode:** If you haven't already, open the repository in VS Code Insiders:
+>
+> ```bash
+> cd <foundry-agentic-workshop>
+> code-insiders .
+> ```
 
 - [ ] Sign in to the [Foundry portal](https://ai.azure.com).
 
