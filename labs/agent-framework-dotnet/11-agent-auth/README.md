@@ -5,7 +5,7 @@
 ![Anatomy of a Foundry agent identity: a sample identity card listing its four attributes - Agent ID (a unique identifier for each agent identity), Agent name (the name shown when the agent is used), Sponsor (the human user responsible for the agent), and Blueprint (the reusable template the identity is created from).](../../../docs/assets/diagrams/agent-identity-anatomy.png)
 
 > [!IMPORTANT]
-> This module builds on [Module 02](../02-first-agent/README.md) and [Module 10](../10-hosted-agents/README.md). Part 1 explains the credential strategies you have used since Module 02. Part 2 connects to a server-side agent named `trip-concierge-storage` that your organizer provisioned during `azd provision`, so it can reach Azure Storage as its own agent identity. Your `.env` must contain `FOUNDRY_PROJECT_ENDPOINT` and `AGENT_NAME_STORAGE` - see [Module 01](../01-setup/README.md) or copy `shared/.env.example`.
+> This module builds on [Module 02](../02-first-agent/README.md) and [Module 10](../10-hosted-agents/README.md). Part 1 explains the credential strategies you have used since Module 02. Part 2 connects to a server-side agent named `trip-concierge-storage` that your organizer provisioned during `azd provision`, so it can reach Azure Storage as its own agent identity. Your `.env` must contain `FOUNDRY_PROJECT_ENDPOINT`; optionally set `AGENT_NAME_STORAGE` (defaults to `trip-concierge-storage`) - see [Module 01](../01-setup/README.md) or copy `shared/.env.example`.
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!TIP]
