@@ -180,7 +180,8 @@ def _provision_project(
     print(f'{TICK} agent {AGENT_NAME!r} v{version_data.get("version")} (model {model})')
 
     if not principal_id:
-        return _fail(f'agent {AGENT_NAME!r} has no instance_identity - is this a new-model project?') == 0
+        _fail(f'agent {AGENT_NAME!r} has no instance_identity - is this a new-model project?')
+        return False
     if not _grant_storage_role(principal_id, storage_account_id):
         return False
     print(f'{TICK} granted Storage Blob Data Contributor to agent identity {principal_id}')
