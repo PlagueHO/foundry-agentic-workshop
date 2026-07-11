@@ -142,7 +142,7 @@ For an overview of the framework, see [Microsoft Agent Framework overview](https
 
 #### 4. Connect to the storage agent and invoke it (TODO 3)
 
-The `trip-concierge-storage` agent already exists server-side - your organizer provisioned it with the `AgenticIdentityToken` MCP connection and granted its identity the Storage role. You connect to it by name with `FoundryAgent` and invoke it; the whole agent loop, including the token exchange, runs in Agent Service.
+The `trip-concierge-storage` agent already exists server-side - your organizer provisioned it with the `AgenticIdentityToken` MCP connection and granted its identity the Storage role. You connect to it by name via `AIProjectClient.AgentAdministrationClient.GetAgentAsync(...)` and then wrap it as an `AIAgent`; the whole agent loop, including the token exchange, runs in Agent Service.
 
 - [ ] Locate `// ── TODO 3` and replace the commented-out block with:
 
