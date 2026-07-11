@@ -22,6 +22,7 @@ import re
 import shutil
 import subprocess
 import sys
+import unicodedata
 from typing import Any
 
 # pylint: disable=invalid-name,too-few-public-methods
@@ -61,6 +62,50 @@ class Palette:
 
 
 COLORS = Palette()
+CALLOUT_WIDTH = 64
+
+
+def _display_width(text: str) -> int:
+    """Return the terminal display width of a string."""
+    return sum(
+        0 if unicodedata.combining(character) else 2 if unicodedata.east_asian_width(character) in {'W', 'F'} else 1
+        for character in text
+    )
+
+
+def _callout_border(left: str, right: str, fill: str = '─') -> str:
+    return f'{left}{fill * CALLOUT_WIDTH}{right}'
+
+
+def _callout_line(text: str = '', left: str = '│', right: str = '│') -> str:
+    padding = CALLOUT_WIDTH - _display_width(text) - 2
+    if padding < 0:
+        raise ValueError('Callout text exceeds the configured width.')
+    return f'{left} {text}{" " * padding} {right}'
+
+
+def _print_callout(
+    sections: tuple[tuple[str, ...], ...],
+    *,
+    color: str,
+    corners: tuple[str, str, str, str] = ('╭', '╮', '╰', '╯'),
+    divider: str | None = None,
+    section_colors: tuple[str, ...] | None = None,
+) -> None:
+    """Print a consistently sized callout with optional section dividers."""
+    top_left, top_right, bottom_left, bottom_right = corners
+    _print(_callout_border(top_left, top_right), color=color)
+    for section_index, section in enumerate(sections):
+        section_color = (
+            section_colors[section_index]
+            if section_colors is not None
+            else color
+        )
+        for line in section:
+            _print(_callout_line(line), color=section_color)
+        if divider is not None and section_index < len(sections) - 1:
+            _print(_callout_border('╠', '╣', divider), color=color)
+    _print(_callout_border(bottom_left, bottom_right), color=color)
 
 
 def _command_path(command: str) -> str:
@@ -82,11 +127,18 @@ def _print(message: str = '', *, color: str = '') -> None:
 
 
 def _header() -> None:
-    _print('╭────────────────────────────────────────────────────────────╮', color=COLORS.cyan)
-    _print('│  ✨ Microsoft Foundry Workshop Setup Wizard ✨             │', color=COLORS.cyan)
-    _print('╰────────────────────────────────────────────────────────────╯', color=COLORS.cyan)
-    _print('  I will configure your azd environment, check Azure access,', color=COLORS.bold)
-    _print('  and optionally start provisioning when you say go. 🚀\n')
+    _print_callout(
+        (
+            ('✨ Microsoft Foundry Workshop Setup Wizard ✨',),
+            (
+                'I will configure your azd environment, check',
+                'Azure access, and optionally start provisioning',
+                'when you say go. 🚀',
+            ),
+        ),
+        color=COLORS.cyan,
+        section_colors=(COLORS.cyan, COLORS.bold),
+    )
 
 
 def _ask(prompt: str, default: str | None = None) -> str:
@@ -358,17 +410,24 @@ def _warn_docker_not_running() -> bool:
     Returns True if the user chooses to continue despite Docker not running.
     """
     _print()
-    _print('  ╔══════════════════════════════════════════════════════════╗', color=COLORS.red)
-    _print('  ║  🐳  DOCKER IS NOT RUNNING — DEPLOYMENT WILL FAIL  🐳   ║', color=COLORS.red)
-    _print('  ╠══════════════════════════════════════════════════════════╣', color=COLORS.red)
-    _print('  ║  The post-provision hooks build and push the MCP Server  ║', color=COLORS.red)
-    _print('  ║  container images to Azure Container Registry. Without   ║', color=COLORS.red)
-    _print('  ║  a running Docker daemon those steps will fail and the   ║', color=COLORS.red)
-    _print('  ║  Container Apps services will not be deployed.           ║', color=COLORS.red)
-    _print('  ╠══════════════════════════════════════════════════════════╣', color=COLORS.red)
-    _print('  ║  Install / start Docker Desktop, then re-run this        ║', color=COLORS.red)
-    _print(f'  ║  wizard.  👉  {DOCKER_INSTALL_URL}  ║', color=COLORS.red)
-    _print('  ╚══════════════════════════════════════════════════════════╝', color=COLORS.red)
+    _print_callout(
+        (
+            ('🐳  DOCKER IS NOT RUNNING — DEPLOYMENT WILL FAIL  🐳',),
+            (
+                'The post-provision hooks build and push the MCP Server',
+                'container images to Azure Container Registry. Without',
+                'a running Docker daemon those steps will fail and the',
+                'Container Apps services will not be deployed.',
+            ),
+            (
+                'Install / start Docker Desktop, then re-run this wizard.',
+                f'👉  {DOCKER_INSTALL_URL}',
+            ),
+        ),
+        color=COLORS.red,
+        corners=('╔', '╗', '╚', '╝'),
+        divider='═',
+    )
     _print()
     return _ask_yes_no(
         '⚠️  Continue anyway and provision without working Docker?',
@@ -397,9 +456,7 @@ def _show_post_provision_summary(
     portal_url = '' if individual_mode else _get_env_value(azd, 'ATTENDEE_PORTAL_URL')
 
     _print()
-    _print('╭────────────────────────────────────────────────────────────╮', color=COLORS.cyan)
-    _print('│  📋 Deployment summary                                     │', color=COLORS.cyan)
-    _print('╰────────────────────────────────────────────────────────────╯', color=COLORS.cyan)
+    _print_callout((('📋 Deployment summary',),), color=COLORS.cyan)
     _print(f'\n  Environment   : {environment}')
     if subscription_id:
         _print(f'  Subscription  : {subscription_id}')
