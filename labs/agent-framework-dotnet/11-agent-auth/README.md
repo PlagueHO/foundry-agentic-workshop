@@ -2,7 +2,7 @@
 
 **Estimated time:** 35 minutes
 
-![Microsoft Agent Framework overview: an open-source engine for building and orchestrating AI agents, summarised in five pillars - Unified SDK (AIAgent, AgentThread, and AgentTool primitives built on Microsoft.Extensions.AI), Local-first and cloud-agnostic (run agents locally then move the same code to Foundry Agent Service or any cloud containers), Multi-agent orchestration (sequential, concurrent, handoff, group chat, magentic, and workflow patterns), Tools and extensibility (out-of-the-box integrations plus functions, APIs, and MCP servers as tools), and Enterprise-grade foundations (approval flows, content-policy hooks, OpenTelemetry observability, and long-running execution).](../../../docs/assets/diagrams/agent-identity-anatomy.png)
+![Anatomy of a Foundry agent identity: a sample identity card listing its four attributes - Agent ID (a unique identifier for each agent identity), Agent name (the name shown when the agent is used), Sponsor (the human user responsible for the agent), and Blueprint (the reusable template the identity is created from).](../../../docs/assets/diagrams/agent-identity-anatomy.png)
 
 > [!IMPORTANT]
 > This module builds on [Module 02](../02-first-agent/README.md) and [Module 10](../10-hosted-agents/README.md). Part 1 explains the credential strategies you have used since Module 02. Part 2 connects to a server-side agent named `trip-concierge-storage` that your organizer provisioned during `azd provision`, so it can reach Azure Storage as its own agent identity. Your `.env` must contain `FOUNDRY_PROJECT_ENDPOINT` and `AGENT_NAME_STORAGE` - see [Module 01](../01-setup/README.md) or copy `shared/.env.example`.
@@ -73,7 +73,7 @@ var credential = new ChainedTokenCredential(
     new AzureCliCredential());
 ```
 
-For more information, see [Credential chains in the Azure Identity client library](https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication/credential-chains) and [Agent identity and authorization](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/concepts/agent-identity) on Microsoft Learn.
+For an overview of the framework, see [Microsoft Agent Framework overview](https://learn.microsoft.com/en-us/agent-framework/overview/). For more information on credential chains and agent identity, see [Credential chains in the Azure Identity client library](https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication/credential-chains) and [Agent identity and authorization](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/concepts/agent-identity) on Microsoft Learn.
 
 ## Steps
 
@@ -104,6 +104,8 @@ For more information, see [Credential chains in the Azure Identity client librar
   Console.ResetColor();
   Console.WriteLine();
   ```
+
+  The `model` variable is read from the `AGENT_MODEL` environment variable (defaulting to `chat`).
 
 ### Part 2 - Use a ChainedTokenCredential
 
@@ -149,11 +151,11 @@ The `trip-concierge-storage` agent already exists server-side - your organizer p
       ?? "trip-concierge-storage";
 
   Console.ForegroundColor = ConsoleColor.DarkGray;
-  Console.WriteLine($"[Auth] Part 2: connecting to server-side agent '{storageAgentName}' (unattended identity).");
+  Console.WriteLine($"[Auth] Part 3: connecting to server-side agent '{storageAgentName}' (unattended identity).");
   Console.ResetColor();
   Console.WriteLine();
 
-  var projectClient = new AIProjectClient(new Uri(endpoint), new DefaultAzureCredential());
+  var projectClient = new AIProjectClient(new Uri(endpoint), new AzureCliCredential());
   var storageAgentRecord = await projectClient.AgentAdministrationClient.GetAgentAsync(storageAgentName);
   AIAgent storageAgent = projectClient.AsAIAgent(storageAgentRecord);
 
@@ -191,7 +193,7 @@ The `trip-concierge-storage` agent already exists server-side - your organizer p
 ## Validation
 
 - The output shows `[Auth] Strategy 1: AzureCliCredential` and `[Auth] Strategy 2: ChainedTokenCredential (WorkloadIdentity → AzureCLI)` lines, both succeeding after `az login`.
-- Part 2 connects to `trip-concierge-storage` and prints an `[Agent]` summary of the passenger case file, proving the agent read a blob from Azure Storage as its **own** identity.
+- Part 3 connects to `trip-concierge-storage` and prints an `[Agent]` summary of the passenger case file, proving the agent read a blob from Azure Storage as its **own** identity.
 - No tokens or secrets appear in the console output.
 
 ## Congratulations 🎉

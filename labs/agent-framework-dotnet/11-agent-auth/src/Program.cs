@@ -90,11 +90,11 @@ Console.WriteLine();
 //     ?? "trip-concierge-storage";
 //
 // Console.ForegroundColor = ConsoleColor.DarkGray;
-// Console.WriteLine($"[Auth] Part 2: connecting to server-side agent '{storageAgentName}' (unattended identity).");
+// Console.WriteLine($"[Auth] Part 3: connecting to server-side agent '{storageAgentName}' (unattended identity).");
 // Console.ResetColor();
 // Console.WriteLine();
 //
-// var projectClient = new AIProjectClient(new Uri(endpoint), new DefaultAzureCredential());
+// var projectClient = new AIProjectClient(new Uri(endpoint), new AzureCliCredential());
 // var storageAgentRecord = await projectClient.AgentAdministrationClient.GetAgentAsync(storageAgentName);
 // AIAgent storageAgent = projectClient.AsAIAgent(storageAgentRecord);
 //

@@ -103,12 +103,12 @@ var storageAgentName = Environment.GetEnvironmentVariable("AGENT_NAME_STORAGE")
     ?? "trip-concierge-storage";
 
 Console.ForegroundColor = ConsoleColor.DarkGray;
-Console.WriteLine($"[Auth] Part 2: connecting to server-side agent '{storageAgentName}' (unattended identity).");
+Console.WriteLine($"[Auth] Part 3: connecting to server-side agent '{storageAgentName}' (unattended identity).");
 Console.WriteLine("[Auth] The agent reaches Azure Storage as its OWN Entra identity - no user, no secrets.");
 Console.ResetColor();
 Console.WriteLine();
 
-var projectClient = new AIProjectClient(new Uri(endpoint), new DefaultAzureCredential());
+var projectClient = new AIProjectClient(new Uri(endpoint), new AzureCliCredential());
 var storageAgentRecord = await projectClient.AgentAdministrationClient.GetAgentAsync(storageAgentName);
 AIAgent storageAgent = projectClient.AsAIAgent(storageAgentRecord);
 
@@ -116,10 +116,6 @@ Console.ForegroundColor = ConsoleColor.Green;
 Console.WriteLine(
     $"[Agent] {(await storageAgent.RunAsync(
         "Read the passenger case file 'welcome.txt' and summarise the entitlements it records.")).Text}");
-Console.WriteLine();
-Console.WriteLine(
-    $"[Agent] {(await storageAgent.RunAsync(
-        "Write a new case file 'case-au123.txt' recording that the passenger chose a refund.")).Text}");
 Console.ResetColor();
 Console.WriteLine();
 
