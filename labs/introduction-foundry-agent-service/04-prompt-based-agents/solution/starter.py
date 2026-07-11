@@ -16,6 +16,13 @@ def run() -> None:
     client = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
     openai = client.get_openai_client()
 
+    # Resolve the latest published version of the Prompt Agent. The Responses API
+    # requires an explicit version in agent_reference; omitting it returns 404.
+    latest = next(iter(client.agents.list_versions(agent_name=agent_name, order='desc')), None)
+    if latest is None:
+        raise ValueError(f"Agent '{agent_name}' not found or has no published versions.")
+    agent_version = latest.version
+
     # Create a new conversation thread - persists context across turns.
     conversation = openai.conversations.create()
     print(f'Conversation started: {conversation.id}\n')
@@ -33,6 +40,7 @@ def run() -> None:
             extra_body={
                 'agent_reference': {
                     'name': agent_name,
+                    'version': agent_version,
                     'type': 'agent_reference',
                 },
             },

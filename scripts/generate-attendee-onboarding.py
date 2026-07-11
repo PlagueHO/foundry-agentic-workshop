@@ -181,6 +181,7 @@ def _build_attendee_env_dict(  # pylint: disable=too-many-arguments,too-many-pos
         'FOUNDRY_PROJECT_NAME': project_name,
         'FOUNDRY_PROJECT_ENDPOINT': project_endpoint,
         'AGENT_NAME': 'acl-remedy-advisor',
+        'AGENT_NAME_STORAGE': 'trip-concierge-storage',
         'HOSTED_AGENT_NAME_CONTAINER': 'acl-remedy-advisor-hosted-container',
         'HOSTED_AGENT_NAME_CODE': 'acl-remedy-advisor-hosted-code',
         'KNOWLEDGE_BASE_NAME': f'acl-remedy-knowledge-{project_name}',

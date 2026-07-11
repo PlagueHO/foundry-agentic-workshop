@@ -48,6 +48,10 @@ def _fail(message: str) -> int:
     return 1
 
 
+def _warn(message: str) -> None:
+    print(f'{CROSS} WARNING: {message}', file=sys.stderr)
+
+
 def _is_truthy(value: object) -> bool:
     return str(value).strip().lower() not in ('', 'false', '0', 'no', 'off')
 
@@ -361,7 +365,11 @@ def main() -> int:  # pylint: disable=too-many-return-statements
 
     app_id = _find_or_create_app(app_display_name, redirect_uri)
     if not app_id:
-        return _fail(f'Failed to find or create Entra app: {app_display_name}')
+        _warn(
+            f'Could not find or create the Entra app {app_display_name}. '
+            'The portal image was deployed, but user authentication is not configured.'
+        )
+        return 0
 
     _azd_env_set('AZURE_ATTENDEE_PORTAL_APP_ID', app_id)
 
@@ -372,7 +380,11 @@ def main() -> int:  # pylint: disable=too-many-return-statements
         '--id', app_id,
         '--enable-id-token-issuance', 'true',
     ]) != 0:
-        return _fail('Failed to enable ID token issuance on the Entra app.')
+        _warn(
+            'Could not enable ID token issuance on the Entra app. '
+            'The portal image was deployed, but user authentication is not configured.'
+        )
+        return 0
 
     # Create the service principal if it does not already exist.
     sp_result = subprocess.run(
@@ -384,12 +396,19 @@ def main() -> int:  # pylint: disable=too-many-return-statements
     if sp_result.returncode == 0:
         print(f'{TICK} Service principal created for Entra app {app_id}.')
     else:
-        # SP already exists - not an error.
-        print(f'{TICK} Service principal already exists for Entra app {app_id}.')
+        print(
+            f'{TICK} Service principal was not created for Entra app {app_id}; '
+            'it may already exist or creation may not be permitted.',
+            file=sys.stderr,
+        )
 
     client_secret = _reset_credential(app_id)
     if not client_secret:
-        return _fail('Failed to obtain a client secret for the Entra app.')
+        _warn(
+            'Could not obtain a client secret for the Entra app. '
+            'The portal image was deployed, but user authentication is not configured.'
+        )
+        return 0
 
     if _run([
         _AZ_CMD, 'containerapp', 'secret', 'set',
@@ -397,12 +416,20 @@ def main() -> int:  # pylint: disable=too-many-return-statements
         '--resource-group', resource_group,
         '--secrets', f'easyauth-client-secret={client_secret}',
     ]) != 0:
-        return _fail('Failed to set the EasyAuth client secret on the Container App.')
+        _warn(
+            'Could not set the EasyAuth client secret on the Container App. '
+            'The portal image was deployed, but user authentication is not configured.'
+        )
+        return 0
 
     if _configure_easyauth(
         resource_group, container_app_name, tenant_id, app_id
     ) != 0:
-        return _fail('Failed to configure EasyAuth on the Container App.')
+        _warn(
+            'Could not configure EasyAuth on the Container App. '
+            'The portal image was deployed, but user authentication is not configured.'
+        )
+        return 0
 
     print(f'{TICK} EasyAuth configured.')
     if portal_url:

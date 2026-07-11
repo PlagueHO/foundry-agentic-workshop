@@ -1,5 +1,6 @@
 using Azure.Identity;
 using Azure.AI.Projects;
+using Azure.AI.Projects.Agents;
 using DotNetEnv;
 using Microsoft.Agents.AI;
 using Microsoft.Agents.AI.Foundry;
@@ -69,6 +70,37 @@ Console.WriteLine();
 // Console.ForegroundColor = ConsoleColor.Green;
 // Console.WriteLine($"[Agent] {(await agentChained.RunAsync(
 //     "What are the rebooking options when a flight is cancelled?")).Text}");
+// Console.ResetColor();
+// Console.WriteLine();
+//
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── TODO 3 ───────────────────────────────────────────────────────────────────
+// Connect to the pre-provisioned 'trip-concierge-storage' agent and invoke it to
+// demonstrate the UNATTENDED (application-only) agent identity flow: the agent
+// reaches Azure Storage as its OWN Entra identity, with no user and no secrets.
+//
+// The agent was provisioned server-side with an MCP tool bound to a project
+// connection whose auth type is AgenticIdentityToken and audience is
+// https://storage.azure.com. Agent Framework connects to it by name and wraps it
+// as an AIAgent, so the whole loop (including the token exchange) runs in Agent
+// Service — you just call RunAsync.
+//
+// var storageAgentName = Environment.GetEnvironmentVariable("AGENT_NAME_STORAGE")
+//     ?? "trip-concierge-storage";
+//
+// Console.ForegroundColor = ConsoleColor.DarkGray;
+// Console.WriteLine($"[Auth] Part 3: connecting to server-side agent '{storageAgentName}' (unattended identity).");
+// Console.ResetColor();
+// Console.WriteLine();
+//
+// var projectClient = new AIProjectClient(new Uri(endpoint), new AzureCliCredential());
+// var storageAgentRecord = await projectClient.AgentAdministrationClient.GetAgentAsync(storageAgentName);
+// AIAgent storageAgent = projectClient.AsAIAgent(storageAgentRecord);
+//
+// Console.ForegroundColor = ConsoleColor.Green;
+// Console.WriteLine($"[Agent] {(await storageAgent.RunAsync(
+//     "Read the passenger case file 'welcome.txt' and summarise the entitlements it records.")).Text}");
 // Console.ResetColor();
 // Console.WriteLine();
 //
