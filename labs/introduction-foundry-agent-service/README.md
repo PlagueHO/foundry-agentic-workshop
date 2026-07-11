@@ -32,7 +32,7 @@ Throughout the lab, you will build a single production-grade agent called `acl-r
 | 9  | [Hosted Agents](./09-hosted-agents/README.md) | 35 min | ✅ | A hosted agent deployed in your Foundry project as a container and as source code. |
 | 10 | [Foundry Toolboxes](./10-foundry-toolboxes/README.md) | 30 min | ✅ | An `acl-remedy-toolbox` consumed from a Python Agent Framework app. |
 | 11 | [Agent Ops and Agent ID](./11-agent-ops-and-agent-id/README.md) | 30 min | ✅ | Agent identity and operational monitoring configured. |
-| 12 | [Publishing Agents (Planned)](./12-publishing-agents/README.md) | TBD | | Publishing an Agent to M365 Copilot and Teams. |
+| 12 | [Publishing Agents](./12-publishing-agents/README.md) | 25 min | ✅ | `acl-remedy-advisor` published to Microsoft 365 Copilot and Teams and verified in a live conversation. |
 
 Total time: ~3-4 hours, depending on how many modules you complete and your familiarity with the concepts. Each module builds on the previous ones, so we recommend following them in order.
 
