@@ -12,6 +12,5 @@ uv run python labs/introduction-foundry-agent-service/12-publishing-agents/solut
 The script reads `FOUNDRY_PROJECT_ENDPOINT` and optional `AGENT_NAME` from the
 environment or the repository `.env` file. It does not publish the agent; use
 the Foundry portal steps in the main README to choose metadata and publish it.
-# Solution placeholder
 
 Reference implementation for facilitators/proctors.
