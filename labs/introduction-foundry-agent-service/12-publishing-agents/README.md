@@ -182,11 +182,8 @@ You published `acl-remedy-advisor` to Microsoft 365 Copilot and Teams and verifi
 
 ## Troubleshooting
 
-- If publishing is unavailable, confirm your role grants permission to publish
-  in the project.
-- If publishing fails, confirm the agent configuration is complete and saved.
-- If consumers cannot reach the agent, confirm the published connection details
-  and required access.
+| Symptom | Fix |
+|---|---|
 | Publish is unavailable | Confirm the project role is **Foundry Project Manager** or higher, and that the agent has a tested active version. |
 | Azure Bot Service creation fails | Confirm the `Microsoft.BotService` provider is registered and your identity has Azure Bot Service Contributor, Contributor, or Owner on the resource group. |
 | The agent does not appear in Teams | Confirm you used **Just you**, reopen or refresh the agent store, and allow time for catalog propagation. Organization scope requires administrator approval. |
