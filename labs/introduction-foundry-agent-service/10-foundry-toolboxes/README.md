@@ -1,3 +1,24 @@
+---
+title: '10. Foundry Toolboxes'
+description: 'Complete this lab to foundry toolboxes.'
+lastUpdated: '2026-07-13'
+track: 'introduction-foundry-agent-service'
+module: 10
+slug: '10-foundry-toolboxes'
+estimatedTimeMinutes: 30
+difficulty: 'intermediate'
+prerequisites: ['Module 09']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Foundry'
+  - 'Python'
+tags:
+  - 'foundry'
+  - 'toolboxes'
+status: 'active'
+contentType: 'lab'
+---
 # 10. Foundry Toolboxes
 
 ![Diagram showing the Foundry Toolbox architecture - Build and Consume pillars expose a curated set of tools through a single MCP-compatible endpoint consumed by any agent framework.](../../../docs/assets/diagrams/foundry-toolbox.png)

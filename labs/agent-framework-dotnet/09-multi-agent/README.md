@@ -1,3 +1,26 @@
+---
+title: '09. Multi-agent Orchestration'
+description: 'Complete this lab to multi-agent orchestration.'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 9
+slug: '09-multi-agent'
+estimatedTimeMinutes: 25
+difficulty: 'intermediate'
+prerequisites: ['Module 08']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'multi'
+  - 'agent'
+  - 'orchestration'
+status: 'active'
+contentType: 'lab'
+---
 # 09. Multi-agent Orchestration
 
 **Estimated time:** 25 minutes

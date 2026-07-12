@@ -1,3 +1,27 @@
+---
+title: '01. Workshop setup and access verification'
+description: 'Complete this lab to workshop setup and access verification.'
+lastUpdated: '2026-07-13'
+track: 'introduction-foundry-agent-service'
+module: 1
+slug: '01-setup'
+estimatedTimeMinutes: 15
+difficulty: 'beginner'
+prerequisites: []
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Foundry'
+  - 'Python'
+tags:
+  - 'foundry'
+  - 'workshop'
+  - 'setup'
+  - 'and'
+  - 'access'
+status: 'active'
+contentType: 'lab'
+---
 # 01. Workshop setup and access verification
 
 **Estimated time:** 15 minutes

@@ -1,3 +1,26 @@
+---
+title: '14. Evaluation & Quality'
+description: 'Complete this lab to evaluation & quality.'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 14
+slug: '14-evaluation'
+estimatedTimeMinutes: 25
+difficulty: 'advanced'
+prerequisites: ['Module 13']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'evaluation'
+  - 'and'
+  - 'quality'
+status: 'active'
+contentType: 'lab'
+---
 # 14. Evaluation & Quality
 
 **Estimated time:** 25 minutes

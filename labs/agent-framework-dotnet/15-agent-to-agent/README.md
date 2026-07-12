@@ -1,3 +1,25 @@
+---
+title: '15. Agent-to-Agent (A2A)'
+description: 'Complete this lab to agent-to-agent (a2a).'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 15
+slug: '15-agent-to-agent'
+estimatedTimeMinutes: 30
+difficulty: 'advanced'
+prerequisites: ['Module 14']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'agent'
+  - 'a2a'
+status: 'active'
+contentType: 'lab'
+---
 # 15. Agent-to-Agent (A2A)
 
 **Estimated time:** 30 minutes

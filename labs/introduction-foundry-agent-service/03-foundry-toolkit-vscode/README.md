@@ -1,3 +1,26 @@
+---
+title: '03. Foundry Toolkit for VS Code'
+description: 'Complete this lab to foundry toolkit for vs code.'
+lastUpdated: '2026-07-13'
+track: 'introduction-foundry-agent-service'
+module: 3
+slug: '03-foundry-toolkit-vscode'
+estimatedTimeMinutes: 15
+difficulty: 'beginner'
+prerequisites: ['Module 02']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Foundry'
+  - 'Python'
+tags:
+  - 'foundry'
+  - 'toolkit'
+  - 'for'
+  - 'code'
+status: 'active'
+contentType: 'lab'
+---
 # 03. Foundry Toolkit for VS Code
 
 **Estimated time:** 15 minutes

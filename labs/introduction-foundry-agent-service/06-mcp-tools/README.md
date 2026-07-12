@@ -1,3 +1,26 @@
+---
+title: '06. Integrate MCP tools'
+description: 'Complete this lab to integrate mcp tools.'
+lastUpdated: '2026-07-13'
+track: 'introduction-foundry-agent-service'
+module: 6
+slug: '06-mcp-tools'
+estimatedTimeMinutes: 30
+difficulty: 'intermediate'
+prerequisites: ['Module 05']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Foundry'
+  - 'Python'
+tags:
+  - 'foundry'
+  - 'integrate'
+  - 'mcp'
+  - 'tools'
+status: 'active'
+contentType: 'lab'
+---
 # 06. Integrate MCP tools
 
 **Estimated time:** 30 minutes

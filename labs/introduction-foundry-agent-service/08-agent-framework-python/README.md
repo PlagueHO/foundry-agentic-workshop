@@ -1,3 +1,27 @@
+---
+title: '08. Use Agent Framework for Python'
+description: 'Complete this lab to use agent framework for python.'
+lastUpdated: '2026-07-13'
+track: 'introduction-foundry-agent-service'
+module: 8
+slug: '08-agent-framework-python'
+estimatedTimeMinutes: 25
+difficulty: 'intermediate'
+prerequisites: ['Module 07']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Foundry'
+  - 'Python'
+tags:
+  - 'foundry'
+  - 'use'
+  - 'agent'
+  - 'framework'
+  - 'for'
+status: 'active'
+contentType: 'lab'
+---
 # 08. Use Agent Framework for Python
 
 **Estimated time:** 25 minutes

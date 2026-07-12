@@ -1,3 +1,25 @@
+---
+title: '10. Hosted Agents'
+description: 'Complete this lab to hosted agents.'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 10
+slug: '10-hosted-agents'
+estimatedTimeMinutes: 30
+difficulty: 'intermediate'
+prerequisites: ['Module 09']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'hosted'
+  - 'agents'
+status: 'active'
+contentType: 'lab'
+---
 # 10. Hosted Agents
 
 **Estimated time:** 30 minutes

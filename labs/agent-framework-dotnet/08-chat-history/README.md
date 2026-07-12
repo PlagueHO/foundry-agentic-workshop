@@ -1,3 +1,27 @@
+---
+title: '08. Session Persistence (Chat History)'
+description: 'Complete this lab to session persistence (chat history).'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 8
+slug: '08-chat-history'
+estimatedTimeMinutes: 20
+difficulty: 'intermediate'
+prerequisites: ['Module 07']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'session'
+  - 'persistence'
+  - 'chat'
+  - 'history'
+status: 'active'
+contentType: 'lab'
+---
 # 08. Session Persistence (Chat History)
 
 **Estimated time:** 20 minutes

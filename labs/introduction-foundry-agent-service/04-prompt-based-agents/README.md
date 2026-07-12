@@ -1,3 +1,27 @@
+---
+title: '04. Create and chat with a Prompt Agent'
+description: 'Complete this lab to create and chat with a prompt agent.'
+lastUpdated: '2026-07-13'
+track: 'introduction-foundry-agent-service'
+module: 4
+slug: '04-prompt-based-agents'
+estimatedTimeMinutes: 20
+difficulty: 'intermediate'
+prerequisites: ['Module 03']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Foundry'
+  - 'Python'
+tags:
+  - 'foundry'
+  - 'create'
+  - 'and'
+  - 'chat'
+  - 'with'
+status: 'active'
+contentType: 'lab'
+---
 # 04. Create and chat with a Prompt Agent
 
 **Estimated time:** 20 minutes

@@ -1,3 +1,26 @@
+---
+title: '03. Multi-turn Conversations'
+description: 'Complete this lab to multi-turn conversations.'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 3
+slug: '03-multi-turn'
+estimatedTimeMinutes: 15
+difficulty: 'beginner'
+prerequisites: ['Module 02']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'multi'
+  - 'turn'
+  - 'conversations'
+status: 'active'
+contentType: 'lab'
+---
 # 03. Multi-turn Conversations
 
 **Estimated time:** 15 minutes

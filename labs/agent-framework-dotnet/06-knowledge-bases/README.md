@@ -1,3 +1,26 @@
+---
+title: '06. Knowledge Bases (AI Search)'
+description: 'Complete this lab to knowledge bases (ai search).'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 6
+slug: '06-knowledge-bases'
+estimatedTimeMinutes: 25
+difficulty: 'intermediate'
+prerequisites: ['Module 05']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'knowledge'
+  - 'bases'
+  - 'search'
+status: 'active'
+contentType: 'lab'
+---
 # 06. Knowledge Bases (AI Search)
 
 **Estimated time:** 25 minutes

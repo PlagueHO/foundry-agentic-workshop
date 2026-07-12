@@ -1,3 +1,27 @@
+---
+title: '09. Build and run a hosted agent'
+description: 'Complete this lab to build and run a hosted agent.'
+lastUpdated: '2026-07-13'
+track: 'introduction-foundry-agent-service'
+module: 9
+slug: '09-hosted-agents'
+estimatedTimeMinutes: 35
+difficulty: 'intermediate'
+prerequisites: ['Module 08']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Foundry'
+  - 'Python'
+tags:
+  - 'foundry'
+  - 'build'
+  - 'and'
+  - 'run'
+  - 'hosted'
+status: 'active'
+contentType: 'lab'
+---
 # 09. Build and run a hosted agent
 
 **Estimated time:** 35 minutes

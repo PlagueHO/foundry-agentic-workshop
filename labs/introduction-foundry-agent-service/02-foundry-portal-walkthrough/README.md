@@ -1,3 +1,25 @@
+---
+title: '02. Foundry portal walkthrough'
+description: 'Complete this lab to foundry portal walkthrough.'
+lastUpdated: '2026-07-13'
+track: 'introduction-foundry-agent-service'
+module: 2
+slug: '02-foundry-portal-walkthrough'
+estimatedTimeMinutes: 10
+difficulty: 'beginner'
+prerequisites: ['Module 01']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Foundry'
+  - 'Python'
+tags:
+  - 'foundry'
+  - 'portal'
+  - 'walkthrough'
+status: 'active'
+contentType: 'lab'
+---
 # 02. Foundry portal walkthrough
 
 **Estimated time:** 10 minutes

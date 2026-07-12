@@ -1,3 +1,27 @@
+---
+title: '16. AG-UI: Browser Chat with CopilotKit'
+description: 'Complete this lab to ag-ui: browser chat with copilotkit.'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 16
+slug: '16-ag-ui'
+estimatedTimeMinutes: 35
+difficulty: 'advanced'
+prerequisites: ['Module 15']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'browser'
+  - 'chat'
+  - 'with'
+  - 'copilotkit'
+status: 'active'
+contentType: 'lab'
+---
 # 16. AG-UI: Browser Chat with CopilotKit
 
 **Estimated time:** 35 minutes

@@ -1,3 +1,27 @@
+---
+title: '07. Ground the agent with Foundry IQ knowledge bases'
+description: 'Complete this lab to ground the agent with foundry iq knowledge bases.'
+lastUpdated: '2026-07-13'
+track: 'introduction-foundry-agent-service'
+module: 7
+slug: '07-foundry-iq'
+estimatedTimeMinutes: 25
+difficulty: 'intermediate'
+prerequisites: ['Module 06']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Foundry'
+  - 'Python'
+tags:
+  - 'foundry'
+  - 'ground'
+  - 'the'
+  - 'agent'
+  - 'with'
+status: 'active'
+contentType: 'lab'
+---
 # 07. Ground the agent with Foundry IQ knowledge bases
 
 **Estimated time:** 25 minutes

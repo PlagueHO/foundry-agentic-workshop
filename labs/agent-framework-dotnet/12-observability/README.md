@@ -1,3 +1,26 @@
+---
+title: '12. Observability & Tracing'
+description: 'Complete this lab to observability & tracing.'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 12
+slug: '12-observability'
+estimatedTimeMinutes: 25
+difficulty: 'advanced'
+prerequisites: ['Module 11']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'observability'
+  - 'and'
+  - 'tracing'
+status: 'active'
+contentType: 'lab'
+---
 # 12. Observability & Tracing
 
 **Estimated time:** 25 minutes

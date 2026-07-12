@@ -11,7 +11,8 @@
     "lint:md:ci": "markdownlint-cli2 \"**/*.md\" \"#node_modules\" \"#.git\" \"#.azure\"",
     "docs:dev": "pnpm run docs:generate-labs && vitepress dev docs",
     "docs:build": "pnpm run docs:generate-labs && vitepress build docs",
-    "docs:preview": "pnpm run docs:generate-labs && vitepress preview docs"
+    "docs:preview": "pnpm run docs:generate-labs && vitepress preview docs",
+    "validate:lab-frontmatter": "node scripts/validate-lab-frontmatter.mjs"
   },
   "devDependencies": {
     "markdownlint-cli2": "^0.23.0",

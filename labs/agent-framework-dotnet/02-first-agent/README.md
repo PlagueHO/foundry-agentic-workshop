@@ -1,3 +1,26 @@
+---
+title: '02. Your First Agent'
+description: 'Complete this lab to your first agent.'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 2
+slug: '02-first-agent'
+estimatedTimeMinutes: 20
+difficulty: 'beginner'
+prerequisites: ['Module 01']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'your'
+  - 'first'
+  - 'agent'
+status: 'active'
+contentType: 'lab'
+---
 # 02. Your First Agent
 
 **Estimated time:** 20 minutes

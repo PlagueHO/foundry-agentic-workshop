@@ -1,3 +1,25 @@
+---
+title: '04. Function Tools'
+description: 'Complete this lab to function tools.'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 4
+slug: '04-function-tools'
+estimatedTimeMinutes: 20
+difficulty: 'intermediate'
+prerequisites: ['Module 03']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'function'
+  - 'tools'
+status: 'active'
+contentType: 'lab'
+---
 # 04. Function Tools
 
 **Estimated time:** 20 minutes

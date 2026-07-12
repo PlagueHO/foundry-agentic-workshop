@@ -1,3 +1,26 @@
+---
+title: '12. Publish an agent (optional)'
+description: 'Complete this lab to publish an agent (optional).'
+lastUpdated: '2026-07-13'
+track: 'introduction-foundry-agent-service'
+module: 12
+slug: '12-publishing-agents'
+estimatedTimeMinutes: 25
+difficulty: 'advanced'
+prerequisites: ['Module 11']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Foundry'
+  - 'Python'
+tags:
+  - 'foundry'
+  - 'publish'
+  - 'agent'
+  - 'optional'
+status: 'active'
+contentType: 'lab'
+---
 # 12. Publish an agent (optional)
 
 ![Architecture diagram showing a Foundry agent published to Teams and Microsoft 365 Copilot through Azure Bot Service.](../../../docs/assets/diagrams/publishing-agents-architecture.svg)

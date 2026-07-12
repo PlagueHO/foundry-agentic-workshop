@@ -1,3 +1,25 @@
+---
+title: '01. Environment Setup'
+description: 'Complete this lab to environment setup.'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 1
+slug: '01-setup'
+estimatedTimeMinutes: 15
+difficulty: 'beginner'
+prerequisites: []
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'environment'
+  - 'setup'
+status: 'active'
+contentType: 'lab'
+---
 # 01. Environment Setup
 
 **Estimated time:** 15 minutes

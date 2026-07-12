@@ -1,3 +1,26 @@
+---
+title: '11. Agent operations and Agent ID'
+description: 'Complete this lab to agent operations and agent id.'
+lastUpdated: '2026-07-13'
+track: 'introduction-foundry-agent-service'
+module: 11
+slug: '11-agent-ops-and-agent-id'
+estimatedTimeMinutes: 30
+difficulty: 'advanced'
+prerequisites: ['Module 10']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Foundry'
+  - 'Python'
+tags:
+  - 'foundry'
+  - 'agent'
+  - 'operations'
+  - 'and'
+status: 'active'
+contentType: 'lab'
+---
 # 11. Agent operations and Agent ID
 
 **Estimated time:** 30 minutes

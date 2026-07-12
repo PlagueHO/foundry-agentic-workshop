@@ -1,3 +1,26 @@
+---
+title: '13. ConciergeClaw - Agent Harness'
+description: 'Complete this lab to conciergeclaw - agent harness.'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 13
+slug: '13-concierge-claw'
+estimatedTimeMinutes: 35
+difficulty: 'advanced'
+prerequisites: ['Module 12']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'conciergeclaw'
+  - 'agent'
+  - 'harness'
+status: 'active'
+contentType: 'lab'
+---
 # 13. ConciergeClaw - Agent Harness
 
 **Estimated time:** 35 minutes

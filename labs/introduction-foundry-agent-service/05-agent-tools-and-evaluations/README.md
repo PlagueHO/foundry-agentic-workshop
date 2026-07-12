@@ -1,3 +1,27 @@
+---
+title: '05. Agent tools and evaluations'
+description: 'Complete this lab to agent tools and evaluations.'
+lastUpdated: '2026-07-13'
+track: 'introduction-foundry-agent-service'
+module: 5
+slug: '05-agent-tools-and-evaluations'
+estimatedTimeMinutes: 30
+difficulty: 'intermediate'
+prerequisites: ['Module 04']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Foundry'
+  - 'Python'
+tags:
+  - 'foundry'
+  - 'agent'
+  - 'tools'
+  - 'and'
+  - 'evaluations'
+status: 'active'
+contentType: 'lab'
+---
 # 05. Agent tools and evaluations
 
 **Estimated time:** 30 minutes

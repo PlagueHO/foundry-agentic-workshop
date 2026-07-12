@@ -1,3 +1,25 @@
+---
+title: '05. MCP Tools'
+description: 'Complete this lab to mcp tools.'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 5
+slug: '05-mcp-tools'
+estimatedTimeMinutes: 25
+difficulty: 'intermediate'
+prerequisites: ['Module 04']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'mcp'
+  - 'tools'
+status: 'active'
+contentType: 'lab'
+---
 # 05. MCP Tools
 
 **Estimated time:** 25 minutes

@@ -1,3 +1,27 @@
+---
+title: '07. Memory & Context Providers'
+description: 'Complete this lab to memory & context providers.'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 7
+slug: '07-memory'
+estimatedTimeMinutes: 20
+difficulty: 'intermediate'
+prerequisites: ['Module 06']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'memory'
+  - 'and'
+  - 'context'
+  - 'providers'
+status: 'active'
+contentType: 'lab'
+---
 # 07. Memory & Context Providers
 
 **Estimated time:** 20 minutes

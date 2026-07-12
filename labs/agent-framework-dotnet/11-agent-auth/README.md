@@ -1,3 +1,27 @@
+---
+title: '11. Agent Identity & Auth'
+description: 'Complete this lab to agent identity & auth.'
+lastUpdated: '2026-07-13'
+track: 'agent-framework-dotnet'
+module: 11
+slug: '11-agent-auth'
+estimatedTimeMinutes: 35
+difficulty: 'advanced'
+prerequisites: ['Module 10']
+audience:
+  - 'attendee'
+technologies:
+  - 'Microsoft Agent Framework'
+  - 'Microsoft Foundry'
+tags:
+  - 'agent-framework'
+  - 'agent'
+  - 'identity'
+  - 'and'
+  - 'auth'
+status: 'active'
+contentType: 'lab'
+---
 # 11. Agent Identity & Auth
 
 **Estimated time:** 35 minutes
