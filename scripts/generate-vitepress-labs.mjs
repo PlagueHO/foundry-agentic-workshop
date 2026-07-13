@@ -55,6 +55,7 @@ function addGeneratedAttribution(markdown, sourcePathForDisplay, githubUrl) {
     '',
     `> Source: [${sourcePathForDisplay}](${githubUrl})`,
     '',
+    '',
   ].join('\n')
 
   if (markdown.startsWith('---\n')) {
