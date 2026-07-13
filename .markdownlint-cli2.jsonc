@@ -4,6 +4,8 @@
   "config": {
     "extends": ".markdownlint.json"
   },
+  // Ignore YAML front matter when applying Markdown rules
+  "frontMatter": "(^---\\s*$[^]*?^---\\s*$)(\\r\\n|\\r|\\n|$)",
   // Files to lint (globs)
   "globs": [
     "**/*.md"
