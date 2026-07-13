@@ -7,5 +7,5 @@ dependencies = [
     "azure-identity>=1.19.0",
     "azure-storage-blob>=12.24.0",
     "fastapi>=0.139.0",
-    "uvicorn[standard]>=0.50.0",
+    "uvicorn[standard]>=0.51.0",
 ]
