@@ -1,8 +1,23 @@
 // Configuration for markdownlint-cli2
 {
-  // Use the existing .markdownlint.json config
+  // Keep the CLI2 configuration self-contained so CI uses the repository rules.
   "config": {
-    "extends": ".markdownlint.json"
+    "default": true,
+    "MD013": false,
+    "MD024": {
+      "siblings_only": true
+    },
+    "MD029": {
+      "style": "one"
+    },
+    "MD033": {
+      "allowed_elements": ["br", "kbd", "details", "summary"]
+    },
+    "MD034": true,
+    "MD036": false,
+    "MD041": false,
+    "MD060": false,
+    "no-hard-tabs": true
   },
   // Ignore YAML front matter when applying Markdown rules
   "frontMatter": "(^---\\s*$[^]*?^---\\s*$)(\\r\\n|\\r|\\n|$)",
