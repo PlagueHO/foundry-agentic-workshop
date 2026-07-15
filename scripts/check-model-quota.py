@@ -258,6 +258,20 @@ def _check_profile(
     Returns a list of shortfall dicts (one per failing deployment). Empty = passes.
     """
     shortfalls: list[dict] = []
+
+    # Pre-compute aggregate required capacity per quota key.
+    # A profile may include multiple deployments for the same model (e.g. 'chat' and
+    # 'gpt54mini' both backed by gpt-5.4-mini). Quota must cover the combined total,
+    # so check the sum rather than each deployment in isolation.
+    aggregate_required: dict[str, int] = {}
+    for dep in deployments:
+        model_name = (dep.get('model') or {}).get('name', '')
+        sku_name = (dep.get('sku') or {}).get('name', '')
+        capacity = int((dep.get('sku') or {}).get('capacity') or 0)
+        if model_name and sku_name:
+            qname = _quota_name(sku_name, model_name)
+            aggregate_required[qname] = aggregate_required.get(qname, 0) + capacity
+
     for dep in deployments:
         model_name = (dep.get('model') or {}).get('name', '')
         sku_name = (dep.get('sku') or {}).get('name', '')
@@ -276,18 +290,19 @@ def _check_profile(
             })
             continue
 
-        # 2. Quota check
+        # 2. Quota check — use aggregate capacity for all same-model deployments in the profile.
         qname = _quota_name(sku_name, model_name)
         if qname not in quota_map:
             # No quota entry = treat as unlimited (some SKUs are metered differently).
             continue
         avail = quota_map[qname]['available']
-        if avail < required_capacity:
+        total_required = aggregate_required.get(qname, required_capacity)
+        if avail < total_required:
             shortfalls.append({
                 'deployment': dep_name,
                 'model': model_name,
                 'sku': sku_name,
-                'required': required_capacity,
+                'required': total_required,
                 'available': avail,
                 'reason': 'insufficient quota',
             })
@@ -435,6 +450,14 @@ def main() -> int:
             _azd_env_set('AZURE_MODEL_DEPLOYMENT_PROFILE', profile)
 
         deployments = _load_profile_deployments(profile)
+
+        # Persist the resolved profile to the azd environment when it was mode-defaulted
+        # (AZURE_MODEL_DEPLOYMENT_PROFILE was not explicitly set by the caller). This ensures
+        # Bicep reads the same profile that was quota-checked here, preventing a mismatch where
+        # the script checks 'default' (from AZURE_INDIVIDUAL_MODE=true) while Bicep deploys
+        # 'workshop' (its hard-coded parameter default).
+        if not is_auto and not env['AZURE_MODEL_DEPLOYMENT_PROFILE'].strip():
+            _azd_env_set('AZURE_MODEL_DEPLOYMENT_PROFILE', profile)
 
         # 4. Run check.
         shortfalls = _check_profile(deployments, availability, quota_map)

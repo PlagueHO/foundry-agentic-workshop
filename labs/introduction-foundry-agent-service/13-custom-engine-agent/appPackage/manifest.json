@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.21/MicrosoftTeams.schema.json",
   "manifestVersion": "1.21",
   "version": "1.0.0",
-  "id": "00000000-0000-0000-0000-000000000000",
+  "id": "1398db36-86c1-41b8-8e27-926f0e626902",
   "developer": {
     "name": "Workshop attendee",
     "websiteUrl": "https://learn.microsoft.com/microsoft-365/agents/",
@@ -18,9 +18,13 @@
     "full": "A workshop Custom Engine Agent that sends Teams messages to the acl-remedy-advisor Foundry agent."
   },
   "accentColor": "#0078D4",
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
   "bots": [
     {
-      "botId": "00000000-0000-0000-0000-000000000000",
+      "botId": "1398db36-86c1-41b8-8e27-926f0e626902",
       "scopes": ["personal", "team", "groupChat"]
     }
   ],

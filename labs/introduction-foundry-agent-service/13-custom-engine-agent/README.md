@@ -67,17 +67,19 @@ The two paths are intentionally different:
 
 ### Microsoft 365 Agents SDK and Microsoft Agent Framework
 
-The proxy uses the **Microsoft 365 Agents SDK**. Its `CloudAdapter` validates Bot Framework requests and its `AgentApplication` dispatches Activities to the message handler. It is not a Microsoft Agent Framework application. Microsoft Agent Framework is used in other workshop modules for agent orchestration; this module uses the SDK designed for Microsoft 365 agent channel integration.
+The proxy is built on **FastAPI** and calls the existing `acl-remedy-advisor` Foundry agent through `azure-ai-projects`. The full production pattern uses the **Microsoft 365 Agents SDK** — its `CloudAdapter` validates the Bot Framework JWT on each incoming request and its `AgentApplication` dispatches the Activity to typed message handlers. The starter code in `src/main.py` includes a TODO for this integration; the solution uses a simplified direct HTTP handler so the workshop can focus on the Foundry call.
+
+Microsoft Agent Framework is a separate SDK used in other workshop modules for multi-agent orchestration and is not used here.
 
 ### Activity protocol and `/api/messages`
 
-Azure Bot Service sends an authenticated HTTP `POST` request to `/api/messages`. The request body is a Bot Framework Activity represented as JSON. The `Authorization` header contains a Bot Framework JWT that the proxy validates with the Entra app registration configured for the bot.
+Azure Bot Service sends an HTTP `POST` request to `/api/messages`. The request body is a Bot Framework Activity represented as JSON. In a production deployment, `CloudAdapter` would validate the `Authorization` header's Bot Framework JWT against the Entra app registration. The simplified solution in this module accepts the request without JWT validation so the workshop can focus on the Foundry integration.
 
-The proxy sends replies through the `CloudAdapter`, which calls the Bot Connector. Teams and Microsoft 365 Copilot receive those replies as Activity messages. The proxy does not expose a Foundry Hosted Agent `/responses` endpoint: it is a normal web application that owns the `/api/messages` route.
+The solution calls the Foundry agent with the incoming message text and returns an Activity-shaped JSON response as the synchronous HTTP reply. The proxy does not expose a Foundry Hosted Agent `/responses` endpoint: it is a plain web application that owns the `/api/messages` route.
 
 ### Resource ownership
 
-The Azure Bot Service and Entra app registration are created in your own tenant and subscription. The proxy uses your local Azure CLI sign-in to call the shared workshop Foundry project endpoint, so your identity must also retain access to `acl-remedy-advisor`. The local client secret is used by the Bot Framework adapter and must stay in your local `.env` file.
+The Azure Bot Service and Entra app registration are created in your own tenant and subscription. The proxy uses your local Azure CLI sign-in to call the shared workshop Foundry project endpoint, so your identity must retain access to `acl-remedy-advisor`. The client secret is provisioned for the Entra app; store it in your local `.env` file and never commit it to source control.
 
 ## Steps
 
@@ -86,13 +88,32 @@ The Azure Bot Service and Entra app registration are created in your own tenant 
 #### 1. Confirm the optional-module prerequisites
 
 - [ ] Confirm that you have an Azure subscription and Microsoft Entra tenant where you can create an app registration and an Azure Bot Service resource.
-- [ ] Confirm that `FOUNDRY_PROJECT_ENDPOINT` points to the workshop project and that `acl-remedy-advisor` is available.
+- [ ] Confirm that `FOUNDRY_PROJECT_ENDPOINT` is set and that `acl-remedy-advisor` is available in your Foundry project:
+
+  ```powershell
+  uv run python -c "
+  from azure.ai.projects import AIProjectClient; from azure.identity import DefaultAzureCredential; import os
+  ep = os.environ['FOUNDRY_PROJECT_ENDPOINT']
+  names = [a.name for a in AIProjectClient(endpoint=ep, credential=DefaultAzureCredential()).agents.list()]
+  print('Available agents:', names)
+  assert 'acl-remedy-advisor' in names, 'Agent not found - complete Module 12 first.'
+  "
+  ```
+
+  > [!IMPORTANT]
+  > If `acl-remedy-advisor` is not listed, complete [Module 12](../12-publishing-agents/README.md) first. The proxy cannot ground its responses without this agent.
+
 - [ ] Confirm that you are signed in to the correct Azure tenant:
 
   ```powershell
   az login
   az account show --query "{subscription:id, tenant:tenantId, user:user.name}" -o table
   ```
+
+- [ ] Confirm that your Teams tenant allows custom app uploads. Open the [Teams Admin Center](https://admin.teams.microsoft.com/policies/app-setup), select **Global (Org-wide default)** under **App setup policies**, and check that **Upload custom apps** is set to **On**. If it is **Off**, toggle it to **On** and select **Save**. Policy changes can take up to 24 hours to propagate.
+
+  > [!NOTE]
+  > You need the Teams Administrator role to change this setting. If you do not have it, ask your tenant administrator to enable it before continuing.
 
 - [ ] Install the Microsoft 365 Agents Toolkit CLI (`atk`) if you want to use its scaffolding or sideload helpers. Manual Teams upload is the supported path in this module and does not require `atk`.
 
@@ -106,30 +127,9 @@ The Azure Bot Service and Entra app registration are created in your own tenant 
   uv sync --group module-13
   ```
 
-### Part 2 - Provision the bot identity and Azure Bot Service
+### Part 2 - Run the proxy and expose it through a development tunnel
 
-#### 3. Create the Entra app and Bot Service
-
-- [ ] Choose a resource-group name in your own subscription. The provisioning script creates it when it does not exist.
-- [ ] Set the deployment values in your local shell or `.env` file:
-
-  ```powershell
-  $env:BOT_SERVICE_NAME = 'acl-remedy-advisor-cea'
-  $env:BOT_RESOURCE_GROUP = 'rg-acl-remedy-advisor-cea'
-  $env:BOT_LOCATION = 'australiaeast'
-  ```
-
-- [ ] Leave `BOT_MESSAGING_ENDPOINT` unset until the development tunnel is running, then run:
-
-  ```powershell
-  uv run python labs/introduction-foundry-agent-service/13-custom-engine-agent/solution/provision_bot_service.py
-  ```
-
-- [ ] Copy the printed local configuration into `.env`. Never commit the client secret.
-
-### Part 3 - Run the proxy and expose it through a development tunnel
-
-#### 4. Start the local proxy
+#### 3. Start the local proxy
 
 - [ ] Complete the TODOs in `src/` or run the solution directly:
 
@@ -139,12 +139,47 @@ The Azure Bot Service and Entra app registration are created in your own tenant 
 
 - [ ] Confirm that the application listens on `http://localhost:3978` and exposes `POST /api/messages`.
 
-#### 5. Create a development tunnel
+#### 4. Create a development tunnel
 
-- [ ] Create a public HTTPS tunnel to port 3978 using the development-tunnel tooling available in your environment.
-- [ ] Set `BOT_MESSAGING_ENDPOINT` to the tunnel URL followed by `/api/messages`.
-- [ ] Re-run the provisioning script if the Bot Service messaging endpoint needs to be updated.
-- [ ] Keep the proxy and tunnel running while testing in Teams. A tunnel URL change requires another Bot Service update.
+- [ ] Install the devtunnel CLI if it is not already available and sign in:
+
+  ```powershell
+  winget install Microsoft.DevTunnel
+  devtunnel user login
+  ```
+
+- [ ] Create and start a public HTTPS tunnel to port 3978:
+
+  ```powershell
+  devtunnel host -p 3978 --allow-anonymous
+  ```
+
+- [ ] Note the URL printed on the `Connect via browser:` line — it looks like `https://<id>-3978.<region>.devtunnels.ms`.
+- [ ] Keep the proxy and tunnel running for all remaining steps. A tunnel URL change requires re-running the provisioning script.
+
+### Part 3 - Provision the bot identity and Azure Bot Service
+
+#### 5. Create the Entra app and Bot Service
+
+- [ ] Choose names for your Bot Service and resource group. The provisioning script creates the resource group when it does not exist.
+- [ ] Set the deployment values in your local shell, substituting the tunnel URL from Step 4:
+
+  ```powershell
+  $env:BOT_SERVICE_NAME     = 'acl-remedy-advisor-cea'
+  $env:BOT_RESOURCE_GROUP   = 'rg-acl-remedy-advisor-cea'
+  $env:BOT_LOCATION         = 'australiaeast'   # region for the resource group
+  $env:BOT_SERVICE_LOCATION = 'global'          # Bot Service location; valid values: global, westeurope, westus, centralindia
+  $env:BOT_MESSAGING_ENDPOINT = 'https://<your-id>-3978.<region>.devtunnels.ms/api/messages'
+  ```
+
+- [ ] Run the provisioning script:
+
+  ```powershell
+  uv run python labs/introduction-foundry-agent-service/13-custom-engine-agent/solution/provision_bot_service.py
+  ```
+
+- [ ] Copy `BOT_APP_CLIENT_ID`, `BOT_TENANT_ID`, and `BOT_SERVICE_NAME` from the output into your local `.env` file.
+- [ ] Copy the client secret into `.env` as `BOT_APP_CLIENT_SECRET`. The secret is displayed once and must never be committed to source control.
 
 ### Part 4 - Package and sideload the Teams app
 
@@ -177,7 +212,7 @@ The Azure Bot Service and Entra app registration are created in your own tenant 
 ## Validation
 
 - The Entra app registration and Bot Service exist in the attendee-owned resource group.
-- The proxy starts locally without exposing a secret in the console or source code.
+- The proxy starts locally. The client secret is printed once during provisioning and stored only in the local `.env` file.
 - `POST /api/messages` accepts Bot Framework Activity requests when the Bot Service sends them.
 - The Teams custom app opens and delivers the test message to the local proxy.
 - The response is grounded by the existing `acl-remedy-advisor` Foundry agent.
@@ -188,13 +223,13 @@ The Azure Bot Service and Entra app registration are created in your own tenant 
 You built a Custom Engine Agent integration: Microsoft 365 sends Activity messages to your own proxy, and the proxy connects those messages to a Microsoft Foundry agent. This pattern gives you control of the channel-facing application while keeping the agent configuration and grounding in Foundry.
 
 > [!TIP]
-> **Go further → [Module 13: Build a custom engine agent](../13-custom-engine-agent/README.md)**
-> Compare this custom proxy path with the native Foundry publishing flow and return to the workshop overview when you are ready.
+> Compare this custom proxy path with the native Foundry publishing flow and return to the [workshop overview](../README.md) when you are ready.
 
 ## Troubleshooting
 
 | Symptom | Fix |
 |---|---|
+| `acl-remedy-advisor` agent not found (404) | Complete [Module 12](../12-publishing-agents/README.md) first to create the agent. Verify that `FOUNDRY_PROJECT_ENDPOINT` points to the correct workshop project and that your Azure CLI identity has access. |
 | `AuthenticationFailedException` when the proxy starts | Confirm the Bot Service app ID, tenant ID, and client secret are set in the local environment. Create a new secret if the previous one expired. |
 | Bot Service reports an invalid messaging endpoint | Use an HTTPS tunnel URL ending in `/api/messages`. Confirm that the tunnel forwards to port 3978 and is still running. |
 | Teams app upload is blocked | Confirm that custom app upload is enabled by your tenant policy, or ask a Teams administrator to upload the package. |

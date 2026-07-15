@@ -33,6 +33,10 @@ def run() -> None:
     display_name = os.environ.get('BOT_APP_DISPLAY_NAME', 'ACL Remedy Advisor Custom Engine Agent')
     resource_group = os.environ.get('BOT_RESOURCE_GROUP', 'rg-acl-remedy-advisor-cea')
     location = os.environ.get('BOT_LOCATION', 'australiaeast')
+    # Azure Bot Service is only available in a subset of regions (global, westeurope, westus,
+    # centralindia). BOT_SERVICE_LOCATION overrides the resource-group location for the Bicep
+    # deployment so callers can use australiaeast for the resource group and global for the bot.
+    service_location = os.environ.get('BOT_SERVICE_LOCATION', 'global')
     bot_service_name = os.environ.get('BOT_SERVICE_NAME', 'acl-remedy-advisor-cea')
     messaging_endpoint = os.environ.get('BOT_MESSAGING_ENDPOINT', '').strip()
     if not messaging_endpoint.startswith('https://') or not messaging_endpoint.endswith('/api/messages'):
@@ -67,16 +71,20 @@ def run() -> None:
             '--template-file', str(TEMPLATE), '--parameters',
             f'botServiceName={bot_service_name}', f'appClientId={app_client_id}',
             f'tenantId={tenant_id}', f'messagingEndpoint={messaging_endpoint}',
-            f'location={location}', '-o', 'none',
+            f'location={service_location}', '-o', 'none',
         ]
     )
 
     print('Bot Service provisioned. Add these values to your local .env file:')
     print(f'BOT_APP_CLIENT_ID={app_client_id}')
-    print(f'BOT_APP_CLIENT_SECRET={secret["password"]}')
     print(f'BOT_TENANT_ID={tenant_id}')
     print(f'BOT_SERVICE_NAME={bot_service_name}')
     print(f'BOT_RESOURCE_GROUP={resource_group}')
+    print()
+    print('SECRET — copy this value now, it will not be shown again:')
+    print(f'BOT_APP_CLIENT_SECRET={secret["password"]}')
+    print()
+    print('Never commit the secret to source control or share your terminal output.')
 
 
 if __name__ == '__main__':
