@@ -35,6 +35,7 @@
         "ms-vscode.remote-repositories",
         "ms-vscode.vscode-node-azure-pack",
         "ms-windows-ai-studio.windows-ai-studio",
+        "TeamsDevApp.ms-teams-vscode-extension",
         "orta.vscode-jest",
         "redhat.vscode-yaml",
         "vscode-icons-team.vscode-icons",

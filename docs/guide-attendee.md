@@ -34,6 +34,7 @@ cd foundry-agentic-workshop
 1. Install the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
 1. *(Optional)* Install [Docker](https://www.docker.com/products/docker-desktop/). Docker is required only for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which deploys a hosted agent from a container image. Every other module, including Module 09 Part 2 (deploy from source code), runs without it.
 1. *(Optional)* Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0). Required only for the [Agent Framework for .NET](./labs/agent-framework-dotnet) lab series. All Python-based labs (`introduction-foundry-agent-service`) run without it.
+1. *(Optional)* Install the [Microsoft 365 Agents Toolkit CLI](https://learn.microsoft.com/microsoft-365/agents/agents-toolkit/cli/overview) (`atk`). It is used only by optional [Module 13](./labs/introduction-foundry-agent-service/13-custom-engine-agent/README.md); manual Teams app upload does not require it.
 1. Install the workshop Python dependencies:
 
    ```bash
@@ -45,6 +46,9 @@ cd foundry-agentic-workshop
 
 > [!NOTE]
 > Docker is optional. You only need it for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which builds a hosted agent locally and pushes it to the workshop container registry. If Docker is not available, you can still complete every other module - including Module 09 Part 2, which deploys the same agent from source code without Docker. The GitHub Codespaces and dev container environments include Docker automatically.
+
+> [!IMPORTANT]
+> Module 13 is optional extra credit and requires an Azure subscription and Microsoft Entra tenant where you can create an app registration and Azure Bot Service resource. The shared workshop tenant is not used for that module.
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!NOTE]

@@ -13,6 +13,7 @@ detailed setup and troubleshooting.
 1. [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
 1. [Docker](https://www.docker.com/products/docker-desktop/) (optional) - required only for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which deploys a hosted agent from a container image. Every other module, including Module 09 Part 2 (deploy from source code), runs without it.
 1. [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (optional) - required only for the Agent Framework for .NET lab series.
+1. Microsoft 365 Agents Toolkit CLI (`atk`) (optional) - used only for [Module 13](./labs/introduction-foundry-agent-service/13-custom-engine-agent/README.md); manual Teams app upload is also supported.
 1. Your assigned project information from your organizer.
 
 ## Clone the repository
@@ -36,6 +37,10 @@ Microsoft account, and follow the instructions on the page. The portal shows:
 - Your personal `.env` values in a copyable code block, plus a **Download .env** button to save the file directly.
 - Pre-populated `az login` and `az account set` commands for the workshop subscription.
 - The `uv run python scripts/health-check.py` validation command.
+
+Module 13 is optional extra credit. Its hands-on path uses your own Azure subscription
+and Microsoft Entra tenant because the shared workshop tenant does not grant permission
+to create the required app registration and Azure Bot Service resource.
 
 If the portal is unavailable, copy the values from the onboarding file your organizer sent:
 

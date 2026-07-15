@@ -597,6 +597,7 @@ module cognitiveService_projects './project/main.bicep' = [
       location: project.?location ?? location
       managedIdentities: project.?managedIdentities ?? managedIdentities
       roleAssignments: project.?roleAssignments ?? roleAssignments
+      diagnosticSettings: project.?diagnosticSettings ?? []
       tags: project.?tags ?? tags
       applications: project.?applications ?? []
       capabilityHosts: project.?capabilityHosts ?? []
@@ -923,6 +924,9 @@ type projectType = {
 
   @sys.description('Role assignments to apply to the workspace.')
   roleAssignments: roleAssignmentType[]?
+
+  @sys.description('Diagnostic settings to apply to the Foundry Project.')
+  diagnosticSettings: diagnosticSettingFullType[]?
 
   @sys.description('Resource tags. This corresponds to the "tags" property of the Microsoft.CognitiveServices/accounts/projects resource.')
   tags: object?

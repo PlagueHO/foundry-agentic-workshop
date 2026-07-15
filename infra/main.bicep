@@ -313,6 +313,12 @@ var attendeeProjects = [
       displayName: name
       description: 'Foundry workshop project for ${name}.'
     }
+    diagnosticSettings: [
+      {
+        name: sendTologAnalyticsCustomSettingName
+        workspaceResourceId: resourceId(subscription().subscriptionId, effectiveResourceGroupName, 'Microsoft.OperationalInsights/workspaces', logAnalyticsName)
+      }
+    ]
     tags: tags
     roleAssignments: map(
       filter(attendeeProjectRoleEntries, pr => pr.projectName == name),

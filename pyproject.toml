@@ -26,6 +26,14 @@ dev = [
     "pytest>=8.0.0",
     "ruff>=0.15.21",
 ]
+module-13 = [
+    "fastapi",
+    "microsoft-agents-activity",
+    "microsoft-agents-authentication-msal",
+    "microsoft-agents-hosting-core",
+    "microsoft-agents-hosting-fastapi",
+    "uvicorn[standard]",
+]
 
 [tool.uv]
 # Prefer uv-managed Python so build virtualenvs (needed for sdist packages like

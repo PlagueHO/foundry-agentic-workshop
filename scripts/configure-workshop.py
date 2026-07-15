@@ -511,7 +511,10 @@ def main() -> int:
         azd = _require_tool('azd')
         account = _check_azure_access(az)
         environment = _select_environment(azd)
-        location = _ask('Azure region', 'australiaeast')
+        location = _ask(
+            'Azure region',
+            _get_env_value(azd, 'AZURE_LOCATION') or 'australiaeast',
+        )
         resource_group = _ask('Resource group name', f'rg-{environment}')
         individual_mode = _ask_choice(
             'How are you running the workshop?',

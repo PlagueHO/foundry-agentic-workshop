@@ -52,6 +52,18 @@ echo "  Azure CLI version: $(az version --query '"azure-cli"' -o tsv 2>/dev/null
 echo "  Azure Developer CLI version: $(azd version 2>/dev/null | head -n 1 || echo 'Not found')"
 echo "  Bicep version: $(az bicep version 2>/dev/null || echo 'Not found')"
 
+# Install the Microsoft 365 Agents Toolkit CLI for optional Module 13 work.
+echo "🧩 Installing optional Microsoft 365 Agents Toolkit CLI..."
+if command -v npm >/dev/null 2>&1; then
+    if npm install -g @microsoft/m365agentstoolkit-cli >/dev/null 2>&1; then
+        echo "  Agents Toolkit CLI installed: $(@microsoft/m365agentstoolkit-cli --version 2>/dev/null || echo 'version unavailable')"
+    else
+        echo "  Warning: Agents Toolkit CLI installation failed; manual Teams app upload remains available"
+    fi
+else
+    echo "  Warning: npm not found; skipping optional Agents Toolkit CLI install"
+fi
+
 # Configure GitHub Copilot in the CLI alias (ghcs) for bash
 echo "🤖 Configuring GitHub Copilot CLI alias..."
 if command -v gh >/dev/null 2>&1; then

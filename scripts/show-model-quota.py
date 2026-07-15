@@ -11,11 +11,14 @@ Usage:
     python scripts/show-model-quota.py --filter gpt-4o
     python scripts/show-model-quota.py --available-only
     python scripts/show-model-quota.py --provider openai
+    python scripts/show-model-quota.py --output-format json
+    python scripts/show-model-quota.py --output-format csv > quota.csv
 """
 
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import os
 import shutil
@@ -310,6 +313,40 @@ def _print_summary(all_entries: list[QuotaEntry]) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Structured output
+# ---------------------------------------------------------------------------
+
+
+def _entry_as_dict(e: QuotaEntry) -> dict:
+    return {
+        'location': e.location,
+        'provider': e.provider,
+        'model': e.model,
+        'sku': e.sku,
+        'limit_tpm': e.limit,
+        'used_tpm': e.used,
+        'available_tpm': e.available,
+        'used_pct': round(e.used_pct, 2),
+    }
+
+
+def _output_json(entries: list[QuotaEntry]) -> None:
+    """Emit all entries as a JSON array to stdout."""
+    print(json.dumps([_entry_as_dict(e) for e in entries], indent=2))
+
+
+def _output_csv(entries: list[QuotaEntry]) -> None:
+    """Emit all entries as CSV to stdout."""
+    writer = csv.writer(sys.stdout)
+    writer.writerow(['location', 'provider', 'model', 'sku', 'limit_tpm', 'used_tpm', 'available_tpm', 'used_pct'])
+    for e in entries:
+        writer.writerow([
+            e.location, e.provider, e.model, e.sku,
+            e.limit, e.used, e.available, round(e.used_pct, 2),
+        ])
+
+
+# ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
 
@@ -325,6 +362,8 @@ def _build_parser() -> argparse.ArgumentParser:
             '  python scripts/show-model-quota.py --filter gpt-4o --available-only\n'
             '  python scripts/show-model-quota.py --provider openai\n'
             '  python scripts/show-model-quota.py --all\n'
+            '  python scripts/show-model-quota.py --output-format json\n'
+            '  python scripts/show-model-quota.py --output-format csv > quota.csv\n'
         ),
     )
     parser.add_argument(
@@ -358,6 +397,13 @@ def _build_parser() -> argparse.ArgumentParser:
         default=None,
         help='Case-insensitive substring filter applied to provider names (e.g. openai).',
     )
+    parser.add_argument(
+        '--output-format', '-o',
+        choices=['table', 'json', 'csv'],
+        default='table',
+        metavar='FORMAT',
+        help='Output format: table (default), json, or csv.',
+    )
     return parser
 
 
@@ -370,6 +416,7 @@ def main() -> int:
     provider_filter: str | None = args.provider.lower() if args.provider else None
     available_only: bool = args.available_only
     show_all: bool = args.all
+    output_format: str = args.output_format
 
     # Ensure UTF-8 output on Windows where the default console encoding may be CP1252.
     if hasattr(sys.stdout, 'reconfigure'):
@@ -378,22 +425,27 @@ def main() -> int:
         sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
     global _C  # noqa: PLW0603
-    _C = _make_colors(_colors_enabled())
+    # Disable colours for machine-readable formats so ANSI codes don't leak.
+    _C = _make_colors(_colors_enabled() and output_format == 'table')
+
+    # Route progress/header text to stderr for non-table formats so that
+    # stdout carries only the structured data.
+    _prog = sys.stderr if output_format != 'table' else sys.stdout
 
     # Verify az login.
     if not _check_az_login():
         print('Error: not logged in to Azure CLI. Run: az login', file=sys.stderr)
         return 1
 
-    print()
-    print(f'  {_C.bold}{_C.cyan}Azure AI / Foundry Model Quota{_C.reset}')
-    print(f'  {_C.cyan}══════════════════════════════{_C.reset}')
-    print(f'  Querying {_C.white}{len(locations)}{_C.reset} region(s)...', flush=True)
+    print(file=_prog)
+    print(f'  {_C.bold}{_C.cyan}Azure AI / Foundry Model Quota{_C.reset}', file=_prog)
+    print(f'  {_C.cyan}══════════════════════════════{_C.reset}', file=_prog)
+    print(f'  Querying {_C.white}{len(locations)}{_C.reset} region(s)...', file=_prog, flush=True)
 
     all_entries: list[QuotaEntry] = []
 
     for location in locations:
-        print(f'  Fetching {location}...', end='\r', flush=True)
+        print(f'  Fetching {location}...', end='\r', file=_prog, flush=True)
         raw = _fetch_usages(location)
         entries = _parse_usages(location, raw)
 
@@ -408,9 +460,16 @@ def main() -> int:
             entries = [e for e in entries if e.available > 0]
 
         all_entries.extend(entries)
-        _print_location_table(location, entries)
+        if output_format == 'table':
+            _print_location_table(location, entries)
 
-    _print_summary(all_entries)
+    if output_format == 'table':
+        _print_summary(all_entries)
+    elif output_format == 'json':
+        _output_json(all_entries)
+    elif output_format == 'csv':
+        _output_csv(all_entries)
+
     return 0
 
 

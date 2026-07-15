@@ -218,6 +218,7 @@ def _check_prerequisites() -> bool:
 
     _check_azd()
     _check_docker()
+    _check_agents_toolkit()
 
     return py_ok and az_ok
 
@@ -349,6 +350,16 @@ def _check_docker() -> None:
             ' \u2014 start Docker for introduction-foundry-agent-service Module 09 Part 1'
             ' or agent-framework-dotnet Module 12)'
         )
+
+
+def _check_agents_toolkit() -> None:
+    """Check for the optional Microsoft 365 Agents Toolkit CLI."""
+    rc, out, _ = _az('atk --version', timeout=10)
+    check_optional(
+        'Microsoft 365 Agents Toolkit CLI (optional)',
+        rc == 0,
+        out.splitlines()[0] if rc == 0 and out else 'needed only for optional Module 13; manual upload also works',
+    )
 
 
 def _check_env_vars() -> bool:
