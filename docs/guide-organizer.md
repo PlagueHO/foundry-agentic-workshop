@@ -46,6 +46,9 @@ az login
 Create an isolated azd environment to hold your workshop configuration. This also sets the
 Azure region and resource group.
 
+> [!NOTE]
+> Environment names must be 16 characters or fewer, contain only lowercase letters, digits, and hyphens, and must not begin or end with a hyphen. Azure resource names are derived from this value.
+
 ```bash
 azd env new my-workshop
 azd env set AZURE_LOCATION australiaeast

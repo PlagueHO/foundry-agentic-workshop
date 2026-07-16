@@ -63,6 +63,9 @@ detailed steps, the RBAC model, and troubleshooting.
 
 1. Create an environment and set core variables.
 
+   > [!NOTE]
+   > Environment names must be 16 characters or fewer, contain only lowercase letters, digits, and hyphens, and must not begin or end with a hyphen. Azure resource names are derived from this value.
+
    ```bash
    azd env new hol-shared
    azd env set AZURE_LOCATION australiaeast

@@ -44,8 +44,8 @@ type resolvedAttendeeType = {
 // see https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/make-azd-compatible?pivots=azd-create
 
 @minLength(1)
-@maxLength(24)
-@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
+@maxLength(16)
+@description('Name of the environment used to derive all resource names. Maximum 16 characters to satisfy the Container App 32-character naming limit. Must not begin or end with a hyphen.')
 param environmentName string
 
 @minLength(1)
@@ -220,13 +220,17 @@ var cosmosDbAccountName = toLower(replace('${abbrs.cosmosDBAccounts}${environmen
 var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
 var containerRegistryName = take(toLower(replace('${abbrs.containerRegistryRegistries}${environmentName}', '-', '')), 50)
 var containerAppsEnvironmentName = '${abbrs.appManagedEnvironments}${environmentName}'
-var retailRemedyOpsMcpServerContainerAppName = take(toLower('${abbrs.appContainerApps}retail-remedy-ops-${environmentName}'), 32)
+var _rawRetailRemedyOpsMcpServerContainerAppName = take(toLower('${abbrs.appContainerApps}retail-remedy-${environmentName}'), 32)
+var retailRemedyOpsMcpServerContainerAppName = endsWith(_rawRetailRemedyOpsMcpServerContainerAppName, '-') ? take(_rawRetailRemedyOpsMcpServerContainerAppName, length(_rawRetailRemedyOpsMcpServerContainerAppName) - 1) : _rawRetailRemedyOpsMcpServerContainerAppName
 var retailRemedyOpsMcpServerIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}retail-remedy-ops-${environmentName}'
-var flightOpsMcpServerContainerAppName = take(toLower('${abbrs.appContainerApps}flight-ops-${environmentName}'), 32)
+var _rawFlightOpsMcpServerContainerAppName = take(toLower('${abbrs.appContainerApps}flight-ops-${environmentName}'), 32)
+var flightOpsMcpServerContainerAppName = endsWith(_rawFlightOpsMcpServerContainerAppName, '-') ? take(_rawFlightOpsMcpServerContainerAppName, length(_rawFlightOpsMcpServerContainerAppName) - 1) : _rawFlightOpsMcpServerContainerAppName
 var flightOpsMcpServerIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}flight-ops-${environmentName}'
-var blobRelayMcpServerContainerAppName = take(toLower('${abbrs.appContainerApps}blob-relay-${environmentName}'), 32)
+var _rawBlobRelayMcpServerContainerAppName = take(toLower('${abbrs.appContainerApps}blob-relay-${environmentName}'), 32)
+var blobRelayMcpServerContainerAppName = endsWith(_rawBlobRelayMcpServerContainerAppName, '-') ? take(_rawBlobRelayMcpServerContainerAppName, length(_rawBlobRelayMcpServerContainerAppName) - 1) : _rawBlobRelayMcpServerContainerAppName
 var blobRelayMcpServerIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}blob-relay-${environmentName}'
-var attendeePortalContainerAppName = take(toLower('${abbrs.appContainerApps}portal-${environmentName}'), 32)
+var _rawAttendeePortalContainerAppName = take(toLower('${abbrs.appContainerApps}portal-${environmentName}'), 32)
+var attendeePortalContainerAppName = endsWith(_rawAttendeePortalContainerAppName, '-') ? take(_rawAttendeePortalContainerAppName, length(_rawAttendeePortalContainerAppName) - 1) : _rawAttendeePortalContainerAppName
 var attendeePortalIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}portal-${environmentName}'
 
 // Principal that runs scripts/deploy-retail-remedy-ops-mcp-server.py and therefore needs push access to the shared

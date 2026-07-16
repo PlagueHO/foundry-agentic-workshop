@@ -40,6 +40,8 @@ ROLE_KEYS = (
 MODEL_PROFILES = ('default', 'minimal', 'workshop', 'broad')
 UPN_PATTERN = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
 PROJECT_NAME_PATTERN = re.compile(r'^[a-z0-9][a-z0-9-]*[a-z0-9]$')
+ENV_NAME_MAX_LENGTH = 16
+ENV_NAME_PATTERN = re.compile(r'^[a-z0-9][a-z0-9-]*[a-z0-9]$|^[a-z0-9]$')
 RESOURCE_DEPLOYMENT_ROLES = {'Owner', 'Contributor'}
 ROLE_ASSIGNMENT_ROLES = {
     'Owner',
@@ -296,7 +298,23 @@ def _select_environment(azd: str) -> str:
     current = _run([azd, 'env', 'get-value', 'AZURE_ENV_NAME'])
     current_name = current.stdout.strip() if current.returncode == 0 else ''
     prompt = 'azd environment name'
-    environment = _ask(prompt, current_name or 'my-foundry-lab')
+    while True:
+        environment = _ask(prompt, current_name or 'my-foundry-lab')
+        if len(environment) > ENV_NAME_MAX_LENGTH:
+            _print(
+                f'Environment name must be {ENV_NAME_MAX_LENGTH} characters or fewer '
+                f'({len(environment)} given). Azure resource naming limits require this.',
+                color=COLORS.yellow,
+            )
+            continue
+        if not ENV_NAME_PATTERN.fullmatch(environment):
+            _print(
+                'Environment name must contain only lowercase letters, digits, and '
+                'hyphens, and must not begin or end with a hyphen.',
+                color=COLORS.yellow,
+            )
+            continue
+        break
     if environment != current_name:
         selected = _run([azd, 'env', 'select', environment])
         if selected.returncode != 0:

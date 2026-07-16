@@ -55,6 +55,9 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
 <details>
 <summary>Manual setup (alternative to the wizard)</summary>
 
+> [!NOTE]
+> Environment names must be 16 characters or fewer, contain only lowercase letters, digits, and hyphens, and must not begin or end with a hyphen. Azure resource names are derived from this value.
+
 ```bash
 azd env new my-foundry-lab
 azd env set AZURE_LOCATION australiaeast
