@@ -164,7 +164,7 @@ your code.
 > **Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set before running the starter.** When your `QUERY` triggers an operational lookup, the agent calls the `retail_remedy_ops` MCP server from [Module 06](../06-mcp-tools/README.md) at the `RETAIL_REMEDY_OPS_MCP_SERVER_URL` in your `.env`. By default this is the shared **Azure Container Apps** server your organizer deployed, so there is nothing to keep running. If you are running your own copy locally instead, make sure it is still running with port 8080 set to **Public**:
 >
 > ```bash
-> python shared/mcp-servers/retail-remedy-ops/src/server.py
+> uv run python shared/mcp-servers/retail-remedy-ops/src/server.py
 > ```
 
 - [ ] Run the completed starter and confirm it connects to your project and returns a response:

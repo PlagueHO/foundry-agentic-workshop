@@ -28,7 +28,8 @@
         // the dev container / Codespace. Required only for Module 09 Part 1 (deploy a
         // hosted agent from a container image); all other modules run without it.
         "ghcr.io/devcontainers/features/docker-in-docker:2": {
-            "version": "latest"
+            "version": "latest",
+            "moby": false
         }
     },
     "customizations": {
