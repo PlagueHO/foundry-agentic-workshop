@@ -2,8 +2,7 @@
 
 This is the primary deployment path for Module 09. It zips the agent bundle in
 ``src/agent/`` and uploads it to Foundry, which builds the container image remotely and
-runs it as a hosted agent - no local Docker required. After the version becomes active it
-grants the agent's per-deploy identity the Foundry User role so the agent can call models.
+runs it as a hosted agent - no local Docker required.
 
 Usage:
     uv run python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_code.py
@@ -19,15 +18,13 @@ from azure.ai.projects import AIProjectClient
 from azure.ai.projects.models import (
     CodeConfiguration,
     CodeDependencyResolution,
-    CreateAgentVersionFromCodeContent,
-    CreateAgentVersionFromCodeMetadata,
     HostedAgentDefinition,
     ProtocolVersionRecord,
 )
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 
-from hosted_agent_support import ensure_agent_identity_rbac, wait_for_agent_version_active
+from hosted_agent_support import wait_for_agent_version_active
 
 # The agent bundle lives one directory up under src/agent/. Every file in that folder is
 # zipped flat (no parent directory entry) so Foundry's remote build finds main.py and
@@ -73,37 +70,33 @@ def run() -> None:
 
     credential = DefaultAzureCredential()
     with AIProjectClient(endpoint=endpoint, credential=credential, allow_preview=True) as client:
-        content = CreateAgentVersionFromCodeContent(
-            metadata=CreateAgentVersionFromCodeMetadata(
-                description='ACL Remedy Advisor hosted agent deployed from source code.',
-                definition=HostedAgentDefinition(
-                    cpu=CPU,
-                    memory=MEMORY,
-                    environment_variables={
-                        'AZURE_AI_MODEL_DEPLOYMENT_NAME': model_deployment,
-                        'RETAIL_REMEDY_OPS_MCP_SERVER_URL': mcp_server_url,
-                        'RETAIL_REMEDY_OPS_MCP_SERVER_LABEL': mcp_server_label,
-                    },
-                    code_configuration=CodeConfiguration(
-                        runtime=RUNTIME,
-                        entry_point=['python', 'main.py'],
-                        dependency_resolution=CodeDependencyResolution.REMOTE_BUILD,
-                    ),
-                    protocol_versions=[ProtocolVersionRecord(protocol='responses', version='1.0.0')],
-                ),
-            ),
-            code=(f'{agent_name}.zip', zip_bytes, 'application/zip'),
-        )
+        code_stream = io.BytesIO(zip_bytes)
+        code_stream.name = f'{agent_name}.zip'
 
-        created = client.beta.agents.create_version_from_code(
+        created = client.agents.create_version_from_code(
             agent_name=agent_name,
-            content=content,
+            definition=HostedAgentDefinition(
+                cpu=CPU,
+                memory=MEMORY,
+                environment_variables={
+                    'AZURE_AI_MODEL_DEPLOYMENT_NAME': model_deployment,
+                    'RETAIL_REMEDY_OPS_MCP_SERVER_URL': mcp_server_url,
+                    'RETAIL_REMEDY_OPS_MCP_SERVER_LABEL': mcp_server_label,
+                },
+                code_configuration=CodeConfiguration(
+                    runtime=RUNTIME,
+                    entry_point=['python', 'main.py'],
+                    dependency_resolution=CodeDependencyResolution.REMOTE_BUILD,
+                ),
+                protocol_versions=[ProtocolVersionRecord(protocol='responses', version='2.0.0')],
+            ),
+            code=code_stream,
             code_zip_sha256=zip_sha256,
+            description='ACL Remedy Advisor hosted agent deployed from source code.',
         )
         print(f'Created hosted agent {agent_name} version {created.version}; Foundry is building it.')
 
         wait_for_agent_version_active(client, agent_name, created.version)
-        ensure_agent_identity_rbac(created, credential)
 
     print(f'Hosted agent {agent_name} is active. Run invoke_hosted_agent.py to chat with it.')
 

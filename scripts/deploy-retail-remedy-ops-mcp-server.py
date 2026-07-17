@@ -137,7 +137,7 @@ def main() -> int:  # pylint: disable=too-many-return-statements
 
     # Unique, time-based tag so `containerapp update` always rolls to a new revision.
     tag = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
-    image = f'{login_server}/mcp-server:{tag}'
+    image = f'{login_server}/retail-remedy-ops-mcp-server:{tag}'
 
     print(f'Deploying MCP server image {image} to Container App {container_app_name}...')
     sys.stdout.flush()

@@ -6,7 +6,7 @@ entry point to extend it with lab-specific checks.
 
 Run directly to execute core checks only:
 
-    python shared/health_check.py
+    uv run python shared/health_check.py
 
 For lab-specific checks run the health-check script in the lab's shared/
 folder instead:

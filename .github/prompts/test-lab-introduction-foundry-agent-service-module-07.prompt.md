@@ -124,7 +124,7 @@ The agent routes operational lookups to the `retail-remedy-ops` MCP server (from
    **Check:** If the command times out or returns a connection error, the MCP server is unavailable. If the shared Azure Container Apps server is down, ask the user to confirm its status with the organizer. Alternatively, the user can run their own server locally and expose it on a **Public** port 8080 tunnel (see Module 06, Part 2):
 
    ```bash
-   python shared/mcp-servers/retail-remedy-ops/src/server.py
+   uv run python shared/mcp-servers/retail-remedy-ops/src/server.py
    ```
 
    Then set `RETAIL_REMEDY_OPS_MCP_SERVER_URL` in `.env` to the tunnel URL ending in `/mcp` and re-run the `curl` check.

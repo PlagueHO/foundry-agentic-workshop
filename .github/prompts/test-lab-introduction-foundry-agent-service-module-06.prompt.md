@@ -123,7 +123,7 @@ If the shared Azure Container Apps server is unavailable, or you want to run and
 1. In a dedicated terminal that stays open for the rest of the workshop, start the server:
 
    ```bash
-   python shared/mcp-servers/retail-remedy-ops/src/server.py
+   uv run python shared/mcp-servers/retail-remedy-ops/src/server.py
    ```
 
    Confirm it prints `Starting Retail Remedy Operations MCP server on http://0.0.0.0:8080/mcp`.

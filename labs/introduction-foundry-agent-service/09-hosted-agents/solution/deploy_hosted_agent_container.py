@@ -27,7 +27,7 @@ from azure.ai.projects.models import (
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 
-from hosted_agent_support import ensure_agent_identity_rbac, wait_for_agent_version_active
+from hosted_agent_support import wait_for_agent_version_active
 
 AGENT_DIR = Path(__file__).resolve().parent.parent / 'src' / 'agent'
 
@@ -67,6 +67,16 @@ def run() -> None:
     model_deployment = os.environ.get('AGENT_MODEL', 'chat')
     registry_name = os.environ['AZURE_CONTAINER_REGISTRY_NAME']
     registry_endpoint = os.environ['AZURE_CONTAINER_REGISTRY_ENDPOINT']
+    mcp_server_url = os.environ.get('RETAIL_REMEDY_OPS_MCP_SERVER_URL', '').strip()
+    mcp_server_label = os.environ.get('RETAIL_REMEDY_OPS_MCP_SERVER_LABEL', 'retail_remedy_ops')
+
+    if not mcp_server_url:
+        raise ValueError(
+            'RETAIL_REMEDY_OPS_MCP_SERVER_URL is not set. Start the Retail Remedy Operations MCP server '
+            '(Module 06, server.py), expose it via a dev tunnel, then set RETAIL_REMEDY_OPS_MCP_SERVER_URL to '
+            'the public URL plus /mcp in your .env file. Example: '
+            'RETAIL_REMEDY_OPS_MCP_SERVER_URL=https://abc123-8080.devtunnels.ms/mcp'
+        )
 
     image = f'{registry_endpoint}/{IMAGE_REPOSITORY}:{project_image_tag(endpoint)}'
 
@@ -85,16 +95,19 @@ def run() -> None:
             definition=HostedAgentDefinition(
                 cpu=CPU,
                 memory=MEMORY,
-                environment_variables={'AZURE_AI_MODEL_DEPLOYMENT_NAME': model_deployment},
+                environment_variables={
+                    'AZURE_AI_MODEL_DEPLOYMENT_NAME': model_deployment,
+                    'RETAIL_REMEDY_OPS_MCP_SERVER_URL': mcp_server_url,
+                    'RETAIL_REMEDY_OPS_MCP_SERVER_LABEL': mcp_server_label,
+                },
                 container_configuration=ContainerConfiguration(image=image),
-                protocol_versions=[ProtocolVersionRecord(protocol='responses', version='1.0.0')],
+                protocol_versions=[ProtocolVersionRecord(protocol='responses', version='2.0.0')],
             ),
             metadata={'enableVnextExperience': 'true'},
         )
         print(f'Created hosted agent {agent_name} version {created.version} from image {image}.')
 
         wait_for_agent_version_active(client, agent_name, created.version)
-        ensure_agent_identity_rbac(created, credential)
 
     print(f'Hosted agent {agent_name} is active. Run invoke_hosted_agent.py to chat with it.')
 

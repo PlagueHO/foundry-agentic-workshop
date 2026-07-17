@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="580" viewBox="0 0 900 580">
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="620" viewBox="0 0 900 620">
   <title>Lab 06 - Integrate MCP Tools Architecture</title>
-  <desc>Python Client calls the acl-remedy-advisor Agent Definition inside a Foundry Project inside a Foundry Account. The Agent Definition calls the chat Model Deployment and may invoke the Web Search Tool (which calls the Internet), the Code Interpreter Tool (sandboxed Python), or the MCP tool - which connects over an HTTPS dev tunnel to a Retail Remedy Operations MCP Server running outside the Foundry Account on the local dev machine.</desc>
+  <desc>Python Client calls the acl-remedy-advisor Agent Definition inside a Foundry Project inside a Foundry Account. The Agent Definition calls the chat Model Deployment and may invoke the Web Search Tool (which calls the Internet), the Code Interpreter Tool (sandboxed Python), or the MCP Tool - which connects over HTTPS to a Retail Remedy Operations MCP Server. The MCP Server runs either as a shared Azure Container Apps service (default) or on the local dev machine exposed via a DevTunnel.</desc>
 
   <!-- Background -->
-  <rect width="900" height="580" fill="white"/>
+  <rect width="900" height="620" fill="white"/>
 
   <defs>
     <!-- Solid grey arrowhead -->
@@ -36,7 +36,7 @@
             orient="auto" markerUnits="userSpaceOnUse">
       <polygon points="0 0, 12 4, 0 8" fill="#E65100"/>
     </marker>
-    <!-- Indigo arrowhead (MCP tool call / HTTPS tunnel) -->
+    <!-- Indigo arrowhead (MCP tool call / HTTPS) -->
     <marker id="ah-indigo" markerWidth="12" markerHeight="8" refX="12" refY="4"
             orient="auto" markerUnits="userSpaceOnUse">
       <polygon points="0 0, 12 4, 0 8" fill="#283593"/>
@@ -150,27 +150,68 @@
         fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
         font-size="11">accc.gov.au etc.</text>
 
-  <!-- Local dev machine + MCP Server (outside the Foundry Account) -->
-  <rect x="590" y="415" width="270" height="130" rx="6"
-        fill="#ECEFF1" stroke="#37474F" stroke-width="2"/>
-  <!-- dev machine header: rounded top, flat bottom -->
-  <path d="M 596,415 L 854,415 Q 860,415 860,421 L 860,445 L 590,445 L 590,421 Q 590,415 596,415 Z"
-        fill="#37474F"/>
-  <text x="725" y="434" text-anchor="middle"
+  <!-- ── MCP SERVER DEPLOYMENT OPTIONS ──────────────────────────────── -->
+
+  <!-- Option A: Azure Container Apps (cloud-hosted, default) -->
+  <rect x="478" y="415" width="205" height="160" rx="6"
+        fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+  <!-- ACA header: rounded top, flat bottom -->
+  <path d="M 484,415 L 677,415 Q 683,415 683,421 L 683,445 L 478,445 L 478,421 Q 478,415 484,415 Z"
+        fill="#1565C0"/>
+  <text x="580" y="433" text-anchor="middle"
         fill="white" font-family="'Segoe UI',Arial,sans-serif"
-        font-size="12" font-weight="bold">Local dev machine</text>
-  <!-- MCP Server box inside dev machine -->
-  <rect x="612" y="458" width="226" height="72" rx="6"
+        font-size="11" font-weight="bold">Azure Container Apps</text>
+  <!-- MCP Server box inside ACA -->
+  <rect x="490" y="452" width="181" height="110" rx="5"
         fill="#E8EAF6" stroke="#283593" stroke-width="2"/>
-  <text x="725" y="483" text-anchor="middle"
+  <text x="580" y="472" text-anchor="middle"
+        fill="#555555" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">Retail Remedy Operations</text>
+  <text x="580" y="490" text-anchor="middle"
         fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
         font-size="13" font-weight="bold">MCP Server</text>
-  <text x="725" y="500" text-anchor="middle"
-        fill="#555555" font-family="'Segoe UI',Arial,sans-serif"
-        font-size="11">Retail Remedy Operations</text>
-  <text x="725" y="516" text-anchor="middle"
+  <text x="580" y="508" text-anchor="middle"
+        fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">shared · cloud-hosted</text>
+  <text x="580" y="526" text-anchor="middle"
         fill="#999999" font-family="'Segoe UI',Arial,sans-serif"
-        font-size="10">src/server.py · localhost:8080</text>
+        font-size="10">public HTTPS endpoint</text>
+  <text x="580" y="544" text-anchor="middle"
+        fill="#AAAAAA" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="9" font-style="italic">default option</text>
+
+  <!-- "OR" separator between deployment options -->
+  <text x="700" y="500" text-anchor="middle"
+        fill="#888888" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="15" font-weight="bold">OR</text>
+
+  <!-- Option B: Local dev machine + DevTunnel (optional, bring-your-own) -->
+  <rect x="718" y="415" width="170" height="160" rx="6"
+        fill="#ECEFF1" stroke="#37474F" stroke-width="2"/>
+  <!-- dev machine header: rounded top, flat bottom -->
+  <path d="M 724,415 L 882,415 Q 888,415 888,421 L 888,445 L 718,445 L 718,421 Q 718,415 724,415 Z"
+        fill="#37474F"/>
+  <text x="803" y="433" text-anchor="middle"
+        fill="white" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="11" font-weight="bold">Local dev machine</text>
+  <!-- MCP Server box inside local machine -->
+  <rect x="730" y="452" width="146" height="110" rx="5"
+        fill="#E8EAF6" stroke="#283593" stroke-width="2"/>
+  <text x="803" y="472" text-anchor="middle"
+        fill="#555555" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">Retail Remedy Operations</text>
+  <text x="803" y="490" text-anchor="middle"
+        fill="#333333" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="bold">MCP Server</text>
+  <text x="803" y="508" text-anchor="middle"
+        fill="#666666" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">localhost:8080</text>
+  <text x="803" y="526" text-anchor="middle"
+        fill="#555555" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10">DevTunnel · public port</text>
+  <text x="803" y="544" text-anchor="middle"
+        fill="#AAAAAA" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="9" font-style="italic">optional / bring-your-own</text>
 
   <!-- ──────────────────────────────────────────
        ARROWS
@@ -240,11 +281,20 @@
         fill="#B71C1C" font-family="'Segoe UI',Arial,sans-serif"
         font-size="10" font-weight="bold">HTTP search</text>
 
-  <!-- 9. MCP Tool → MCP Server  (solid indigo, HTTPS via dev tunnel; crosses Account boundary) -->
-  <path d="M 722,337 L 722,458"
+  <!-- 9a. MCP Tool → Azure Container Apps MCP Server  (solid indigo, HTTPS, default; crosses Account boundary) -->
+  <path d="M 695,337 C 695,380 580,380 580,415"
         stroke="#283593" stroke-width="2" fill="none"
         marker-end="url(#ah-indigo)"/>
-  <text x="730" y="382" text-anchor="start"
+  <text x="625" y="370" text-anchor="middle"
         fill="#283593" font-family="'Segoe UI',Arial,sans-serif"
-        font-size="10" font-weight="bold">HTTPS · dev tunnel</text>
+        font-size="10" font-weight="bold">HTTPS</text>
+
+  <!-- 9b. MCP Tool → Local dev machine MCP Server  (dashed indigo, HTTPS via DevTunnel, optional; crosses Account boundary) -->
+  <path d="M 749,337 C 749,380 803,380 803,415"
+        stroke="#283593" stroke-width="1.5" fill="none"
+        stroke-dasharray="5,3"
+        marker-end="url(#ah-indigo)"/>
+  <text x="768" y="368" text-anchor="middle"
+        fill="#283593" font-family="'Segoe UI',Arial,sans-serif"
+        font-size="10" font-weight="bold">HTTPS · DevTunnel</text>
 </svg>

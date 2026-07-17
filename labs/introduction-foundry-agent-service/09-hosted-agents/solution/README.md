@@ -9,10 +9,8 @@ environment and populating `shared/.env` from `shared/.env.example`.
 ## hosted_agent_support.py
 
 Shared helpers used by every script in this folder: `wait_for_agent_version_active` polls a
-new version until it is active, `get_latest_active_agent_version` selects the newest active
-version, and `ensure_agent_identity_rbac` grants the agent's per-deploy Microsoft Entra
-identity the **Foundry User** role at the Foundry account scope so the agent can call
-models at runtime.
+new version until it is active, and `get_latest_active_agent_version` selects the newest
+active version.
 
 ## deploy_hosted_agent_code.py
 
@@ -46,8 +44,6 @@ python labs/introduction-foundry-agent-service/09-hosted-agents/solution/invoke_
 
 ## Notes
 
-- Attendees can assign the Foundry User role because `infra/main.bicep` grants each attendee
-  a constrained Role Based Access Control Administrator role that allows assigning only that
-  role to service principals.
-- Hosted agents are a preview feature, so the scripts pass `allow_preview=True` and use
-  `project.beta.agents` for session and endpoint operations.
+- Hosted agents have implicit access to model inference and session storage within their
+  own project. Assign roles only for external resources.
+- Hosted agents are a preview feature, so the scripts pass `allow_preview=True` to `AIProjectClient`.

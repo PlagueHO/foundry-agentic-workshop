@@ -18,7 +18,7 @@ Security guardrails (the relay is otherwise a classic confused-deputy):
   * Blob names are validated to block path traversal and injection.
 
 Usage:
-    python shared/mcp-servers/blob-relay/src/server.py
+    uv run python shared/mcp-servers/blob-relay/src/server.py
 
 The server listens on http://0.0.0.0:<BLOB_RELAY_MCP_SERVER_PORT>/mcp (default 8080).
 """

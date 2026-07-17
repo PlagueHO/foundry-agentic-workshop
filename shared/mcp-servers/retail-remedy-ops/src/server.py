@@ -5,7 +5,7 @@ loop. All data is loaded from a local JSON file - no real POS, CRM, or
 database connections are required.
 
 Usage:
-    python shared/mcp-servers/retail-remedy-ops/src/server.py
+    uv run python shared/mcp-servers/retail-remedy-ops/src/server.py
 
 The server listens on http://0.0.0.0:<RETAIL_REMEDY_OPS_MCP_SERVER_PORT>/mcp (default port 8080).
 Expose this port via a public dev tunnel or Codespaces port forwarding before

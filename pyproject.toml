@@ -7,7 +7,7 @@ license = { text = "MIT" }
 authors = [{ name = "Foundry Agentic Workshop Maintainers" }]
 dependencies = [
     "agent-framework-foundry",
-    "agent-framework-foundry-hosting",
+    "agent-framework-foundry-hosting==1.0.0a260709",
     "azure-ai-projects>=2.3.0",
     "azure-identity",
     "azure-mgmt-authorization",

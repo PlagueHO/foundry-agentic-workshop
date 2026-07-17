@@ -32,11 +32,13 @@ contentType: 'lab'
 > - [Module 06 - Integrate MCP tools](../06-mcp-tools/README.md): the `retail_remedy_ops` MCP server must be running and publicly exposed on port 8080. The hosted agent calls it over `RETAIL_REMEDY_OPS_MCP_SERVER_URL` at runtime.
 > - [Module 08 - Use Agent Framework for Python](../08-agent-framework-python/README.md): you package a **code-first Agent Framework agent** and deploy it as a **hosted agent** that runs fully managed inside your Foundry project.
 
-<!-- markdownlint-disable-next-line MD028 -->
-> [!NOTE]
-> Hosted agents are a **preview** feature of Microsoft Foundry Agent Service. The Python SDK calls in this module pass `allow_preview=True` and use `project.beta.agents` for the preview session and endpoint operations.
+<!-- -->
 
-<!-- markdownlint-disable-next-line MD028 -->
+> [!NOTE]
+> Hosted agents are a **preview** feature of Microsoft Foundry Agent Service. The Python SDK calls in this module pass `allow_preview=True` to `AIProjectClient`.
+
+<!-- -->
+
 > [!TIP]
 > Tick the checkbox next to each step as you complete it to track your progress through this module.
 
@@ -45,7 +47,7 @@ contentType: 'lab'
 - Understand what a hosted agent is and how it differs from the Prompt Agents you built in Modules 04-07.
 - Package a code-first Agent Framework agent that serves the **Responses** protocol.
 - Deploy the agent from **source code** (Part 2) as a fully managed hosted agent. _Part 1 (container-image deploy) is skipped in the current preview - see the note in Part 1._
-- Grant the hosted agent's own Microsoft Entra identity the role it needs to call models.
+- Understand the hosted agent's Microsoft Entra identity and its implicit project access.
 - Invoke the deployed hosted agent from Python and hold a multi-turn conversation.
 
 ## Concepts
@@ -66,7 +68,7 @@ model - but still want a fully managed, serverless endpoint.
 ### The Responses protocol and ResponsesHostServer
 
 A hosted agent communicates over the OpenAI-compatible **Responses** protocol on
-port **8088**. You do not implement that protocol by hand. The Agent Framework's
+port **8088**. You do not implement that server by hand. The Agent Framework's
 `ResponsesHostServer` wraps your `Agent` and serves the protocol for you:
 
 ```python
@@ -82,17 +84,16 @@ The agent bundle for this module lives in [`src/agent/`](https://github.com/Plag
 | `main.py` | Builds the ACL Remedy Advisor agent (wired to the live Module 06 MCP server) and serves it with `ResponsesHostServer`. |
 | `requirements.txt`, `Dockerfile`, `agent.yaml`, `.dockerignore` | Packaging for the hosted agent. |
 
-The hosted agent exposes the same tool set as the **Module 06** Prompt Agent: the live
-`retail_remedy_ops` **MCP server** (the same public dev-tunnel endpoint from Module 06) plus
-the Foundry hosted **web search** and **code interpreter** tools. It does _not_ call the
+The hosted agent exposes the live `retail_remedy_ops` **MCP server** (the same public
+endpoint from Module 06) plus the Foundry hosted **web search** tool. It does _not_ call the
 Module 07 Foundry IQ knowledge base - a hosted agent runs as its own Microsoft Entra
 identity, which cannot be granted data-plane access to the RBAC-only Azure AI Search service
-in this preview.
+currently.
 
 Because the MCP server is anonymous, the hosted agent needs no extra permissions to reach
 it; it only needs outbound network access to the public tunnel URL. The dev-tunnel URL is
-baked into the deploy as the `RETAIL_REMEDY_OPS_MCP_SERVER_URL` environment variable, so if the tunnel changes
-you must **redeploy** the agent.
+baked into the deploy as the `RETAIL_REMEDY_OPS_MCP_SERVER_URL` environment variable, so if
+the tunnel changes you must **redeploy** the agent.
 
 ### Two ways to deploy
 
@@ -119,13 +120,11 @@ current preview** (see the note in Part 1):
 ### The agent's own identity
 
 Every hosted agent gets its **own Microsoft Entra agent identity** when you deploy
-it. That identity - not yours - calls the model at runtime, so it needs the
-**Foundry User** role on the Foundry account. The identity only exists _after_ the
-agent version is created, so the role cannot be pre-assigned in infrastructure. The
-deploy scripts assign it for you with `ensure_agent_identity_rbac`. Your workshop
-project was provisioned with a constrained Role Based Access Control Administrator
-role that lets you assign _only_ that one role to service principals, so this stays
-within least privilege.
+it. That identity - not yours - calls models and tools at runtime. Foundry gives the
+identity implicit access to model inference and session storage within its own project,
+so the standard hosted-agent flow needs no explicit role assignment. Assign roles only
+when the agent accesses external resources such as Azure Storage, Azure AI Search, or
+Azure Container Registry.
 
 ### Avoiding collisions in a shared workshop
 
@@ -159,7 +158,7 @@ agent is scoped to your own project, so attendees never overwrite each other.
    uv run python shared/mcp-servers/retail-remedy-ops/src/server.py
    ```
 
-- [ ] Review the agent bundle in `src/agent/` - open `main.py` to see the tools the hosted agent exposes: the live `retail_remedy_ops` **MCP server** (over `RETAIL_REMEDY_OPS_MCP_SERVER_URL`) plus the Foundry hosted **web search** and **code interpreter** tools, matching the `acl-remedy-advisor` Prompt Agent from Module 06.
+- [ ] Review the agent bundle in `src/agent/` - open `main.py` to see the tools the hosted agent exposes: the live `retail_remedy_ops` **MCP server** (over `RETAIL_REMEDY_OPS_MCP_SERVER_URL`) plus the Foundry hosted **web search** tool.
 
 ### Part 1 - deploy from a container image (skip for now)
 
@@ -176,50 +175,47 @@ agent is scoped to your own project, so attendees never overwrite each other.
 
 ### Part 2 - deploy from source code (preview, recommended)
 
-You complete [`src/starter.py`](https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/09-hosted-agents/src/starter.py) to deploy the `src/agent/` bundle as a hosted agent. The starter already zips the bundle into `zip_bytes` / `zip_sha256`, opens an `AIProjectClient`, reads `RETAIL_REMEDY_OPS_MCP_SERVER_URL` / `RETAIL_REMEDY_OPS_MCP_SERVER_LABEL`, and imports the two shared deploy helpers - you fill in **three TODOs** inside the `with AIProjectClient(...) as client:` block. The code for each is below so you can complete the lab without leaving this page; the full reference is in [`solution/deploy_hosted_agent_code.py`](https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_code.py).
+You complete [`src/starter.py`](https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/09-hosted-agents/src/starter.py) to deploy the `src/agent/` bundle as a hosted agent. The starter already zips the bundle into `zip_bytes` / `zip_sha256`, opens an `AIProjectClient`, reads `RETAIL_REMEDY_OPS_MCP_SERVER_URL` / `RETAIL_REMEDY_OPS_MCP_SERVER_LABEL`, and imports the shared `wait_for_agent_version_active` helper - you fill in **three TODOs** inside the `with AIProjectClient(...) as client:` block. The code for each is below so you can complete the lab without leaving this page; the full reference is in [`solution/deploy_hosted_agent_code.py`](https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_code.py).
 
-- [ ] **TODO 1 - describe the hosted agent.** Build a `CreateAgentVersionFromCodeContent` that hands Foundry your zipped bundle and tells it how to build and run the image - 1 vCPU, 2 GiB of memory, a remote Python 3.13 build, and the **Responses** protocol:
+- [ ] **TODO 1 - prepare the code stream and describe the hosted agent.** Wrap `zip_bytes` in an `io.BytesIO` stream and build a `HostedAgentDefinition` that tells Foundry how to build and run the image - 1 vCPU, 2 GiB of memory, a remote Python 3.13 build, and the **Responses** protocol:
 
    ```python
-   content = CreateAgentVersionFromCodeContent(
-       metadata=CreateAgentVersionFromCodeMetadata(
-           description='ACL Remedy Advisor hosted agent deployed from source code.',
-           definition=HostedAgentDefinition(
-               cpu=CPU,
-               memory=MEMORY,
-               environment_variables={
-                   'AZURE_AI_MODEL_DEPLOYMENT_NAME': model_deployment,
-                   'RETAIL_REMEDY_OPS_MCP_SERVER_URL': mcp_server_url,
-                   'RETAIL_REMEDY_OPS_MCP_SERVER_LABEL': mcp_server_label,
-               },
-               code_configuration=CodeConfiguration(
-                   runtime=RUNTIME,
-                   entry_point=['python', 'main.py'],
-                   dependency_resolution=CodeDependencyResolution.REMOTE_BUILD,
-               ),
-               protocol_versions=[ProtocolVersionRecord(protocol='responses', version='1.0.0')],
-           ),
+   code_stream = io.BytesIO(zip_bytes)
+   code_stream.name = f'{agent_name}.zip'
+   definition = HostedAgentDefinition(
+       cpu=CPU,
+       memory=MEMORY,
+       environment_variables={
+           'AZURE_AI_MODEL_DEPLOYMENT_NAME': model_deployment,
+           'RETAIL_REMEDY_OPS_MCP_SERVER_URL': mcp_server_url,
+           'RETAIL_REMEDY_OPS_MCP_SERVER_LABEL': mcp_server_label,
+       },
+       code_configuration=CodeConfiguration(
+           runtime=RUNTIME,
+           entry_point=['python', 'main.py'],
+           dependency_resolution=CodeDependencyResolution.REMOTE_BUILD,
        ),
-       code=(f'{agent_name}.zip', zip_bytes, 'application/zip'),
+       protocol_versions=[ProtocolVersionRecord(protocol='responses', version='2.0.0')],
    )
    ```
 
 - [ ] **TODO 2 - create the version from code.** Upload the bundle and create the agent version. Foundry validates the zip hash and starts building the image remotely:
 
    ```python
-   created = client.beta.agents.create_version_from_code(
+   created = client.agents.create_version_from_code(
        agent_name=agent_name,
-       content=content,
+       definition=definition,
+       code=code_stream,
        code_zip_sha256=zip_sha256,
+       description='ACL Remedy Advisor hosted agent deployed from source code.',
    )
    print(f'Created hosted agent {agent_name} version {created.version}; Foundry is building it.')
    ```
 
-- [ ] **TODO 3 - wait for active, then grant the agent its identity role.** Poll until the new version reports `active`, then give the agent's own Microsoft Entra identity the **Foundry User** role so it can call the model at runtime. Both helpers are already imported at the top of the starter from [`solution/hosted_agent_support.py`](https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/09-hosted-agents/solution/hosted_agent_support.py):
+- [ ] **TODO 3 - wait for active.** Poll until the new version reports `active`. The helper is already imported at the top of the starter from [`solution/hosted_agent_support.py`](https://github.com/PlagueHO/foundry-agentic-workshop/blob/main/labs/introduction-foundry-agent-service/09-hosted-agents/solution/hosted_agent_support.py):
 
    ```python
    wait_for_agent_version_active(client, agent_name, created.version)
-   ensure_agent_identity_rbac(created, credential)
    ```
 
    Remove the `raise NotImplementedError(...)` line once all three TODOs are complete.
@@ -248,7 +244,6 @@ You complete [`src/starter.py`](https://github.com/PlagueHO/foundry-agentic-work
    ```
 
 - [ ] Confirm the second turn (the follow-up about the original box and charger) builds on the answer from the first turn.
-
 - [ ] In the Foundry portal, open **Agents** and confirm `acl-remedy-advisor-hosted-code` appears with an active version. If you also ran Part 1, `acl-remedy-advisor-hosted-container` appears alongside it.
 
   <details>
@@ -292,12 +287,10 @@ You complete [`src/starter.py`](https://github.com/PlagueHO/foundry-agentic-work
 
 ## Congratulations 🎉
 
-You shipped a code-first agent. You wired the live `retail_remedy_ops` MCP server - together
-with the hosted **web search** and **code interpreter** tools - into a hosted agent and
-deployed it from source code, granted its own Microsoft Entra identity the role it needs to
-call models, and held a multi-turn conversation with the managed endpoint. This is the
-pattern for production workloads that need custom orchestration with a fully managed,
-serverless runtime.
+You shipped a code-first agent. You wired the live `retail_remedy_ops` MCP server and hosted
+**web search** into a hosted agent, deployed it from source code, and held a multi-turn
+conversation with the managed endpoint. This is the pattern for production workloads that
+need custom orchestration with a fully managed, serverless runtime.
 
 > [!TIP]
 > **Next up → [Module 10: Foundry Toolboxes](../10-foundry-toolboxes/README.md)**
@@ -306,9 +299,8 @@ serverless runtime.
 ## Troubleshooting
 
 - **Authentication fails** - the scripts use `DefaultAzureCredential`, which relies on your Azure CLI session. Run `az login` in the terminal to re-authenticate, then retry.
-- **The agent identity cannot call the model (403 at runtime)** - the Foundry User role can take a minute to propagate after deployment. Wait and retry the invoke. The deploy script already retries the assignment while the new identity propagates to Microsoft Entra ID.
+- **The agent identity cannot call the model (403 at runtime)** - confirm the agent calls the model through `FOUNDRY_PROJECT_ENDPOINT`. Project-local model inference is implicit; direct calls to an account-level endpoint require an explicit role assignment.
 - **The hosted agent cannot reach the MCP server / retail tools fail at runtime** - the agent calls the public `RETAIL_REMEDY_OPS_MCP_SERVER_URL` from inside Foundry's managed compute. Confirm the Module 06 MCP server is still running and the dev tunnel is **publicly** exposed, and that `RETAIL_REMEDY_OPS_MCP_SERVER_URL` (ending in `/mcp`) was set **before** you deployed - the URL is baked into the agent at deploy time, so if the tunnel changed you must **redeploy**. If the server is reachable from your laptop but the agent still cannot call it, the hosted runtime may be blocking outbound egress to the tunnel; report it to your facilitator.
-- **`PrincipalNotFound` or a role-assignment error during deploy** - confirm your project was provisioned with the constrained Role Based Access Control Administrator role (Part 1 and Part 2 require it). Ask your facilitator if the role is missing.
 - **`docker: command not found` (Part 1)** - Docker is not available in your environment. Use Part 2 (source-code deploy) instead.
 - **The version never becomes active** - open the agent in the Foundry portal and check the version's build logs. A failed remote build usually means a dependency in `src/agent/requirements.txt` could not be installed.
 - **`acl-remedy-advisor-hosted-code` is not found when invoking** - confirm Part 2 completed successfully and that `HOSTED_AGENT_NAME_CODE` matches in your `.env`. (For the container agent, check `HOSTED_AGENT_NAME_CONTAINER`.)

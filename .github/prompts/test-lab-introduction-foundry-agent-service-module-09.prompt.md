@@ -11,7 +11,7 @@ description: "Test lab module 09 (Build and run a hosted agent) end-to-end from 
 
 You must test the steps in the #file:labs/introduction-foundry-agent-service/09-hosted-agents/README.md from a local terminal in this repository. The attendee is `${input:attendeeUpn}` in the provisioned environment `${input:envName}`.
 
-This module packages a code-first Agent Framework agent and deploys it as a **hosted agent** running fully managed inside the attendee's Foundry project. Hosted agents are a **preview** feature; the SDK calls pass `allow_preview=True` and use `project.beta.agents`. The test deploys the agent (Part 2 from source code is the primary path; Part 1 from a container image is optional and needs Docker), invokes the deployed endpoint over the Responses protocol, and then verifies the deployed agent and its metrics in the Foundry portal.
+This module packages a code-first Agent Framework agent and deploys it as a **hosted agent** running fully managed inside the attendee's Foundry project. Deploying a hosted agent from a **container image (Part 1) is generally available**; deploying from **source code (Part 2) is a preview** feature. The SDK calls pass `allow_preview=True` and use `client.agents`. The test deploys the agent (Part 2 from source code is the primary path; Part 1 from a container image is optional and needs Docker), invokes the deployed endpoint over the Responses protocol, and then verifies the deployed agent and its metrics in the Foundry portal.
 
 The lab environment must already be provisioned and the Azure CLI must already be signed in as the attendee. An `open_browser_page` is already open on `https://ai.azure.com`, authenticated as the same attendee, so you can confirm the deployed hosted agent and inspect its metrics in the portal.
 
@@ -51,6 +51,14 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
    ```
 
    **Check:** If the import raises `ModuleNotFoundError`, run `uv sync` from the repo root and retry.
+
+1. Confirm the agent bundle pins the working Agent Framework hosting stack (Foundry's remote build installs these during Part 2):
+
+   ```bash
+   cat labs/introduction-foundry-agent-service/09-hosted-agents/src/agent/requirements.txt
+   ```
+
+   **Check:** Confirm the file contains `--pre`, `agent-framework-core==1.11.0`, `agent-framework-foundry==1.10.1`, `agent-framework-foundry-hosting==1.0.0a260709`, and `httpx`. These exact pins are required for the Responses `2.0.0` protocol - older hosting pre-releases deploy but never become ready.
 
 ### Check 3 - Confirm the `.env` file exists and contains required values
 
@@ -92,12 +100,12 @@ The hosted agent calls the **Retail Remedy Operations MCP server** from Module 0
 1. Confirm the output shows `${input:attendeeUpn}` as the signed-in user and that the subscription ID matches `AZURE_SUBSCRIPTION_ID` from the environment.
 1. If the command fails or shows a different identity, pause and ask the user to run `az login` and complete the browser sign-in before continuing. Do not enter credentials automatically.
 
-### Check 6 - Confirm the constrained role-assignment permission
+### Check 6 - Confirm hosted agents have project-local access (no extra RBAC)
 
-The deploy scripts assign the hosted agent's own Microsoft Entra identity the **Foundry User** role after the version becomes active. This requires the project to have been provisioned with the constrained Role Based Access Control Administrator role.
+Current hosted agents run with implicit access to their own Foundry project, so the deploy scripts do **not** assign any additional role. The Module 06 MCP server is anonymous, so the agent reaches it over its public URL with no data-plane role required.
 
-1. Confirm with the user that the lab environment `${input:envName}` was provisioned by the facilitator (which grants this constrained role).
-1. No command is required here - the assignment is attempted automatically during deploy. If it fails with `PrincipalNotFound` or an authorization error, capture the error for the Troubleshooting follow-up rather than retrying blindly.
+1. No command or role assignment is required here.
+1. If a later deploy or invoke step fails with an authorization error, capture the exact error for the Troubleshooting follow-up rather than retrying blindly.
 
 ### Check 7 - Confirm the browser portal session is ready
 
@@ -109,7 +117,7 @@ The deploy scripts assign the hosted agent's own Microsoft Entra identity the **
 
 ## Part 1 - Deploy from a container image (optional, needs Docker)
 
-This part needs **Docker** and the **Azure CLI**. If Docker is not available, skip to **Part 2** - it deploys a separate hosted agent without Docker.
+This part needs **Docker** and the **Azure CLI**. Container-image deployment is generally available (GA). If Docker is not available, skip to **Part 2** - it deploys a separate hosted agent without Docker.
 
 ### Step 1 - Check for Docker
 
@@ -129,10 +137,10 @@ This part needs **Docker** and the **Azure CLI**. If Docker is not available, sk
    uv run python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_container.py
    ```
 
-1. Watch the status messages: the script builds for `linux/amd64`, logs in to the shared registry, pushes the image under the project-specific tag, creates the hosted agent version, waits for it to become active, and assigns the agent identity the Foundry User role.
+1. Watch the status messages: the script builds for `linux/amd64`, logs in to the shared registry, pushes the image under the project-specific tag, creates the hosted agent version, and waits for it to become active.
 1. Confirm the script prints `Hosted agent acl-remedy-advisor-hosted-container is active.`
 
-   **Check:** If a role-assignment error appears, note it for Troubleshooting (Check 6). The version may still be active even if the role takes a moment to propagate.
+   **Check:** If the version never becomes active, open the agent in the Foundry portal and read the version's build/pull logs. An `image_pull_failed` error usually means the image manifest or platform is wrong; note it for Troubleshooting.
 
 ---
 
@@ -145,47 +153,48 @@ This is the primary deployment path. Foundry zips `src/agent/`, builds the image
 1. Open [src/starter.py](labs/introduction-foundry-agent-service/09-hosted-agents/src/starter.py).
 1. Apply the three snippets so the starter matches `solution/deploy_hosted_agent_code.py`:
 
-   - **TODO 1** - build the `CreateAgentVersionFromCodeContent`:
+   - **TODO 1** - prepare the code stream and build the `HostedAgentDefinition`:
 
      ```python
-     content = CreateAgentVersionFromCodeContent(
-         metadata=CreateAgentVersionFromCodeMetadata(
-             description='ACL Remedy Advisor hosted agent deployed from source code.',
-             definition=HostedAgentDefinition(
-                 cpu=CPU,
-                 memory=MEMORY,
-                 environment_variables={'AZURE_AI_MODEL_DEPLOYMENT_NAME': model_deployment},
-                 code_configuration=CodeConfiguration(
-                     runtime=RUNTIME,
-                     entry_point=['python', 'main.py'],
-                     dependency_resolution=CodeDependencyResolution.REMOTE_BUILD,
-                 ),
-                 protocol_versions=[ProtocolVersionRecord(protocol='responses', version='1.0.0')],
-             ),
+     code_stream = io.BytesIO(zip_bytes)
+     code_stream.name = f'{agent_name}.zip'
+     definition = HostedAgentDefinition(
+         cpu=CPU,
+         memory=MEMORY,
+         environment_variables={
+             'AZURE_AI_MODEL_DEPLOYMENT_NAME': model_deployment,
+             'RETAIL_REMEDY_OPS_MCP_SERVER_URL': mcp_server_url,
+             'RETAIL_REMEDY_OPS_MCP_SERVER_LABEL': mcp_server_label,
+         },
+         code_configuration=CodeConfiguration(
+             runtime=RUNTIME,
+             entry_point=['python', 'main.py'],
+             dependency_resolution=CodeDependencyResolution.REMOTE_BUILD,
          ),
-         code=(f'{agent_name}.zip', zip_bytes, 'application/zip'),
+         protocol_versions=[ProtocolVersionRecord(protocol='responses', version='2.0.0')],
      )
      ```
 
    - **TODO 2** - create the agent version from code:
 
      ```python
-     created = client.beta.agents.create_version_from_code(
+     created = client.agents.create_version_from_code(
          agent_name=agent_name,
-         content=content,
+         definition=definition,
+         code=code_stream,
          code_zip_sha256=zip_sha256,
+         description='ACL Remedy Advisor hosted agent deployed from source code.',
      )
      print(f'Created hosted agent {agent_name} version {created.version}; Foundry is building it.')
      ```
 
-   - **TODO 3** - wait for the version to become active and grant the agent identity RBAC:
+   - **TODO 3** - wait for the version to become active:
 
      ```python
      wait_for_agent_version_active(client, agent_name, created.version)
-     ensure_agent_identity_rbac(created, credential)
      ```
 
-1. Confirm the completed `starter.py` no longer raises `NotImplementedError` and that the `content = ...` placeholder and all three TODO comments are resolved. Ensure `wait_for_agent_version_active` and `ensure_agent_identity_rbac` are imported from `hosted_agent_support` (the solution imports them at the top of the file).
+1. Confirm the completed `starter.py` no longer raises `NotImplementedError` and that the `code_stream = ...` and `definition = ...` placeholders and all three TODO comments are resolved. Ensure `wait_for_agent_version_active` is imported from `hosted_agent_support` (the starter imports it near the top of the file).
 
 ### Step 4 - Run the completed starter
 
@@ -198,7 +207,7 @@ This is the primary deployment path. Foundry zips `src/agent/`, builds the image
 1. Confirm the output includes `Built code archive from ...`, then `Created hosted agent acl-remedy-advisor-hosted-code version <n>; Foundry is building it.`, and finally `Hosted agent acl-remedy-advisor-hosted-code is active.`.
 1. Confirm the script exits cleanly with no traceback.
 
-   **Check:** If the starter raises `NameError` or `ImportError`, confirm the TODO 1-3 snippets were applied and that the support helpers are imported (Step 3).
+   **Check:** If the starter raises `NameError` or `ImportError`, confirm the TODO 1-3 snippets were applied and that the support helper is imported (Step 3).
 
    **Check:** If the version never becomes active, open the agent in the Foundry portal and read the version's build logs. A failed remote build usually means a dependency in `src/agent/requirements.txt` could not be installed.
 
@@ -225,7 +234,7 @@ This is the primary deployment path. Foundry zips `src/agent/`, builds the image
 1. Confirm the second prompt (the follow-up about the original box and charger) produces a context-aware answer that builds on the first turn.
 1. Confirm the script prints `Session deleted (...)` and exits cleanly with no traceback.
 
-   **Check:** If the invoke fails with a 403 at runtime, the Foundry User role may still be propagating to the new agent identity. Wait a minute and retry.
+   **Check:** If the invoke fails at runtime, confirm Part 2 finished and the version is active. Hosted agents run with implicit project-local access, so no role assignment is required. If a session is not ready yet, wait a few seconds and retry. Also confirm the Module 06 MCP server is still running and reachable on its public URL.
 
    **Check:** If the agent is reported not found, confirm Part 2 completed successfully and that `HOSTED_AGENT_NAME_CODE` matches in `.env`.
 

@@ -3,7 +3,7 @@ flight-ops MCP server - provides flight status, rebooking options, and
 compensation claim tools for the Trip Disruption Concierge demo.
 
 Start with:
-    python shared/mcp-servers/flight-ops/src/server.py
+    uv run python shared/mcp-servers/flight-ops/src/server.py
 
 The server listens on http://0.0.0.0:<FLIGHT_OPS_MCP_SERVER_PORT>/mcp (default port 3001).
 Override with FLIGHT_OPS_MCP_SERVER_PORT environment variable.

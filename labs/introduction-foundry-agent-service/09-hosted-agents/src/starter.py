@@ -19,23 +19,17 @@ from azure.ai.projects import AIProjectClient
 from azure.ai.projects.models import (
     CodeConfiguration,
     CodeDependencyResolution,
-    CreateAgentVersionFromCodeContent,
-    CreateAgentVersionFromCodeMetadata,
     HostedAgentDefinition,
     ProtocolVersionRecord,
 )
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 
-# The shared polling and agent-identity RBAC helpers live with the solution scripts so the
-# lab keeps a single source of truth. Add that folder to the import path so this starter can
-# reuse them, then import the two helpers TODO 3 calls.
+# The shared polling helper lives with the solution scripts so the lab keeps a single
+# source of truth. Add that folder to the import path so this starter can reuse it.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'solution'))
 
-from hosted_agent_support import (  # noqa: E402, F401
-    ensure_agent_identity_rbac,
-    wait_for_agent_version_active,
-)
+from hosted_agent_support import wait_for_agent_version_active  # noqa: E402, F401
 
 # The agent bundle lives next to this file under agent/. Everything in that folder is
 # zipped flat so Foundry's remote build finds main.py and requirements.txt at the root.
@@ -80,9 +74,9 @@ def run() -> None:
 
     credential = DefaultAzureCredential()
     with AIProjectClient(endpoint=endpoint, credential=credential, allow_preview=True) as client:
-        # TODO 1: Build a CreateAgentVersionFromCodeContent describing the hosted agent.
-        #   - Set metadata=CreateAgentVersionFromCodeMetadata(description=..., definition=...).
-        #   - The definition is a HostedAgentDefinition with:
+        # TODO 1: Prepare the code stream and build a HostedAgentDefinition describing the agent.
+        #   - Wrap zip_bytes in an io.BytesIO and set its .name attribute to '{agent_name}.zip'.
+        #   - Build a HostedAgentDefinition with:
         #       cpu=CPU, memory=MEMORY,
         #       environment_variables={
         #           'AZURE_AI_MODEL_DEPLOYMENT_NAME': model_deployment,
@@ -94,20 +88,22 @@ def run() -> None:
         #           entry_point=['python', 'main.py'],
         #           dependency_resolution=CodeDependencyResolution.REMOTE_BUILD,
         #       ),
-        #       protocol_versions=[ProtocolVersionRecord(protocol='responses', version='1.0.0')].
-        #   - Set code=(f'{agent_name}.zip', zip_bytes, 'application/zip').
-        content = ...  # noqa: F841
+        #       protocol_versions=[ProtocolVersionRecord(protocol='responses', version='2.0.0')].
+        code_stream = ...  # noqa: F841
+        definition = ...  # noqa: F841
 
         # TODO 2: Create the agent version from code.
-        #   created = client.beta.agents.create_version_from_code(
-        #       agent_name=agent_name, content=content, code_zip_sha256=zip_sha256,
+        #   created = client.agents.create_version_from_code(
+        #       agent_name=agent_name,
+        #       definition=definition,
+        #       code=code_stream,
+        #       code_zip_sha256=zip_sha256,
+        #       description='ACL Remedy Advisor hosted agent deployed from source code.',
         #   )
 
-        # TODO 3: Poll until the version is active, then grant the agent identity the
-        #   Foundry User role. The two helpers imported at the top of this file (from
-        #   solution/hosted_agent_support.py) do both:
+        # TODO 3: Poll until the version is active. The helper imported at the top of
+        #   this file (from solution/hosted_agent_support.py) does this:
         #       wait_for_agent_version_active(client, agent_name, created.version)
-        #       ensure_agent_identity_rbac(created, credential)
         raise NotImplementedError('Complete TODO 1-3 to deploy the hosted agent.')
 
 

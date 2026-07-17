@@ -729,7 +729,7 @@ module-13 = [
 [package.metadata]
 requires-dist = [
     { name = "agent-framework-foundry" },
-    { name = "agent-framework-foundry-hosting" },
+    { name = "agent-framework-foundry-hosting", specifier = "==1.0.0a260709" },
     { name = "azure-ai-projects", specifier = ">=2.3.0" },
     { name = "azure-identity" },
     { name = "azure-mgmt-authorization" },

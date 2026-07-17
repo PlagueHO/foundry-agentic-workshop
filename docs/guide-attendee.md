@@ -46,10 +46,14 @@ cd foundry-agentic-workshop
 
 > [!NOTE]
 > Docker is optional. You only need it for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which builds a hosted agent locally and pushes it to the workshop container registry. If Docker is not available, you can still complete every other module - including Module 09 Part 2, which deploys the same agent from source code without Docker. The GitHub Codespaces and dev container environments include Docker automatically.
+
+<!-- -->
+
 > [!IMPORTANT]
 > Module 13 is optional extra credit and requires an Azure subscription and Microsoft Entra tenant where you can create an app registration and Azure Bot Service resource. The shared workshop tenant is not used for that module.
 
-<!-- markdownlint-disable-next-line MD028 -->
+<!-- -->
+
 > [!NOTE]
 > *Foundry Toolkit for VS Code on the Visual Studio Marketplace.*
 
@@ -133,7 +137,7 @@ If your organizer did not deploy the shared server, or you want to run and modif
 1. Start the server:
 
    ```bash
-   python shared/mcp-servers/retail-remedy-ops/src/server.py
+   uv run python shared/mcp-servers/retail-remedy-ops/src/server.py
    ```
 
 1. In the VS Code **PORTS** panel, forward port `8080` and set its **Visibility** to **Public**. The Azure-hosted agent runs in the cloud and cannot reach `localhost`, so a private port returns a 403.

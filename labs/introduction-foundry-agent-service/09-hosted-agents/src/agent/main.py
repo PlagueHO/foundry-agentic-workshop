@@ -7,8 +7,7 @@ probes ``/readiness`` automatically.
 
 The agent calls the live **Retail Remedy Operations MCP server** from Module 06 over
 ``RETAIL_REMEDY_OPS_MCP_SERVER_URL`` (the same public dev-tunnel endpoint you used there), and also enables
-the Foundry hosted **web search** and **code interpreter** tools - matching the tool set of
-the ``acl-remedy-advisor`` Prompt Agent from Module 06.
+the Foundry hosted **web search** tool.
 
 Because the MCP server is anonymous (no auth), the hosted agent needs no extra permissions
 to reach it; it only needs outbound network access to the public tunnel URL. The MCP server
@@ -56,10 +55,6 @@ INSTRUCTIONS = (
     'Use web search to ground your guidance in current ACCC guidance at\n'
     'accc.gov.au and always cite your sources with links.\n'
     '\n'
-    'When asked to calculate refund amounts, depreciation, pro-rata warranty\n'
-    'values, or compare prices, use code interpreter to perform the calculation\n'
-    'precisely and show your working.\n'
-    '\n'
     'Always state clearly that you provide general guidance, not legal advice, and\n'
     'that "no refund" signs are unlawful under the ACL.\n'
     '\n'
@@ -85,9 +80,8 @@ def build_agent() -> Agent:
         credential=DefaultAzureCredential(),
     )
 
-    # Module 06 tool set: the live retail_remedy_ops MCP server plus the Foundry hosted web
-    # search and code interpreter tools (served by the model). The MCP server is anonymous,
-    # so the hosted agent only needs outbound access to the public tunnel URL - no RBAC.
+    # The live retail_remedy_ops MCP server is anonymous, so the hosted agent only needs
+    # outbound access to the public endpoint. Web search is served by the model.
     retail_remedy_ops = MCPStreamableHTTPTool(
         name=os.environ.get('RETAIL_REMEDY_OPS_MCP_SERVER_LABEL', 'retail_remedy_ops'),
         url=mcp_server_url,
@@ -102,7 +96,6 @@ def build_agent() -> Agent:
         tools=[
             retail_remedy_ops,
             client.get_web_search_tool(),
-            client.get_code_interpreter_tool(),
         ],
         # Foundry hosted agents are stateless at the model layer; conversation state is
         # managed by the Responses host, so the chat client must not persist responses.
