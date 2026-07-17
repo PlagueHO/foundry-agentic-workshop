@@ -311,7 +311,7 @@ Depending on how you added the MCP tool to the agent (via the Foundry Toolkit or
   <details>
   <summary>📸 Screenshot: Foundry Toolkit MCP tool approval prompt</summary>
 
-  ![Foundry Toolkit Agent playground showing the Approve / Deny prompt for the lookup_purchase MCP tool call](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-06/06a-mcp-approval-request.png)
+  ![Foundry Toolkit Agent playground showing the Approve / Deny prompt for the lookup_purchase MCP tool call](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-06/06a-toolkit-mcp-approval-request.png)
 
   </details>
 
