@@ -202,7 +202,6 @@ You published `acl-remedy-advisor` to Microsoft 365 Copilot and Teams and verifi
 > [!TIP]
 > **You finished the workshop! → [Back to the workshop overview](../README.md)**
 > Revisit any module from the overview, or take everything you've built into your own projects. No need to scroll - explore from here!
-
 > [!TIP]
 > **Go further → [Module 13: Build a custom engine agent](../13-custom-engine-agent/README.md)**
 > Build an attendee-owned Microsoft 365 Agents SDK proxy that connects Teams to the Foundry agent. This optional module requires your own Azure subscription and Entra tenant.

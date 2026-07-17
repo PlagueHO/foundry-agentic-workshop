@@ -46,7 +46,6 @@ cd foundry-agentic-workshop
 
 > [!NOTE]
 > Docker is optional. You only need it for [Module 09](./labs/introduction-foundry-agent-service) Part 1, which builds a hosted agent locally and pushes it to the workshop container registry. If Docker is not available, you can still complete every other module - including Module 09 Part 2, which deploys the same agent from source code without Docker. The GitHub Codespaces and dev container environments include Docker automatically.
-
 > [!IMPORTANT]
 > Module 13 is optional extra credit and requires an Azure subscription and Microsoft Entra tenant where you can create an app registration and Azure Bot Service resource. The shared workshop tenant is not used for that module.
 
