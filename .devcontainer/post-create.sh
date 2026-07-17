@@ -11,6 +11,12 @@ echo "📝 Configuring Git settings..."
 git config --global core.autocrlf input
 git config --global core.fileMode false
 
+# Install uv if not already present (GHCR feature fallback)
+if ! command -v uv >/dev/null 2>&1; then
+    echo "⬇️  Installing uv via pip..."
+    pip install uv
+fi
+
 # Install Python development dependencies
 echo "🐍 Installing Python development dependencies..."
 if command -v uv >/dev/null 2>&1; then
