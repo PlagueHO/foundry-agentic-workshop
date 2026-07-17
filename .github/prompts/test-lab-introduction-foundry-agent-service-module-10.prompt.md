@@ -206,7 +206,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 > If the portal does not expose Toolboxes in your region, or you skipped the portal steps above, run the fallback script to create the toolbox through the Python SDK. `RETAIL_REMEDY_OPS_MCP_SERVER_URL` must be set in your `.env` file.
 >
 > ```bash
-> python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py
+> uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py
 > ```
 >
 > The script creates the `acl-remedy-toolbox` toolbox with Web Search, the `retail_remedy_ops` MCP server, Code Interpreter, and Tool Search enabled, then prints the consumer endpoint URL.

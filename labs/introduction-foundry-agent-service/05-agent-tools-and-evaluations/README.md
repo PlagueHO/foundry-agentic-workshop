@@ -36,7 +36,7 @@ contentType: 'lab'
 > If you could not complete Module 04, run the solution script to create the required agent before continuing:
 >
 > ```bash
-> python labs/introduction-foundry-agent-service/04-prompt-based-agents/solution/create_agent.py
+> uv run python labs/introduction-foundry-agent-service/04-prompt-based-agents/solution/create_agent.py
 > ```
 
 <!-- -->

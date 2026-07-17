@@ -36,7 +36,7 @@ contentType: 'lab'
 > If you could not complete Module 05, run the solution script to create the required agent before continuing:
 >
 > ```bash
-> python labs/introduction-foundry-agent-service/05-agent-tools-and-evaluations/solution/create_agent.py
+> uv run python labs/introduction-foundry-agent-service/05-agent-tools-and-evaluations/solution/create_agent.py
 > ```
 
 <!-- markdownlint-disable-next-line MD028 -->
@@ -184,7 +184,7 @@ when the port is Public; if tool calls fail intermittently, use the shared Azure
 > **Code fallback:** If the Agent Builder UI cannot add the MCP tool, run the code fallback script which creates a new agent version directly via the API:
 >
 > ```bash
-> python labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py
+> uv run python labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py
 > ```
 >
 > Ensure `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set in your `.env` file before running the script.

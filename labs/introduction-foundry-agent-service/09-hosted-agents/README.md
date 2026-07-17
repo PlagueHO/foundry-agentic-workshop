@@ -234,7 +234,7 @@ You complete [`src/starter.py`](https://github.com/PlagueHO/foundry-agentic-work
    > If you get stuck, run the reference implementation instead:
    >
    > ```bash
-   > python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_code.py
+   > uv run python labs/introduction-foundry-agent-service/09-hosted-agents/solution/deploy_hosted_agent_code.py
    > ```
 
 - [ ] Wait until the script reports `Agent version is now active.` - your hosted agent `acl-remedy-advisor-hosted-code` is now live in your project.

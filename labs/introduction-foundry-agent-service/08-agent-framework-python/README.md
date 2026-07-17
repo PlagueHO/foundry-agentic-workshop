@@ -36,7 +36,7 @@ contentType: 'lab'
 > If you could not complete the earlier modules, recreate the agent's end state from code before continuing. The Module 08 solution script restores the grounded knowledge-base agent, which is a valid starting point for this module:
 >
 > ```bash
-> python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
+> uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
 > ```
 
 <!-- markdownlint-disable-next-line MD028 -->

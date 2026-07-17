@@ -40,7 +40,7 @@ contentType: 'lab'
 > If you could not complete the earlier modules, recreate the agent from code before continuing. The Module 06 solution script restores the v3 three-tool agent, which is a valid starting point for this module:
 >
 > ```bash
-> python labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py
+> uv run python labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py
 > ```
 
 <!-- markdownlint-disable-next-line MD028 -->
