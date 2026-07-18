@@ -370,7 +370,7 @@ The **Traces** tab in the Foundry portal shows each agent conversation as a stru
   <details>
   <summary>📸 Screenshot: Conversation trace for acl-remedy-advisor</summary>
 
-  ![Conversation trace for acl-remedy-advisor - shows the complete trace of the conversation](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-06/09b-portal-agent-conversation.png)
+  ![Conversation trace for acl-remedy-advisor - shows the complete trace of the conversation](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-06/08b-portal-agent-conversation.png)
 
   </details>
 
