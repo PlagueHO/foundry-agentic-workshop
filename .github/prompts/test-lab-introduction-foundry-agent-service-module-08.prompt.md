@@ -77,15 +77,13 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
 This module connects to the grounded `acl-remedy-advisor` Prompt Agent built across Modules 04-07.
 
-1. Confirm the agent exists by listing the attendee's agents (the helper script reads `FOUNDRY_PROJECT_ENDPOINT` from `.env`):
+1. Confirm the agent exists in the attendee's Foundry project:
 
    ```bash
-   python scripts/list-attendee-projects.py
+   uv run python -c "import os; from dotenv import load_dotenv; load_dotenv(); from azure.ai.projects import AIProjectClient; from azure.identity import DefaultAzureCredential; client = AIProjectClient(endpoint=os.environ['FOUNDRY_PROJECT_ENDPOINT'], credential=DefaultAzureCredential()); names = [a.name for a in client.agents.list()]; print('Agents:', names); assert 'acl-remedy-advisor' in names, 'ERROR: acl-remedy-advisor not found'"
    ```
 
-   If the helper is not applicable to a single attendee, confirm the agent another way - for example by running the module 08 solution in Part 3, which fails fast with a clear "agent not found" error if the agent is missing.
-
-1. Confirm `acl-remedy-advisor` is present in the project.
+1. Confirm the output includes `acl-remedy-advisor` in the agents list and no assertion error is raised.
 
    **Check:** If the agent does not exist (Module 07 was not completed), recreate its end state from the solution folder before continuing:
 

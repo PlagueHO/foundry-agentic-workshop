@@ -26,6 +26,8 @@ contentType: 'lab'
 
 **Estimated time:** 35 minutes
 
+![Architecture diagram: A Python client sends requests through the Foundry Agent Service endpoint to a Hosted Agent Container running user code and ResponsesHostServer inside a Foundry Project. The container calls the Model Deployment using managed identity, invokes the Web Search tool via the Foundry runtime, and calls the external Retail Remedy Ops MCP Server over HTTPS.](../../../docs/assets/diagrams/lab-09-hosted-agent-architecture.svg)
+
 > [!IMPORTANT]
 > This module builds on two earlier modules:
 >
@@ -64,8 +66,6 @@ and a dedicated identity.
 Use a hosted agent when you need full control of the agent's orchestration - custom
 tools, your own libraries, or logic that does not fit the declarative Prompt Agent
 model - but still want a fully managed, serverless endpoint.
-
-![Architecture diagram: A Python client sends requests through the Foundry Agent Service endpoint to a Hosted Agent Container running user code and ResponsesHostServer inside a Foundry Project. The container calls the Model Deployment using managed identity, invokes the Web Search tool via the Foundry runtime, and calls the external Retail Remedy Ops MCP Server over HTTPS.](../../../docs/assets/diagrams/lab-09-hosted-agent-architecture.svg)
 
 ![Sequence diagram: A client posts to the Foundry Agent Service endpoint, which forwards to the Hosted Agent Container over the Responses protocol. The container calls the model for a chat completion with managed identity, receives a tool_use event, calls the Retail Remedy Ops MCP Server, receives the tool result, continues the completion, and the Foundry endpoint streams the final response back to the client.](../../../docs/assets/diagrams/lab-09-hosted-agent-sequence.svg)
 

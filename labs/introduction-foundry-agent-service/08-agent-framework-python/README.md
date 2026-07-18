@@ -38,6 +38,8 @@ contentType: 'lab'
 > ```bash
 > uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
 > ```
+>
+> This script also requires `KNOWLEDGE_BASE_NAME` and `AZURE_SEARCH_SERVICE_NAME` to be set in `.env` in addition to the variables from earlier modules. These should have been set by the lab onboarding.
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!TIP]
@@ -108,21 +110,20 @@ your code.
    uv sync
    ```
 
+- [ ] Sign in with the Azure CLI so `DefaultAzureCredential` can authenticate. You are probably already signed in from earlier modules, but the authentication may have expired. Run the following command and follow the prompts to sign in again if necessary:
+
+   ```bash
+   az login
+   ```
+
+   > [!NOTE]
+   > `AGENT_NAME` defaults to `acl-remedy-advisor`. Leave `AGENT_VERSION` empty to use the latest published version of the agent, or set it to pin a specific version.
+
 - [ ] Confirm the `acl-remedy-advisor` agent exists in your Foundry project. If you did not finish Module 07, recreate its end state from the solution folder:
 
    ```bash
    uv run python labs/introduction-foundry-agent-service/08-agent-framework-python/solution/create_knowledge_base_agent.py
    ```
-
-- [ ] Sign in with the Azure CLI so `DefaultAzureCredential` can authenticate, and confirm your `.env` file sets `FOUNDRY_PROJECT_ENDPOINT`:
-
-   ```bash
-   az login
-   azd env get-values
-   ```
-
-   > [!NOTE]
-   > `AGENT_NAME` defaults to `acl-remedy-advisor`. Leave `AGENT_VERSION` empty to use the latest published version of the agent, or set it to pin a specific version.
 
 - [ ] Open `src/starter.py` and complete each TODO using the snippets below.
 
@@ -176,6 +177,13 @@ your code.
 - [ ] Change the `QUERY` string to a different retail scenario and rerun to observe a different grounded response.
 
 - [ ] In the Foundry portal, open the `acl-remedy-advisor` agent and select the **Traces** tab to see your Python runs recorded alongside the playground conversations from earlier modules.
+
+  <details>
+  <summary>📸 Screenshot: Traces tab showing Python runs</summary>
+
+  ![acl-remedy-advisor agent Traces tab with completed Python runs listed, showing Trace ID, Response ID, Status, Created at, Duration, token counts, and estimated cost](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-08/01-traces-python-runs.png)
+
+  </details>
 
 ## Validation
 
