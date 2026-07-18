@@ -33,11 +33,11 @@ contentType: 'lab'
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!IMPORTANT]
-> This module builds on [Module 06 - Integrate MCP tools](../06-mcp-tools/README.md). After Module 06 the `acl-remedy-advisor` agent is at **v3** with three direct tools - **Web search**, **Code Interpreter**, and the **MCP** server.
+> This module builds on [Module 06 - Integrate MCP tools](../06-mcp-tools/README.md). After Module 06 the `acl-remedy-advisor` agent has **three direct tools** - **Web search**, **Code Interpreter**, and the **MCP** server.
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!NOTE]
-> If you could not complete the earlier modules, recreate the agent from code before continuing. The Module 06 solution script restores the v3 three-tool agent, which is a valid starting point for this module:
+> If you could not complete the earlier modules, recreate the agent from code before continuing. The Module 06 solution script creates the three-tool agent, which is a valid starting point for this module:
 >
 > ```bash
 > uv run python labs/introduction-foundry-agent-service/06-mcp-tools/solution/create_agent_with_mcp.py
@@ -130,38 +130,57 @@ This module uses two Azure AI Search indexes that the workshop provisioning scri
 
 ## Steps
 
-### Part 1 - Create the knowledge base and add the first source
+### Part 1 - Create the knowledge base
 
 #### 1. Open the Knowledge page
 
 - [ ] In the [Microsoft Foundry portal](https://ai.azure.com), navigate to your project.
-- [ ] In the left navigation under **Build**, click **Knowledge**.
-- [ ] Confirm the page heading reads **Knowledge (Foundry IQ)** and the **Knowledge bases** tab is selected.
+- [ ] In the left navigation, click **Knowledge**.
+- [ ] Confirm the page heading reads **Knowledge (Foundry IQ)** and the **Knowledge bases** tab is selected. A **Connection** dropdown at the top shows the connected Azure AI Search service — this is pre-selected automatically; leave it as is.
 
   <details>
-  <summary>📸 Screenshot: Knowledge (Foundry IQ) page - Knowledge bases tab</summary>
+  <summary>📸 Screenshot: Knowledge (Foundry IQ) page</summary>
 
-  ![Knowledge (Foundry IQ) page showing the Knowledge bases tab selected, with a "Create a knowledge base" button and "Ground your agent in enterprise knowledge" heading.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/01-knowledge-page-empty.png)
+  ![Knowledge (Foundry IQ) page showing the Knowledge bases tab selected, a Connection dropdown with the connected AI Search service pre-selected, and a Create a knowledge base button.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/01-knowledge-page-empty.png)
 
   </details>
 
-#### 2. Choose the knowledge type
+#### 2. Start creating a knowledge base
 
-- [ ] Click **Create a knowledge base**. The **Choose a knowledge type** dialog opens, listing the available source types (Azure AI Search Index, Azure Blob Storage, Web, SharePoint, OneLake, Fabric IQ, Azure SQL, Work IQ, File, MCP Server).
-- [ ] Select the **Azure AI Search Index** tile ("Enterprise scale search for app development").
-- [ ] Click **Connect**.
+- [ ] Click **Create a knowledge base**.
+
+  The **Create a new knowledge base** page opens directly — there is no intermediate dialog. It shows a **Basic configuration** section at the top and a **Knowledge sources (Foundry IQ)** section below.
+
+#### 3. Set the name and basic configuration
+
+- [ ] In the **Basic configuration** section, set:
+  - **Name**: replace the auto-generated name (for example `knowledgebase124`) with your per-attendee knowledge base name from `KNOWLEDGE_BASE_NAME` (for example, `acl-remedy-knowledge-lab-attendee-1`).
+  - **Description** (optional):
+
+    ```text
+    Retail product catalog and store policy knowledge for the ACL Remedy Advisor agent.
+    ```
+
+  - **Chat completions model**: leave as **Select model**. A model is only needed for **Answer synthesis** or for **Low**/**Medium** reasoning effort, neither of which this lab uses.
+  - **Retrieval reasoning effort**: confirm **Minimal** is selected (the default). This searches both sources on every query with the lowest latency and cost. See [Output modes and retrieval instructions](#output-modes-and-retrieval-instructions) for the alternatives.
+  - **Output mode**: confirm **Extractive data** is selected (the default). The knowledge base returns ranked passages and the agent writes the grounded answer. Extractive data is required when reasoning effort is **Minimal**.
+  - **Retrieval instructions**: leave **empty**. These steer the LLM query-planning step, which **Minimal** effort disables. If you later raise the effort to **Low** or **Medium**, add an instruction such as:
+
+    ```text
+    Use the retail-policies source for questions about returns, refunds, warranties, loyalty, and store-brand guarantees. Use the retail-products source for questions about specific products, prices, ratings, and stock.
+    ```
 
   <details>
-  <summary>📸 Screenshot: Choose a knowledge type - Azure AI Search Index</summary>
+  <summary>📸 Screenshot: Create a new knowledge base - Basic configuration</summary>
 
-  ![Choose a knowledge type dialog with the Azure AI Search Index tile selected and the Connect button highlighted](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/02-choose-knowledge-type.png)
+  ![Create a new knowledge base page showing the Basic configuration section with a per-attendee name filled in, Retrieval reasoning effort set to Minimal, and Output mode set to Extractive data.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/02-create-kb-page.png)
 
   </details>
 
-  The **Create a new knowledge base** page opens (with **Save knowledge base** and **Cancel** in the top-right) and immediately shows the **Create a knowledge source** dialog.
+#### 4. Add the retail-products knowledge source
 
-#### 3. Create the retail-products knowledge source
-
+- [ ] Scroll down to the **Knowledge sources (Foundry IQ)** section.
+- [ ] Click **Add sources** and select **Azure AI Search Index** from the dropdown.
 - [ ] In the **Create a knowledge source** dialog, set the fields:
   - **Name**: replace the default (for example `ks-searchindex-69`) with:
 
@@ -178,32 +197,14 @@ This module uses two Azure AI Search indexes that the workshop provisioning scri
   - **Select search index**: choose **retail-products** from the dropdown.
 
   > [!NOTE]
-  > There is no field mapping step. Foundry IQ reads the index's **semantic configuration** to locate content, titles, and keywords. The dialog notes *"Search index must contain semantic configuration"* - the workshop indexes already include one.
+  > There is no field mapping step. Foundry IQ reads the index's **semantic configuration** to locate content, titles, and keywords. The dialog notes *"Search index must contain semantic configuration"* — the workshop indexes already include one.
 
-  <details>
-  <summary>📸 Screenshot: Create a knowledge source - retail-products</summary>
+- [ ] Click **Create**. The source appears in the **Knowledge sources** table with status **Active**.
 
-  ![Create a knowledge source dialog with Name set to retail-products, a description, and the retail-products search index selected](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/03-select-search-index.png)
+#### 5. Add the retail-policies knowledge source
 
-  </details>
-
-- [ ] Click **Create**. The source appears in the knowledge base's **Knowledge sources** list.
-
-  <details>
-  <summary>📸 Screenshot: retail-products knowledge source configured</summary>
-
-  ![Create a new knowledge base page showing the retail-products knowledge source listed with type Azure AI Search Index](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/04-knowledge-source-configured.png)
-
-  </details>
-
----
-
-### Part 2 - Add the retail-policies knowledge source
-
-#### 4. Add the second source
-
-- [ ] On the **Create a new knowledge base** page, open the **Add sources** dropdown and choose **Azure AI Search Index** again.
-- [ ] In the **Create a knowledge source** dialog, set the fields:
+- [ ] Click **Add sources** again and select **Azure AI Search Index**.
+- [ ] In the **Create a knowledge source** dialog, set:
   - **Name**:
 
     ```text
@@ -217,93 +218,55 @@ This module uses two Azure AI Search indexes that the workshop provisioning scri
     ```
 
   - **Select search index**: choose **retail-policies**.
-- [ ] Click **Create**. Both `retail-products` and `retail-policies` now appear in the **Knowledge sources** list.
-
----
-
-### Part 3 - Name and save the knowledge base
-
-#### 5. Complete the basic configuration
-
-- [ ] In the **Basic configuration** section, set:
-  - **Name**: use your per-attendee knowledge base name from `KNOWLEDGE_BASE_NAME` (for example, `acl-remedy-knowledge-lab-attendee-1`).
-  - **Description** (optional):
-
-    ```text
-    Retail product catalog and store policy knowledge for the ACL Remedy Advisor agent.
-    ```
-
-  - **Chat completions model**: leave as **Select model**. A model is only needed for **Answer synthesis** or for **Low**/**Medium** reasoning effort, neither of which this lab uses.
-  - **Retrieval reasoning effort**: **Minimal**. This searches both sources on every query with the lowest latency and cost, and is the recommended starting point. See [Output modes and retrieval instructions](#output-modes-and-retrieval-instructions) for the alternatives.
-  - **Output mode**: **Extractive data**. The knowledge base returns ranked passages and the agent writes the grounded answer with `mcp://searchindex/...` citations. Extractive data is required when reasoning effort is **Minimal**.
-  - **Retrieval instructions** (optional): leave **empty**. Retrieval instructions steer the LLM query-planning step, which **Minimal** effort disables, so they have no effect here. If you later raise the effort to **Low** or **Medium**, add an instruction such as the following so the engine routes each question to the right source:
-
-    ```text
-    Use the retail-policies source for questions about returns, refunds, warranties, loyalty, and store-brand guarantees. Use the retail-products source for questions about specific products, prices, ratings, and stock.
-    ```
-
-- [ ] Confirm the **Knowledge sources** table lists both `retail-products` and `retail-policies` as type **Azure AI Search Index** with status **Active**.
-
-  <details>
-  <summary>📸 Screenshot: Knowledge base basic configuration</summary>
-
-  ![Create a new knowledge base page showing the basic configuration with a per-attendee name, Minimal retrieval reasoning effort, Extractive data output mode, and both knowledge sources Active](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/05-kb-basic-config.png)
-
-  </details>
+- [ ] Click **Create**. Both `retail-products` and `retail-policies` now appear in the **Knowledge sources** table with status **Active**.
 
 #### 6. Save the knowledge base
 
+- [ ] Confirm both `retail-products` and `retail-policies` are listed with type **Azure AI Search Index** and status **Active**.
 - [ ] Click **Save knowledge base** in the top-right.
-- [ ] Wait for creation to complete. The knowledge base detail page opens (its heading is the knowledge base name) with **Save** and **Use in an agent** buttons in the top-right.
+- [ ] Wait for creation to complete. The knowledge base detail page opens — its heading is the knowledge base name — with **Save**, **Use in an agent**, and **More options** buttons in the top-right.
 
   <details>
   <summary>📸 Screenshot: Knowledge base created</summary>
 
-  ![Knowledge base detail page showing the knowledge base name as the heading, both knowledge sources, and the Use in an agent button](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/06-kb-created.png)
+  ![Knowledge base detail page showing the knowledge base name as the heading, both knowledge sources listed as Active, and the Use in an agent button.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/03-kb-created.png)
 
   </details>
 
 ---
 
-### Part 4 - Attach the knowledge base to the agent
+### Part 2 - Attach the knowledge base to the agent
 
 #### 7. Use the knowledge base in an agent
 
 - [ ] On the knowledge base detail page, click **Use in an agent** in the top-right.
 - [ ] In the **Recent agents** dropdown, select **acl-remedy-advisor**. (Use **View all agents** if it is not listed.)
 
-  <details>
-  <summary>📸 Screenshot: Use in an agent - select acl-remedy-advisor</summary>
-
-  ![Use in an agent dropdown showing Recent agents with acl-remedy-advisor selectable](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/07-use-in-agent-menu.png)
-
-  </details>
-
 #### 8. Confirm the Knowledge section
 
-- [ ] You land on the **acl-remedy-advisor** agent's **Build** page.
+- [ ] You land on the **acl-remedy-advisor** agent's **Playground** page.
 - [ ] Scroll the configuration panel and confirm a **Knowledge** section now lists your knowledge base, separate from the **Tools** section (which still shows **Code interpreter**, **Web search**, and the `retail-remedy-ops` MCP server).
 
   > [!NOTE]
-  > Attaching the knowledge base auto-saves the agent as a new version (for example, **Version 4**). You will save again after updating the instructions.
+  > Attaching the knowledge base auto-saves the agent as a new version — the version number in the top-right increments by one. You will save again after updating the instructions.
 
   <details>
-  <summary>📸 Screenshot: Agent Build page - Knowledge section added</summary>
+  <summary>📸 Screenshot: Agent Playground - Knowledge section added</summary>
 
-  ![acl-remedy-advisor Build page showing a Knowledge section listing the attached knowledge base alongside the existing Tools section](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/08-agent-knowledge-added.png)
+  ![acl-remedy-advisor Playground showing a Knowledge section listing the attached knowledge base alongside the existing Tools section with Code interpreter, Web search, and retail-remedy-ops.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/04-agent-knowledge-added.png)
 
   </details>
 
 ---
 
-### Part 5 - Update the agent instructions
+### Part 3 - Update the agent instructions
 
 The agent now has the knowledge base attached, but it needs guidance on *when* to use each capability. Without explicit routing instructions the model may answer from training knowledge, or never call the `retail-remedy-ops`, web search, or Code Interpreter tools.
 
 #### 9. Add tool-routing and grounding instructions
 
 - [ ] In the **Instructions** field, position your cursor at the end of the existing instructions.
-- [ ] Press **Enter** twice, then add the following. These paragraphs cover the operational MCP tools, the knowledge base, web search, and Code Interpreter so the agent reaches for the right capability each time:
+- [ ] Press **Enter** twice, then add the following paragraphs:
 
   ```text
   When a staff member provides a receipt ID, order ID, or customer ID - or asks
@@ -333,25 +296,20 @@ The agent now has the knowledge base attached, but it needs guidance on *when* t
 
   > [!NOTE]
   > Earlier modules already added guidance for **web search** (current ACCC guidance) and **Code Interpreter** (refund and depreciation calculations). The tool-routing summary above reinforces them so no tool is left unused.
-
-  <details>
-  <summary>📸 Screenshot: Updated agent instructions with tool routing</summary>
-
-  ![Agent Build page Instructions field with the tool-routing and grounding paragraphs added, and the Tools section showing Code interpreter, Web search, and retail-remedy-ops](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/09-updated-instructions.png)
-
-  </details>
+  >
+  > **Tip:** An **Optimize** button appears below the Instructions panel. Do not use it during this lab — it rewrites instructions using AI and will replace the tool-routing text you just added.
 
 #### 10. Save the agent
 
 - [ ] Click **Save** in the top-right.
-- [ ] Wait for the save to complete and confirm the agent advances to a new version (for example, **Version 5**).
+- [ ] Wait for the save to complete and confirm the agent advances to a new version.
 
 ---
 
-### Part 6 - Test grounded retrieval
+### Part 4 - Test grounded retrieval
 
 > [!IMPORTANT]
-> **Check the MCP server is running and publicly tunneled before testing the agent.** The `retail_remedy_ops` MCP server from [Module 06](../06-mcp-tools/README.md) must still be running locally and exposed on a **Public** port 8080 tunnel, with `RETAIL_REMEDY_OPS_MCP_SERVER_URL` set to its URL ending in `/mcp`. The agent routes operational lookups (step 12) to this server, so if it stopped, restart it and re-expose the port (see [Module 06](../06-mcp-tools/README.md), Part 2):
+> **Check the MCP server is running and publicly tunneled before testing the agent.** The `retail_remedy_ops` MCP server from [Module 06](../06-mcp-tools/README.md) must still be running and exposed on a **Public** port 8080 tunnel, with `RETAIL_REMEDY_OPS_MCP_SERVER_URL` set to its URL ending in `/mcp`. The agent routes operational lookups (step 12) to this server, so if it stopped, restart it and re-expose the port (see [Module 06](../06-mcp-tools/README.md), Part 2):
 >
 > ```bash
 > uv run python shared/mcp-servers/retail-remedy-ops/src/server.py
@@ -359,25 +317,25 @@ The agent now has the knowledge base attached, but it needs guidance on *when* t
 
 #### 11. Run a combined policy query
 
-- [ ] Open the **Playground** (Chat) panel for the agent.
+- [ ] The **Playground** (Chat) panel is on the right side of the agent page.
 - [ ] Send the following message:
 
   > According to our store's return policy, how many days do customers have to return non-perishable items with a receipt, and within what timeframe should spoiled perishable items be reported?
 
 - [ ] Review the response. Confirm the agent:
   - Answers **14 days** for non-perishable returns with a receipt and **48 hours** for reporting spoiled perishable items.
-  - Includes numbered citations (for example `[1]` `[2]`) that link to `mcp://searchindex/...` sources.
-  - Shows the knowledge base tool chip (for example `kb-...`) in the response trace.
+  - Includes source citation markers in the response text.
+  - Shows a `kb-...` tool chip in the response metadata.
 
   <details>
-  <summary>📸 Screenshot: Playground - grounded policy response with citations</summary>
+  <summary>📸 Screenshot: Playground - grounded policy response</summary>
 
-  ![Agent playground showing a grounded response citing the 14-day non-perishable return window and 48-hour perishable reporting window, with numbered citations to mcp://searchindex sources and a kb- tool chip](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/10-grounded-response.png)
+  ![Agent playground showing a grounded response citing the 14-day non-perishable return window and 48-hour perishable reporting window, with a kb- tool chip in the response metadata.](../../../docs/assets/screenshots/introduction-foundry-agent-service/lab-07/05-grounded-response.png)
 
   </details>
 
   > [!TIP]
-  > This query does not include a receipt or customer ID, so the agent grounds from the knowledge base and does **not** invoke the `retail-remedy-ops` MCP tools - exactly the routing behaviour the instructions describe.
+  > This query does not include a receipt or customer ID, so the agent grounds from the knowledge base and does **not** invoke the `retail-remedy-ops` MCP tools — exactly the routing behaviour the instructions describe.
 
 #### 12. (Optional) Exercise the other tools
 
@@ -391,7 +349,7 @@ The agent now has the knowledge base attached, but it needs guidance on *when* t
 - [ ] **Knowledge base created**: Your knowledge base (the `KNOWLEDGE_BASE_NAME` value, for example `acl-remedy-knowledge-lab-attendee-1`) is listed on the **Knowledge bases** tab.
 - [ ] **Two knowledge sources**: The knowledge base shows both `retail-products` and `retail-policies` as **Azure AI Search Index** sources with status **Active**.
 - [ ] **Attached to agent**: The knowledge base appears in the `acl-remedy-advisor` agent's **Knowledge** section, and the agent has advanced to a new version.
-- [ ] **Grounded policy answers**: Policy queries return answers with numbered citations to `mcp://searchindex/...` sources rather than generic retail conventions.
+- [ ] **Grounded policy answers**: Policy queries return grounded answers with source citation markers and a `kb-...` tool chip visible in the response metadata, rather than relying on generic retail conventions.
 - [ ] **Grounded product answers**: Product queries return specific product names, prices, and ratings that match the `retail-products` index.
 - [ ] **Tool routing intact**: Operational queries (with a receipt ID) still call the `retail-remedy-ops` MCP server, web search still answers consumer-law questions, and Code Interpreter still performs calculations. Adding the knowledge base does not displace the existing tools.
 
