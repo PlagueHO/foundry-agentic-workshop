@@ -37,6 +37,9 @@ type resolvedAttendeeType = {
 
   @description('True when the UPN was successfully resolved to an Entra object ID.')
   resolved: bool
+
+  @description('Microsoft Entra principal type. Defaults to User when not specified. Set to ServicePrincipal when the attendee is a service principal (e.g., the CI/CD identity in individual mode).')
+  principalType: ('Device' | 'ForeignGroup' | 'Group' | 'ServicePrincipal' | 'User')?
 }
 
 // The main bicep module to provision Azure resources for the Microsoft Foundry workshop.
@@ -357,7 +360,7 @@ var attendeeProjectRoleEntries = flatten(map(
     roleAssignment: {
       roleDefinitionIdOrName: foundryRoleCatalog['foundry-user']
       principalId: a.objectId
-      principalType: 'User'
+      principalType: a.?principalType ?? 'User'
     }
   }]
 ))
@@ -368,7 +371,7 @@ var attendeeFoundryAccountRoleAssignments = map(
   a => {
     roleDefinitionIdOrName: foundryRoleCatalog[a.role]
     principalId: a.objectId
-    principalType: 'User'
+    principalType: a.?principalType ?? 'User'
   }
 )
 
@@ -378,7 +381,7 @@ var attendeeSearchRoleAssignments = flatten(map(resolvedAttendeesWithIds, a =>
   map(searchRoleCatalog[a.role], roleId => {
     roleDefinitionIdOrName: roleId
     principalId: a.objectId
-    principalType: 'User'
+    principalType: a.?principalType ?? 'User'
   })
 ))
 
@@ -391,14 +394,14 @@ var attendeeSearchRoleAssignments = flatten(map(resolvedAttendeesWithIds, a =>
 var attendeeAcrPushRoleAssignments = map(resolvedAttendeesWithIds, a => {
   roleDefinitionIdOrName: 'Container Registry Repository Contributor'
   principalId: a.objectId
-  principalType: 'User'
+  principalType: a.?principalType ?? 'User'
 })
 
 // Resource group Reader role assignments (all resolved attendees).
 var attendeeResourceGroupReaderRoleAssignments = map(resolvedAttendeesWithIds, a => {
   roleDefinitionIdOrName: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
   principalId: a.objectId
-  principalType: 'User'
+  principalType: a.?principalType ?? 'User'
 })
 
 // Application Insights Log Analytics Reader role assignments (all resolved attendees).
@@ -409,7 +412,7 @@ var attendeeResourceGroupReaderRoleAssignments = map(resolvedAttendeesWithIds, a
 var attendeeAppInsightsLogAnalyticsReaderRoleAssignments = map(resolvedAttendeesWithIds, a => {
   roleDefinitionIdOrName: '73c42c96-874c-492b-b04d-ab87d138a893'
   principalId: a.objectId
-  principalType: 'User'
+  principalType: a.?principalType ?? 'User'
 })
 
 // Constrained Role Based Access Control Administrator assignments (all resolved attendees) at the
@@ -423,7 +426,7 @@ var attendeeAppInsightsLogAnalyticsReaderRoleAssignments = map(resolvedAttendees
 var attendeeAgentIdentityRbacAdminRoleAssignments = map(resolvedAttendeesWithIds, a => {
   roleDefinitionIdOrName: 'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   principalId: a.objectId
-  principalType: 'User'
+  principalType: a.?principalType ?? 'User'
   description: 'Constrained: assign Foundry User to hosted agent identities only (Module 09).'
   conditionVersion: '2.0'
   condition: '((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/write\'})) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {${foundryRoleCatalog['foundry-user']}} AND @Request[Microsoft.Authorization/roleAssignments:PrincipalType] StringEqualsIgnoreCase \'ServicePrincipal\')) AND ((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/delete\'})) OR (@Resource[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAnyValues:GuidEquals {${foundryRoleCatalog['foundry-user']}}))'

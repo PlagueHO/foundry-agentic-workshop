@@ -348,10 +348,11 @@ def _run_individual_mode(
     upn = _get_current_upn()
     project_name = _upn_to_project_name(upn) if upn else f'{attendee_prefix}-01'
     display_name = upn or principal_id
+    principal_type = os.getenv('AZURE_PRINCIPAL_ID_TYPE', 'User').strip() or 'User'
 
     print(
         f'Individual mode: provisioning as {display_name} '
-        f'(project: {project_name}, role: {default_role})'
+        f'(project: {project_name}, role: {default_role}, principalType: {principal_type})'
     )
 
     entry: dict[str, object] = {
@@ -361,6 +362,7 @@ def _run_individual_mode(
         'role': default_role,
         'individualProject': True,
         'resolved': True,
+        'principalType': principal_type,
     }
 
     _emit_resolved_list([entry])

@@ -74,22 +74,28 @@ jobs:
 
       - name: Set Azure Developer CLI environment variables
         env:
+          VARS_AZURE_INDIVIDUAL_MODE: ${{ vars.AZURE_INDIVIDUAL_MODE || 'true' }}
           VARS_AZURE_ATTENDEE_LIST: ${{ vars.AZURE_ATTENDEE_LIST || '' }}
         run: |
           azd env set AZURE_PRINCIPAL_ID_TYPE "$AZURE_PRINCIPAL_ID_TYPE"
           azd env set AZURE_RESOURCE_GROUP "rg-${AZURE_ENV_NAME}"
-          azd env set AZURE_ATTENDEE_COUNT "${{ vars.AZURE_ATTENDEE_COUNT || '2' }}"
-          azd env set AZURE_ATTENDEE_PROJECT_PREFIX "${{ vars.AZURE_ATTENDEE_PROJECT_PREFIX || 'attendee' }}"
+          azd env set AZURE_INDIVIDUAL_MODE "$VARS_AZURE_INDIVIDUAL_MODE"
           azd env set AZURE_AI_SEARCH_CAPABILITY_HOST "${{ vars.AZURE_AI_SEARCH_CAPABILITY_HOST || 'false' }}"
           azd env set AZURE_COSMOS_DB_CAPABILITY_HOST "${{ vars.AZURE_COSMOS_DB_CAPABILITY_HOST || 'false' }}"
           azd env set AZURE_STORAGE_ACCOUNT_CAPABILITY_HOST "${{ vars.AZURE_STORAGE_ACCOUNT_CAPABILITY_HOST || 'false' }}"
-          azd env set AZURE_FACILITATOR_PROJECT_PREFIX "${{ vars.AZURE_FACILITATOR_PROJECT_PREFIX || 'facilitator' }}"
-          azd env set AZURE_PROCTOR_PROJECT_PREFIX "${{ vars.AZURE_PROCTOR_PROJECT_PREFIX || 'proctor' }}"
-          azd env set AZURE_ORGANIZER_PROJECT_PREFIX "${{ vars.AZURE_ORGANIZER_PROJECT_PREFIX || 'organizer' }}"
-          azd env set AZURE_ENSURE_FACILITATOR_PROJECT "${{ vars.AZURE_ENSURE_FACILITATOR_PROJECT || 'true' }}"
 
-          if [ -n "$VARS_AZURE_ATTENDEE_LIST" ]; then
-            azd env set AZURE_ATTENDEE_LIST "$VARS_AZURE_ATTENDEE_LIST"
+          if [ "$VARS_AZURE_INDIVIDUAL_MODE" != "true" ]; then
+            azd env set AZURE_ATTENDEE_COUNT "${{ vars.AZURE_ATTENDEE_COUNT || '2' }}"
+            azd env set AZURE_ATTENDEE_PROJECT_PREFIX "${{ vars.AZURE_ATTENDEE_PROJECT_PREFIX || 'attendee' }}"
+            azd env set AZURE_ATTENDEE_DEFAULT_ROLE "${{ vars.AZURE_ATTENDEE_DEFAULT_ROLE || 'foundry-user' }}"
+            azd env set AZURE_FACILITATOR_PROJECT_PREFIX "${{ vars.AZURE_FACILITATOR_PROJECT_PREFIX || 'facilitator' }}"
+            azd env set AZURE_PROCTOR_PROJECT_PREFIX "${{ vars.AZURE_PROCTOR_PROJECT_PREFIX || 'proctor' }}"
+            azd env set AZURE_ORGANIZER_PROJECT_PREFIX "${{ vars.AZURE_ORGANIZER_PROJECT_PREFIX || 'organizer' }}"
+            azd env set AZURE_ENSURE_FACILITATOR_PROJECT "${{ vars.AZURE_ENSURE_FACILITATOR_PROJECT || 'true' }}"
+
+            if [ -n "$VARS_AZURE_ATTENDEE_LIST" ]; then
+              azd env set AZURE_ATTENDEE_LIST "$VARS_AZURE_ATTENDEE_LIST"
+            fi
           fi
 
       - name: Preview Infrastructure using Azure Developer CLI
