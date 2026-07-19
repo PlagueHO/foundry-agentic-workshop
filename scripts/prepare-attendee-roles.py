@@ -334,16 +334,31 @@ def _run_individual_mode(
     is derived from `az account show` and used for project name derivation, matching
     the UPN-derived name logic used in multi-attendee mode.
     """
+    # Resolve the deploying principal's object ID using a three-step fallback chain:
+    #   1. AZURE_PRINCIPAL_ID env var — set explicitly or injected by azd when available.
+    #   2. az ad signed-in-user show — works for interactive user logins (az login).
+    #   3. az ad sp show --id $AZURE_CLIENT_ID — works for service principal auth (CI/CD);
+    #      AZURE_CLIENT_ID is the application (client) ID; this command returns the SP object ID.
     principal_id = os.getenv('AZURE_PRINCIPAL_ID', '').strip()
     if not principal_id:
+        # Step 2: try signed-in user (interactive/user login path).
         result = _run_az(['ad', 'signed-in-user', 'show', '--query', 'id', '-o', 'tsv'])
-        if result.returncode != 0 or not result.stdout.strip():
-            print(
-                'AZURE_INDIVIDUAL_MODE is enabled but AZURE_PRINCIPAL_ID could not be '
-                'determined. Ensure you are signed in with `az login`.'
-            )
-            return 1
-        principal_id = result.stdout.strip()
+        if result.returncode == 0 and result.stdout.strip():
+            principal_id = result.stdout.strip()
+        else:
+            # Step 3: signed-in identity is a service principal — resolve its object ID
+            # from AZURE_CLIENT_ID (the application/client ID present in CI environments).
+            client_id = os.getenv('AZURE_CLIENT_ID', '').strip()
+            if client_id:
+                result = _run_az(['ad', 'sp', 'show', '--id', client_id, '--query', 'id', '-o', 'tsv'])
+                if result.returncode == 0 and result.stdout.strip():
+                    principal_id = result.stdout.strip()
+    if not principal_id:
+        print(
+            'AZURE_INDIVIDUAL_MODE is enabled but AZURE_PRINCIPAL_ID could not be '
+            'determined. Ensure you are signed in with `az login` or set AZURE_PRINCIPAL_ID.'
+        )
+        return 1
 
     upn = _get_current_upn()
     project_name = _upn_to_project_name(upn) if upn else f'{attendee_prefix}-01'
