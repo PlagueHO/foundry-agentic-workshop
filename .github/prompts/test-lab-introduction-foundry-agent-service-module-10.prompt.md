@@ -1,5 +1,5 @@
 ---
-description: "Test lab module 10 (Build and consume a Foundry Toolbox) end-to-end from a local terminal and the Foundry portal, verifying every step carefully. Requires a provisioned lab environment, the repository checked out locally, a configured .env with FOUNDRY_PROJECT_ENDPOINT and RETAIL_REMEDY_OPS_MCP_SERVER_URL, and an authenticated Azure CLI session signed in as the lab attendee. Opens the ai.azure.com portal using open_browser_page."
+description: "Test lab module 10 (Foundry Toolboxes) end-to-end from a local terminal and the Foundry portal, verifying every step carefully. Requires a provisioned lab environment, the repository checked out locally, a configured .env with FOUNDRY_PROJECT_ENDPOINT and RETAIL_REMEDY_OPS_MCP_SERVER_URL, and an authenticated Azure CLI session signed in as the lab attendee. Opens the ai.azure.com portal using open_browser_page."
 ---
 
 ## Inputs
@@ -11,7 +11,7 @@ description: "Test lab module 10 (Build and consume a Foundry Toolbox) end-to-en
 
 You must test the steps in the #file:labs/introduction-foundry-agent-service/10-foundry-toolboxes/README.md from a local terminal in this repository. The attendee is `${input:attendeeUpn}` in the provisioned environment `${input:envName}`.
 
-This module bundles the **Retail Remedy Operations MCP server**, **Web Search**, and **Code Interpreter** into a single **Foundry Toolbox** managed through the portal, enables **Tool Search**, and then consumes the toolbox from a Python **Microsoft Agent Framework** app. The test creates the toolbox in the portal (with a Python SDK fallback), runs the consumer script, and verifies the response includes a Tool Search–driven remedy recommendation.
+This module bundles the **Retail Remedy Operations MCP server**, **Web Search**, and **Code Interpreter** into a single **Foundry Toolbox** managed through the portal, enables **Tool Search**, and then deploys and invokes a toolbox-wired hosted agent built with the Python **Microsoft Agent Framework**. The test creates the toolbox in the portal (with a Python SDK fallback), deploys the hosted agent from source code, invokes it, and verifies the response includes a Tool Search–driven remedy recommendation.
 
 The lab environment must already be provisioned and the Azure CLI must already be signed in as the attendee. Use `open_browser_page` to open `https://ai.azure.com` and authenticate as the attendee to confirm the toolbox and verify the portal state.
 
@@ -27,7 +27,8 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 
    ```bash
    ls labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py
-   ls labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/consume_toolbox.py
+   ls labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/deploy_hosted_agent_code.py
+   ls labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py
    ```
 
 1. Confirm all paths resolve without error.
@@ -53,7 +54,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm `.env` exists and the required toolbox values are populated:
 
    ```bash
-   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|RETAIL_REMEDY_OPS_MCP_SERVER_URL|TOOLBOX_NAME'
+   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|RETAIL_REMEDY_OPS_MCP_SERVER_URL|TOOLBOX_NAME|AZURE_SUBSCRIPTION_ID|AZURE_RESOURCE_GROUP|FOUNDRY_RESOURCE_NAME'
    ```
 
 1. Confirm `FOUNDRY_PROJECT_ENDPOINT` is set to a non-empty value of the form `https://<resource>.services.ai.azure.com/api/projects/<project>`.
@@ -113,14 +114,14 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
 ## Part 2 - Create the toolbox in the Foundry portal
 
-> **Note:** The Toolboxes portal UI is in preview. If **Toolboxes** is not visible in the portal navigation, skip to the [code fallback](#code-fallback---create-the-toolbox-with-python) at the end of this part.
+> **Note:** If **Toolboxes** is not visible in the portal navigation below, skip to the [code fallback](#code-fallback---create-the-toolbox-with-python) at the end of this part.
 
 ### Step 2 - Navigate to Toolboxes
 
 1. In the browser opened in Check 6, navigate to the attendee's Foundry project.
 1. In the left navigation, click **Build**.
-1. Look for a **Toolboxes** entry under **Build** (it may also appear under **Build → Agents → Tools** or **Build → Tools**).
-1. Click **Toolboxes** to open the toolbox management view.
+1. Under **Build**, click **Tools**.
+1. Select the **Toolboxes** tab.
 1. Take a screenshot of the Toolboxes page.
 
    **Check:** If **Toolboxes** is not visible in the navigation, record this step as **skipped (Toolboxes not in portal)** and proceed to the code fallback.
@@ -180,7 +181,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 1. Enable it.
 1. Confirm the toggle is enabled.
 
-   **Check:** If the **Tool search** toggle is not visible, the preview feature may not be available in this region. Record this in the results report and continue - the consumer script will attempt to use it regardless.
+   **Check:** If the **Tool search** toggle is not visible, the preview feature may not be available in this region. Record this in the results report and continue - the hosted agent will attempt to use it regardless.
 
 ### Step 8 - Publish the toolbox and set it as the default version
 
@@ -199,7 +200,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
    https://<account>.services.ai.azure.com/api/projects/<project>/toolboxes/acl-remedy-toolbox/mcp?api-version=v1
    ```
 
-1. Confirm the endpoint URL is visible in the portal. The consumer script builds this URL automatically from `FOUNDRY_PROJECT_ENDPOINT` and `TOOLBOX_NAME`, so you do not need to paste it anywhere - but confirm it matches the pattern above.
+1. Confirm the endpoint URL is visible in the portal. The hosted agent builds this URL automatically from `FOUNDRY_PROJECT_ENDPOINT` and `TOOLBOX_NAME` at runtime, so you do not need to paste it anywhere - but confirm it matches the pattern above.
 
 #### Code fallback - Create the toolbox with Python
 
@@ -216,64 +217,95 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
 ---
 
-## Part 3 - Consume the toolbox with the Microsoft Agent Framework
+## Part 3 - Deploy and invoke the toolbox-wired hosted agent
 
-### Step 10 - Confirm the environment and sign-in are still active
+### Step 10 - Review the agent bundle
 
-1. Confirm `uv sync` has been run and dependencies are available (Check 2 above).
-1. Confirm the Azure CLI session is still valid:
+1. Open `labs/introduction-foundry-agent-service/10-foundry-toolboxes/src/agent/main.py` and confirm:
+   - The toolbox MCP endpoint is built as `{FOUNDRY_PROJECT_ENDPOINT}/toolboxes/{TOOLBOX_NAME}/mcp?api-version=v1`.
+   - The endpoint is wrapped in an `MCPStreamableHTTPTool` backed by an `httpx.AsyncClient` with a `_ToolboxAuth` handler that fetches a fresh Entra bearer token (scope `https://ai.azure.com/.default`) on every request.
+   - The `httpx.AsyncClient` does **not** contain a `Foundry-Features` header (toolboxes are GA — only the bearer token is required).
+   - The agent instructions tell the model to call `tool_search` when a needed tool is not already visible.
+   - `load_prompts=False` is passed to `MCPStreamableHTTPTool` (the toolbox endpoint does not implement `prompts/list`).
 
-   ```bash
-   az account show --query '{user:user.name}' -o table
-   ```
+1. Open `labs/introduction-foundry-agent-service/10-foundry-toolboxes/src/agent/agent.yaml` and confirm it declares `acl-remedy-advisor-hosted` with the Responses protocol and the environment variables `AZURE_AI_MODEL_DEPLOYMENT_NAME` and `TOOLBOX_NAME`.
 
-   **Check:** If the session has expired, pause and ask the user to run `az login` and complete the browser sign-in before continuing.
+   **Check:** If `Foundry-Features` still appears in `main.py`, report this as a failure — it was removed when toolboxes reached GA.
 
 ### Step 11 - Confirm the required environment variables
 
-1. Confirm `FOUNDRY_PROJECT_ENDPOINT` and `TOOLBOX_NAME` are set in `.env`:
+1. Confirm the `.env` file sets all variables required by the deploy script:
 
    ```bash
-   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|TOOLBOX_NAME'
+   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|AZURE_SUBSCRIPTION_ID|AZURE_RESOURCE_GROUP|FOUNDRY_RESOURCE_NAME|TOOLBOX_NAME'
    ```
 
-1. Confirm `FOUNDRY_PROJECT_ENDPOINT` is a non-empty value and `TOOLBOX_NAME` is `acl-remedy-toolbox` (or unset, which defaults to `acl-remedy-toolbox`).
+1. Confirm `FOUNDRY_PROJECT_ENDPOINT` is a non-empty value of the form `https://<resource>.services.ai.azure.com/api/projects/<project>`.
+1. Confirm `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, and `FOUNDRY_RESOURCE_NAME` are all non-empty (the deploy script uses them to grant the **Foundry User** role to the agent's per-deploy identity).
+1. Confirm `TOOLBOX_NAME` is `acl-remedy-toolbox` or unset (defaults to the same).
 
-### Step 12 - Review the consumer script
+   **Check:** If any required variable is missing or empty, report it and stop.
 
-1. Open `labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/consume_toolbox.py`.
-1. Confirm it wraps the toolbox MCP endpoint in an `MCPStreamableHTTPTool` backed by an `httpx.AsyncClient` that adds a fresh Microsoft Entra bearer token (scope `https://ai.azure.com/.default`) and the `Foundry-Features: Toolboxes=V1Preview` header to every request, including the connection handshake.
-1. Confirm the agent instructions tell the model to call `tool_search` when a needed tool is not already visible, before responding that it cannot help.
-1. Confirm the script retries the connection on failure to handle cold-start drops (`CONNECT_ATTEMPTS = 3` with a backoff).
-1. Confirm the built-in query sends receipt `R-1007` (a ProBook 14 laptop battery that stopped holding charge 14 months after purchase against a 12-month standard warranty).
+### Step 12 - Deploy the agent from source code
 
-### Step 13 - Run the consumer script
-
-1. From the repository root, run:
+1. From the repository root, run the deploy script:
 
    ```bash
-   uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/consume_toolbox.py
+   uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/deploy_hosted_agent_code.py
    ```
 
-1. Let the script run to completion. Retry messages are expected on cold start and do not indicate failure.
-1. Confirm the script prints a remedy recommendation and exits cleanly with no traceback.
+1. Let the script run to completion. The remote build takes several minutes. The script zips `src/agent/`, uploads it, and polls until the version reports **active**. It then grants the agent's per-deploy Entra identity the **Foundry User** role so it can call the model and the toolbox.
+1. Confirm the script prints `Agent version is now active.` and exits cleanly with no traceback.
 
-   **Check:** If every connection attempt fails with `MCP server failed to initialize` or `Cancelled via cancel scope`, confirm the toolbox has a default version set and the MCP server is still running and publicly accessible. Retry after confirming both.
+   **Check:** If the script errors with a missing environment variable, confirm `.env` is populated (Step 11).
 
-   **Check:** If authentication fails with a 401 or 403, run `az login` and retry.
+   **Check:** If the build never becomes active, open the Foundry portal, navigate to **Agents → acl-remedy-advisor-hosted-code**, open the version, and check the build logs. A failed remote build usually means a broken dependency in `requirements.txt`. Report the full error message.
 
-   **Check:** If the script raises `KeyError` or `ValueError` for a missing environment variable, confirm `FOUNDRY_PROJECT_ENDPOINT` and `TOOLBOX_NAME` are set in `.env`.
+   **Check:** If authentication fails with a `401` or `403`, run `az login` and retry.
 
-### Step 14 - Confirm Tool Search drove the response
+### Step 13 - View the agent in the portal
 
-1. Confirm the printed remedy recommendation:
-   - References the customer's purchase and relevant store policy retrieved through the `retail_remedy_ops` tools (for example, the `R-1007` receipt and store warranty policy).
-   - Applies Australian Consumer Law reasoning, distinguishing a major or minor failure and stating the appropriate remedy.
-   - Includes a calculated figure (such as a pro-rata refund amount) produced by Code Interpreter, confirming Code Interpreter was invoked through the toolbox.
+1. In the browser, navigate to the attendee's Foundry project and click **Agents** in the left navigation.
+1. Confirm `acl-remedy-advisor-hosted-code` appears in the Agents list.
+1. Open the agent and confirm:
+   - **Kind** shows **hosted**.
+   - The new version is listed as **active**.
+1. Take a screenshot of the Agents list and a screenshot of the agent detail page with the new version active.
 
-1. Confirm the response is grounded in tool results rather than generic - the agent must have called `tool_search` to discover the retail tools and then called them through `call_tool`.
+   **Check:** If `acl-remedy-advisor-hosted-code` is not visible, confirm Step 12 completed successfully and reload the portal.
 
-   **Check:** If the response is generic and does not reference the purchase or Australian Consumer Law, confirm the Web Search and MCP tools have clear, specific descriptions in the toolbox definition and that Tool Search is enabled on the default version. Publish a new toolbox version with improved descriptions and set it as the default, then rerun the script.
+### Step 14 - Invoke the agent from code
+
+1. From the repository root, run the invoke script:
+
+   ```bash
+   uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py
+   ```
+
+1. Let the script run to completion. The script selects the latest active version, opens an agent session, routes 100% of traffic to the new version, and runs a two-turn Australian Consumer Law conversation for receipt `R-1007` (a laptop battery that failed about 14 months after a 12-month warranty).
+1. Confirm the script exits cleanly with no traceback.
+1. Confirm the first-turn response:
+   - References receipt `R-1007` and store policy retrieved through the `retail_remedy_ops` tools.
+   - Applies Australian Consumer Law reasoning (distinguishes a major or minor failure and states the appropriate remedy).
+   - Recommends a concrete next step for the customer.
+1. Confirm the second turn builds on context from the first (the customer still has the original box and charger).
+
+   **Check:** If the connection drops with `MCP server failed to initialize` or `Cancelled via cancel scope`, the toolbox endpoint had a cold start. Re-run the script.
+
+   **Check:** If authentication fails with a `401` or `403`, run `az login` and retry.
+
+   **Check:** If the response does not reference receipt `R-1007` or `retail_remedy_ops` data, confirm Tool Search is enabled on the default toolbox version and tool descriptions are specific. Publish a new version with improved descriptions, set it as the default, and rerun.
+
+### Step 15 - Review the run traces and metrics
+
+1. In the browser, open `acl-remedy-advisor-hosted-code` in the Foundry portal and select the **Traces** tab.
+1. Open the most recent run and expand the trajectory.
+1. Confirm the trace shows a `tool_search` span followed by one or more `call_tool` spans dispatching `retail_remedy_ops` lookups. This confirms Tool Search discovered the tools and invoked them through the toolbox.
+1. Take a screenshot of the trace view showing the `tool_search` → `call_tool` flow.
+1. Select the **Monitor** tab and confirm the run appears in the operational charts (agent runs, token usage, tool calls).
+1. Take a screenshot of the Monitor dashboard.
+
+   **Check:** If no traces appear, wait 1–2 minutes and refresh — traces may be delayed. If they still do not appear, confirm the invoke script exited cleanly in Step 14.
 
 ---
 
@@ -282,13 +314,14 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 Work through each item in the lab's Validation section and confirm:
 
 1. The `acl-remedy-toolbox` toolbox exists in the Foundry project containing **Web Search**, the `retail_remedy_ops` MCP server, and **Code Interpreter**, with **Tool Search** enabled and a default version set.
-1. `python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/consume_toolbox.py` connects to the toolbox endpoint and runs to completion without error.
-1. The printed response includes a clear remedy recommendation citing store policy and Australian Consumer Law.
-1. The response includes a calculated figure (such as a pro-rata refund) produced by Code Interpreter, confirming the toolbox exposed all three tools through Tool Search.
+1. `python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/deploy_hosted_agent_code.py` publishes a new version of `acl-remedy-advisor-hosted-code` that reports **active**.
+1. The new version appears in the portal **Agents** view for `acl-remedy-advisor-hosted-code` with kind **hosted**.
+1. `python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py` runs to completion and prints a clear remedy recommendation citing store policy and Australian Consumer Law, and recommending the appropriate remedy.
+1. The portal **Traces** view for `acl-remedy-advisor-hosted-code` shows a `tool_search` span followed by `call_tool` spans confirming Tool Search drove tool discovery through the toolbox.
 
 ---
 
-## Step 15 - Report results
+## Step 16 - Report results
 
 Report the outcome of every step above. For each step state whether it **passed**, **failed**, or was **skipped** (with the reason, for example Toolboxes not visible in portal for Steps 2–9). For any failure, include:
 

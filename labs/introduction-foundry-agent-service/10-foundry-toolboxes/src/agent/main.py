@@ -10,10 +10,9 @@ endpoint that bundles all of them behind Tool Search.
 How the toolbox is consumed:
   - The toolbox is exposed as an MCP endpoint secured with Microsoft Entra authentication.
     Every request - including the initial MCP handshake - must carry an Entra bearer token
-    (scope ``https://ai.azure.com/.default``) and the preview header
-    ``Foundry-Features: Toolboxes=V1Preview``.
-  - Both are attached at the httpx-client level so they are present on every request, then the
-    toolbox endpoint is wrapped in an ``MCPStreamableHTTPTool`` and given to the ``Agent``.
+    (scope ``https://ai.azure.com/.default``). The bearer token is attached at the
+    httpx-client level so it is present on every request, then the toolbox endpoint is
+    wrapped in an ``MCPStreamableHTTPTool`` and given to the ``Agent``.
   - Inside the hosted container, ``DefaultAzureCredential`` resolves to the agent's own
     per-deploy Microsoft Entra identity, which holds the Foundry User role - sufficient to
     authenticate to the toolbox endpoint on the same scope it already uses to call the model.
@@ -34,7 +33,6 @@ from agent_framework_foundry_hosting import ResponsesHostServer
 from azure.identity import DefaultAzureCredential
 
 TOOLBOX_API_SCOPE = 'https://ai.azure.com/.default'
-TOOLBOX_FEATURES_HEADER = 'Toolboxes=V1Preview'
 
 INSTRUCTIONS = (
     'You are an Australian Consumer Law (ACL) Remedy Advisor for retail staff.\n'
@@ -106,11 +104,10 @@ def build_agent() -> Agent:
         credential=credential,
     )
 
-    # The Foundry-Features header and bearer token must be present on every request, including
-    # the initial MCP handshake, so they are set on the httpx client rather than per tool call.
+    # The bearer token must be present on every request, including the initial MCP handshake,
+    # so it is set on the httpx client rather than per tool call.
     http_client = httpx.AsyncClient(
         auth=_ToolboxAuth(credential),
-        headers={'Foundry-Features': TOOLBOX_FEATURES_HEADER},
         timeout=120.0,
     )
     toolbox = MCPStreamableHTTPTool(
