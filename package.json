@@ -15,7 +15,7 @@
     "validate:lab-frontmatter": "node scripts/validate-lab-frontmatter.mjs"
   },
   "devDependencies": {
-    "markdownlint-cli2": "^0.23.0",
+    "markdownlint-cli2": "^0.23.1",
     "vitepress": "^1.6.4"
   },
   "description": "Microsoft Foundry Agentic Workshop",
