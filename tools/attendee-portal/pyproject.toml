@@ -6,6 +6,6 @@ requires-python = ">=3.13"
 dependencies = [
     "azure-identity>=1.19.0",
     "azure-storage-blob>=12.24.0",
-    "fastapi>=0.139.0",
+    "fastapi>=0.139.2",
     "uvicorn[standard]>=0.51.0",
 ]
