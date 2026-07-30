@@ -110,6 +110,7 @@ type categoryType =
   | 'AzurePostgresDb'
   | 'AzureSqlDb'
   | 'AzureSqlMi'
+  | 'AzureStorageAccount'
   | 'AzureSynapseAnalytics'
   | 'AzureTableStorage'
   | 'BingLLMSearch'

@@ -508,6 +508,11 @@ var foundryServiceConnections = concat(
       name: cosmosDbConnectionName
       target: 'https://${cosmosDbAccountName}.documents.azure.com:443/'
       isSharedToAll: true
+      metadata: {
+        ApiType: 'Azure'
+        ResourceId: cosmosDbAccount.outputs.resourceId
+        location: location
+      }
     }
   ] : [],
   azureStorageAccountCapabilityHost ? [
@@ -519,6 +524,13 @@ var foundryServiceConnections = concat(
       name: storageConnectionName
       target: 'https://${storageAccounName}.blob.${environment().suffixes.storage}/'
       isSharedToAll: true
+      metadata: {
+        ApiType: 'Azure'
+        ResourceId: storageAccount.outputs.resourceId
+        AccountName: storageAccounName
+        ContainerName: 'foundry-files'
+        location: location
+      }
     }
   ] : []
 )
@@ -622,6 +634,13 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.1' = {
           name: 'agent-identity-demo'
           publicAccess: 'None'
         }
+        // Dedicated container for the AzureBlob Foundry capability host connection.
+        ... (azureStorageAccountCapabilityHost ? [
+          {
+            name: 'foundry-files'
+            publicAccess: 'None'
+          }
+        ] : [])
       ]
     }
     diagnosticSettings: [
