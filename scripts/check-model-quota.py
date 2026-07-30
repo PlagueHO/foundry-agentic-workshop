@@ -330,9 +330,9 @@ def _print_shortfall_table(
     location: str,
 ) -> None:
     print()
-    print('╔══════════════════════════════════════════════════════════════════╗')
-    print('║  ✗  Model quota / availability check FAILED                     ║')
-    print('╚══════════════════════════════════════════════════════════════════╝')
+    print('+------------------------------------------------------------------+')
+    print('|  [FAILED] Model quota / availability check                       |')
+    print('+------------------------------------------------------------------+')
     print(f'\n  Profile   : {profile}')
     print(f'  Region    : {location}')
     print()
@@ -354,7 +354,7 @@ def _print_shortfall_table(
         print(f'  {row}')
     print()
 
-    print('── Remediation ───────────────────────────────────────────────────')
+    print('-- Remediation ----------------------------------------------------')
     if fitting_profile:
         print(f'\n  The "{fitting_profile}" profile fits your available quota.')
         print('  Run:')
@@ -370,7 +370,7 @@ def _print_shortfall_table(
 
     print()
     print('  To try a different region:')
-    print(f'    azd env set AZURE_LOCATION <region>')
+    print('    azd env set AZURE_LOCATION <region>')
     print()
     print('  To skip this check (not recommended):')
     print('    azd env set AZURE_MODEL_QUOTA_CHECK false')
@@ -404,7 +404,7 @@ def main() -> int:
 
     # 0. Skip check entirely if AZURE_MODEL_QUOTA_CHECK=false.
     if not _is_truthy(env.get('AZURE_MODEL_QUOTA_CHECK', 'true')):
-        print('check-model-quota: AZURE_MODEL_QUOTA_CHECK=false — skipping quota preflight.')
+        print('check-model-quota: AZURE_MODEL_QUOTA_CHECK=false - skipping quota preflight.')
         return 0
 
     print('check-model-quota: Validating model quota and availability...')
@@ -414,7 +414,7 @@ def main() -> int:
     if errors:
         print('\nError: required environment variables are missing:\n', file=sys.stderr)
         for err in errors:
-            print(f'  • {err}', file=sys.stderr)
+            print(f'  * {err}', file=sys.stderr)
         print(file=sys.stderr)
         return 1
 
@@ -463,7 +463,7 @@ def main() -> int:
         shortfalls = _check_profile(deployments, availability, quota_map)
 
         if not shortfalls:
-            print(f'  ✓ Profile "{profile}" passes quota and availability checks in {location}.')
+            print(f'  [OK] Profile "{profile}" passes quota and availability checks in {location}.')
             return 0
 
         # 5. Find largest fitting profile for recommendation.
@@ -501,7 +501,7 @@ def main() -> int:
         _print_shortfall_table('custom (AZURE_MODEL_DEPLOYMENTS)', shortfalls, None, location)
         return 1
 
-    print(f'  ✓ Custom deployment set passes quota and availability checks in {location}.')
+    print(f'  [OK] Custom deployment set passes quota and availability checks in {location}.')
     return 0
 
 
