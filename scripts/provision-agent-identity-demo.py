@@ -25,6 +25,7 @@ import json
 import shutil
 import subprocess
 import sys
+import time
 
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
@@ -85,7 +86,16 @@ def _load_azd_env() -> dict[str, str]:
 
 
 def _az(args: list[str]) -> subprocess.CompletedProcess[str]:
-    return subprocess.run([_AZ_CMD, *args], capture_output=True, text=True, check=False)
+    """Run Azure CLI, retrying transient control-plane connection failures."""
+    retries = 3
+    for attempt in range(1, retries + 1):
+        result = subprocess.run([_AZ_CMD, *args], capture_output=True, text=True, check=False)
+        if result.returncode == 0 or attempt == retries:
+            return result
+        delay = attempt * 5
+        print(f'  Azure CLI command failed (attempt {attempt}/{retries}), retrying in {delay}s...')
+        time.sleep(delay)
+    return result
 
 
 def _project_endpoint(foundry_endpoint: str, project_name: str) -> str:

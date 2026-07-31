@@ -93,6 +93,14 @@ JSON string before passing it to `azd env set`.
 
 Confirm the active environment with `azd env list` before proceeding.
 
+The deployment is resource-group scoped. Subscription-scope users should use a target RG name
+that the preprovision hook can create. RG-only users must use an RG created in advance and have
+**Contributor** plus an **unrestricted User Access Administrator or Role Based Access Control
+Administrator** at that RG scope. Conditional or ABAC-constrained role-assignment permissions are
+not sufficient because the template creates several attendee and service-principal assignments. The wizard and the hook must
+not attempt subscription-scope deployment or RG creation for the delegated path. Use azd 1.28.0
+or later.
+
 ## Step 4 - Provision
 
 ```bash
@@ -102,6 +110,9 @@ azd provision
 The pre-provision hook (`scripts/prepare-attendee-roles.py`) resolves each UPN
 to a Microsoft Entra object ID, computes project names, and writes a resolution
 audit CSV to `.azure/<env>/`.
+
+The first preprovision hook (`scripts/ensure-resource-group.py`) verifies the target RG and creates
+it only when the signed-in identity is authorized to do so.
 
 Bicep deploys all Azure resources with RBAC role assignments embedded.
 
@@ -163,3 +174,9 @@ Summarise the provisioning outcome:
 * Count of attendees provisioned vs. failed
 * Location of per-attendee onboarding files: `.azure/<env>/`
 * IMPORTANT: Remind organizer to deliver each attendee's `.md` file to the facilitator for distribution before the workshop - see `docs/quickstart-facilitator.md`
+
+After validation, run `azd down --force` and report whether the target RG was deleted or remained as
+an administrator-owned delegated RG. Do not use `--purge` with delegated resource-group permissions:
+purging soft-deleted Key Vault resources requires subscription-level
+`Microsoft.KeyVault/locations/deletedVaults/purge/action` permission. A subscription administrator
+can run `azd down --force --purge` later when immediate purging is required.

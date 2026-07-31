@@ -4,9 +4,7 @@ This guide covers standing up and tearing down a shared Microsoft Foundry worksh
 
 ## Prerequisites
 
-1. An Azure subscription to use to host the laboratory infrastructure where you have permission to create resources and assign roles.
-   1. To create resources requires requires Owner or Contributor role on the subscription or resource group.
-   1. To assign roles requires Owner or User Access Administrator on the subscription or resource group.
+1. An Azure subscription to use to host the laboratory infrastructure. The primary path is **Owner or Contributor** plus an **unrestricted Owner, User Access Administrator, or Role Based Access Control Administrator** at subscription scope. A delegated fallback is supported when an administrator has already created the target resource group and granted you **Contributor** plus an **unrestricted User Access Administrator or Role Based Access Control Administrator** on that resource group. Conditional or ABAC-constrained role-assignment permissions are not sufficient because provisioning creates several attendee and service-principal role assignments.
 1. [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
 1. [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 1. [Docker](https://www.docker.com/) running locally. Provisioning uses it to build and publish the shared MCP server image to Azure Container Apps (only needed when `AZURE_CONTAINER_APPS_DEPLOY` is `true`, the default).
@@ -20,7 +18,7 @@ This guide covers standing up and tearing down a shared Microsoft Foundry worksh
 This section walks through the most common scenario: a handful of standard attendees and one facilitator. The whole flow takes about five minutes. A single command - `azd provision` - deploys the Azure resources and assigns all roles; re-run it any time the roster changes.
 
 > [!NOTE]
-> 🆕 An interactive setup wizard (`scripts/configure-workshop.py`) is available. Organizer mode — including `AZURE_ATTENDEE_LIST` configuration in the wizard — has not yet been fully tested. Manual configuration (steps 3–5 below) remains the recommended approach for organizer deployments. The wizard can handle basic environment and region setup, but set `AZURE_ATTENDEE_LIST` manually as described in step 4.
+> The interactive setup wizard (`scripts/configure-workshop.py`) checks the selected subscription first and then falls back to inherited permissions on an existing resource group. It also checks the azd version required for resource-group-scoped deployments.
 
 ### 1. Clone the repository
 
@@ -31,8 +29,8 @@ cd foundry-agentic-workshop
 
 ### 2. Sign in
 
-Authenticate both CLIs against the subscription where you hold Owner or User Access
-Administrator rights.
+Authenticate both CLIs against the target subscription. The deployment uses subscription
+permissions when available; otherwise it deploys into the existing resource group specified below.
 
 ```bash
 az login
@@ -54,6 +52,10 @@ azd env new my-workshop
 azd env set AZURE_LOCATION australiaeast
 azd env set AZURE_RESOURCE_GROUP rg-my-workshop
 ```
+
+The preprovision hook reuses an existing resource group. If it does not exist, a subscription-scope
+user can create it automatically. An RG-only user must ask an administrator to create it first;
+the hook does not attempt subscription-scope deployment or resource-group creation for that path.
 
 ### 4. Set your attendee list
 
@@ -393,11 +395,14 @@ File: `./.azure/attendee-provisioning-<env>-<timestamp>.csv`
 ## Teardown
 
 ```bash
-azd down --force --purge
+azd down --force
 ```
 
-This removes the resource group and purges soft-deleted Foundry and Key Vault resources so
-the names are immediately reusable.
+This removes the deployed resources. Delegated users cannot purge soft-deleted Key Vault resources
+unless they also have subscription-level `Microsoft.KeyVault/locations/deletedVaults/purge/action`
+permission. A subscription administrator can run `azd down --force --purge` later when immediate
+purging is required. Verify the target resource group state after teardown, especially when using a
+delegated, administrator-created resource group.
 
 ## Troubleshooting
 

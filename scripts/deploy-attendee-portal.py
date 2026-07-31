@@ -25,6 +25,7 @@ import json
 import shutil
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -56,9 +57,76 @@ def _is_truthy(value: object) -> bool:
     return str(value).strip().lower() not in ('', 'false', '0', 'no', 'off')
 
 
-def _run(command: list[str], *, cwd: Path | None = None) -> int:
-    print(f'$ {" ".join(command)}')
-    return subprocess.run(command, cwd=cwd, check=False).returncode
+def _redact_command(command: list[str]) -> list[str]:
+    """Return a copy of command with sensitive values redacted for logging."""
+    sensitive_flags = {'--secrets', '--password', '--client-secret', '--client_secret', '--secret'}
+    redacted: list[str] = []
+    redact_next = False
+
+    def _is_sensitive_key(key: str) -> bool:
+        normalized = key.strip().lower().replace('_', '').replace('-', '')
+        return (
+            normalized in {'password', 'secret', 'clientsecret', 'easyauthclientsecret'}
+            or 'secret' in normalized
+            or 'password' in normalized
+        )
+
+    for token in command:
+        if redact_next:
+            parts = []
+            for item in token.split(','):
+                if '=' in item:
+                    key, _ = item.split('=', 1)
+                    if _is_sensitive_key(key):
+                        parts.append(f'{key}=***')
+                    else:
+                        parts.append(f'{key}=***')
+                else:
+                    parts.append('***')
+            redacted.append(','.join(parts))
+            redact_next = False
+            continue
+
+        if token in sensitive_flags:
+            redacted.append(token)
+            redact_next = True
+            continue
+
+        if '=' in token:
+            key, value = token.split('=', 1)
+            if _is_sensitive_key(key):
+                redacted.append(f'{key}=***')
+                continue
+            redacted.append(f'{key}={value}')
+            continue
+
+        redacted.append(token)
+
+    return redacted
+
+
+def _run(
+    command: list[str],
+    *,
+    cwd: Path | None = None,
+    display_command: list[str] | None = None,
+) -> int:
+    """Run a command, retrying transient Azure CLI failures. Return its exit code.
+
+    ``display_command`` is logged instead of ``command`` when provided, so callers
+    that include secrets in ``command`` can supply a pre-sanitized representation.
+    """
+    retries = 3 if command[0] == _AZ_CMD else 1
+    log_cmd = display_command if display_command is not None else _redact_command(command)
+    for attempt in range(1, retries + 1):
+        print(f'$ {" ".join(log_cmd)}')
+        result = subprocess.run(command, cwd=cwd, check=False)
+        if result.returncode == 0 or attempt == retries:
+            return result.returncode
+        delay = attempt * 5
+        print(f'  Azure CLI command failed (attempt {attempt}/{retries}), retrying in {delay}s...')
+        time.sleep(delay)
+    return 1
 
 
 _CAE_HINT = (
@@ -410,12 +478,20 @@ def main() -> int:  # pylint: disable=too-many-return-statements
         )
         return 0
 
-    if _run([
-        _AZ_CMD, 'containerapp', 'secret', 'set',
-        '--name', container_app_name,
-        '--resource-group', resource_group,
-        '--secrets', f'easyauth-client-secret={client_secret}',
-    ]) != 0:
+    if _run(
+        [
+            _AZ_CMD, 'containerapp', 'secret', 'set',
+            '--name', container_app_name,
+            '--resource-group', resource_group,
+            '--secrets', f'easyauth-client-secret={client_secret}',
+        ],
+        display_command=[
+            _AZ_CMD, 'containerapp', 'secret', 'set',
+            '--name', container_app_name,
+            '--resource-group', resource_group,
+            '--secrets', 'easyauth-client-secret=***',
+        ],
+    ) != 0:
         _warn(
             'Could not set the EasyAuth client secret on the Container App. '
             'The portal image was deployed, but user authentication is not configured.'

@@ -13,7 +13,9 @@ argument-hint: "azureLocation=... resourceGroup=... environmentName=..."
 
 You must test the steps in the #file:docs/guide-individual.md using the inputs above.
 
-I have already authenticated to `az` and `azd`. The provisioning will take some time.
+I have already authenticated to `az` and `azd`. The provisioning will take some time. Test both
+the subscription-scope path and, when the supplied resource group is pre-created and delegated,
+the RG-scope path. Confirm that the latter does not attempt subscription-scope deployment or RG creation.
 
 ## Step 1 - Set up the azd environment
 
@@ -37,7 +39,11 @@ Follow the setup steps from the guide:
 
 ## Step 2 - Provision
 
-Run `azd provision` and wait for it to complete. Capture the full output.
+Run `azd provision` and wait for it to complete. Capture the full output. Before provisioning, confirm
+that the selected identity has either subscription deployment and unrestricted role-assignment
+permissions or Contributor plus unrestricted User Access Administrator or Role Based Access Control
+Administrator on the existing target resource group. Confirm conditional or ABAC-constrained role
+assignments are rejected by the wizard.
 
 Confirm all three hooks ran and report their exit codes:
 

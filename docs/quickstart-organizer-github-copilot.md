@@ -25,8 +25,11 @@ For the manual equivalent, see the [Organizer Quickstart](./quickstart-organizer
 1. Install [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
    and [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
 
-1. Sign in to both CLIs against the subscription where you hold Owner or
-   User Access Administrator rights.
+1. Sign in to both CLIs. The primary path uses subscription-level Owner or Contributor plus
+   an unrestricted Owner, User Access Administrator, or Role Based Access Control Administrator.
+   A delegated path uses an existing RG with Contributor plus unrestricted User Access Administrator
+   or Role Based Access Control Administrator. Conditional or ABAC-constrained permissions are not
+   sufficient.
 
    ```bash
    az login
@@ -153,5 +156,9 @@ It is the **facilitator's responsibility** to deliver each attendee's file befor
 ## Teardown
 
 ```bash
-azd down --force --purge
+azd down --force
 ```
+
+Delegated resource-group users must omit `--purge` because purging soft-deleted Key Vault resources
+requires subscription-level permission. A subscription administrator can run `azd down --force
+--purge` later if immediate purging is required.

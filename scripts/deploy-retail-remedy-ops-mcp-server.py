@@ -77,10 +77,19 @@ def _wait_for_docker(*, retries: int = 10, delay: float = 3.0) -> bool:
 
 
 def _run(command: list[str], *, cwd: Path | None = None) -> int:
-    """Run a command, streaming its output. Return its exit code."""
-    print(f'$ {" ".join(command)}')
-    sys.stdout.flush()
-    return subprocess.run(command, cwd=cwd, check=False).returncode
+    """Run a command, retrying transient Azure CLI failures. Return its exit code."""
+    retries = 3 if command[0] == _AZ_CMD else 1
+    for attempt in range(1, retries + 1):
+        print(f'$ {" ".join(command)}')
+        sys.stdout.flush()
+        result = subprocess.run(command, cwd=cwd, check=False)
+        if result.returncode == 0 or attempt == retries:
+            return result.returncode
+        delay = attempt * 5
+        print(f'  Azure CLI command failed (attempt {attempt}/{retries}), retrying in {delay}s...')
+        sys.stdout.flush()
+        time.sleep(delay)
+    return 1
 
 
 def _load_azd_env() -> dict[str, str]:
