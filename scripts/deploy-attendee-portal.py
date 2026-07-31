@@ -57,11 +57,51 @@ def _is_truthy(value: object) -> bool:
     return str(value).strip().lower() not in ('', 'false', '0', 'no', 'off')
 
 
+def _redact_command(command: list[str]) -> list[str]:
+    """Return a copy of command with sensitive values redacted for logging."""
+    sensitive_flags = {'--secrets', '--password', '--client-secret', '--client_secret', '--secret'}
+    redacted: list[str] = []
+    redact_next = False
+
+    for token in command:
+        if redact_next:
+            parts = []
+            for item in token.split(','):
+                if '=' in item:
+                    key, _ = item.split('=', 1)
+                    parts.append(f'{key}=***')
+                else:
+                    parts.append('***')
+            redacted.append(','.join(parts))
+            redact_next = False
+            continue
+
+        if token in sensitive_flags:
+            redacted.append(token)
+            redact_next = True
+            continue
+
+        if '=' in token:
+            key, value = token.split('=', 1)
+            if key.lower() in {'password', 'secret', 'client-secret', 'client_secret', 'easyauth-client-secret'}:
+                redacted.append(f'{key}=***')
+                continue
+            if key.lower().endswith('secret') or key.lower().endswith('password'):
+                redacted.append(f'{key}=***')
+                continue
+            redacted.append(f'{key}={value}')
+            continue
+
+        redacted.append(token)
+
+    return redacted
+
+
 def _run(command: list[str], *, cwd: Path | None = None) -> int:
     """Run a command, retrying transient Azure CLI failures. Return its exit code."""
     retries = 3 if command[0] == _AZ_CMD else 1
     for attempt in range(1, retries + 1):
-        print(f'$ {" ".join(command)}')
+        print(f'$ {" ".join(_redact_command(command))}')
         result = subprocess.run(command, cwd=cwd, check=False)
         if result.returncode == 0 or attempt == retries:
             return result.returncode
