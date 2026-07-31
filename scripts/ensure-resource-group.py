@@ -33,6 +33,7 @@ def main() -> int:
     """Reuse the configured RG or create it when the caller has permission."""
     resource_group = _env('AZURE_RESOURCE_GROUP')
     location = _env('AZURE_LOCATION')
+    subscription_id = _env('AZURE_SUBSCRIPTION_ID')
 
     if not resource_group:
         print(
@@ -48,7 +49,10 @@ def main() -> int:
         )
         return 1
 
-    exists = _run_az(['group', 'exists', '--name', resource_group, '--output', 'tsv'])
+    exists_args = ['group', 'exists', '--name', resource_group, '--output', 'tsv']
+    if subscription_id:
+        exists_args += ['--subscription', subscription_id]
+    exists = _run_az(exists_args)
     if exists.returncode != 0:
         detail = exists.stderr.strip() or exists.stdout.strip() or 'az group exists failed'
         print(f'Could not check resource group {resource_group}: {detail}', file=sys.stderr)
@@ -59,18 +63,19 @@ def main() -> int:
         return 0
 
     print(f'Creating resource group {resource_group} in {location}.')
-    created = _run_az(
-        [
-            'group',
-            'create',
-            '--name',
-            resource_group,
-            '--location',
-            location,
-            '--output',
-            'none',
-        ]
-    )
+    create_args = [
+        'group',
+        'create',
+        '--name',
+        resource_group,
+        '--location',
+        location,
+        '--output',
+        'none',
+    ]
+    if subscription_id:
+        create_args += ['--subscription', subscription_id]
+    created = _run_az(create_args)
     if created.returncode == 0:
         print(f'Resource group ready: {resource_group}')
         return 0
