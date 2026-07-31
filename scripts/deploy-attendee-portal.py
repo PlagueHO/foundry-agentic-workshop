@@ -63,13 +63,24 @@ def _redact_command(command: list[str]) -> list[str]:
     redacted: list[str] = []
     redact_next = False
 
+    def _is_sensitive_key(key: str) -> bool:
+        normalized = key.strip().lower().replace('_', '').replace('-', '')
+        return (
+            normalized in {'password', 'secret', 'clientsecret', 'easyauthclientsecret'}
+            or 'secret' in normalized
+            or 'password' in normalized
+        )
+
     for token in command:
         if redact_next:
             parts = []
             for item in token.split(','):
                 if '=' in item:
                     key, _ = item.split('=', 1)
-                    parts.append(f'{key}=***')
+                    if _is_sensitive_key(key):
+                        parts.append(f'{key}=***')
+                    else:
+                        parts.append(f'{key}=***')
                 else:
                     parts.append('***')
             redacted.append(','.join(parts))
@@ -83,10 +94,7 @@ def _redact_command(command: list[str]) -> list[str]:
 
         if '=' in token:
             key, value = token.split('=', 1)
-            if key.lower() in {'password', 'secret', 'client-secret', 'client_secret', 'easyauth-client-secret'}:
-                redacted.append(f'{key}=***')
-                continue
-            if key.lower().endswith('secret') or key.lower().endswith('password'):
+            if _is_sensitive_key(key):
                 redacted.append(f'{key}=***')
                 continue
             redacted.append(f'{key}={value}')
