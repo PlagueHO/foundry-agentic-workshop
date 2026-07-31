@@ -9,8 +9,12 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
 
 ## Prerequisites
 
-- Azure subscription with [Foundry model quota](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits)
-  in your target region, and **Owner or Contributor** rights to create resources and assign roles.
+- Azure access and [Foundry model quota](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits)
+   in your target region. The simplest path is subscription-level **Owner or Contributor** plus
+   an **unrestricted Owner, User Access Administrator, or Role Based Access Control Administrator**.
+   RG-only users need an administrator-created target RG with **Contributor** plus an
+   **unrestricted User Access Administrator or Role Based Access Control Administrator**.
+   Conditional or ABAC-constrained role-assignment permissions are not sufficient.
   With `AZURE_INDIVIDUAL_MODE=true` the preprovision quota check automatically selects the `default`
   profile (50 K TPM), which fits most subscriptions. Use `AZURE_MODEL_DEPLOYMENT_PROFILE=minimal`
   for lower-quota environments.
@@ -43,8 +47,8 @@ See the [Individual Guide](./guide-individual.md) for detailed steps and trouble
    az login
    ```
 
-1. 🆕 Run the setup wizard (recommended). It prompts for your environment name, location, and resource group,
-   enables individual mode, and runs `azd provision`.
+1. Run the setup wizard (recommended). It prompts for your environment name, location, and resource group,
+   checks subscription or existing-RG permissions, enables individual mode, and runs `azd provision`.
 
    ```bash
    uv run python scripts/configure-workshop.py
@@ -65,6 +69,9 @@ azd env set AZURE_RESOURCE_GROUP rg-foundry-lab
 azd env set AZURE_INDIVIDUAL_MODE true
 azd provision
 ```
+
+The RG-scoped deployment reuses an existing RG. Subscription-scope users can let the preprovision
+hook create the RG; RG-only users must have an administrator create it before running `azd provision`.
 
 </details>
 
@@ -88,5 +95,9 @@ azd provision
 Remove all provisioned resources when you are done.
 
 ```bash
-azd down --force --purge
+azd down --force
 ```
+
+Delegated resource-group users must omit `--purge`. Purging soft-deleted Key Vault resources
+requires subscription-level permission. A subscription administrator can run `azd down --force
+--purge` later if required.

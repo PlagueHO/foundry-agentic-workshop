@@ -17,7 +17,7 @@ The list of UPNs to use are:
 [{"upn":"lab.attendee.1@MngEnvMCAP199525.onmicrosoft.com"},{"upn":"lab.attendee.2@MngEnvMCAP199525.onmicrosoft.com"},{"upn":"lab.attendee.3@MngEnvMCAP199525.onmicrosoft.com"},{"upn":"lab.facilitator.1@MngEnvMCAP199525.onmicrosoft.com","role":"facilitator"},{"upn":"lab.organizer.1@MngEnvMCAP199525.onmicrosoft.com","role":"organizer"},{"upn":"lab.proctor.1@MngEnvMCAP199525.onmicrosoft.com","role":"proctor"}]
 ```
 
-The Azure Location should be `${input:azureLocation}`. The default role should be `foundry-project-manager`. The resource group should be `${input:resourceGroup}`. The environment name should be `${input:environmentName}`. I have already authenticated to az and azd. The provisioning will take some time.
+The Azure Location should be `${input:azureLocation}`. The default role should be `foundry-project-manager`. The resource group should be `${input:resourceGroup}`. The environment name should be `${input:environmentName}`. I have already authenticated to az and azd. The provisioning will take some time. Test the subscription-scope path first, then test the delegated path with an administrator-created RG and the identity `lab.attendee.1@MngEnvMCAP199525.onmicrosoft.com` when those credentials are supplied. Confirm delegated provisioning does not attempt subscription-scope deployment or resource-group creation.
 
 You must validate that:
 
@@ -26,3 +26,4 @@ You must validate that:
 1. The CSV and MD outputs produced by the pre-provision #file:scripts/prepare-attendee-roles.py and post-provision #file:scripts/generate-attendee-onboarding.py are complete and show the correct output and are in the right place (`.azure/<envname>`).
 1. The onboarding index (`index.json`) and per-attendee markdown files were uploaded to Azure Blob Storage by #file:scripts/generate-attendee-onboarding.py (confirm from hook output that upload log lines appear for both the index and the markdown backups).
 1. The Attendee Onboarding Portal was deployed by #file:scripts/deploy-attendee-portal.py - confirm the portal image was built and pushed to the container registry, the Container App was updated, and EasyAuth was configured.
+1. Run `azd down --force` for delegated resource-group users and report whether the administrator-created delegated RG is deleted. Do not require `--purge`: purging subscription-level soft-deleted resources, such as Key Vault, requires `Microsoft.KeyVault/locations/deletedVaults/purge/action` permission. A subscription administrator may separately run `azd down --force --purge` and report its result.

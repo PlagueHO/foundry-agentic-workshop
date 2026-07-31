@@ -19,8 +19,9 @@ detailed steps, the RBAC model, and troubleshooting.
 
 ## Before the workshop
 
-1. Confirm an Azure subscription where you hold **Owner or Contributor** to create resources
-   and **Owner or User Access Administrator** to assign roles, with sufficient
+1. Confirm Azure access with sufficient permissions: subscription-scope **Owner or Contributor** plus
+   an **unrestricted Owner, User Access Administrator, or Role Based Access Control Administrator**, or delegated **Contributor** plus an **unrestricted User Access Administrator or Role Based Access Control Administrator**
+   on an administrator-created resource group, with sufficient
    [Foundry model quota](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits)
    in your target region. The organizer default profile (`workshop`) needs capacity for `chat` (200),
    `embedding` (200), and `gpt54mini` (200) — use `AZURE_MODEL_DEPLOYMENT_PROFILE=default` (50 each)
@@ -59,7 +60,7 @@ detailed steps, the RBAC model, and troubleshooting.
    ```
 
 > [!NOTE]
-> 🆕 An interactive setup wizard is available (`uv run python scripts/configure-workshop.py`). Organizer mode — including `AZURE_ATTENDEE_LIST` configuration — has not yet been fully validated in the wizard. Use the manual steps below for organizer deployments.
+> The interactive setup wizard is available (`uv run python scripts/configure-workshop.py`). It prefers subscription permissions and supports an existing, delegated resource group when the organizer has Contributor plus unrestricted role-assignment permission at RG scope. Conditional or ABAC-constrained permissions are rejected by the wizard.
 
 1. Create an environment and set core variables.
 
@@ -71,6 +72,9 @@ detailed steps, the RBAC model, and troubleshooting.
    azd env set AZURE_LOCATION australiaeast
    azd env set AZURE_RESOURCE_GROUP rg-foundry-hol-shared
    ```
+
+   Subscription-scope users can use a new RG name; the preprovision hook creates it. RG-only users
+   must use a resource group that an administrator created in advance.
 
 1. Configure [attendee access](#attendee-access) - see below for details on the `AZURE_ATTENDEE_LIST` JSON array.
 
@@ -137,5 +141,9 @@ Refer attendees to the [Attendee Quickstart](./quickstart-attendee.md) for setup
 ## Teardown
 
 ```bash
-azd down --force --purge
+azd down --force
 ```
+
+Delegated resource-group users must omit `--purge` because purging soft-deleted Key Vault resources
+requires subscription-level permission. A subscription administrator can run `azd down --force
+--purge` later if immediate purging is required.

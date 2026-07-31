@@ -25,6 +25,7 @@ import json
 import shutil
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -57,8 +58,17 @@ def _is_truthy(value: object) -> bool:
 
 
 def _run(command: list[str], *, cwd: Path | None = None) -> int:
-    print(f'$ {" ".join(command)}')
-    return subprocess.run(command, cwd=cwd, check=False).returncode
+    """Run a command, retrying transient Azure CLI failures. Return its exit code."""
+    retries = 3 if command[0] == _AZ_CMD else 1
+    for attempt in range(1, retries + 1):
+        print(f'$ {" ".join(command)}')
+        result = subprocess.run(command, cwd=cwd, check=False)
+        if result.returncode == 0 or attempt == retries:
+            return result.returncode
+        delay = attempt * 5
+        print(f'  Azure CLI command failed (attempt {attempt}/{retries}), retrying in {delay}s...')
+        time.sleep(delay)
+    return 1
 
 
 _CAE_HINT = (

@@ -32,7 +32,7 @@ The workshop runs in one of two modes. Pick the one that matches your situation,
 
 ### Individual mode (learning solo)
 
-You provision your own Foundry environment scoped to your identity and work through the labs at your own pace. Individual mode (`AZURE_INDIVIDUAL_MODE=true`) creates a single project and writes your `.env` automatically.
+You provision your own Foundry environment scoped to your identity and work through the labs at your own pace. Individual mode (`AZURE_INDIVIDUAL_MODE=true`) creates a single project and writes your `.env` automatically. Users with subscription-scope permissions can provision directly; users with only resource group-scoped permissions can use an administrator-created resource group.
 
 **Flow:** provision your environment → validate → work through the labs → tear down.
 
@@ -74,11 +74,11 @@ The full module list, timings, and objectives for each series live in the linked
 
 ## Cost
 
-Plan for approximately **AUD 50/day** for a sandbox environment, depending on region, SKU, and usage. Tear down with `azd down --force --purge` when finished; see the relevant quickstart for teardown details.
+Plan for approximately **AUD 50/day** for a sandbox environment, depending on region, SKU, and usage. Tear down with `azd down --force` when finished; delegated users cannot purge soft-deleted Key Vault resources without subscription-level permission. See the relevant quickstart for teardown details.
 
 ## Infrastructure
 
-The lab infrastructure is defined in [Bicep](https://learn.microsoft.com/azure/azure-resource-manager/bicep/overview) using [Azure Verified Modules](https://aka.ms/avm) for the Foundry account, Azure AI Search, Azure Container Registry, Azure Container Apps, Storage, and supporting services. Deployments are driven by the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/) (`azd`). See the [infrastructure design](./docs/design/infrastructure.md) and [architecture](./docs/design/architecture.md) docs for details.
+The lab infrastructure is defined in [Bicep](https://learn.microsoft.com/azure/azure-resource-manager/bicep/overview) using [Azure Verified Modules](https://aka.ms/avm) for the Foundry account, Azure AI Search, Azure Container Registry, Azure Container Apps, Storage, and supporting services. The Bicep entrypoint is resource-group scoped and deployments are driven by the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/) (`azd`). Subscription-scope users can have the preprovision hook create the target RG; RG-only users must use an existing RG. See the [infrastructure design](./docs/design/infrastructure.md) and [architecture](./docs/design/architecture.md) docs for details.
 
 ## Repository layout
 

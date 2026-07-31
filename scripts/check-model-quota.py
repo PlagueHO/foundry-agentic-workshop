@@ -8,7 +8,7 @@ This is the first azd preprovision hook for the Microsoft Foundry workshop. It:
   3. Validates model availability in the target region via 'az cognitiveservices model list'.
   4. Validates quota sufficiency via 'az cognitiveservices usage list'.
   5. On shortfall: prints a required-vs-available table, recommends a fitting profile,
-     suggests an alternate region from a curated candidate list, and exits non-zero.
+      and suggests an eligible alternate region when changing region can resolve the issue.
   6. Skips the check entirely when AZURE_MODEL_QUOTA_CHECK=false.
   7. Validates that AZURE_LOCATION and AZURE_ENV_NAME are set.
 
@@ -52,7 +52,7 @@ _PROFILE_FILES: dict[str, Path] = {
 # Ordered from smallest to largest — used for auto-selection (largest-that-fits).
 _PROFILES_ASCENDING = ['minimal', 'default', 'workshop', 'broad']
 
-# Curated candidate regions to suggest when the chosen region lacks quota.
+# Curated candidate regions to suggest when the chosen region lacks quota or availability.
 _CANDIDATE_REGIONS = [
     'eastus',
     'eastus2',
@@ -69,6 +69,83 @@ _CANDIDATE_REGIONS = [
     'southeastasia',
     'canadacentral',
 ]
+
+_GLOBAL_SKUS = frozenset({
+    'globalstandard',
+    'globalprovisionedmanaged',
+    'globalbatch',
+})
+_DATA_ZONE_SKUS = frozenset({
+    'datazonestandard',
+    'datazoneprovisionedmanaged',
+    'datazonebatch',
+})
+_PROVISIONED_SKUS = frozenset({
+    'globalprovisionedmanaged',
+    'datazoneprovisionedmanaged',
+    'provisionedmanaged',
+})
+_BATCH_SKUS = frozenset({'globalbatch', 'datazonebatch'})
+# Global and Data Zone Standard quotas are subscription-level pools.
+_SHARED_QUOTA_SKUS = frozenset({'globalstandard', 'datazonestandard'})
+_NON_REGIONAL_QUOTA_SKUS = _SHARED_QUOTA_SKUS | _BATCH_SKUS
+_DATA_ZONE_CANDIDATE_REGIONS = {
+    'US': frozenset({
+        'eastus',
+        'eastus2',
+        'westus',
+        'westus3',
+        'northcentralus',
+        'southcentralus',
+    }),
+    'EU': frozenset({'swedencentral', 'westeurope', 'northeurope'}),
+    'APAC': frozenset({'australiaeast', 'japaneast', 'southeastasia'}),
+}
+_DATA_ZONE_REGIONS = {
+    'US': frozenset({
+        'centralus',
+        'eastus',
+        'eastus2',
+        'eastus2euap',
+        'northcentralus',
+        'southcentralus',
+        'westcentralus',
+        'westus',
+        'westus2',
+        'westus3',
+    }),
+    'EU': frozenset({
+        'francecentral',
+        'francesouth',
+        'germanynorth',
+        'germanywestcentral',
+        'italynorth',
+        'norwayeast',
+        'norwaywest',
+        'polandcentral',
+        'spaincentral',
+        'swedencentral',
+        'swedensouth',
+        'switzerlandnorth',
+        'switzerlandwest',
+        'westeurope',
+    }),
+    'APAC': frozenset({
+        'australiaeast',
+        'australiacentral',
+        'australiacentral2',
+        'australiasoutheast',
+        'centralindia',
+        'eastasia',
+        'japaneast',
+        'japanwest',
+        'koreacentral',
+        'koreasouth',
+        'southindia',
+        'southeastasia',
+        'westindia',
+    }),
+}
 
 _AZ_CMD: str = shutil.which('az') or 'az'
 _AZD_CMD: str = shutil.which('azd') or 'azd'
@@ -243,6 +320,81 @@ def _quota_name(sku_name: str, model_name: str) -> str:
     return f'OpenAI.{sku_name}.{model_name}'
 
 
+def _data_zone_for_region(location: str) -> str | None:
+    """Return the Microsoft data zone represented by an Azure region."""
+    normalized_location = location.lower()
+    for data_zone, regions in _DATA_ZONE_REGIONS.items():
+        if normalized_location in regions:
+            return data_zone
+    return None
+
+
+def _deployment_scope(sku_name: str, location: str) -> str:
+    """Describe the deployment's routing and quota scope for remediation output."""
+    normalized_sku = sku_name.lower()
+    if normalized_sku in _GLOBAL_SKUS:
+        if normalized_sku in _BATCH_SKUS:
+            return 'Global routing; separate global batch enqueued-token quota'
+        if normalized_sku in _PROVISIONED_SKUS:
+            return f'Global routing; PTU quota and capacity in {location}'
+        return 'Global routing; shared subscription-level quota'
+    if normalized_sku in _DATA_ZONE_SKUS:
+        data_zone = _data_zone_for_region(location) or 'the deployment data zone'
+        if normalized_sku in _BATCH_SKUS:
+            return f'{data_zone} data zone; separate batch enqueued-token quota'
+        if normalized_sku in _PROVISIONED_SKUS:
+            return f'{data_zone} data zone; PTU quota and capacity in {location}'
+        return f'{data_zone} data zone; shared quota within the data zone'
+    if normalized_sku == 'provisionedmanaged':
+        return f'Regional; PTU quota and capacity in {location}'
+    if normalized_sku == 'standard':
+        return f'Regional; quota in {location}'
+    if normalized_sku == 'developertier':
+        return 'Any Azure region; fine-tuned model evaluation only (24-hour lifetime)'
+    return f'Regional; quota in {location}'
+
+
+def _candidate_regions(deployments: list[dict], location: str) -> list[str]:
+    """Return eligible alternate regions for the deployment types in a profile."""
+    sku_names = {
+        (deployment.get('sku') or {}).get('name', '').lower()
+        for deployment in deployments
+    }
+    if sku_names & _DATA_ZONE_SKUS:
+        data_zone = _data_zone_for_region(location)
+        if data_zone is None:
+            return []
+        return [
+            region for region in _CANDIDATE_REGIONS
+            if region in _DATA_ZONE_CANDIDATE_REGIONS[data_zone]
+        ]
+    return _CANDIDATE_REGIONS
+
+
+def _can_suggest_alternate_region(
+    deployments: list[dict],
+    shortfalls: list[dict],
+    location: str,
+) -> bool:
+    """Return whether a region change can plausibly resolve all shortfalls."""
+    if not _candidate_regions(deployments, location):
+        return False
+    return not any(
+        shortfall['reason'] == 'insufficient quota'
+        and shortfall['sku'].lower() in _NON_REGIONAL_QUOTA_SKUS
+        for shortfall in shortfalls
+    )
+
+
+def _shortfalls_require_location(shortfalls: list[dict]) -> bool:
+    """Return whether the shortfall output needs a deployment-region reference."""
+    return any(
+        shortfall['reason'] != 'insufficient quota'
+        or shortfall['sku'].lower() not in _NON_REGIONAL_QUOTA_SKUS
+        for shortfall in shortfalls
+    )
+
+
 # ---------------------------------------------------------------------------
 # Core check logic
 # ---------------------------------------------------------------------------
@@ -328,13 +480,21 @@ def _print_shortfall_table(
     shortfalls: list[dict],
     fitting_profile: str | None,
     location: str,
+    can_suggest_alternate_region: bool,
 ) -> None:
+    deployment_scopes = {
+        _deployment_scope(shortfall['sku'], location) for shortfall in shortfalls
+    }
+
     print()
     print('+------------------------------------------------------------------+')
     print('|  [FAILED] Model quota / availability check                       |')
     print('+------------------------------------------------------------------+')
     print(f'\n  Profile   : {profile}')
-    print(f'  Region    : {location}')
+    if _shortfalls_require_location(shortfalls):
+        print(f'  Location  : {location}')
+    for scope in sorted(deployment_scopes):
+        print(f'  Scope     : {scope}')
     print()
     col_w = [24, 32, 12, 10, 10, 28]
     header = (
@@ -360,17 +520,22 @@ def _print_shortfall_table(
         print('  Run:')
         print(f'\n    azd env set AZURE_MODEL_DEPLOYMENT_PROFILE {fitting_profile}')
     else:
-        print('\n  No built-in profile fits the available quota in this region.')
+        print('\n  No built-in profile fits the available quota.')
         print('  Options:')
-        print('    1. Try a different region (see suggestions below).')
-        print('    2. Request a quota increase at:')
+        if can_suggest_alternate_region:
+            print('    1. Try a different region (see suggestions below).')
+            print('    2. Request a quota increase at:')
+        else:
+            print('    1. Request a quota increase at:')
         print('       https://aka.ms/oai/quotaincrease')
-        print('    3. Provide a custom deployment set:')
+        custom_deployment_option = 3 if can_suggest_alternate_region else 2
+        print(f'    {custom_deployment_option}. Provide a custom deployment set:')
         print('       azd env set AZURE_MODEL_DEPLOYMENTS \'[{"name":"chat",...}]\'')
 
-    print()
-    print('  To try a different region:')
-    print('    azd env set AZURE_LOCATION <region>')
+    if can_suggest_alternate_region:
+        print()
+        print('  To try a different region:')
+        print('    azd env set AZURE_LOCATION <region>')
     print()
     print('  To skip this check (not recommended):')
     print('    azd env set AZURE_MODEL_QUOTA_CHECK false')
@@ -383,7 +548,7 @@ def _suggest_region(
 ) -> str | None:
     """Scan candidate regions and return the first one where all deployments fit."""
     print('  Checking candidate regions for quota availability...')
-    for region in _CANDIDATE_REGIONS:
+    for region in _candidate_regions(deployments, location):
         if region.lower() == location.lower():
             continue
         availability = _build_availability_set(_list_models(region))
@@ -476,17 +641,29 @@ def main() -> int:
                 fitting_profile = candidate
                 break
 
-        _print_shortfall_table(profile, shortfalls, fitting_profile, location)
+        can_suggest_alternate_region = _can_suggest_alternate_region(
+            deployments,
+            shortfalls,
+            location,
+        )
+        _print_shortfall_table(
+            profile,
+            shortfalls,
+            fitting_profile,
+            location,
+            can_suggest_alternate_region,
+        )
 
-        # 6. Suggest an alternate region.
-        alt_region = _suggest_region(deployments, location)
-        if alt_region:
-            print(f'  Suggested alternate region with sufficient quota: {alt_region}')
-            print(f'    azd env set AZURE_LOCATION {alt_region}')
-            print()
-        else:
-            print('  No candidate region with sufficient quota found for this profile.')
-            print()
+        # 6. Suggest an eligible alternate region only when it can resolve the shortfall.
+        if can_suggest_alternate_region:
+            alt_region = _suggest_region(deployments, location)
+            if alt_region:
+                print(f'  Suggested alternate region with sufficient quota: {alt_region}')
+                print(f'    azd env set AZURE_LOCATION {alt_region}')
+                print()
+            else:
+                print('  No candidate region with sufficient quota found for this profile.')
+                print()
 
         return 1
 
@@ -498,7 +675,13 @@ def main() -> int:
 
     shortfalls = _check_profile(deployments, availability, quota_map)
     if shortfalls:
-        _print_shortfall_table('custom (AZURE_MODEL_DEPLOYMENTS)', shortfalls, None, location)
+        _print_shortfall_table(
+            'custom (AZURE_MODEL_DEPLOYMENTS)',
+            shortfalls,
+            None,
+            location,
+            _can_suggest_alternate_region(deployments, shortfalls, location),
+        )
         return 1
 
     print(f'  [OK] Custom deployment set passes quota and availability checks in {location}.')

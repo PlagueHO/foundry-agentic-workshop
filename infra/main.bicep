@@ -1,4 +1,4 @@
-targetScope = 'subscription'
+targetScope = 'resourceGroup'
 
 import { capabilityHostType } from './cognitive-services/accounts/capabilityHost/main.bicep'
 import { deploymentType } from './cognitive-services/accounts/main.bicep'
@@ -54,13 +54,6 @@ param environmentName string
 @minLength(1)
 @description('Primary location for all resources')
 param location string
-
-// Optional parameters to override the default azd resource naming conventions.
-// Add the following to main.bicepparam to provide values:
-// param resourceGroupName = readEnvironmentVariable('AZURE_RESOURCE_GROUP', 'myGroupName')
-//
-@description('Name of the resource group to create.')
-param resourceGroupName string = ''
 
 @description('Id of the user or app to assign application roles.')
 param principalId string = ''
@@ -212,7 +205,7 @@ var tags = {
   'azd-env-name': environmentName
 }
 
-var effectiveResourceGroupName = !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
+var effectiveResourceGroupName = resourceGroup().name
 var deploymentId = uniqueString(subscription().id, environmentName, location)
 var logAnalyticsName = '${abbrs.operationalInsightsWorkspaces}${environmentName}'
 var sendTologAnalyticsCustomSettingName = 'send-to-${logAnalyticsName}'
@@ -546,21 +539,9 @@ var autoCapabilityHost capabilityHostType = {
 var hasAutoCapabilityHost = cosmosDbCapabilityHost || azureAiSearchCapabilityHost || azureStorageAccountCapabilityHost
 var effectiveCapabilityHosts = concat(foundryCapabilityHosts, hasAutoCapabilityHost ? [autoCapabilityHost] : [])
 
-// Organize resources in a resource group using Azure Verified Module (AVM)
-module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.3' = {
-  name: 'resource-group-deployment-${deploymentId}'
-  params: {
-    name: effectiveResourceGroupName
-    location: location
-    tags: tags
-  }
-}
-
 // Create the Log Analytics workspace using Azure Verified Module (AVM)
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.1' = {
   name: 'logAnalytics-workspace-deployment-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [resourceGroup]
   params: {
     name: logAnalyticsName
     location: location
@@ -571,8 +552,6 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
 // Create the Application Insights resource using Azure Verified Module (AVM)
 module applicationInsights 'br/public:avm/res/insights/component:0.7.2' = {
   name: 'application-insights-deployment-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [resourceGroup]
   params: {
     name: applicationInsightsName
     location: location
@@ -584,8 +563,6 @@ module applicationInsights 'br/public:avm/res/insights/component:0.7.2' = {
 // Create a Key Vault with public access and RBAC authorization using Azure Verified Module (AVM)
 module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
   name: 'keyvault-deployment-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [resourceGroup]
   params: {
     name: keyVaultName
     location: location
@@ -607,8 +584,6 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
 // Create a Storage Account with public access using Azure Verified Module (AVM)
 module storageAccount 'br/public:avm/res/storage/storage-account:0.32.1' = {
   name: 'storage-account-deployment-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [resourceGroup]
   params: {
     name: storageAccounName
     allowBlobPublicAccess: false
@@ -679,8 +654,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.1' = {
 // Create a serverless Cosmos DB account with public access using Azure Verified Module (AVM)
 module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.19.0' = {
   name: 'cosmos-db-account-deployment-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [resourceGroup]
   params: {
     name: cosmosDbAccountName
     location: location
@@ -725,8 +698,6 @@ module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.19.0' =
 // Create an Azure AI Search service with public access using Azure Verified Module (AVM)
 module aiSearchService 'br/public:avm/res/search/search-service:0.12.2' = {
   name: 'ai-search-service-deployment-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [resourceGroup]
   params: {
     name: aiSearchName
     location: location
@@ -760,8 +731,6 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.12.2' = {
 // See: https://learn.microsoft.com/azure/ai-foundry/agents/how-to/deploy-hosted-agents
 module containerRegistry 'br/public:avm/res/container-registry/registry:0.12.1' = {
   name: 'container-registry-deployment-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [resourceGroup]
   params: {
     name: containerRegistryName
     location: location
@@ -801,10 +770,6 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.12.1' 
 // real image exists.
 module containerAppsEnvironment './core/host/container-apps-environment.bicep' = if (azureContainerAppsDeploy) {
   name: 'container-apps-environment-deployment-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [
-    resourceGroup
-  ]
   params: {
     containerAppsEnvironmentName: containerAppsEnvironmentName
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
@@ -816,10 +781,6 @@ module containerAppsEnvironment './core/host/container-apps-environment.bicep' =
 // Module 06 Retail Remedy Operations MCP server, published into the shared environment above.
 module retailRemedyOpsMcpServer './core/host/mcp-server.bicep' = if (azureContainerAppsDeploy) {
   name: 'retail-remedy-ops-mcp-server-deployment-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [
-    resourceGroup
-  ]
   params: {
     containerAppName: retailRemedyOpsMcpServerContainerAppName
     #disable-next-line BCP318 // containerAppsEnvironment is gated by the same azureContainerAppsDeploy condition as this module
@@ -838,10 +799,6 @@ module retailRemedyOpsMcpServer './core/host/mcp-server.bicep' = if (azureContai
 // Provides flight-status, rebooking-options, and compensation-claim tools used by the .NET lab.
 module flightOpsMcpServer './core/host/mcp-server.bicep' = if (azureContainerAppsDeploy) {
   name: 'flight-ops-mcp-server-deployment-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [
-    resourceGroup
-  ]
   params: {
     containerAppName: flightOpsMcpServerContainerAppName
     #disable-next-line BCP318 // containerAppsEnvironment is gated by the same azureContainerAppsDeploy condition as this module
@@ -863,10 +820,6 @@ module flightOpsMcpServer './core/host/mcp-server.bicep' = if (azureContainerApp
 // by scripts/provision-agent-identity-demo.py (it cannot be assigned in Bicep).
 module blobRelayMcpServer './core/host/mcp-server.bicep' = if (azureContainerAppsDeploy) {
   name: 'blob-relay-mcp-server-deployment-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [
-    resourceGroup
-  ]
   params: {
     containerAppName: blobRelayMcpServerContainerAppName
     #disable-next-line BCP318 // containerAppsEnvironment is gated by the same azureContainerAppsDeploy condition as this module
@@ -898,10 +851,6 @@ module blobRelayMcpServer './core/host/mcp-server.bicep' = if (azureContainerApp
 // the image is built and pushed.
 module attendeePortal './core/host/attendee-portal.bicep' = if (azureContainerAppsDeploy) {
   name: 'attendee-portal-deployment-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [
-    resourceGroup
-  ]
   params: {
     containerAppName: attendeePortalContainerAppName
     #disable-next-line BCP318 // containerAppsEnvironment is gated by the same azureContainerAppsDeploy condition
@@ -922,10 +871,6 @@ module attendeePortal './core/host/attendee-portal.bicep' = if (azureContainerAp
 // scripts/deploy-attendee-portal.py can push built images to the shared registry.
 module containerAppsAcrRoleAssignments './core/security/role_acr.bicep' = if (azureContainerAppsDeploy) {
   name: 'container-apps-acr-roles-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [
-    resourceGroup
-  ]
   params: {
     containerRegistryName: containerRegistryName
     roleAssignments: [
@@ -966,9 +911,7 @@ module containerAppsAcrRoleAssignments './core/security/role_acr.bicep' = if (az
 // needs Storage Blob Data Reader to download the attendee onboarding index.
 module containerAppsStorageRoleAssignments './core/security/role_storage.bicep' = if (azureContainerAppsDeploy) {
   name: 'container-apps-storage-roles-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
-    resourceGroup
     storageAccount
   ]
   params: {
@@ -989,9 +932,7 @@ module containerAppsStorageRoleAssignments './core/security/role_storage.bicep' 
 // even when Container Apps are not deployed (azureContainerAppsDeploy=false).
 module deployerStorageRoleAssignment './core/security/role_storage.bicep' = {
   name: 'deployer-storage-roles-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
-    resourceGroup
     storageAccount
   ]
   params: {
@@ -1010,8 +951,6 @@ module deployerStorageRoleAssignment './core/security/role_storage.bicep' = {
 // Uses the local cognitive-services module to support Foundry features such as RAI policies.
 module aiFoundryAccount './cognitive-services/accounts/main.bicep' = {
   name: 'ai-foundry-account-deployment-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [resourceGroup]
   params: {
     kind: 'AIServices'
     name: aiFoundryName
@@ -1142,9 +1081,7 @@ var aiSearchRoleAssignmentsArray = [
 
 module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = {
   name: 'ai-search-role-assignments-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
-    resourceGroup
     aiSearchService
   ]
   params: {
@@ -1165,9 +1102,7 @@ module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = {
 module projectSearchRoleAssignments './core/security/role_aisearch.bicep' = [
   for (name, i) in allProjectNames: {
     name: 'project-search-role-${i}-${deploymentId}'
-    scope: az.resourceGroup(effectiveResourceGroupName)
     dependsOn: [
-      resourceGroup
       aiSearchService
     ]
     params: {
@@ -1198,9 +1133,7 @@ module projectSearchRoleAssignments './core/security/role_aisearch.bicep' = [
 module projectAcrRoleAssignments './core/security/role_acr.bicep' = [
   for (name, i) in allProjectNames: {
     name: 'project-acr-role-${i}-${deploymentId}'
-    scope: az.resourceGroup(effectiveResourceGroupName)
     dependsOn: [
-      resourceGroup
       containerRegistry
     ]
     params: {
@@ -1227,9 +1160,7 @@ module projectAcrRoleAssignments './core/security/role_acr.bicep' = [
 module projectAppInsightsRoleAssignments './core/security/role_appinsights.bicep' = [
   for (name, i) in allProjectNames: {
     name: 'project-appinsights-role-${i}-${deploymentId}'
-    scope: az.resourceGroup(effectiveResourceGroupName)
     dependsOn: [
-      resourceGroup
       applicationInsights
     ]
     params: {
@@ -1253,9 +1184,7 @@ module projectAppInsightsRoleAssignments './core/security/role_appinsights.bicep
 // See: https://learn.microsoft.com/azure/foundry/observability/how-to/trace-agent-setup#prerequisites
 module attendeeAppInsightsRoleAssignments './core/security/role_appinsights.bicep' = if (!empty(resolvedAttendeesWithIds)) {
   name: 'attendee-appinsights-roles-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
-    resourceGroup
     applicationInsights
   ]
   params: {
@@ -1272,9 +1201,7 @@ module attendeeAppInsightsRoleAssignments './core/security/role_appinsights.bice
 // See: https://learn.microsoft.com/azure/foundry/agents/how-to/deploy-hosted-agent#required-permissions
 module attendeeAcrRoleAssignments './core/security/role_acr.bicep' = if (!empty(resolvedAttendeesWithIds)) {
   name: 'attendee-acr-roles-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
-    resourceGroup
     containerRegistry
   ]
   params: {
@@ -1320,9 +1247,7 @@ var foundryRoleAssignmentsArray = [
 
 module foundryRoleAssignments './core/security/role_foundry.bicep' = {
   name: 'foundry-role-assignments-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
-    resourceGroup
     aiFoundryAccount
   ]
   params: {
@@ -1340,10 +1265,6 @@ module foundryRoleAssignments './core/security/role_foundry.bicep' = {
 // the workshop resource group in the Azure portal and run health checks.
 module attendeeResourceGroupRoles './core/security/role_resourcegroup.bicep' = if (!empty(resolvedAttendeesWithIds)) {
   name: 'attendee-resource-group-roles-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [
-    resourceGroup
-  ]
   params: {
     roleAssignments: attendeeResourceGroupReaderRoleAssignments
   }
@@ -1351,9 +1272,7 @@ module attendeeResourceGroupRoles './core/security/role_resourcegroup.bicep' = i
 
 module principalCosmosDbRoles './core/security/role_cosmosdb.bicep' = if (!empty(principalId)) {
   name: 'principal-cosmos-db-roles-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
-    resourceGroup
     cosmosDbAccount
   ]
   params: {
@@ -1371,8 +1290,6 @@ module principalCosmosDbRoles './core/security/role_cosmosdb.bicep' = if (!empty
 // Fires when the indexing failure count exceeds 5 in a 5-minute window.
 module indexingFailureAlert 'br/public:avm/res/insights/metric-alert:0.4.1' = {
   name: 'indexing-failure-alert-deployment-${deploymentId}'
-  scope: az.resourceGroup(effectiveResourceGroupName)
-  dependsOn: [resourceGroup]
   params: {
     name: 'search-indexing-failure-alert-${environmentName}'
     location: 'global'
@@ -1404,7 +1321,7 @@ module indexingFailureAlert 'br/public:avm/res/insights/metric-alert:0.4.1' = {
 output AZURE_LOCATION string = location
 
 @description('The name of the resource group.')
-output AZURE_RESOURCE_GROUP string = resourceGroup.outputs.name
+output AZURE_RESOURCE_GROUP string = effectiveResourceGroupName
 
 @description('The Microsoft Entra tenant ID.')
 output AZURE_TENANT_ID string = tenant().tenantId

@@ -10,9 +10,9 @@ For the abbreviated flow, see the [Individual Quickstart](./quickstart-individua
 
 | Prerequisite | Notes |
 |---|---|
-| Azure subscription | **Owner or Contributor** to create resources; **Owner or User Access Administrator** to assign roles |
+| Azure access | Preferred: **Owner or Contributor** plus an **unrestricted Owner, User Access Administrator, or Role Based Access Control Administrator** at subscription scope. Fallback: an administrator-created resource group with **Contributor** plus an **unrestricted User Access Administrator or Role Based Access Control Administrator** at resource-group scope. Conditional or ABAC-constrained role-assignment permissions are not sufficient. |
 | Foundry model quota | Check [quota limits](https://learn.microsoft.com/en-us/azure/foundry/foundry-models/quotas-limits) for your target region. When `AZURE_INDIVIDUAL_MODE=true`, the preprovision quota check defaults to the `default` profile (50 K TPM per model), which fits most subscriptions. Use `AZURE_MODEL_DEPLOYMENT_PROFILE=minimal` for lower-quota environments. |
-| [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd) | v1.11 or later |
+| [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd) | v1.28.0 or later |
 | [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) | v2.60 or later |
 | [Python 3.13](https://www.python.org/downloads/) | Used by the provision hooks |
 | [uv](https://docs.astral.sh/uv/getting-started/installation/) | Python package manager; all scripts and provision hooks run via `uv run` |
@@ -42,7 +42,7 @@ For the abbreviated flow, see the [Individual Quickstart](./quickstart-individua
 ### Using the setup wizard 🆕 (Recommended)
 
 > [!TIP]
-> 🆕 After signing in, run the interactive setup wizard to handle the remaining configuration and provisioning in one step. The wizard checks your Azure permissions, prompts for environment name, region, resource group, and model profile, then optionally starts provisioning.
+> After signing in, run the interactive setup wizard to handle the remaining configuration and provisioning in one step. It prefers subscription permissions and falls back to an existing resource group when you have only delegated RG permissions. It also checks the azd version required for resource-group-scoped deployments.
 
 ```bash
 uv run python scripts/configure-workshop.py
@@ -72,8 +72,9 @@ If provisioning completed in the wizard, skip to [project naming](#project-namin
    azd env set AZURE_INDIVIDUAL_MODE true
    ```
 
-   Replace `australiaeast` with a region that has sufficient Foundry model quota, and choose a
-   resource group name that is unique in your subscription.
+   Replace `australiaeast` with a region that has sufficient Foundry model quota. If you only have
+   RG-scoped permissions, the resource group must already exist; the preprovision hook will not try
+   to create it at subscription scope.
 
 1. Run `azd provision`. The provision hooks run automatically.
 
@@ -115,8 +116,13 @@ If the UPN cannot be retrieved, the project name falls back to `attendee-01`.
 Remove all provisioned resources when you are done.
 
 ```bash
-azd down --force --purge
+azd down --force
 ```
+
+Do not use `--purge` with delegated resource-group permissions. Purging soft-deleted Key Vault
+resources requires subscription-level `Microsoft.KeyVault/locations/deletedVaults/purge/action`
+permission. A subscription administrator can run `azd down --force --purge` later if the soft-deleted
+resources must be purged immediately.
 
 ## Troubleshooting
 

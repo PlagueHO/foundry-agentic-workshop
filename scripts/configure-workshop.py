@@ -48,6 +48,7 @@ ROLE_ASSIGNMENT_ROLES = {
     'User Access Administrator',
     'Role Based Access Control Administrator',
 }
+MINIMUM_AZD_VERSION = (1, 28, 0)
 
 
 class Palette:
@@ -198,7 +199,90 @@ def _json_output(command: list[str]) -> Any:
         raise RuntimeError(f'Unexpected JSON output from {" ".join(command)}.') from exc
 
 
-def _check_azure_access(az: str) -> dict[str, str]:
+def _raise_azure_authentication_error(exc: RuntimeError, tenant_id: str = '') -> None:
+    detail = str(exc)
+    if 'TokenCreatedWithOutdatedPolicies' in detail or 'InteractionRequired' in detail:
+        tenant_option = f' --tenant {tenant_id}' if tenant_id else ''
+        raise RuntimeError(
+            'Azure CLI authentication requires an interactive sign-in because the cached '
+            'token was created under outdated policies. Run these commands, then start the '
+            'wizard again:\n\n'
+            '  az logout\n'
+            f'  az login{tenant_option}'
+        ) from exc
+    raise exc
+
+
+def _check_azd_version(azd: str) -> None:
+    result = _run([azd, 'version'])
+    output = f'{result.stdout}\n{result.stderr}'
+    match = re.search(r'version\s+(\d+)\.(\d+)\.(\d+)', output, re.IGNORECASE)
+    if result.returncode != 0 or match is None:
+        raise RuntimeError(
+            'Could not determine the azd version. Install or upgrade Azure Developer CLI '
+            'to 1.28.0 or later, then run the wizard again.'
+        )
+    version = tuple(int(match.group(index)) for index in range(1, 4))
+    if version < MINIMUM_AZD_VERSION:
+        raise RuntimeError(
+            f'Azure Developer CLI {match.group(0).split()[-1]} is too old. '
+            'Resource-group-scoped deployments require azd 1.28.0 or later.'
+        )
+    _print(f'  ✅ Azure Developer CLI: {match.group(0).split()[-1]}')
+
+
+def _role_assignments_for_scope(
+    az: str,
+    principal_id: str,
+    scope: str,
+) -> list[dict[str, Any]]:
+    try:
+        assignments = _json_output([
+            az,
+            'role',
+            'assignment',
+            'list',
+            '--assignee-object-id',
+            principal_id,
+            '--scope',
+            scope,
+            '--include-inherited',
+            '--output',
+            'json',
+        ])
+    except RuntimeError as exc:
+        _raise_azure_authentication_error(exc)
+    return [item for item in assignments if item.get('roleDefinitionName')]
+
+
+def _role_names_for_scope(
+    az: str,
+    principal_id: str,
+    scope: str,
+) -> set[str]:
+    assignments = _role_assignments_for_scope(az, principal_id, scope)
+    return {
+        item.get('roleDefinitionName')
+        for item in assignments
+        if item.get('roleDefinitionName')
+    }
+
+
+def _has_unrestricted_role_assignment_permission(
+    assignments: list[dict[str, Any]],
+) -> bool:
+    return any(
+        item.get('roleDefinitionName') in ROLE_ASSIGNMENT_ROLES
+        and not item.get('condition')
+        for item in assignments
+    )
+
+
+def _check_azure_access(
+    az: str,
+    resource_group: str,
+    location: str,
+) -> dict[str, str]:
     _print(
         '🔐 Checking your Azure sign-in and deployment permissions.',
         color=COLORS.bold,
@@ -215,52 +299,81 @@ def _check_azure_access(az: str) -> dict[str, str]:
             'json',
         ])
     except RuntimeError as exc:
-        _print(
-            '❌ Azure CLI is not authenticated. Run `az login`, then try again.',
-            color=COLORS.red,
-        )
-        raise RuntimeError(str(exc)) from exc
+        _raise_azure_authentication_error(exc)
 
     if account.get('state') != 'Enabled':
         raise RuntimeError(
             f"The selected subscription is not enabled (state: {account.get('state')})."
         )
 
-    principal = _json_output([
-        az,
-        'ad',
-        'signed-in-user',
-        'show',
-        '--query',
-        '{objectId:id,displayName:displayName,userPrincipalName:userPrincipalName}',
-        '--output',
-        'json',
-    ])
+    try:
+        principal = _json_output([
+            az,
+            'ad',
+            'signed-in-user',
+            'show',
+            '--query',
+            '{objectId:id,displayName:displayName,userPrincipalName:userPrincipalName}',
+            '--output',
+            'json',
+        ])
+    except RuntimeError as exc:
+        _raise_azure_authentication_error(exc, account.get('tenantId', ''))
     principal_id = principal.get('objectId')
     if not principal_id:
         raise RuntimeError('Azure CLI did not return the signed-in user object ID.')
 
-    scope = f"/subscriptions/{account['subscriptionId']}"
-    assignments = _json_output([
-        az,
-        'role',
-        'assignment',
-        'list',
-        '--assignee-object-id',
-        principal_id,
-        '--scope',
-        scope,
-        '--include-inherited',
-        '--output',
-        'json',
-    ])
-    role_names = {
-        item.get('roleDefinitionName')
-        for item in assignments
-        if item.get('roleDefinitionName')
+    subscription_scope = f"/subscriptions/{account['subscriptionId']}"
+    subscription_assignments = _role_assignments_for_scope(az, principal_id, subscription_scope)
+    subscription_roles = {
+        item['roleDefinitionName']
+        for item in subscription_assignments
     }
-    has_deployment = bool(role_names & RESOURCE_DEPLOYMENT_ROLES)
-    has_role_assignment = bool(role_names & ROLE_ASSIGNMENT_ROLES)
+    has_subscription_deployment = bool(subscription_roles & RESOURCE_DEPLOYMENT_ROLES)
+    has_subscription_role_assignment = bool(subscription_roles & ROLE_ASSIGNMENT_ROLES)
+    has_unrestricted_subscription_role_assignment = _has_unrestricted_role_assignment_permission(
+        subscription_assignments
+    )
+
+    resource_group_scope = f'{subscription_scope}/resourceGroups/{resource_group}'
+    group_exists = _run([
+        az,
+        'group',
+        'exists',
+        '--name',
+        resource_group,
+        '--output',
+        'tsv',
+    ])
+    if group_exists.returncode != 0:
+        raise RuntimeError(
+            f'Could not check whether resource group {resource_group} exists: '
+            f'{group_exists.stderr.strip() or group_exists.stdout.strip()}'
+        )
+    has_existing_resource_group = group_exists.stdout.strip().lower() == 'true'
+    resource_group_assignments: list[dict[str, Any]] = []
+    if has_existing_resource_group:
+        resource_group_assignments = _role_assignments_for_scope(az, principal_id, resource_group_scope)
+    resource_group_roles = {
+        item['roleDefinitionName']
+        for item in resource_group_assignments
+    }
+    has_group_deployment = bool(resource_group_roles & RESOURCE_DEPLOYMENT_ROLES)
+    has_group_role_assignment = bool(resource_group_roles & ROLE_ASSIGNMENT_ROLES)
+    has_unrestricted_group_role_assignment = _has_unrestricted_role_assignment_permission(
+        resource_group_assignments
+    )
+    has_subscription_path = (
+        has_subscription_deployment
+        and has_subscription_role_assignment
+        and has_unrestricted_subscription_role_assignment
+    )
+    has_resource_group_path = (
+        has_existing_resource_group
+        and has_group_deployment
+        and has_group_role_assignment
+        and has_unrestricted_group_role_assignment
+    )
 
     _print(
         f"  ✅ Signed in as {principal.get('userPrincipalName') or principal.get('displayName')}"
@@ -269,28 +382,48 @@ def _check_azure_access(az: str) -> dict[str, str]:
         f"  ✅ Subscription: {account.get('subscriptionName')} "
         f"({account['subscriptionId']})"
     )
-    _print(f"  {'✅' if has_deployment else '❌'} Resource deployment permission")
-    _print(f"  {'✅' if has_role_assignment else '❌'} Role-assignment permission")
+    _print(
+        f"  {'✅' if has_subscription_path else '❌'} Subscription deployment path "
+        '(Owner/Contributor + unrestricted role assignment permission)'
+    )
+    _print(
+        f"  {'✅' if has_resource_group_path else '❌'} Existing resource-group path "
+        '(Owner/Contributor + unrestricted role assignment permission)'
+    )
 
-    if not has_deployment or not has_role_assignment:
-        missing = []
-        if not has_deployment:
-            missing.append('Owner or Contributor')
-        if not has_role_assignment:
-            missing.append(
-                'Owner, User Access Administrator, or '
-                'Role Based Access Control Administrator'
+    if not has_subscription_path and not has_resource_group_path:
+        if not has_existing_resource_group:
+            raise RuntimeError(
+                f'Resource group {resource_group} does not exist, and the signed-in identity '
+                'does not have the subscription roles needed to create it. Ask an administrator '
+                f'to run the following commands for region {location}:\n\n'
+                f'  az group create --name {resource_group} --location {location}\n\n'
+                'Then grant either Contributor plus User Access Administrator:\n\n'
+                f'  az role assignment create --assignee {principal_id} '
+                f'--role Contributor --scope {resource_group_scope}\n'
+                f'  az role assignment create --assignee {principal_id} '
+                f'--role "User Access Administrator" --scope {resource_group_scope}\n\n'
+                'Or grant Owner on the resource group:\n\n'
+                f'  az role assignment create --assignee {principal_id} '
+                f'--role Owner --scope {resource_group_scope}\n\n'
+                'Once the administrator has run these commands, rerun this wizard or run '
+                '`azd provision` again to start the deployment.'
             )
         raise RuntimeError(
-            'Missing required Azure permissions: '
-            + '; '.join(missing)
-            + '. Ask a subscription administrator to grant the required role(s).'
+            f'Grant the signed-in identity Owner or Contributor plus an unrestricted User Access '
+            f'Administrator or Role Based Access Control Administrator on {resource_group}, or '
+            f'grant the equivalent roles at subscription scope. Conditional role assignments '
+            f'may not authorize the workshop role assignments. '
+            f'Example: az role assignment create --assignee {principal_id} '
+            f'--role Contributor --scope {resource_group_scope}'
         )
 
     return {
         'subscription_id': account['subscriptionId'],
         'tenant_id': account['tenantId'],
         'principal_id': principal_id,
+        'resource_group': resource_group,
+        'subscription_scope': str(has_subscription_path).lower(),
     }
 
 
@@ -527,7 +660,7 @@ def main() -> int:
         _header()
         az = _require_tool('az')
         azd = _require_tool('azd')
-        account = _check_azure_access(az)
+        _check_azd_version(azd)
         environment = _select_environment(azd)
         location = _ask(
             'Azure region',
@@ -539,6 +672,7 @@ def main() -> int:
             ('individual', 'organizer'),
             'individual',
         ) == 'individual'
+        account = _check_azure_access(az, resource_group, location)
 
         attendees: list[dict[str, Any]] = []
         attendee_count: int | None = None
@@ -553,6 +687,7 @@ def main() -> int:
 
         settings = {
             'AZURE_LOCATION': location,
+            'AZURE_SUBSCRIPTION_ID': account['subscription_id'],
             'AZURE_RESOURCE_GROUP': resource_group,
             'AZURE_PRINCIPAL_ID': account['principal_id'],
             'AZURE_INDIVIDUAL_MODE': str(individual_mode).lower(),

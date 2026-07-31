@@ -9,11 +9,14 @@ hooks:
     posix:
       shell: sh
       run: |
+        uv run python scripts/ensure-resource-group.py &&
         uv run python scripts/check-model-quota.py &&
         uv run python scripts/prepare-attendee-roles.py
     windows:
       shell: pwsh
       run: |
+        uv run python scripts/ensure-resource-group.py
+        if ($LASTEXITCODE -ne 0){ exit $LASTEXITCODE }
         uv run python scripts/check-model-quota.py
         if ($LASTEXITCODE -ne 0){ exit $LASTEXITCODE }
         uv run python scripts/prepare-attendee-roles.py
