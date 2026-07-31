@@ -105,11 +105,21 @@ def _redact_command(command: list[str]) -> list[str]:
     return redacted
 
 
-def _run(command: list[str], *, cwd: Path | None = None) -> int:
-    """Run a command, retrying transient Azure CLI failures. Return its exit code."""
+def _run(
+    command: list[str],
+    *,
+    cwd: Path | None = None,
+    display_command: list[str] | None = None,
+) -> int:
+    """Run a command, retrying transient Azure CLI failures. Return its exit code.
+
+    ``display_command`` is logged instead of ``command`` when provided, so callers
+    that include secrets in ``command`` can supply a pre-sanitized representation.
+    """
     retries = 3 if command[0] == _AZ_CMD else 1
+    log_cmd = display_command if display_command is not None else _redact_command(command)
     for attempt in range(1, retries + 1):
-        print(f'$ {" ".join(_redact_command(command))}')
+        print(f'$ {" ".join(log_cmd)}')
         result = subprocess.run(command, cwd=cwd, check=False)
         if result.returncode == 0 or attempt == retries:
             return result.returncode
@@ -468,12 +478,20 @@ def main() -> int:  # pylint: disable=too-many-return-statements
         )
         return 0
 
-    if _run([
-        _AZ_CMD, 'containerapp', 'secret', 'set',
-        '--name', container_app_name,
-        '--resource-group', resource_group,
-        '--secrets', f'easyauth-client-secret={client_secret}',
-    ]) != 0:
+    if _run(
+        [
+            _AZ_CMD, 'containerapp', 'secret', 'set',
+            '--name', container_app_name,
+            '--resource-group', resource_group,
+            '--secrets', f'easyauth-client-secret={client_secret}',
+        ],
+        display_command=[
+            _AZ_CMD, 'containerapp', 'secret', 'set',
+            '--name', container_app_name,
+            '--resource-group', resource_group,
+            '--secrets', 'easyauth-client-secret=***',
+        ],
+    ) != 0:
         _warn(
             'Could not set the EasyAuth client secret on the Container App. '
             'The portal image was deployed, but user authentication is not configured.'
