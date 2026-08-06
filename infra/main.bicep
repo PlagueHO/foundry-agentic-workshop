@@ -496,7 +496,7 @@ var foundryServiceConnections = concat(
   ],
   cosmosDbCapabilityHost ? [
     {
-      category: 'CosmosDb'
+      category: 'AzureCosmosDb'
       connectionProperties: {
         authType: 'AAD'
       }
@@ -512,7 +512,7 @@ var foundryServiceConnections = concat(
   ] : [],
   azureStorageAccountCapabilityHost ? [
     {
-      category: 'AzureBlob'
+      category: 'AzureStorageAccount'
       connectionProperties: {
         authType: 'AAD'
       }
