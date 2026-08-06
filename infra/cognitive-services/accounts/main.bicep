@@ -628,7 +628,7 @@ module cognitiveServices_connections 'connection/main.bicep' = [
   }
 ]
 
-// Helper function to build connection resource ID from connection name
+// Helper function to build account connection resource IDs for capability hosts.
 func buildConnectionResourceId(accountId string, connectionName string) string =>
   '${accountId}/connections/${connectionName}'
 

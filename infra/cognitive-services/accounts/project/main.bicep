@@ -245,9 +245,9 @@ resource project_connections 'Microsoft.CognitiveServices/accounts/projects/conn
   }
 ]
 
-// Helper function to build connection resource ID from connection name
-func buildConnectionResourceId(accountId string, connectionName string) string =>
-  '${accountId}/connections/${connectionName}'
+// Helper function to build inherited project connection resource IDs for capability hosts.
+func buildProjectConnectionResourceId(projectId string, connectionName string) string =>
+  '${projectId}/connections/${connectionName}'
 
 @batchSize(1)
 module project_capabilityHosts './capabilityHost/main.bicep' = [
@@ -261,16 +261,16 @@ module project_capabilityHosts './capabilityHost/main.bicep' = [
       projectName: project.name
       name: capabilityHost.name
       aiServicesConnections: capabilityHost.?aiServicesConnectionNames != null
-        ? map(capabilityHost.aiServicesConnectionNames!, connName => buildConnectionResourceId(parentAccount.id, connName))
+        ? map(capabilityHost.aiServicesConnectionNames!, connName => buildProjectConnectionResourceId(project.id, connName))
         : null
       threadStorageConnections: capabilityHost.?threadStorageConnectionNames != null
-        ? map(capabilityHost.threadStorageConnectionNames!, connName => buildConnectionResourceId(parentAccount.id, connName))
+        ? map(capabilityHost.threadStorageConnectionNames!, connName => buildProjectConnectionResourceId(project.id, connName))
         : null
       vectorStoreConnections: capabilityHost.?vectorStoreConnectionNames != null
-        ? map(capabilityHost.vectorStoreConnectionNames!, connName => buildConnectionResourceId(parentAccount.id, connName))
+        ? map(capabilityHost.vectorStoreConnectionNames!, connName => buildProjectConnectionResourceId(project.id, connName))
         : null
       storageConnections: capabilityHost.?storageConnectionNames != null
-        ? map(capabilityHost.storageConnectionNames!, connName => buildConnectionResourceId(parentAccount.id, connName))
+        ? map(capabilityHost.storageConnectionNames!, connName => buildProjectConnectionResourceId(project.id, connName))
         : null
     }
   }
