@@ -1,6 +1,7 @@
 targetScope = 'resourceGroup'
 
 import { capabilityHostType } from './cognitive-services/accounts/capabilityHost/main.bicep'
+import { projectCapabilityHostType } from './cognitive-services/accounts/project/capabilityHost/main.bicep'
 import { deploymentType } from './cognitive-services/accounts/main.bicep'
 
 @description('A single workshop attendee parsed from AZURE_ATTENDEE_LIST.')
@@ -320,6 +321,7 @@ var attendeeProjects = [
       }
     ]
     tags: tags
+    capabilityHosts: projectCapabilityHosts
     roleAssignments: map(
       filter(attendeeProjectRoleEntries, pr => pr.projectName == name),
       pr => pr.roleAssignment
@@ -538,6 +540,15 @@ var autoCapabilityHost capabilityHostType = {
 
 var hasAutoCapabilityHost = cosmosDbCapabilityHost || azureAiSearchCapabilityHost || azureStorageAccountCapabilityHost
 var effectiveCapabilityHosts = concat(foundryCapabilityHosts, hasAutoCapabilityHost ? [autoCapabilityHost] : [])
+var projectCapabilityHosts projectCapabilityHostType[] = [
+  for capabilityHost in effectiveCapabilityHosts: {
+    name: capabilityHost.name
+    aiServicesConnectionNames: capabilityHost.?aiServicesConnectionNames
+    threadStorageConnectionNames: capabilityHost.?threadStorageConnectionNames
+    vectorStoreConnectionNames: capabilityHost.?vectorStoreConnectionNames
+    storageConnectionNames: capabilityHost.?storageConnectionNames
+  }
+]
 
 // Create the Log Analytics workspace using Azure Verified Module (AVM)
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.1' = {
