@@ -584,6 +584,7 @@ module cognitiveService_projects './project/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-cognitiveService-project-${index}'
     dependsOn: [
       cognitiveService_deployments
+      cognitiveServices_capabilityHosts
     ]
     scope: az.resourceGroup(
         split(project.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
@@ -611,7 +612,6 @@ module cognitiveServices_connections 'connection/main.bicep' = [
     name: '${take('${cognitiveService.name}-${connection.name}', 60)}-con'
     dependsOn: [
       cognitiveService_deployments
-      cognitiveService_projects
     ]
     params: {
       accountName: cognitiveService.name
