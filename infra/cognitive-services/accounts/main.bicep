@@ -600,6 +600,7 @@ module cognitiveService_projects './project/main.bicep' = [
       roleAssignments: project.?roleAssignments ?? roleAssignments
       diagnosticSettings: project.?diagnosticSettings ?? []
       tags: project.?tags ?? tags
+      connections: project.?connections ?? connections
       applications: project.?applications ?? []
       capabilityHosts: project.?capabilityHosts ?? []
     }
