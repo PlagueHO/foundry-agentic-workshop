@@ -212,6 +212,7 @@ var logAnalyticsName = '${abbrs.operationalInsightsWorkspaces}${environmentName}
 var sendTologAnalyticsCustomSettingName = 'send-to-${logAnalyticsName}'
 var applicationInsightsName = '${abbrs.insightsComponents}${environmentName}'
 var storageAccounName = take(toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', '')), 24)
+var capabilityHostStorageAccountName = take(toLower(replace('${abbrs.storageStorageAccounts}${environmentName}cap', '-', '')), 24)
 var keyVaultName = take(toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', '')), 24)
 var cosmosDbAccountName = toLower(replace('${abbrs.cosmosDBAccounts}${environmentName}', '-', ''))
 var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
@@ -430,7 +431,7 @@ var attendeeAgentIdentityRbacAdminRoleAssignments = map(resolvedAttendeesWithIds
 // ---------- CAPABILITY HOSTS CONFIGURATION ----------
 var aiSearchConnectionName = replace(aiSearchName, '-', '')
 var appInsightsConnectionName = replace(applicationInsightsName, '-', '')
-var storageConnectionName = replace(storageAccounName, '-', '')
+var capabilityHostStorageConnectionName = replace(capabilityHostStorageAccountName, '-', '')
 var cosmosDbConnectionName = replace(cosmosDbAccountName, '-', '')
 var containerRegistryConnectionName = replace(containerRegistryName, '-', '')
 
@@ -496,7 +497,7 @@ var foundryServiceConnections = concat(
   ],
   cosmosDbCapabilityHost ? [
     {
-      category: 'AzureCosmosDb'
+      category: 'CosmosDb'
       connectionProperties: {
         authType: 'AAD'
       }
@@ -516,13 +517,14 @@ var foundryServiceConnections = concat(
       connectionProperties: {
         authType: 'AAD'
       }
-      name: storageConnectionName
-      target: 'https://${storageAccounName}.blob.${environment().suffixes.storage}/'
+      name: capabilityHostStorageConnectionName
+      target: 'https://${capabilityHostStorageAccountName}.blob.${environment().suffixes.storage}/'
       isSharedToAll: true
       metadata: {
         ApiType: 'Azure'
-        ResourceId: storageAccount.outputs.resourceId
-        AccountName: storageAccounName
+        #disable-next-line BCP318 // capabilityHostStorageAccount is gated by azureStorageAccountCapabilityHost
+        ResourceId: capabilityHostStorageAccount.outputs.resourceId
+        AccountName: capabilityHostStorageAccountName
         ContainerName: 'foundry-files'
         location: location
       }
@@ -535,7 +537,7 @@ var autoCapabilityHost capabilityHostType = {
   capabilityHostKind: 'Agents'
   threadStorageConnectionNames: cosmosDbCapabilityHost ? [cosmosDbConnectionName] : null
   vectorStoreConnectionNames: azureAiSearchCapabilityHost ? [aiSearchConnectionName] : null
-  storageConnectionNames: azureStorageAccountCapabilityHost ? [storageConnectionName] : null
+  storageConnectionNames: azureStorageAccountCapabilityHost ? [capabilityHostStorageConnectionName] : null
 }
 
 var hasAutoCapabilityHost = cosmosDbCapabilityHost || azureAiSearchCapabilityHost || azureStorageAccountCapabilityHost
@@ -551,7 +553,7 @@ var projectCapabilityHosts projectCapabilityHostType[] = [
 ]
 
 // Create the Log Analytics workspace using Azure Verified Module (AVM)
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.1' = {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.16.1' = {
   name: 'logAnalytics-workspace-deployment-${deploymentId}'
   params: {
     name: logAnalyticsName
@@ -561,7 +563,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
 }
 
 // Create the Application Insights resource using Azure Verified Module (AVM)
-module applicationInsights 'br/public:avm/res/insights/component:0.7.2' = {
+module applicationInsights 'br/public:avm/res/insights/component:0.8.0' = {
   name: 'application-insights-deployment-${deploymentId}'
   params: {
     name: applicationInsightsName
@@ -572,7 +574,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.7.2' = {
 }
 
 // Create a Key Vault with public access and RBAC authorization using Azure Verified Module (AVM)
-module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
+module keyVault 'br/public:avm/res/key-vault/vault:0.14.0' = {
   name: 'keyvault-deployment-${deploymentId}'
   params: {
     name: keyVaultName
@@ -593,7 +595,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
 }
 
 // Create a Storage Account with public access using Azure Verified Module (AVM)
-module storageAccount 'br/public:avm/res/storage/storage-account:0.32.1' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.33.0' = {
   name: 'storage-account-deployment-${deploymentId}'
   params: {
     name: storageAccounName
@@ -620,13 +622,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.1' = {
           name: 'agent-identity-demo'
           publicAccess: 'None'
         }
-        // Dedicated container for the AzureBlob Foundry capability host connection.
-        ... (azureStorageAccountCapabilityHost ? [
-          {
-            name: 'foundry-files'
-            publicAccess: 'None'
-          }
-        ] : [])
       ]
     }
     diagnosticSettings: [
@@ -656,6 +651,56 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.1' = {
       defaultAction: 'Allow'
       bypass: 'AzureServices'
     }
+    publicNetworkAccess: 'Enabled'
+    sasExpirationPeriod: '180.00:00:00'
+    skuName: 'Standard_LRS'
+    tags: tags
+  }
+}
+
+// Create dedicated blob storage for the Foundry capability host. This account must remain
+// separate from workshop onboarding, product, and agent-identity data.
+module capabilityHostStorageAccount 'br/public:avm/res/storage/storage-account:0.33.0' = if (azureStorageAccountCapabilityHost) {
+  name: 'capability-host-storage-account-deployment-${deploymentId}'
+  params: {
+    name: capabilityHostStorageAccountName
+    allowBlobPublicAccess: false
+    blobServices: {
+      automaticSnapshotPolicyEnabled: false
+      containerDeleteRetentionPolicyEnabled: false
+      deleteRetentionPolicyEnabled: false
+      lastAccessTimeTrackingPolicyEnabled: true
+      containers: [
+        {
+          name: 'foundry-files'
+          publicAccess: 'None'
+        }
+      ]
+    }
+    diagnosticSettings: [
+      {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: sendTologAnalyticsCustomSettingName
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    enableHierarchicalNamespace: false
+    enableNfsV3: false
+    enableSftp: false
+    largeFileSharesState: 'Enabled'
+    location: location
+    managedIdentities: {
+      systemAssigned: true
+    }
+    networkAcls: {
+      defaultAction: 'Allow'
+      bypass: 'AzureServices'
+    }
+    publicNetworkAccess: 'Enabled'
     sasExpirationPeriod: '180.00:00:00'
     skuName: 'Standard_LRS'
     tags: tags
@@ -663,7 +708,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.1' = {
 }
 
 // Create a serverless Cosmos DB account with public access using Azure Verified Module (AVM)
-module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.19.0' = {
+module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.20.0' = {
   name: 'cosmos-db-account-deployment-${deploymentId}'
   params: {
     name: cosmosDbAccountName
@@ -690,7 +735,9 @@ module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.19.0' =
     disableLocalAuthentication: true
     minimumTlsVersion: 'Tls12'
     networkRestrictions: {
-      networkAclBypass: 'None'
+      // Foundry Agent Service reaches the project capability host from Azure-managed
+      // infrastructure with non-static public egress IPs.
+      networkAclBypass: 'AzureServices'
       publicNetworkAccess: 'Enabled'
     }
     backupStorageRedundancy: 'Local'
@@ -707,7 +754,7 @@ module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.19.0' =
 }
 
 // Create an Azure AI Search service with public access using Azure Verified Module (AVM)
-module aiSearchService 'br/public:avm/res/search/search-service:0.12.2' = {
+module aiSearchService 'br/public:avm/res/search/search-service:0.13.0' = {
   name: 'ai-search-service-deployment-${deploymentId}'
   params: {
     name: aiSearchName
@@ -981,6 +1028,9 @@ module aiFoundryAccount './cognitive-services/accounts/main.bicep' = {
     allowProjectManagement: true
     connections: foundryServiceConnections
     capabilityHosts: effectiveCapabilityHosts
+    #disable-next-line BCP318 // capabilityHostStorageAccount is gated by azureStorageAccountCapabilityHost
+    storageAccountResourceId: azureStorageAccountCapabilityHost ? capabilityHostStorageAccount.outputs.resourceId : null
+    cosmosDbAccountResourceId: cosmosDbCapabilityHost ? cosmosDbAccount.outputs.resourceId : null
     projects: attendeeProjects
     raiPolicies: [
       {

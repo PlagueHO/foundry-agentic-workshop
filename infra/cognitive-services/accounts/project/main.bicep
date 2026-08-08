@@ -13,7 +13,7 @@ param name string
 @sys.description('Required. The location for the Foundry Project.')
 param location string
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -21,11 +21,11 @@ param diagnosticSettings diagnosticSettingFullType[]?
 @sys.description('Optional. Resource tags for the Foundry Project.')
 param tags object?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. Role assignments to apply to the Foundry Project.')
 param roleAssignments roleAssignmentType[]?
 
@@ -46,6 +46,12 @@ param applications applicationType[] = []
 import { projectCapabilityHostType } from './capabilityHost/main.bicep'
 @sys.description('Optional. Capability hosts to create in the Foundry Project. These configure per-project storage backends for threads, vectors, and files.')
 param capabilityHosts projectCapabilityHostType[] = []
+
+@sys.description('Optional. Resource ID of the storage account used by project capability hosts.')
+param storageAccountResourceId string?
+
+@sys.description('Optional. Resource ID of the Cosmos DB account used by project capability hosts.')
+param cosmosDbAccountResourceId string?
 
 
 var formattedUserAssignedIdentities = reduce(
@@ -245,12 +251,71 @@ resource project_connections 'Microsoft.CognitiveServices/accounts/projects/conn
   }
 ]
 
+module projectStorageBlobDataContributor '../../../core/security/role_storage.bicep' = if (!empty(storageAccountResourceId) && !empty(capabilityHosts)) {
+  name: '${take('${accountName}-${name}', 50)}-storage-role'
+  scope: resourceGroup(
+    split(storageAccountResourceId!, '/')[2],
+    split(storageAccountResourceId!, '/')[4]
+  )
+  params: {
+    storageAccountName: split(storageAccountResourceId!, '/')[8]
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalType: 'ServicePrincipal'
+        principalId: project.identity.principalId
+      }
+    ]
+  }
+}
+
+module projectCosmosDbOperator '../../../core/security/role_cosmosdb_management.bicep' = if (!empty(cosmosDbAccountResourceId) && !empty(capabilityHosts)) {
+  name: '${take('${accountName}-${name}', 50)}-cosmos-role'
+  scope: resourceGroup(
+    split(cosmosDbAccountResourceId!, '/')[2],
+    split(cosmosDbAccountResourceId!, '/')[4]
+  )
+  params: {
+    cosmosDbAccountName: split(cosmosDbAccountResourceId!, '/')[8]
+    roleAssignments: [
+      {
+        roleDefinitionId: subscriptionResourceId(
+          'Microsoft.Authorization/roleDefinitions',
+          '230815da-be43-4aae-9cb4-875f7bd000aa'
+        )
+        principalType: 'ServicePrincipal'
+        principalId: project.identity.principalId
+      }
+    ]
+  }
+}
+
+module projectCosmosDbDataContributor '../../../core/security/role_cosmosdb.bicep' = if (!empty(cosmosDbAccountResourceId) && !empty(capabilityHosts)) {
+  name: '${take('${accountName}-${name}', 47)}-cosmos-data-role'
+  scope: resourceGroup(
+    split(cosmosDbAccountResourceId!, '/')[2],
+    split(cosmosDbAccountResourceId!, '/')[4]
+  )
+  params: {
+    cosmosDbAccountName: split(cosmosDbAccountResourceId!, '/')[8]
+    sqlRoleAssignments: [
+      {
+        principalId: project.identity.principalId
+        roleDefinitionId: '00000000-0000-0000-0000-000000000002'
+      }
+    ]
+  }
+}
+
 @batchSize(1)
 module project_capabilityHosts './capabilityHost/main.bicep' = [
   for (capabilityHost, index) in (capabilityHosts ?? []): {
     name: '${take('${accountName}-${name}-${capabilityHost.name}', 60)}-cph'
     dependsOn: [
       project_connections
+      projectStorageBlobDataContributor
+      projectCosmosDbOperator
+      projectCosmosDbDataContributor
     ]
     params: {
       accountName: accountName

@@ -38,7 +38,7 @@ param logAnalyticsWorkspaceResourceId string
 // User-assigned managed identity used by the Container App to pull the image from the shared
 // Container Registry and to authenticate against blob storage with DefaultAzureCredential.
 // The caller (main.bicep) assigns the matching ACR Reader and Storage Blob Data Reader roles.
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.1' = {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.6.0' = {
   name: 'attendee-portal-identity'
   params: {
     name: userAssignedIdentityName
@@ -52,7 +52,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 // keeps the portal responsive without cold-start delay. The placeholder image is replaced by
 // scripts/deploy-attendee-portal.py, which builds and pushes the real image, rolls the Container
 // App to a new revision, and wires Container Apps EasyAuth.
-module containerApp 'br/public:avm/res/app/container-app:0.22.1' = {
+module containerApp 'br/public:avm/res/app/container-app:0.23.0' = {
   name: 'attendee-portal-app'
   params: {
     name: containerAppName
