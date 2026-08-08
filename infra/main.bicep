@@ -713,7 +713,13 @@ module cosmosDbAccount 'br/public:avm/res/document-db/database-account:0.20.0' =
   params: {
     name: cosmosDbAccountName
     location: location
-    tags: tags
+    // TEMPORARY: The MCAPSGovDeployPolicies/CosmosDB_PublicNetwork_Modify policy rewrites
+    // publicNetworkAccess from Enabled to Disabled unless SecurityControl=Ignore is present.
+    // The policy-modified write still reports success, but Foundry Agent Service then receives
+    // Cosmos DB firewall 403 responses because its managed public egress addresses are not static.
+    // Remove this exclusion after end-to-end VNet/private endpoint connectivity is implemented
+    // and capability-host access from Foundry to Cosmos DB is verified over the private path.
+    tags: union(tags, cosmosDbCapabilityHost ? { SecurityControl: 'Ignore' } : {})
     failoverLocations: [
       {
         failoverPriority: 0
@@ -1171,6 +1177,26 @@ module projectSearchRoleAssignments './core/security/role_aisearch.bicep' = [
       roleAssignments: [
         {
           roleDefinitionIdOrName: 'Search Index Data Reader'
+          principalType: 'ServicePrincipal'
+          principalId: aiFoundryAccount.outputs.projectSystemAssignedMIPrincipalIds[i]
+        }
+      ]
+    }
+  }
+]
+
+// Per-project managed identity Foundry User role assignments for Foundry memory stores.
+// The Memory portal authenticates through the Foundry project's managed identity. That identity
+// needs Foundry User on the parent account before it can access a capability host's stores.
+// See: https://learn.microsoft.com/azure/foundry/agents/how-to/memory-usage?pivots=rest#authorization-and-permissions
+module projectCapabilityHostFoundryUserRoleAssignments './core/security/role_foundry.bicep' = [
+  for (name, i) in ((hasAutoCapabilityHost || !empty(foundryCapabilityHosts)) ? allProjectNames : []): {
+    name: 'project-capability-host-foundry-user-role-${i}-${deploymentId}'
+    params: {
+      foundryName: aiFoundryName
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: foundryRoleCatalog['foundry-user']
           principalType: 'ServicePrincipal'
           principalId: aiFoundryAccount.outputs.projectSystemAssignedMIPrincipalIds[i]
         }
