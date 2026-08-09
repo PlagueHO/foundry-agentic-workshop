@@ -92,18 +92,18 @@ jobs:
 
       - name: Run Blob Relay unit tests
         run: |
-          uv sync --project shared/mcp-servers/blob-relay --frozen --group test
-          uv run --project shared/mcp-servers/blob-relay --frozen --group test pytest
+          uv sync --directory shared/mcp-servers/blob-relay --frozen --group test
+          uv run --directory shared/mcp-servers/blob-relay --frozen --group test pytest
 
       - name: Run Flight Ops unit tests
         run: |
-          uv sync --project shared/mcp-servers/flight-ops --frozen --group test
-          uv run --project shared/mcp-servers/flight-ops --frozen --group test pytest
+          uv sync --directory shared/mcp-servers/flight-ops --frozen --group test
+          uv run --directory shared/mcp-servers/flight-ops --frozen --group test pytest
 
       - name: Run Retail Remedy Ops unit tests
         run: |
-          uv sync --project shared/mcp-servers/retail-remedy-ops --frozen --group test
-          uv run --project shared/mcp-servers/retail-remedy-ops --frozen --group test pytest
+          uv sync --directory shared/mcp-servers/retail-remedy-ops --frozen --group test
+          uv run --directory shared/mcp-servers/retail-remedy-ops --frozen --group test pytest
 
       - name: Compile Python sources
         run: uv run --no-sync python -m compileall labs scripts shared
