@@ -654,7 +654,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.33.0' = {
     publicNetworkAccess: 'Enabled'
     sasExpirationPeriod: '180.00:00:00'
     skuName: 'Standard_LRS'
-    tags: tags
+    // The attendee portal runs in Container Apps and accesses this account through
+    // its public Blob endpoint using managed identity. The environment's
+    // StorageAccount_PublicNetwork_Modify policy otherwise changes publicNetworkAccess
+    // to Disabled, which prevents the portal from reaching onboarding data.
+    tags: union(tags, { SecurityControl: 'Ignore' })
   }
 }
 
@@ -703,7 +707,9 @@ module capabilityHostStorageAccount 'br/public:avm/res/storage/storage-account:0
     publicNetworkAccess: 'Enabled'
     sasExpirationPeriod: '180.00:00:00'
     skuName: 'Standard_LRS'
-    tags: tags
+    // Foundry capability hosts use Azure-managed public egress to access this account.
+    // Keep the public endpoint enabled rather than allowing policy to mutate it to Disabled.
+    tags: union(tags, { SecurityControl: 'Ignore' })
   }
 }
 
@@ -873,7 +879,7 @@ module flightOpsMcpServer './core/host/mcp-server.bicep' = if (azureContainerApp
     location: location
     tags: tags
     containerName: 'flight-ops'
-    portEnvVarName: 'PORT'
+    portEnvVarName: 'FLIGHT_OPS_MCP_SERVER_PORT'
   }
 }
 

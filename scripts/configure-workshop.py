@@ -383,13 +383,27 @@ def _check_azure_access(
         f"({account['subscriptionId']})"
     )
     _print(
-        f"  {'✅' if has_subscription_path else '❌'} Subscription deployment path "
+        f"  {'✅' if has_subscription_path else '⚠️' if has_resource_group_path else '❌'} "
+        'Subscription deployment path '
         '(Owner/Contributor + unrestricted role assignment permission)'
     )
     _print(
-        f"  {'✅' if has_resource_group_path else '❌'} Existing resource-group path "
+        f"  {'✅' if has_resource_group_path else '⚠️' if has_subscription_path else '❌'} "
+        'Existing resource-group path '
         '(Owner/Contributor + unrestricted role assignment permission)'
     )
+    if has_subscription_path and not has_resource_group_path:
+        _print(
+            '     Provisioning can proceed because the subscription deployment path '
+            'provides the required access.',
+            color=COLORS.yellow,
+        )
+    elif has_resource_group_path and not has_subscription_path:
+        _print(
+            '     Deployment will be OK because the existing resource-group path '
+            'provides the required access.',
+            color=COLORS.yellow,
+        )
 
     if not has_subscription_path and not has_resource_group_path:
         if not has_existing_resource_group:
@@ -511,21 +525,46 @@ def _collect_attendees() -> tuple[list[dict[str, Any]], int | None]:
         _print(f'  Added {upn} ✅', color=COLORS.green)
 
 
-def _collect_common_settings(individual_mode: bool) -> tuple[str, bool, dict[str, str]]:
+def _collect_common_settings(individual_mode: bool) -> tuple[str, dict[str, str]]:
     default_profile = 'default' if individual_mode else 'workshop'
     profile = _ask_choice('Model deployment profile', MODEL_PROFILES, default_profile)
-    container_apps = _ask_yes_no('Deploy the shared Container Apps services?', True)
-    extra: dict[str, str] = {}
-    if _ask_yes_no('Configure advanced options?', False):
+
+    extra = {
+        'AZURE_MODEL_QUOTA_CHECK': 'true',
+        'AZURE_AI_SEARCH_CAPABILITY_HOST': 'false',
+        'AZURE_COSMOS_DB_CAPABILITY_HOST': 'false',
+        'AZURE_STORAGE_ACCOUNT_CAPABILITY_HOST': 'false',
+    }
+
+    _print('\n⚙️  Advanced options', color=COLORS.bold)
+    _print('Default settings:')
+    _print(' ➡️ Model quota check before provisioning: enabled')
+    _print('Recommendation: leave the default unless you have a specific reason to skip it.')
+    if _ask_yes_no('Change advanced options?', False):
         quota_check = _ask_yes_no('Run the model quota check before provisioning?', True)
         extra['AZURE_MODEL_QUOTA_CHECK'] = str(quota_check).lower()
-        if _ask_yes_no('Enable Azure AI Search capability host?', False):
-            extra['AZURE_AI_SEARCH_CAPABILITY_HOST'] = 'true'
-        if _ask_yes_no('Enable Cosmos DB capability host?', False):
-            extra['AZURE_COSMOS_DB_CAPABILITY_HOST'] = 'true'
-        if _ask_yes_no('Enable Azure Storage capability host?', False):
-            extra['AZURE_STORAGE_ACCOUNT_CAPABILITY_HOST'] = 'true'
-    return profile, container_apps, extra
+
+    _print('\n🧩 Deploy capability hosts', color=COLORS.bold)
+    _print(
+        'The labs support capability hosts so you can explore how they work, but '
+        'they are not required.'
+    )
+    _print('Default settings:')
+    _print(' ➡️ Azure AI Search capability host: disabled')
+    _print(' ➡️ Cosmos DB capability host: disabled')
+    _print(' ➡️ Azure Storage capability host: disabled')
+    _print(
+        'Recommendation: leave the defaults unless you specifically want to explore '
+        'capability hosts.'
+    )
+    if _ask_yes_no('Change capability host deployment settings?', False):
+        ai_search = _ask_yes_no('Enable Azure AI Search capability host?', False)
+        cosmos_db = _ask_yes_no('Enable Cosmos DB capability host?', False)
+        storage_account = _ask_yes_no('Enable Azure Storage capability host?', False)
+        extra['AZURE_AI_SEARCH_CAPABILITY_HOST'] = str(ai_search).lower()
+        extra['AZURE_COSMOS_DB_CAPABILITY_HOST'] = str(cosmos_db).lower()
+        extra['AZURE_STORAGE_ACCOUNT_CAPABILITY_HOST'] = str(storage_account).lower()
+    return profile, extra
 
 
 def _set_environment(azd: str, settings: dict[str, str]) -> None:
@@ -678,10 +717,10 @@ def main() -> int:
         attendee_count: int | None = None
         extra: dict[str, str] = {}
         if individual_mode:
-            profile, container_apps, extra = _collect_common_settings(True)
+            profile, extra = _collect_common_settings(True)
         else:
             attendees, attendee_count = _collect_attendees()
-            profile, container_apps, extra = _collect_common_settings(False)
+            profile, extra = _collect_common_settings(False)
             extra['AZURE_ATTENDEE_DEFAULT_ROLE'] = 'foundry-project-manager'
             extra['AZURE_USE_UPN_PROJECT_NAMES'] = 'true'
 
@@ -692,7 +731,7 @@ def main() -> int:
             'AZURE_PRINCIPAL_ID': account['principal_id'],
             'AZURE_INDIVIDUAL_MODE': str(individual_mode).lower(),
             'AZURE_MODEL_DEPLOYMENT_PROFILE': profile,
-            'AZURE_CONTAINER_APPS_DEPLOY': str(container_apps).lower(),
+            'AZURE_CONTAINER_APPS_DEPLOY': 'true',
             **extra,
         }
         if attendees:
@@ -700,20 +739,32 @@ def main() -> int:
         elif attendee_count is not None:
             settings['AZURE_ATTENDEE_COUNT'] = str(attendee_count)
 
-        _print('\n📋 Configuration summary', color=COLORS.bold)
+        _print('\n📋 Lab configuration summary', color=COLORS.bold)
         _print(f'  Mode: {"individual" if individual_mode else "organizer"}')
         _print(f'  Environment: {environment}')
         _print(f'  Subscription: {account["subscription_id"]}')
         _print(f'  Region: {location}')
         _print(f'  Resource group: {resource_group}')
         _print(f'  Model profile: {profile}')
-        _print(f'  Container Apps: {"enabled" if container_apps else "disabled"}')
+        _print('  Container Apps: always enabled')
+        _print(
+            '  Azure AI Search capability host: '
+            f'{"enabled" if extra["AZURE_AI_SEARCH_CAPABILITY_HOST"] == "true" else "disabled"}'
+        )
+        _print(
+            '  Cosmos DB capability host: '
+            f'{"enabled" if extra["AZURE_COSMOS_DB_CAPABILITY_HOST"] == "true" else "disabled"}'
+        )
+        _print(
+            '  Azure Storage capability host: '
+            f'{"enabled" if extra["AZURE_STORAGE_ACCOUNT_CAPABILITY_HOST"] == "true" else "disabled"}'
+        )
         if not individual_mode:
             _print(f'  Attendees/projects: {len(attendees) if attendees else attendee_count}')
 
         _set_environment(azd, settings)
         _print('\n✅ Configuration saved.', color=COLORS.green)
-        if container_apps and not _check_docker():
+        if not _check_docker():
             if not _warn_docker_not_running():
                 _print(
                     'Start Docker Desktop, then run `azd provision` when ready. 👋',

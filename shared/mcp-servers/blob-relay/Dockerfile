@@ -11,7 +11,9 @@ WORKDIR /app
 
 # Install dependencies first to leverage Docker layer caching.
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev --no-install-project
+ARG UV_DEFAULT_INDEX
+RUN if [ -n "$UV_DEFAULT_INDEX" ]; then export UV_DEFAULT_INDEX; fi; \
+	uv lock --refresh && uv sync --locked --no-dev --no-install-project
 
 # Copy the server source.
 COPY src/ ./src/
