@@ -251,7 +251,7 @@ resource project_connections 'Microsoft.CognitiveServices/accounts/projects/conn
   }
 ]
 
-module projectStorageBlobDataContributor '../../../core/security/role_storage.bicep' = if (!empty(storageAccountResourceId) && !empty(capabilityHosts)) {
+module projectStorageBlobDataContributor '../../../core/security/role_storage.bicep' = if (!empty(storageAccountResourceId) && !empty(capabilityHosts) && (managedIdentities.?systemAssigned ?? false)) {
   name: '${take('${accountName}-${name}', 50)}-storage-role'
   scope: resourceGroup(
     split(storageAccountResourceId!, '/')[2],
@@ -269,7 +269,7 @@ module projectStorageBlobDataContributor '../../../core/security/role_storage.bi
   }
 }
 
-module projectCosmosDbOperator '../../../core/security/role_cosmosdb_management.bicep' = if (!empty(cosmosDbAccountResourceId) && !empty(capabilityHosts)) {
+module projectCosmosDbOperator '../../../core/security/role_cosmosdb_management.bicep' = if (!empty(cosmosDbAccountResourceId) && !empty(capabilityHosts) && (managedIdentities.?systemAssigned ?? false)) {
   name: '${take('${accountName}-${name}', 50)}-cosmos-role'
   scope: resourceGroup(
     split(cosmosDbAccountResourceId!, '/')[2],
@@ -290,7 +290,7 @@ module projectCosmosDbOperator '../../../core/security/role_cosmosdb_management.
   }
 }
 
-module projectCosmosDbDataContributor '../../../core/security/role_cosmosdb.bicep' = if (!empty(cosmosDbAccountResourceId) && !empty(capabilityHosts)) {
+module projectCosmosDbDataContributor '../../../core/security/role_cosmosdb.bicep' = if (!empty(cosmosDbAccountResourceId) && !empty(capabilityHosts) && (managedIdentities.?systemAssigned ?? false)) {
   name: '${take('${accountName}-${name}', 47)}-cosmos-data-role'
   scope: resourceGroup(
     split(cosmosDbAccountResourceId!, '/')[2],

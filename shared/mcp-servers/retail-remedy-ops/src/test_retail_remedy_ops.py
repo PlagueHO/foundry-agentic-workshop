@@ -42,7 +42,6 @@ def test_lookup_purchase_found() -> None:
 
 @pytest.mark.parametrize('receipt_id', ['', 'r-1007', ' R-1007 ', 'R-9999'])
 def test_lookup_purchase_not_found(receipt_id: str) -> None:
-    result = lookup_purchase('R-9999')
     result = lookup_purchase(receipt_id)
     assert result == {'error': f'Receipt {receipt_id} not found'}
 
