@@ -41,7 +41,7 @@ TICK = '\u2705'
 CROSS = '\u274c'
 
 # Stable resource names for the Module 11 demo.
-CONNECTION_NAME = 'blob-relay'
+CONNECTION_NAME_PREFIX = 'blob-relay'
 AGENT_NAME = 'trip-concierge-storage'
 SERVER_LABEL = 'blob_store'
 BLOB_CONTAINER = 'agent-identity-demo'
@@ -104,6 +104,11 @@ def _project_endpoint(foundry_endpoint: str, project_name: str) -> str:
     return f'{base}/api/projects/{project_name}'
 
 
+def _connection_name(project_name: str) -> str:
+    """Return the account-unique connection name for a Foundry project."""
+    return f'{CONNECTION_NAME_PREFIX}-{project_name}'
+
+
 def _discover_model(client: AIProjectClient) -> str:
     """Return a chat-capable model deployment name from the project."""
     for deployment in client.deployments.list():
@@ -117,13 +122,13 @@ def _discover_model(client: AIProjectClient) -> str:
 
 def _put_connection(
     subscription_id: str, resource_group: str, account_name: str,
-    project_name: str, relay_url: str,
+    project_name: str, connection_name: str, relay_url: str,
 ) -> bool:
     """Create or update the AgenticIdentityToken RemoteTool connection."""
     url = (
         f'https://management.azure.com/subscriptions/{subscription_id}'
         f'/resourceGroups/{resource_group}/providers/Microsoft.CognitiveServices'
-        f'/accounts/{account_name}/projects/{project_name}/connections/{CONNECTION_NAME}'
+        f'/accounts/{account_name}/projects/{project_name}/connections/{connection_name}'
         f'?api-version={CONNECTIONS_API_VERSION}'
     )
     body = json.dumps({
@@ -167,11 +172,14 @@ def _provision_project(
     resource_group = env.get('AZURE_RESOURCE_GROUP', '')
     account_name = env.get('FOUNDRY_RESOURCE_NAME', '')
     foundry_endpoint = env.get('FOUNDRY_ENDPOINT', '')
+    connection_name = _connection_name(project_name)
 
     print(f'\n=== Project: {project_name} ===')
-    if not _put_connection(subscription_id, resource_group, account_name, project_name, relay_url):
+    if not _put_connection(
+        subscription_id, resource_group, account_name, project_name, connection_name, relay_url,
+    ):
         return False
-    print(f'{TICK} connection {CONNECTION_NAME!r} -> {relay_url}')
+    print(f'{TICK} connection {connection_name!r} -> {relay_url}')
 
     endpoint = _project_endpoint(foundry_endpoint, project_name)
     client = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
@@ -180,7 +188,7 @@ def _provision_project(
     tool = MCPTool(
         server_label=SERVER_LABEL,
         server_url=relay_url,
-        project_connection_id=CONNECTION_NAME,
+        project_connection_id=connection_name,
         require_approval='never',
     )
     definition = PromptAgentDefinition(model=model, instructions=AGENT_INSTRUCTIONS, tools=[tool])
