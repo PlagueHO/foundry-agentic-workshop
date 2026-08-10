@@ -19,16 +19,16 @@ param accountName string
 @sys.description('Required. The name of the parent Foundry Project.')
 param projectName string
 
-@sys.description('Optional. Array of AI services connection resource IDs. These connections reference AI services available to the project.')
+@sys.description('Optional. Array of AI services connection names. These connections reference AI services available to the project.')
 param aiServicesConnections string[]?
 
-@sys.description('Optional. Array of connection resource IDs for thread storage. These connections store conversation thread data for agents.')
+@sys.description('Optional. Array of connection names for thread storage. These connections store conversation thread data for agents.')
 param threadStorageConnections string[]?
 
-@sys.description('Optional. Array of connection resource IDs for vector stores. These connections store vector embeddings for semantic search.')
+@sys.description('Optional. Array of connection names for vector stores. These connections store vector embeddings for semantic search.')
 param vectorStoreConnections string[]?
 
-@sys.description('Optional. Array of connection resource IDs for file storage. These connections store files uploaded to agents.')
+@sys.description('Optional. Array of connection names for file storage. These connections store files uploaded to agents.')
 param storageConnections string[]?
 
 // ============================= //
@@ -48,7 +48,7 @@ resource parentProject 'Microsoft.CognitiveServices/accounts/projects@2025-10-01
 // Resources      //
 // ============== //
 
-resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-10-01-preview' = {
+resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2026-05-01' = {
   name: name
   parent: parentProject
   properties: {

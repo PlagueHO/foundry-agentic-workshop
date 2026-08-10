@@ -17,7 +17,7 @@ param tags object = {}
 // access is enabled so the cloud-hosted Foundry agent can reach published services over HTTPS. Zone
 // redundancy is disabled because the environment is consumption-only and is not deployed into a
 // virtual network.
-module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.13.3' = {
+module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.15.0' = {
   name: 'container-apps-environment'
   params: {
     name: containerAppsEnvironmentName

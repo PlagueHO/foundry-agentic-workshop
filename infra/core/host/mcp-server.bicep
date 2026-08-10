@@ -41,7 +41,7 @@ param logAnalyticsWorkspaceResourceId string
 // User-assigned managed identity used by the Container App to pull the image from the shared
 // Container Registry. The matching 'Container Registry Repository Reader' role assignment is
 // created by the caller (main.bicep) against the shared registry.
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.1' = {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.6.0' = {
   name: 'mcp-server-identity-${containerAppName}'
   params: {
     name: userAssignedIdentityName
@@ -56,7 +56,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 // replaced by scripts/deploy-retail-remedy-ops-mcp-server.py and
 // scripts/deploy-flight-ops-mcp-server.py, which builds and pushes the real image and rolls the
 // Container App to a new revision.
-module containerApp 'br/public:avm/res/app/container-app:0.22.1' = {
+module containerApp 'br/public:avm/res/app/container-app:0.23.0' = {
   name: 'mcp-server-app-${containerAppName}'
   params: {
     name: containerAppName

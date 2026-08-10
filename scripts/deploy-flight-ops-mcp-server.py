@@ -21,6 +21,7 @@ Prerequisites: azd, the Azure CLI (signed in), and a running Docker engine.
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -108,6 +109,11 @@ def _load_azd_env() -> dict[str, str]:
         return {}
 
 
+def _docker_build_args() -> list[str]:
+    """Return optional package-index build arguments inherited from the host."""
+    return ['--build-arg', 'UV_DEFAULT_INDEX'] if os.getenv('UV_DEFAULT_INDEX') else []
+
+
 def main() -> int:  # pylint: disable=too-many-return-statements
     """Build and push the Flight Ops MCP server image, then roll the Container App to the new revision."""
     if not _DOCKERFILE.is_file():
@@ -154,9 +160,19 @@ def main() -> int:  # pylint: disable=too-many-return-statements
     if not _wait_for_docker():
         return _fail('Docker daemon did not become ready in time. Ensure Docker Desktop is running.')
 
+    docker_build_command = [
+        _DOCKER_CMD,
+        'build',
+        *_docker_build_args(),
+        '--tag',
+        image,
+        '--file',
+        str(_DOCKERFILE),
+        str(_MCP_SERVER_DIR),
+    ]
     steps: list[tuple[str, list[str]]] = [
         ('Step 1/4: Authenticating with Container Registry...', [_AZ_CMD, 'acr', 'login', '--name', registry_name]),
-        ('Step 2/4: Building Docker image (this may take a few minutes)...', [_DOCKER_CMD, 'build', '--tag', image, '--file', str(_DOCKERFILE), str(_MCP_SERVER_DIR)]),
+        ('Step 2/4: Building Docker image (this may take a few minutes)...', docker_build_command),
         ('Step 3/4: Pushing image to registry...', [_DOCKER_CMD, 'push', image]),
         ('Step 4/4: Rolling Container App to new revision...', [
             _AZ_CMD, 'containerapp', 'update',

@@ -65,7 +65,7 @@ param sku string = 'S0'
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -85,15 +85,15 @@ param networkAcls object?
 @description('Optional. Specifies in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network.')
 param networkInjections networkInjectionType?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -109,7 +109,7 @@ param apiProperties object?
 @description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons.')
 param disableLocalAuth bool = true
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -129,7 +129,7 @@ param restrictOutboundNetworkAccess bool = true
 @description('Optional. The storage accounts for this resource.')
 param userOwnedStorage array?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -161,6 +161,12 @@ param connections connectionType[] = []
 import { capabilityHostType } from 'capabilityHost/main.bicep'
 @sys.description('Optional. Capability hosts to create in the Cognitive Services account. These enable AI agent functionality.')
 param capabilityHosts capabilityHostType[] = []
+
+@sys.description('Optional. Resource ID of the storage account used by project capability hosts.')
+param storageAccountResourceId string?
+
+@sys.description('Optional. Resource ID of the Cosmos DB account used by project capability hosts.')
+param cosmosDbAccountResourceId string?
 
 import { applicationType, applicationOutputType } from 'project/application/main.bicep'
 import { projectCapabilityHostType, projectCapabilityHostOutputType } from 'project/capabilityHost/main.bicep'
@@ -523,7 +529,7 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
 ]
 
 @batchSize(1)
-module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: take('${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}', 64)
     scope: az.resourceGroup(
@@ -584,6 +590,7 @@ module cognitiveService_projects './project/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-cognitiveService-project-${index}'
     dependsOn: [
       cognitiveService_deployments
+      cognitiveServices_capabilityHosts
     ]
     scope: az.resourceGroup(
         split(project.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
@@ -601,6 +608,8 @@ module cognitiveService_projects './project/main.bicep' = [
       tags: project.?tags ?? tags
       applications: project.?applications ?? []
       capabilityHosts: project.?capabilityHosts ?? []
+      storageAccountResourceId: storageAccountResourceId
+      cosmosDbAccountResourceId: cosmosDbAccountResourceId
     }
   }
 ]
@@ -611,7 +620,6 @@ module cognitiveServices_connections 'connection/main.bicep' = [
     name: '${take('${cognitiveService.name}-${connection.name}', 60)}-con'
     dependsOn: [
       cognitiveService_deployments
-      cognitiveService_projects
     ]
     params: {
       accountName: cognitiveService.name
@@ -628,7 +636,7 @@ module cognitiveServices_connections 'connection/main.bicep' = [
   }
 ]
 
-// Helper function to build connection resource ID from connection name
+// Helper function to build account connection resource IDs for capability hosts.
 func buildConnectionResourceId(accountId string, connectionName string) string =>
   '${accountId}/connections/${connectionName}'
 
@@ -731,7 +739,7 @@ output location string = cognitiveService.location
 @description('The custom subdomain name of the cognitive services account.')
 output customSubDomainName string = cognitiveService.properties.customSubDomainName ?? ''
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   ? toObject(secretsExport.?outputs.secretsSet!, secret => last(split(secret.secretResourceId, '/')), secret => secret)

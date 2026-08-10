@@ -21,6 +21,7 @@ Prerequisites: azd, the Azure CLI (signed in), and a running Docker engine.
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -86,6 +87,11 @@ def _load_azd_env() -> dict[str, str]:
         return {}
 
 
+def _docker_build_args() -> list[str]:
+    """Return optional package-index build arguments inherited from the host."""
+    return ['--build-arg', 'UV_DEFAULT_INDEX'] if os.getenv('UV_DEFAULT_INDEX') else []
+
+
 def main() -> int:  # pylint: disable=too-many-return-statements
     """Build and push the MCP server image, then roll the Container App to the new revision."""
     if not _DOCKERFILE.is_file():
@@ -128,12 +134,22 @@ def main() -> int:  # pylint: disable=too-many-return-statements
 
     print(f'Deploying Blob Relay MCP server image {image} to Container App {container_app_name}...')
 
+    docker_build_command = [
+        _DOCKER_CMD,
+        'build',
+        '--platform',
+        'linux/amd64',
+        '--provenance=false',
+        *_docker_build_args(),
+        '--tag',
+        image,
+        '--file',
+        str(_DOCKERFILE),
+        str(_MCP_SERVER_DIR),
+    ]
     steps: list[list[str]] = [
         [_AZ_CMD, 'acr', 'login', '--name', registry_name],
-        [
-            _DOCKER_CMD, 'build', '--platform', 'linux/amd64', '--provenance=false',
-            '--tag', image, '--file', str(_DOCKERFILE), str(_MCP_SERVER_DIR),
-        ],
+        docker_build_command,
         [_DOCKER_CMD, 'push', image],
         [
             _AZ_CMD, 'containerapp', 'update',
