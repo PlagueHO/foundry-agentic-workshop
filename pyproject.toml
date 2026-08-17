@@ -7,8 +7,8 @@ license = { text = "MIT" }
 authors = [{ name = "Foundry Agentic Workshop Maintainers" }]
 dependencies = [
     "agent-framework-foundry",
-    "agent-framework-foundry-hosting==1.0.0a260709",
-    "azure-ai-projects>=2.3.0",
+    "agent-framework-foundry-hosting==1.0.0b260813",
+    "azure-ai-projects>=2.4.0",
     "azure-identity",
     "azure-mgmt-authorization",
     "azure-search-documents",
@@ -23,9 +23,9 @@ dependencies = [
 dev = [
     "flake8>=7.0.0",
     "mypy>=2.3.0",
-    "pylint>=3.0.0",
+    "pylint>=4.0.7",
     "pytest>=8.0.0",
-    "ruff>=0.15.22",
+    "ruff>=0.16.3",
 ]
 module-13 = [
     "fastapi",
