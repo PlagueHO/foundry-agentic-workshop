@@ -2,7 +2,7 @@
 # Built and published to its Azure Container App by `scripts/deploy-flight-ops-mcp-server.py`.
 # The Container App is provisioned by default (AZURE_CONTAINER_APPS_DEPLOY). See the
 # Module 06 README for details.
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 # Install uv from the official distroless image.
 COPY --from=ghcr.io/astral-sh/uv:0.11.25 /uv /usr/local/bin/uv
