@@ -9,16 +9,16 @@ estimatedTimeMinutes: 25
 difficulty: 'intermediate'
 prerequisites: ['Module 06']
 audience:
-  - 'attendee'
+- 'attendee'
 technologies:
-  - 'Microsoft Foundry'
-  - 'Python'
+- 'Microsoft Foundry'
+- 'Python'
 tags:
-  - 'foundry'
-  - 'ground'
-  - 'the'
-  - 'agent'
-  - 'with'
+- 'foundry'
+- 'ground'
+- 'the'
+- 'agent'
+- 'with'
 status: 'active'
 contentType: 'lab'
 ---
@@ -87,15 +87,20 @@ Both workshop indexes were seeded with a semantic configuration and pre-computed
 You could connect each index individually using the **Azure AI Search** tool in the agent's tool picker (as shown in Module 05's tool list). Foundry IQ knowledge bases offer three advantages over individual connections:
 
 1. **Multi-source fusion** - a single knowledge base retrieves across both indexes in one call, re-ranking results from both before injecting context.
-1. **Managed configuration** - retrieval behaviour (reasoning effort, output mode, and retrieval instructions) is configured once in the knowledge base and reused by any agent that attaches it.
-1. **Consistent grounding** - the same retrieval behaviour applies everywhere the knowledge base is used, making evaluations reproducible.
-1. **MCP Server** - Agents connect to the knowledge base as an MCP tool, so you get consistent `mcp://searchindex/...` citations in responses and a single connection point for all your knowledge sources. This also enables Foundry IQ to be used with 3rd party Agents.
+2. **Managed configuration** - retrieval behaviour (reasoning effort, output mode, and retrieval instructions) is configured once in the knowledge base and reused by any agent that attaches it.
+3. **Consistent grounding** - the same retrieval behaviour applies everywhere the knowledge base is used, making evaluations reproducible.
+4. **MCP Server** - Agents connect to the knowledge base as an MCP tool, so you get consistent `mcp://searchindex/...` citations in responses and a single connection point for all your knowledge sources. This also enables Foundry IQ to be used with 3rd party Agents.
 
 ### How this prompt agent authenticates to Foundry IQ
 
 The `acl-remedy-advisor` Prompt Agent is configured **declaratively** in Foundry. When you attach the knowledge base, Foundry creates a project connection that points to the knowledge base MCP endpoint. That connection uses the Foundry project's managed identity, so Foundry - not your agent code - obtains and attaches the Azure AI Search bearer token.
 
-![Prompt Agent authentication flow from the project connection to Foundry IQ.](../assets/diagrams/module-07-prompt-agent-foundry-iq-authentication.svg)
+<details>
+<summary> 📊 Diagram: Prompt Agent authentication flow</summary>
+
+![Prompt Agent authentication flow from the project connection to Foundry IQ.](../../../docs/assets/diagrams/lab-07-prompt-agent-foundry-iq-authentication.svg)
+
+</details>
 
 The project managed identity needs **Search Index Data Reader** on Azure AI Search. Workshop provisioning grants that role for every attendee project. A project connection can use another supported authentication type, including an agent identity, but this lab deliberately uses **ProjectManagedIdentity** so all Prompt Agents in the project share the same least-privilege Search access.
 
@@ -123,7 +128,7 @@ Both modes ground the agent in your data - they differ in *where* the answer is 
 This module uses two Azure AI Search indexes that the workshop provisioning scripts created and populated during setup. They live in the Azure AI Search service connected to your Foundry project (`aisrch-foundry-hol8`):
 
 | Index | Default name | Environment variable | Contents | Key fields |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | Retail products | `retail-products` | `AZURE_SEARCH_PRODUCT_INDEX_NAME` | ~100 supermarket products | `id`, `title`, `content`, `category`, `tags`, `price`, `rating`, `contentVector` |
 | Retail policies | `retail-policies` | `AZURE_SEARCH_DOCUMENT_INDEX_NAME` | ~50 store policies | `id`, `title`, `content`, `policyType`, `category`, `effectiveDate`, `contentVector` |
 
@@ -165,21 +170,21 @@ This module uses two Azure AI Search indexes that the workshop provisioning scri
 #### 3. Set the name and basic configuration
 
 - [ ] In the **Basic configuration** section, set:
-  - **Name**: replace the auto-generated name (for example `knowledgebase124`) with your per-attendee knowledge base name from `KNOWLEDGE_BASE_NAME` (for example, `acl-remedy-knowledge-lab-attendee-1`).
-  - **Description** (optional):
+    - **Name**: replace the auto-generated name (for example `knowledgebase124`) with your per-attendee knowledge base name from `KNOWLEDGE_BASE_NAME` (for example, `acl-remedy-knowledge-lab-attendee-1`).
+    - **Description** (optional):
 
-    ```text
+```text
     Retail product catalog and store policy knowledge for the ACL Remedy Advisor agent.
-    ```
+```
 
-  - **Chat completions model**: leave as **Select model**. A model is only needed for **Answer synthesis** or for **Low**/**Medium** reasoning effort, neither of which this lab uses.
-  - **Retrieval reasoning effort**: confirm **Minimal** is selected (the default). This searches both sources on every query with the lowest latency and cost. See [Output modes and retrieval instructions](#output-modes-and-retrieval-instructions) for the alternatives.
-  - **Output mode**: confirm **Extractive data** is selected (the default). The knowledge base returns ranked passages and the agent writes the grounded answer. Extractive data is required when reasoning effort is **Minimal**.
-  - **Retrieval instructions**: leave **empty**. These steer the LLM query-planning step, which **Minimal** effort disables. If you later raise the effort to **Low** or **Medium**, add an instruction such as:
+- **Chat completions model**: leave as **Select model**. A model is only needed for **Answer synthesis** or for **Low**/**Medium** reasoning effort, neither of which this lab uses.
+- **Retrieval reasoning effort**: confirm **Minimal** is selected (the default). This searches both sources on every query with the lowest latency and cost. See [Output modes and retrieval instructions](#output-modes-and-retrieval-instructions) for the alternatives.
+- **Output mode**: confirm **Extractive data** is selected (the default). The knowledge base returns ranked passages and the agent writes the grounded answer. Extractive data is required when reasoning effort is **Minimal**.
+- **Retrieval instructions**: leave **empty**. These steer the LLM query-planning step, which **Minimal** effort disables. If you later raise the effort to **Low** or **Medium**, add an instruction such as:
 
-    ```text
+```text
     Use the retail-policies source for questions about returns, refunds, warranties, loyalty, and store-brand guarantees. Use the retail-products source for questions about specific products, prices, ratings, and stock.
-    ```
+```
 
   <details>
   <summary>📸 Screenshot: Create a new knowledge base - Basic configuration</summary>
@@ -193,19 +198,19 @@ This module uses two Azure AI Search indexes that the workshop provisioning scri
 - [ ] Scroll down to the **Knowledge sources (Foundry IQ)** section.
 - [ ] Click **Add sources** and select **Azure AI Search Index** from the dropdown.
 - [ ] In the **Create a knowledge source** dialog, set the fields:
-  - **Name**: replace the default (for example `ks-searchindex-69`) with:
+    - **Name**: replace the default (for example `ks-searchindex-69`) with:
 
-    ```text
+```text
     retail-products
-    ```
+```
 
-  - **Description** (optional):
+- **Description** (optional):
 
-    ```text
+```text
     Retail product catalog: specifications, compatibility, and feature details for store products.
-    ```
+```
 
-  - **Select search index**: choose **retail-products** from the dropdown.
+- **Select search index**: choose **retail-products** from the dropdown.
 
   > [!NOTE]
   > There is no field mapping step. Foundry IQ reads the index's **semantic configuration** to locate content, titles, and keywords. The dialog notes *"Search index must contain semantic configuration"* — the workshop indexes already include one.
@@ -216,19 +221,19 @@ This module uses two Azure AI Search indexes that the workshop provisioning scri
 
 - [ ] Click **Add sources** again and select **Azure AI Search Index**.
 - [ ] In the **Create a knowledge source** dialog, set:
-  - **Name**:
+    - **Name**:
 
-    ```text
+```text
     retail-policies
-    ```
+```
 
-  - **Description** (optional):
+- **Description** (optional):
 
-    ```text
+```text
     Store policies: returns, refunds, warranties, loyalty program, and store-brand guarantees.
-    ```
+```
 
-  - **Select search index**: choose **retail-policies**.
+- **Select search index**: choose **retail-policies**.
 - [ ] Click **Create**. Both `retail-products` and `retail-policies` now appear in the **Knowledge sources** table with status **Active**.
 
 #### 6. Save the knowledge base
@@ -279,8 +284,8 @@ The agent now has the knowledge base attached, but it needs guidance on *when* t
 - [ ] In the **Instructions** field, position your cursor at the end of the existing instructions.
 - [ ] Press **Enter** twice, then add the following paragraphs:
 
-  ```text
-  When a staff member provides a receipt ID, order ID, or customer ID - or asks
+```text
+ When a staff member provides a receipt ID, order ID, or customer ID - or asks
   you to look up a purchase, verify an order, or open a support case - use the
   retail-remedy-ops tools to perform that operational lookup or action. Never
   invent receipt, order, or case details; always retrieve them with the tools.
@@ -303,7 +308,7 @@ The agent now has the knowledge base attached, but it needs guidance on *when* t
   lookups and actions, the knowledge base for product and policy questions, web
   search for current ACCC and Australian Consumer Law guidance, and code
   interpreter for refund, depreciation, pro-rata, or price calculations.
-  ```
+```
 
   > [!NOTE]
   > Earlier modules already added guidance for **web search** (current ACCC guidance) and **Code Interpreter** (refund and depreciation calculations). The tool-routing summary above reinforces them so no tool is left unused.
@@ -334,9 +339,9 @@ The agent now has the knowledge base attached, but it needs guidance on *when* t
   > According to our store's return policy, how many days do customers have to return non-perishable items with a receipt, and within what timeframe should spoiled perishable items be reported?
 
 - [ ] Review the response. Confirm the agent:
-  - Answers **14 days** for non-perishable returns with a receipt and **48 hours** for reporting spoiled perishable items.
-  - Includes source citation markers in the response text.
-  - Shows a `kb-...` tool chip in the response metadata.
+    - Answers **14 days** for non-perishable returns with a receipt and **48 hours** for reporting spoiled perishable items.
+    - Includes source citation markers in the response text.
+    - Shows a `kb-...` tool chip in the response metadata.
 
   <details>
   <summary>📸 Screenshot: Playground - grounded policy response</summary>
@@ -369,7 +374,7 @@ The agent now has the knowledge base attached, but it needs guidance on *when* t
 You grounded your agent in trusted knowledge. You created a Foundry IQ knowledge base, connected the `retail-products` and `retail-policies` search indexes, and attached it to `acl-remedy-advisor` - so policy and product answers now cite grounded sources while your existing MCP, web search, and Code Interpreter tools keep routing correctly. Your agent now blends retrieval with reasoning and live operations.
 
 > [!TIP]
-> **Next up → [Module 08: Use Agent Framework for Python](../08-agent-framework-python/README.md)**
+> **Next up →** [**Module 08: Use Agent Framework for Python**](../08-agent-framework-python/README.md)
 > Drive your fully grounded agent from Python using the Microsoft Agent Framework. No need to scroll - jump straight in!
 
 ## Troubleshooting
@@ -379,13 +384,13 @@ You grounded your agent in trusted knowledge. You created a Foundry IQ knowledge
 The `retail-products` and `retail-policies` indexes live in the connected Azure AI Search service, not in Foundry, so they do **not** appear on the Foundry **Indexes** tab - but they are still selectable in the **Select search index** dropdown when you create a knowledge source. If an index does not appear:
 
 1. Confirm the AI Search service is connected to your project and the seed scripts ran during setup.
-1. Confirm the index exists in the [Azure portal](https://portal.azure.com): open the AI Search resource, then **Search management > Indexes**.
-1. If an index is missing, run the seed scripts from the repository root:
+2. Confirm the index exists in the [Azure portal](https://portal.azure.com): open the AI Search resource, then **Search management > Indexes**.
+3. If an index is missing, run the seed scripts from the repository root:
 
-   ```bash
-   uv run python scripts/seed-product-index.py
+```bash
+  uv run python scripts/seed-product-index.py
    uv run python scripts/seed-document-index.py
-   ```
+```
 
 1. Reopen the **Create a knowledge source** dialog and confirm both indexes are now selectable.
 
@@ -412,12 +417,12 @@ At query time the agent authenticates to the knowledge base retrieval endpoint a
 - RBAC-only authentication is the expected configuration for this flow. The error means the project managed identity is missing the required data-plane role; it does not mean that a knowledge base cannot use Azure AI Search with RBAC.
 - Organizers can verify or add the assignment:
 
-  ```bash
-  az role assignment create \
+```bash
+ az role assignment create \
     --assignee <project-managed-identity-object-id> \
     --role "Search Index Data Reader" \
     --scope <azure-ai-search-resource-id>
-  ```
+```
 
   Alternatively, ask your organizer to re-run `azd provision` to reconcile role assignments.
 

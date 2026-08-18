@@ -68,7 +68,12 @@ Use a hosted agent when you need full control of the agent's orchestration - cus
 tools, your own libraries, or logic that does not fit the declarative Prompt Agent
 model - but still want a fully managed, serverless endpoint.
 
+<details>
+<summary> 📊 Sequence diagram: Hosted Agent Sequence Diagram</summary>
+
 ![Sequence diagram: A client posts to the Foundry Agent Service endpoint, which forwards to the Hosted Agent Container over the Responses protocol. The container calls the model for a chat completion with managed identity, receives a tool_use event, calls the Retail Remedy Ops MCP Server, receives the tool result, continues the completion, and the Foundry endpoint streams the final response back to the client.](../../../docs/assets/diagrams/lab-09-hosted-agent-sequence.svg)
+
+</details>
 
 ### The Responses protocol and ResponsesHostServer
 
@@ -105,7 +110,12 @@ the tunnel changes you must **redeploy** the agent.
 Both a Prompt Agent and a hosted agent can call MCP tools. The key distinction is who builds
 and sends the MCP request:
 
-![Comparison of Prompt Agent and hosted-agent MCP authentication paths to Foundry IQ.](../assets/diagrams/module-09-prompt-and-hosted-agent-authentication.svg)
+<details>
+<summary> 📊 Diagram: Comparison of Prompt Agent and hosted-agent MCP authentication paths to Foundry IQ</summary>
+
+![Comparison of Prompt Agent and hosted-agent MCP authentication paths to Foundry IQ.](../../../docs/assets/diagrams/lab-09-prompt-and-hosted-agent-authentication.svg)
+
+</details>
 
 In Module 07, Foundry reads the **project connection** and sends the MCP request as the
 project managed identity. Workshop provisioning already gives that identity **Search Index Data
