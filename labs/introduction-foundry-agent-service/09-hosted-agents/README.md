@@ -1,7 +1,7 @@
 ---
 title: '09. Build and run a hosted agent'
 description: 'Complete this lab to build and run a hosted agent.'
-lastUpdated: '2026-07-13'
+lastUpdated: '2026-08-18'
 track: 'introduction-foundry-agent-service'
 module: 9
 slug: '09-hosted-agents'
@@ -50,6 +50,7 @@ contentType: 'lab'
 - Package a code-first Agent Framework agent that serves the **Responses** protocol.
 - Deploy the agent from **source code** (Part 2) as a fully managed hosted agent. _Part 1 (container-image deploy) is skipped in the current preview - see the note in Part 1._
 - Understand the hosted agent's Microsoft Entra identity and its implicit project access.
+- Compare how Prompt Agents and hosted agents authenticate when they call MCP tools.
 - Invoke the deployed hosted agent from Python and hold a multi-turn conversation.
 
 ## Concepts
@@ -89,15 +90,41 @@ The agent bundle for this module lives in [`src/agent/`](https://github.com/Plag
 | `requirements.txt`, `Dockerfile`, `agent.yaml`, `.dockerignore` | Packaging for the hosted agent. |
 
 The hosted agent exposes the live `retail_remedy_ops` **MCP server** (the same public
-endpoint from Module 06) plus the Foundry hosted **web search** tool. It does _not_ call the
-Module 07 Foundry IQ knowledge base - a hosted agent runs as its own Microsoft Entra
-identity, which cannot be granted data-plane access to the RBAC-only Azure AI Search service
-currently.
+endpoint from Module 06) plus the Foundry hosted **web search** tool. It intentionally does
+_not_ call the Module 07 Foundry IQ knowledge base. This is not because Azure AI Search
+cannot use RBAC: it can. The difference is **where the MCP client runs** and therefore which
+identity supplies its token.
 
 Because the MCP server is anonymous, the hosted agent needs no extra permissions to reach
 it; it only needs outbound network access to the public tunnel URL. The dev-tunnel URL is
 baked into the deploy as the `RETAIL_REMEDY_OPS_MCP_SERVER_URL` environment variable, so if
 the tunnel changes you must **redeploy** the agent.
+
+### Same MCP protocol, different identity boundary
+
+Both a Prompt Agent and a hosted agent can call MCP tools. The key distinction is who builds
+and sends the MCP request:
+
+![Comparison diagram showing the Module 07 Prompt Agent path, where Foundry Agent Service uses a project connection and project managed identity to call Foundry IQ, and the Module 09 hosted-agent path, where hosted code uses an MCP client and its own agent identity to call Foundry IQ. Both identities need Search Index Data Reader.](../assets/diagrams/module-09-prompt-and-hosted-agent-authentication.svg)
+
+In Module 07, Foundry reads the **project connection** and sends the MCP request as the
+project managed identity. Workshop provisioning already gives that identity **Search Index Data
+Reader** on Azure AI Search.
+
+In this module, `main.py` creates an `MCPStreamableHTTPTool` inside the hosted container. The
+container sends requests directly to the configured server URL; it does not ask Foundry to
+resolve the Module 07 project connection. For a protected MCP server such as Foundry IQ, the
+hosted code must attach a token. Inside the deployed container,
+`DefaultAzureCredential` resolves to the hosted agent's **own agent identity**, so that identity
+would need **Search Index Data Reader** on Azure AI Search.
+
+> [!IMPORTANT]
+> A hosted agent identity *can* be granted Azure AI Search data-plane access. The limitation in
+> this workshop is permission delegation: attendees cannot assign **Search Index Data Reader** to
+> a service principal on the shared Search service. This lab therefore keeps the Foundry IQ
+> knowledge base in the Module 07 Prompt Agent. Module 10 introduces a Toolbox, which can own
+> the project connection and securely bridge the hosted agent to tools that need shared
+> credentials or identities.
 
 ### Two ways to deploy
 
@@ -129,6 +156,11 @@ identity implicit access to model inference and session storage within its own p
 so the standard hosted-agent flow needs no explicit role assignment. Assign roles only
 when the agent accesses external resources such as Azure Storage, Azure AI Search, or
 Azure Container Registry.
+
+For example, if you added a direct Foundry IQ MCP client to `main.py`, you would assign
+**Search Index Data Reader** to this hosted agent's identity on the Azure AI Search service.
+This is a normal least-privilege role assignment, not a limitation of RBAC-only Search. It is
+an organizer task in this workshop because attendees cannot grant that role themselves.
 
 ### Avoiding collisions in a shared workshop
 
@@ -288,6 +320,7 @@ You complete [`src/starter.py`](https://github.com/PlagueHO/foundry-agentic-work
 - `invoke_hosted_agent.py` prints a grounded remedy answer for the first prompt and a context-aware answer for the follow-up.
 - `acl-remedy-advisor-hosted-code` (and `acl-remedy-advisor-hosted-container` if you ran Part 1) appears in the **Agents** list in the Foundry portal with an active version.
 - The hosted agent calls its `retail_remedy_ops` MCP tools (for example, looking up receipt `R-1007`) rather than answering generically.
+- You can explain why the Module 07 Prompt Agent uses the project managed identity for Foundry IQ retrieval, while this hosted agent would use its own agent identity for a direct protected MCP call.
 
 ## Congratulations 🎉
 
@@ -305,6 +338,7 @@ need custom orchestration with a fully managed, serverless runtime.
 - **Authentication fails** - the scripts use `DefaultAzureCredential`, which relies on your Azure CLI session. Run `az login` in the terminal to re-authenticate, then retry.
 - **The agent identity cannot call the model (403 at runtime)** - confirm the agent calls the model through `FOUNDRY_PROJECT_ENDPOINT`. Project-local model inference is implicit; direct calls to an account-level endpoint require an explicit role assignment.
 - **The hosted agent cannot reach the MCP server / retail tools fail at runtime** - the agent calls the public `RETAIL_REMEDY_OPS_MCP_SERVER_URL` from inside Foundry's managed compute. Confirm the Module 06 MCP server is still running and the dev tunnel is **publicly** exposed, and that `RETAIL_REMEDY_OPS_MCP_SERVER_URL` (ending in `/mcp`) was set **before** you deployed - the URL is baked into the agent at deploy time, so if the tunnel changed you must **redeploy**. If the server is reachable from your laptop but the agent still cannot call it, the hosted runtime may be blocking outbound egress to the tunnel; report it to your facilitator.
+- **A direct Foundry IQ call returns HTTP 403** - a hosted agent's direct MCP client authenticates as the hosted agent identity, not as the Module 07 project connection. Ask your organizer to assign **Search Index Data Reader** to the hosted agent identity on Azure AI Search, or use the Module 10 Toolbox pattern when it is introduced. Do not disable RBAC-only authentication or use Search admin keys as a workaround.
 - **`docker: command not found` (Part 1)** - Docker is not available in your environment. Use Part 2 (source-code deploy) instead.
 - **The version never becomes active** - open the agent in the Foundry portal and check the version's build logs. A failed remote build usually means a dependency in `src/agent/requirements.txt` could not be installed.
 - **`acl-remedy-advisor-hosted-code` is not found when invoking** - confirm Part 2 completed successfully and that `HOSTED_AGENT_NAME_CODE` matches in your `.env`. (For the container agent, check `HOSTED_AGENT_NAME_CONTAINER`.)

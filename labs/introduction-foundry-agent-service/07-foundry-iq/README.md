@@ -1,7 +1,7 @@
 ---
 title: '07. Ground the agent with Foundry IQ knowledge bases'
 description: 'Complete this lab to ground the agent with foundry iq knowledge bases.'
-lastUpdated: '2026-07-13'
+lastUpdated: '2026-08-18'
 track: 'introduction-foundry-agent-service'
 module: 7
 slug: '07-foundry-iq'
@@ -91,6 +91,17 @@ You could connect each index individually using the **Azure AI Search** tool in 
 1. **Consistent grounding** - the same retrieval behaviour applies everywhere the knowledge base is used, making evaluations reproducible.
 1. **MCP Server** - Agents connect to the knowledge base as an MCP tool, so you get consistent `mcp://searchindex/...` citations in responses and a single connection point for all your knowledge sources. This also enables Foundry IQ to be used with 3rd party Agents.
 
+### How this prompt agent authenticates to Foundry IQ
+
+The `acl-remedy-advisor` Prompt Agent is configured **declaratively** in Foundry. When you attach the knowledge base, Foundry creates a project connection that points to the knowledge base MCP endpoint. That connection uses the Foundry project's managed identity, so Foundry - not your agent code - obtains and attaches the Azure AI Search bearer token.
+
+![Sequence diagram showing the user asking a Prompt Agent a product or policy question. Foundry Agent Service resolves the project connection, then uses the project managed identity to send the MCP request to Foundry IQ in Azure AI Search. Grounded passages and citations return to the agent before it responds to the user.](../assets/diagrams/module-07-prompt-agent-foundry-iq-authentication.svg)
+
+The project managed identity needs **Search Index Data Reader** on Azure AI Search. Workshop provisioning grants that role for every attendee project. A project connection can use another supported authentication type, including an agent identity, but this lab deliberately uses **ProjectManagedIdentity** so all Prompt Agents in the project share the same least-privilege Search access.
+
+> [!NOTE]
+> This identity flow is specific to a declaratively configured Prompt Agent. A hosted agent creates its MCP client in its own code, so it does not automatically use this project connection. [Module 09](../09-hosted-agents/README.md) compares the two paths.
+
 ### Output modes and retrieval instructions
 
 When you create a knowledge base you choose how it returns results and - when it holds more than one source - how it decides which source to query. Two settings control this, and both depend on the **retrieval reasoning effort** you pick.
@@ -126,7 +137,7 @@ This module uses two Azure AI Search indexes that the workshop provisioning scri
 
 <!-- markdownlint-disable-next-line MD028 -->
 > [!NOTE]
-> At query time the agent retrieves from the knowledge base as your Foundry **project's managed identity**, which needs the **Search Index Data Reader** role on the Azure AI Search service. The workshop infrastructure (`infra/main.bicep`) assigns this automatically. If grounded answers fail with an access error, see **Access denied (HTTP 403)** in Troubleshooting.
+> At query time, Foundry retrieves from the knowledge base as your Foundry **project's managed identity**, which needs the **Search Index Data Reader** role on the Azure AI Search service. The workshop infrastructure (`infra/main.bicep`) assigns this automatically. Your local user identity is used only to configure and invoke the agent; it is not the identity used for retrieval. If grounded answers fail with an access error, see **Access denied (HTTP 403)** in Troubleshooting.
 
 ## Steps
 
@@ -398,6 +409,7 @@ Foundry IQ requires each source index to have a semantic configuration. The work
 At query time the agent authenticates to the knowledge base retrieval endpoint as your Foundry **project's system-assigned managed identity**, which needs the **Search Index Data Reader** role on the Azure AI Search service (the service uses RBAC-only authentication).
 
 - The workshop infrastructure (`infra/main.bicep`) assigns this role to every project's managed identity automatically. Data-plane role assignments can take several minutes to propagate - wait and retry.
+- RBAC-only authentication is the expected configuration for this flow. The error means the project managed identity is missing the required data-plane role; it does not mean that a knowledge base cannot use Azure AI Search with RBAC.
 - Organizers can verify or add the assignment:
 
   ```bash
