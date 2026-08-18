@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="650" viewBox="0 0 1080 650" role="img" aria-labelledby="title desc">
+  <title id="title">Module 09 Prompt Agent and hosted agent MCP authentication comparison</title>
+  <desc id="desc">The upper path shows a Prompt Agent using Foundry Agent Service and a project connection configured with ProjectManagedIdentity to call the Foundry IQ MCP endpoint. The lower path shows hosted agent code creating an MCP client and attaching a token from its own agent identity when calling the same endpoint. Both require Search Index Data Reader on the identity that reaches Azure AI Search.</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="12" markerHeight="8" refX="12" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#0078D4"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="12" markerHeight="8" refX="12" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#107C10"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="12" markerHeight="8" refX="12" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 12 4, 0 8" fill="#5C2D91"/>
+    </marker>
+  </defs>
+
+  <rect width="1080" height="650" fill="#FFFFFF"/>
+  <text x="540" y="30" text-anchor="middle" fill="#1B1A19" font-family="'Segoe UI', Arial, sans-serif" font-size="19" font-weight="bold">Module 09: Same MCP protocol, different identity boundary</text>
+  <text x="540" y="55" text-anchor="middle" fill="#605E5C" font-family="'Segoe UI', Arial, sans-serif" font-size="13">The identity that sends the MCP request needs access to Azure AI Search.</text>
+
+  <rect x="22" y="82" width="1036" height="216" rx="8" fill="#F5FAFF" stroke="#0078D4" stroke-width="2"/>
+  <rect x="22" y="82" width="210" height="34" rx="8" fill="#0078D4"/>
+  <text x="127" y="105" text-anchor="middle" fill="#FFFFFF" font-family="'Segoe UI', Arial, sans-serif" font-size="14" font-weight="bold">Module 07 Prompt Agent</text>
+
+  <rect x="56" y="150" width="170" height="72" rx="6" fill="#FFF3CD" stroke="#F59E0B" stroke-width="2"/>
+  <text x="141" y="181" text-anchor="middle" fill="#1B1A19" font-family="'Segoe UI', Arial, sans-serif" font-size="14" font-weight="bold">Prompt Agent</text>
+  <text x="141" y="201" text-anchor="middle" fill="#323130" font-family="'Segoe UI', Arial, sans-serif" font-size="12">declarative definition</text>
+
+  <rect x="302" y="150" width="170" height="72" rx="6" fill="#E8DAEF" stroke="#5C2D91" stroke-width="2"/>
+  <text x="387" y="178" text-anchor="middle" fill="#1B1A19" font-family="'Segoe UI', Arial, sans-serif" font-size="14" font-weight="bold">Foundry Agent</text>
+  <text x="387" y="197" text-anchor="middle" fill="#1B1A19" font-family="'Segoe UI', Arial, sans-serif" font-size="14" font-weight="bold">Service</text>
+
+  <rect x="548" y="150" width="170" height="72" rx="6" fill="#E0F7FA" stroke="#006064" stroke-width="2"/>
+  <text x="633" y="178" text-anchor="middle" fill="#1B1A19" font-family="'Segoe UI', Arial, sans-serif" font-size="14" font-weight="bold">Project connection</text>
+  <text x="633" y="200" text-anchor="middle" fill="#323130" font-family="'Segoe UI', Arial, sans-serif" font-size="12">ProjectManagedIdentity</text>
+
+  <rect x="794" y="150" width="218" height="72" rx="6" fill="#E8F5E9" stroke="#107C10" stroke-width="2"/>
+  <text x="903" y="178" text-anchor="middle" fill="#1B1A19" font-family="'Segoe UI', Arial, sans-serif" font-size="14" font-weight="bold">Foundry IQ MCP endpoint</text>
+  <text x="903" y="200" text-anchor="middle" fill="#323130" font-family="'Segoe UI', Arial, sans-serif" font-size="12">Azure AI Search</text>
+
+  <line x1="226" y1="186" x2="300" y2="186" stroke="#5C2D91" stroke-width="2" marker-end="url(#arrow-purple)"/>
+  <line x1="472" y1="186" x2="546" y2="186" stroke="#5C2D91" stroke-width="2" marker-end="url(#arrow-purple)"/>
+  <line x1="718" y1="186" x2="792" y2="186" stroke="#107C10" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="633" y="257" text-anchor="middle" fill="#323130" font-family="'Segoe UI', Arial, sans-serif" font-size="13">Foundry attaches a token from the project managed identity.</text>
+  <text x="633" y="279" text-anchor="middle" fill="#107C10" font-family="'Segoe UI', Arial, sans-serif" font-size="13" font-weight="bold">That identity needs Search Index Data Reader.</text>
+
+  <rect x="22" y="332" width="1036" height="240" rx="8" fill="#FBF8FD" stroke="#5C2D91" stroke-width="2"/>
+  <rect x="22" y="332" width="226" height="34" rx="8" fill="#5C2D91"/>
+  <text x="135" y="355" text-anchor="middle" fill="#FFFFFF" font-family="'Segoe UI', Arial, sans-serif" font-size="14" font-weight="bold">Module 09 Hosted Agent</text>
+
+  <rect x="56" y="408" width="200" height="72" rx="6" fill="#E8DAEF" stroke="#5C2D91" stroke-width="2"/>
+  <text x="156" y="436" text-anchor="middle" fill="#1B1A19" font-family="'Segoe UI', Arial, sans-serif" font-size="14" font-weight="bold">Hosted agent code</text>
+  <text x="156" y="456" text-anchor="middle" fill="#323130" font-family="'Segoe UI', Arial, sans-serif" font-size="12">inside the hosted container</text>
+
+  <rect x="344" y="408" width="200" height="72" rx="6" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2"/>
+  <text x="444" y="436" text-anchor="middle" fill="#1B1A19" font-family="'Segoe UI', Arial, sans-serif" font-size="14" font-weight="bold">MCP client</text>
+  <text x="444" y="456" text-anchor="middle" fill="#323130" font-family="'Segoe UI', Arial, sans-serif" font-size="12">MCPStreamableHTTPTool</text>
+
+  <rect x="632" y="408" width="200" height="72" rx="6" fill="#FCE4EC" stroke="#C2185B" stroke-width="2"/>
+  <text x="732" y="436" text-anchor="middle" fill="#1B1A19" font-family="'Segoe UI', Arial, sans-serif" font-size="14" font-weight="bold">Hosted agent identity</text>
+  <text x="732" y="456" text-anchor="middle" fill="#323130" font-family="'Segoe UI', Arial, sans-serif" font-size="12">DefaultAzureCredential</text>
+
+  <rect x="876" y="408" width="136" height="72" rx="6" fill="#E8F5E9" stroke="#107C10" stroke-width="2"/>
+  <text x="944" y="436" text-anchor="middle" fill="#1B1A19" font-family="'Segoe UI', Arial, sans-serif" font-size="13" font-weight="bold">Foundry IQ</text>
+  <text x="944" y="456" text-anchor="middle" fill="#323130" font-family="'Segoe UI', Arial, sans-serif" font-size="12">Azure AI Search</text>
+
+  <line x1="256" y1="444" x2="342" y2="444" stroke="#5C2D91" stroke-width="2" marker-end="url(#arrow-purple)"/>
+  <path d="M 732,408 L 732,390 L 444,390 L 444,406" fill="none" stroke="#C2185B" stroke-width="2" marker-end="url(#arrow-purple)"/>
+  <text x="588" y="384" text-anchor="middle" fill="#C2185B" font-family="'Segoe UI', Arial, sans-serif" font-size="12">token attached by hosted code</text>
+  <line x1="544" y1="444" x2="874" y2="444" stroke="#107C10" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="710" y="430" text-anchor="middle" fill="#107C10" font-family="'Segoe UI', Arial, sans-serif" font-size="12">direct MCP request</text>
+  <text x="732" y="526" text-anchor="middle" fill="#323130" font-family="'Segoe UI', Arial, sans-serif" font-size="13">The hosted code does not resolve the Module 07 project connection.</text>
+  <text x="732" y="548" text-anchor="middle" fill="#107C10" font-family="'Segoe UI', Arial, sans-serif" font-size="13" font-weight="bold">The hosted agent identity needs Search Index Data Reader.</text>
+
+  <rect x="78" y="598" width="924" height="34" rx="5" fill="#FFF4CE" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="540" y="620" text-anchor="middle" fill="#323130" font-family="'Segoe UI', Arial, sans-serif" font-size="13">Workshop constraint: attendees cannot grant this role to the hosted agent identity; Module 10 introduces a Toolbox for shared tool connections.</text>
+</svg>
