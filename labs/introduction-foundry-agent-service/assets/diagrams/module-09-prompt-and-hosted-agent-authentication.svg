@@ -66,8 +66,8 @@
   <line x1="256" y1="444" x2="342" y2="444" stroke="#5C2D91" stroke-width="2" marker-end="url(#arrow-purple)"/>
   <path d="M 732,408 L 732,390 L 444,390 L 444,406" fill="none" stroke="#C2185B" stroke-width="2" marker-end="url(#arrow-purple)"/>
   <text x="588" y="384" text-anchor="middle" fill="#C2185B" font-family="'Segoe UI', Arial, sans-serif" font-size="12">token attached by hosted code</text>
-  <line x1="544" y1="444" x2="874" y2="444" stroke="#107C10" stroke-width="2" marker-end="url(#arrow-green)"/>
-  <text x="710" y="430" text-anchor="middle" fill="#107C10" font-family="'Segoe UI', Arial, sans-serif" font-size="12">direct MCP request</text>
+  <path d="M 544,444 L 590,444 L 590,500 L 850,500 L 850,444 L 874,444" fill="none" stroke="#107C10" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="720" y="494" text-anchor="middle" fill="#107C10" font-family="'Segoe UI', Arial, sans-serif" font-size="12">direct MCP request</text>
   <text x="732" y="526" text-anchor="middle" fill="#323130" font-family="'Segoe UI', Arial, sans-serif" font-size="13">The hosted code does not resolve the Module 07 project connection.</text>
   <text x="732" y="548" text-anchor="middle" fill="#107C10" font-family="'Segoe UI', Arial, sans-serif" font-size="13" font-weight="bold">The hosted agent identity needs Search Index Data Reader.</text>
 
