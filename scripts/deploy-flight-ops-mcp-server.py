@@ -26,7 +26,7 @@ import shutil
 import subprocess
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 _AZ_CMD: str = shutil.which('az') or 'az'
@@ -37,6 +37,12 @@ _DOCKER_CMD: str = shutil.which('docker') or 'docker'
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 _MCP_SERVER_DIR = _REPO_ROOT / 'shared' / 'mcp-servers' / 'flight-ops'
 _DOCKERFILE = _MCP_SERVER_DIR / 'Dockerfile'
+_DOCKER_PROXY_VARIABLES = (
+    'HTTP_PROXY',
+    'HTTPS_PROXY',
+    'ALL_PROXY',
+    'NO_PROXY',
+)
 
 # Ensure Unicode output works on Windows terminals that default to cp1252.
 sys.stdout.reconfigure(encoding='utf-8')
@@ -110,8 +116,14 @@ def _load_azd_env() -> dict[str, str]:
 
 
 def _docker_build_args() -> list[str]:
-    """Return optional package-index build arguments inherited from the host."""
-    return ['--build-arg', 'UV_DEFAULT_INDEX'] if os.getenv('UV_DEFAULT_INDEX') else []
+    """Return package-index and proxy build arguments inherited from the host."""
+    build_args: list[str] = []
+    if os.getenv('UV_DEFAULT_INDEX'):
+        build_args.extend(['--build-arg', 'UV_DEFAULT_INDEX'])
+    for variable in _DOCKER_PROXY_VARIABLES:
+        if os.getenv(variable) or os.getenv(variable.lower()):
+            build_args.extend(['--build-arg', variable])
+    return build_args
 
 
 def main() -> int:  # pylint: disable=too-many-return-statements
@@ -151,7 +163,7 @@ def main() -> int:  # pylint: disable=too-many-return-statements
         return _fail('The azd environment is missing required registry or resource group values.')
 
     # Unique, time-based tag so `containerapp update` always rolls to a new revision.
-    tag = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
+    tag = datetime.now(UTC).strftime('%Y%m%d%H%M%S')
     image = f'{login_server}/flight-ops-mcp-server:{tag}'
 
     print(f'Deploying Flight Ops MCP server image {image} to Container App {container_app_name}...')

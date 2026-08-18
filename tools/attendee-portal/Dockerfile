@@ -7,7 +7,17 @@ COPY --from=ghcr.io/astral-sh/uv:0.11.25 /uv /usr/local/bin/uv
 WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev --no-install-project
+ARG UV_DEFAULT_INDEX
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+ARG ALL_PROXY
+ARG NO_PROXY
+ARG http_proxy
+ARG https_proxy
+ARG all_proxy
+ARG no_proxy
+RUN if [ -n "$UV_DEFAULT_INDEX" ]; then export UV_DEFAULT_INDEX; fi; \
+	uv sync --frozen --no-dev --no-install-project
 
 COPY src/ ./src/
 

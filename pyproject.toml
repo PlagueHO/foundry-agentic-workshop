@@ -1,13 +1,13 @@
 [project]
 name = "foundry-agentic-workshop"
-version = "0.1.0"
+version = "1.0.0"
 description = "Microsoft Foundry Agentic Workshop - shared Python runtime dependencies."
-requires-python = ">=3.13"
+requires-python = ">=3.13,<3.14"
 license = { text = "MIT" }
 authors = [{ name = "Foundry Agentic Workshop Maintainers" }]
 dependencies = [
     "agent-framework-foundry",
-    "agent-framework-foundry-hosting==1.0.0b260813",
+    "agent-framework-foundry-hosting",
     "azure-ai-projects>=2.4.0",
     "azure-identity",
     "azure-mgmt-authorization",
@@ -25,7 +25,7 @@ dev = [
     "mypy>=2.3.0",
     "pylint>=4.0.7",
     "pytest>=8.0.0",
-    "ruff>=0.16.3",
+    "ruff>=0.16.2",
 ]
 module-13 = [
     "fastapi",
@@ -49,6 +49,7 @@ prerelease = "allow"
 # importlib mode avoids sys.modules collisions between MCP servers that
 # each have a server.py with the same bare module name.
 addopts = "--import-mode=importlib"
+testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 88

@@ -22,11 +22,12 @@ Prerequisites: azd, the Azure CLI (signed in), and a running Docker engine.
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 _AZ_CMD: str = shutil.which('az') or 'az'
@@ -36,6 +37,7 @@ _DOCKER_CMD: str = shutil.which('docker') or 'docker'
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 _PORTAL_DIR = _REPO_ROOT / 'tools' / 'attendee-portal'
 _DOCKERFILE = _PORTAL_DIR / 'Dockerfile'
+_DOCKER_PROXY_VARIABLES = ('HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'NO_PROXY')
 
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stderr.reconfigure(encoding='utf-8')
@@ -163,6 +165,17 @@ def _load_azd_env() -> dict[str, str]:
         return json.loads(result.stdout)
     except json.JSONDecodeError:
         return {}
+
+
+def _docker_build_args() -> list[str]:
+    """Return package-index and proxy build arguments inherited from the host."""
+    build_args: list[str] = []
+    if os.getenv('UV_DEFAULT_INDEX'):
+        build_args.extend(['--build-arg', 'UV_DEFAULT_INDEX'])
+    for variable in _DOCKER_PROXY_VARIABLES:
+        if os.getenv(variable) or os.getenv(variable.lower()):
+            build_args.extend(['--build-arg', variable])
+    return build_args
 
 
 def _azd_env_set(key: str, value: str) -> None:
@@ -384,7 +397,7 @@ def main() -> int:  # pylint: disable=too-many-return-statements
     if not storage_account_name:
         return _fail('Missing AZURE_STORAGE_ACCOUNT_NAME in the azd environment.')
 
-    tag = datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')
+    tag = datetime.now(UTC).strftime('%Y%m%d%H%M%S')
     image = f'{login_server}/attendee-portal:{tag}'
 
     print(f'Deploying attendee portal image {image} to Container App {container_app_name}...')
@@ -393,6 +406,7 @@ def main() -> int:  # pylint: disable=too-many-return-statements
         [_AZ_CMD, 'acr', 'login', '--name', registry_name],
         [
             _DOCKER_CMD, 'build',
+            *_docker_build_args(),
             '--tag', image,
             '--file', str(_DOCKERFILE),
             str(_PORTAL_DIR),
