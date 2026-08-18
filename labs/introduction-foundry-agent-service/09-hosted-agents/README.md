@@ -105,7 +105,7 @@ the tunnel changes you must **redeploy** the agent.
 Both a Prompt Agent and a hosted agent can call MCP tools. The key distinction is who builds
 and sends the MCP request:
 
-![Comparison diagram showing the Module 07 Prompt Agent path, where Foundry Agent Service uses a project connection and project managed identity to call Foundry IQ, and the Module 09 hosted-agent path, where hosted code uses an MCP client and its own agent identity to call Foundry IQ. Both identities need Search Index Data Reader.](../assets/diagrams/module-09-prompt-and-hosted-agent-authentication.svg)
+![Comparison of Prompt Agent and hosted-agent MCP authentication paths to Foundry IQ.](../assets/diagrams/module-09-prompt-and-hosted-agent-authentication.svg)
 
 In Module 07, Foundry reads the **project connection** and sends the MCP request as the
 project managed identity. Workshop provisioning already gives that identity **Search Index Data

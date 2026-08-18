@@ -95,7 +95,7 @@ You could connect each index individually using the **Azure AI Search** tool in 
 
 The `acl-remedy-advisor` Prompt Agent is configured **declaratively** in Foundry. When you attach the knowledge base, Foundry creates a project connection that points to the knowledge base MCP endpoint. That connection uses the Foundry project's managed identity, so Foundry - not your agent code - obtains and attaches the Azure AI Search bearer token.
 
-![Sequence diagram showing the user asking a Prompt Agent a product or policy question. Foundry Agent Service resolves the project connection, then uses the project managed identity to send the MCP request to Foundry IQ in Azure AI Search. Grounded passages and citations return to the agent before it responds to the user.](../assets/diagrams/module-07-prompt-agent-foundry-iq-authentication.svg)
+![Prompt Agent authentication flow from the project connection to Foundry IQ.](../assets/diagrams/module-07-prompt-agent-foundry-iq-authentication.svg)
 
 The project managed identity needs **Search Index Data Reader** on Azure AI Search. Workshop provisioning grants that role for every attendee project. A project connection can use another supported authentication type, including an agent identity, but this lab deliberately uses **ProjectManagedIdentity** so all Prompt Agents in the project share the same least-privilege Search access.
 
