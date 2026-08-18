@@ -8,6 +8,7 @@ const labsRoot = path.join(repoRoot, 'labs')
 const docsRoot = path.join(repoRoot, 'docs')
 const generatedRoot = path.join(docsRoot, 'lab-steps')
 const docsLabsRoot = path.join(docsRoot, 'labs')
+const docsAssetsRoot = path.join(docsRoot, 'assets')
 const labsSidebarPath = path.join(docsRoot, '.vitepress', 'labs-sidebar.ts')
 
 const STEP_DIR_PATTERN = /^\d{2}-/
@@ -106,8 +107,24 @@ function rewriteStepLinks(markdown, trackName) {
     /\]\(\.\.\/README\.md\)/g,
     `](../../labs/${trackName}.md)`,
   )
+  result = result.replace(
+    /\]\(\.\.\/assets\//g,
+    `](../../assets/`,
+  )
   return result
 }
+
+async function copyTrackAssets(trackName) {
+  const sourceAssetsPath = path.join(labsRoot, trackName, 'assets')
+
+  if (await directoryExists(sourceAssetsPath)) {
+    await fs.cp(sourceAssetsPath, docsAssetsRoot, {
+      recursive: true,
+      force: true,
+    })
+  }
+}
+
 async function writeGeneratedTrackIndex(trackName, sourceReadmePath, sourceMarkdown) {
   const outputPath = path.join(docsLabsRoot, `${trackName}.md`)
 
@@ -183,6 +200,7 @@ async function main() {
   for (const trackEntry of sortedTrackEntries) {
     const trackName = trackEntry.name
     const trackPath = path.join(labsRoot, trackName)
+    await copyTrackAssets(trackName)
     const stepEntries = await fs.readdir(trackPath, { withFileTypes: true })
 
     const trackSidebarItem = {

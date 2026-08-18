@@ -119,7 +119,7 @@ hosted code must attach a token. Inside the deployed container,
 would need **Search Index Data Reader** on Azure AI Search.
 
 > [!IMPORTANT]
-> A hosted agent identity *can* be granted Azure AI Search data-plane access. The limitation in
+> A hosted agent identity _can_ be granted Azure AI Search data-plane access. The limitation in
 > this workshop is permission delegation: attendees cannot assign **Search Index Data Reader** to
 > a service principal on the shared Search service. This lab therefore keeps the Foundry IQ
 > knowledge base in the Module 07 Prompt Agent. Module 10 introduces a Toolbox, which can own
