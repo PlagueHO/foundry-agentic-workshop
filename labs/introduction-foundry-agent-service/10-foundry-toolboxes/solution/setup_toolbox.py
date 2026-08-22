@@ -52,7 +52,7 @@ def run() -> None:
 
     endpoint = os.environ['FOUNDRY_PROJECT_ENDPOINT']
     toolbox_name = os.environ.get('TOOLBOX_NAME', 'acl-remedy-toolbox')
-    mcp_server_label = os.environ.get('TOOLBOX_MCP_SERVER_LABEL', 'retail-remedy-ops')
+    mcp_server_label = os.environ.get('TOOLBOX_MCP_SERVER_LABEL', 'retail-remedy-ops-toolbox')
     mcp_server_url = os.environ.get('RETAIL_REMEDY_OPS_MCP_SERVER_URL', '').strip()
 
     if not mcp_server_url:

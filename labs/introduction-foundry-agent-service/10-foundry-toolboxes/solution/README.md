@@ -12,7 +12,7 @@ modify any agent.
 The script:
 
 1. Creates the `acl-remedy-toolbox` toolbox with **Web Search**, the
-   `retail-remedy-ops` MCP server label, **Code Interpreter**, and **Tool Search**
+   `retail-remedy-ops-toolbox` MCP server label, **Code Interpreter**, and **Tool Search**
    (`toolbox_search`) enabled, each with a unique tool name.
 1. Prints the toolbox consumer endpoint URL.
 
@@ -21,7 +21,7 @@ Before running:
 - Start the MCP server (`server.py`) and expose port 8080 as a public tunnel, or
   use the shared Azure Container Apps server (see Module 06 README, Part 2).
 - If you do not already have one, copy `shared/.env.example` to the repository-root `.env` file.
-- Set `RETAIL_REMEDY_OPS_MCP_SERVER_URL` in the repository-root `.env` file to the public URL including the `/mcp` suffix. The script reads `TOOLBOX_MCP_SERVER_LABEL` and defaults it to `retail-remedy-ops`, which namespaces the MCP tools. This is the same canonical name used for the portal connection, although the fallback passes the server URL directly rather than looking up that connection.
+- Set `RETAIL_REMEDY_OPS_MCP_SERVER_URL` in the repository-root `.env` file to the public URL including the `/mcp` suffix. The script reads `TOOLBOX_MCP_SERVER_LABEL` and defaults it to `retail-remedy-ops-toolbox`, which namespaces the MCP tools. This is the same canonical name used for the portal connection, although the fallback passes the server URL directly rather than looking up that connection.
 
 ```bash
 python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py

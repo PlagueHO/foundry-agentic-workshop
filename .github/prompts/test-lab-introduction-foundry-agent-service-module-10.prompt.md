@@ -60,7 +60,7 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm `FOUNDRY_PROJECT_ENDPOINT` is set to a non-empty value of the form `https://<resource>.services.ai.azure.com/api/projects/<project>`.
 1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set to a non-empty public URL ending in `/mcp` (the Module 06 MCP server endpoint).
 1. Confirm `TOOLBOX_NAME` is either unset (defaults to `acl-remedy-toolbox`) or set to `acl-remedy-toolbox`.
-1. Confirm both `TOOLBOX_MCP_CONNECTION_NAME` and `TOOLBOX_MCP_SERVER_LABEL` are either unset (defaulting to `retail-remedy-ops`) or set to `retail-remedy-ops`. They configure separate portal and SDK fields but use one canonical dash-separated name. Do not require either value for the hosted-agent deployment.
+1. Confirm both `TOOLBOX_MCP_CONNECTION_NAME` and `TOOLBOX_MCP_SERVER_LABEL` are either unset (defaulting to `retail-remedy-ops-toolbox`) or set to `retail-remedy-ops-toolbox`. They configure separate portal and SDK fields but use one canonical Module 10-specific dash-separated name. Do not require either value for the hosted-agent deployment.
 
    **Check:** If `.env` does not exist, confirm with the user that Module 01 has been completed, then copy `shared/.env.example` to `.env` and populate the values from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`.
 
@@ -163,19 +163,19 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
    | Field | Value |
    |---|---|
-   | Connection name | `retail-remedy-ops` |
+   | Connection name | `retail-remedy-ops-toolbox` |
    | Server URL | Your `RETAIL_REMEDY_OPS_MCP_SERVER_URL` (ending in `/mcp`) |
    | Authentication | None / Anonymous |
    | Description | `Retail Remedy Operations tools for looking up purchases, product profiles, store policies, replacement options, and creating remedy cases.` |
 
-1. Confirm the six MCP tools are discovered from the server: `lookup_purchase`, `get_product_profile`, `search_store_policy`, `find_replacement_options`, `draft_remedy_summary`, `create_remedy_case`. The portal connection name and Python fallback `server_label` are separate fields but both use `retail-remedy-ops`.
+1. Confirm the six MCP tools are discovered from the server: `lookup_purchase`, `get_product_profile`, `search_store_policy`, `find_replacement_options`, `draft_remedy_summary`, `create_remedy_case`. The portal connection name and Python fallback `server_label` are separate fields but both use `retail-remedy-ops-toolbox`.
 1. Take a screenshot showing the MCP tool added with its discovered tools listed.
 
    **Check:** If the MCP tools are not discovered, confirm the MCP server is still running and `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is publicly accessible. Restart the server and re-expose the tunnel if needed, then retry tool discovery.
 
 ### Step 6 - Confirm the toolbox tools
 
-1. Confirm the toolbox now lists exactly three tools: **Web Search**, the `retail-remedy-ops` MCP connection, and **Code Interpreter**.
+1. Confirm the toolbox now lists exactly three tools: **Web Search**, the `retail-remedy-ops-toolbox` MCP connection, and **Code Interpreter**.
 1. Confirm **FoundryMCPServerpreview** is no longer listed.
 1. Take a screenshot showing all three tools configured.
 
@@ -214,7 +214,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 > uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py
 > ```
 >
-> The script creates the `acl-remedy-toolbox` toolbox with Web Search, the `retail-remedy-ops` SDK server label, Code Interpreter, and Tool Search enabled, then prints the consumer endpoint URL. It uses `RETAIL_REMEDY_OPS_MCP_SERVER_URL` directly rather than looking up the portal connection.
+> The script creates the `acl-remedy-toolbox` toolbox with Web Search, the `retail-remedy-ops-toolbox` SDK server label, Code Interpreter, and Tool Search enabled, then prints the consumer endpoint URL. It uses `RETAIL_REMEDY_OPS_MCP_SERVER_URL` directly rather than looking up the portal connection.
 
 1. Run the fallback script and confirm it exits cleanly with a printed consumer endpoint URL.
 1. Navigate to the Toolboxes area in the portal (if available) and confirm `acl-remedy-toolbox` appears with a default version set. If the portal does not show it, set the new version as the default using the portal before continuing with Part 3.
@@ -316,7 +316,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
 Work through each item in the lab's Validation section and confirm:
 
-1. The `acl-remedy-toolbox` toolbox exists in the Foundry project containing **Web Search**, the `retail-remedy-ops` MCP connection, and **Code Interpreter**, with **Tool Search** enabled and a default version set.
+1. The `acl-remedy-toolbox` toolbox exists in the Foundry project containing **Web Search**, the `retail-remedy-ops-toolbox` MCP connection, and **Code Interpreter**, with **Tool Search** enabled and a default version set.
 1. `python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/deploy_hosted_agent_code.py` publishes a new version of `acl-remedy-advisor-hosted-code` that reports **active**.
 1. The new version appears in the portal **Agents** view for `acl-remedy-advisor-hosted-code` with kind **hosted**.
 1. `python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py` runs to completion and prints a clear remedy recommendation citing store policy and Australian Consumer Law, and recommending the appropriate remedy.

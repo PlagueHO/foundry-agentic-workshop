@@ -30,5 +30,5 @@ def test_attendee_environment_distinguishes_portal_and_sdk_mcp_identifiers() -> 
         flight_ops_mcp_server_url='https://flight.example.test/mcp',
     )
 
-    assert env['TOOLBOX_MCP_CONNECTION_NAME'] == 'retail-remedy-ops'
-    assert env['TOOLBOX_MCP_SERVER_LABEL'] == 'retail-remedy-ops'
+    assert env['TOOLBOX_MCP_CONNECTION_NAME'] == 'retail-remedy-ops-toolbox'
+    assert env['TOOLBOX_MCP_SERVER_LABEL'] == 'retail-remedy-ops-toolbox'
