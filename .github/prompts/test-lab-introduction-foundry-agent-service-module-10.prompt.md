@@ -54,12 +54,13 @@ Before executing any lab steps, confirm all prerequisites are satisfied. **Do no
 1. Confirm `.env` exists and the required toolbox values are populated:
 
    ```bash
-   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|RETAIL_REMEDY_OPS_MCP_SERVER_URL|TOOLBOX_NAME|AZURE_SUBSCRIPTION_ID|AZURE_RESOURCE_GROUP|FOUNDRY_RESOURCE_NAME'
+   cat .env | grep -E 'FOUNDRY_PROJECT_ENDPOINT|RETAIL_REMEDY_OPS_MCP_SERVER_URL|TOOLBOX_NAME|TOOLBOX_MCP_CONNECTION_NAME|TOOLBOX_MCP_SERVER_LABEL|AZURE_SUBSCRIPTION_ID|AZURE_RESOURCE_GROUP|FOUNDRY_RESOURCE_NAME'
    ```
 
 1. Confirm `FOUNDRY_PROJECT_ENDPOINT` is set to a non-empty value of the form `https://<resource>.services.ai.azure.com/api/projects/<project>`.
 1. Confirm `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is set to a non-empty public URL ending in `/mcp` (the Module 06 MCP server endpoint).
 1. Confirm `TOOLBOX_NAME` is either unset (defaults to `acl-remedy-toolbox`) or set to `acl-remedy-toolbox`.
+1. Confirm both `TOOLBOX_MCP_CONNECTION_NAME` and `TOOLBOX_MCP_SERVER_LABEL` are either unset (defaulting to `retail-remedy-ops`) or set to `retail-remedy-ops`. They configure separate portal and SDK fields but use one canonical dash-separated name. Do not require either value for the hosted-agent deployment.
 
    **Check:** If `.env` does not exist, confirm with the user that Module 01 has been completed, then copy `shared/.env.example` to `.env` and populate the values from the attendee onboarding file at `.azure/${input:envName}/<upn_local>.md` (where `<upn_local>` is the part of `${input:attendeeUpn}` before `@`), or from `azd env get-values`.
 
@@ -138,17 +139,21 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
 1. Take a screenshot of the filled-in creation form.
 
-### Step 4 - Add the Web Search tool
+### Step 4 - Configure the included tools
 
-1. In the tool configuration area, click **+ Add tool**.
-1. Select **Web Search** from the tool picker.
+1. Confirm the new toolbox already includes **Web Search**, **Code Interpreter**, and **FoundryMCPServerpreview**.
+1. Next to **Web Search**, select **More options** (**...**), then select **Configure**.
 1. In the tool **Description** field, enter:
 
    ```text
    Search the web for ACCC rulings, Australian Consumer Law guidance, and current retail policy information.
    ```
 
-1. Confirm the Web Search tool appears in the toolbox configuration.
+1. Save the Web Search configuration.
+1. Leave the included **Code Interpreter** tool unchanged.
+1. Next to **FoundryMCPServerpreview**, select **More options** (**...**), then select **Remove**.
+
+   **Check:** Confirm **FoundryMCPServerpreview** is no longer listed. It is not used by this lab.
 
 ### Step 5 - Add the MCP tool
 
@@ -158,21 +163,20 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
    | Field | Value |
    |---|---|
-   | Label / Server name | `retail_remedy_ops` |
+   | Connection name | `retail-remedy-ops` |
    | Server URL | Your `RETAIL_REMEDY_OPS_MCP_SERVER_URL` (ending in `/mcp`) |
    | Authentication | None / Anonymous |
    | Description | `Retail Remedy Operations tools for looking up purchases, product profiles, store policies, replacement options, and creating remedy cases.` |
 
-1. Confirm the six MCP tools are discovered from the server: `lookup_purchase`, `get_product_profile`, `search_store_policy`, `find_replacement_options`, `draft_remedy_summary`, `create_remedy_case`.
+1. Confirm the six MCP tools are discovered from the server: `lookup_purchase`, `get_product_profile`, `search_store_policy`, `find_replacement_options`, `draft_remedy_summary`, `create_remedy_case`. The portal connection name and Python fallback `server_label` are separate fields but both use `retail-remedy-ops`.
 1. Take a screenshot showing the MCP tool added with its discovered tools listed.
 
    **Check:** If the MCP tools are not discovered, confirm the MCP server is still running and `RETAIL_REMEDY_OPS_MCP_SERVER_URL` is publicly accessible. Restart the server and re-expose the tunnel if needed, then retry tool discovery.
 
-### Step 6 - Add the Code Interpreter tool
+### Step 6 - Confirm the toolbox tools
 
-1. Click **+ Add tool** again.
-1. Select **Code Interpreter** from the tool picker.
-1. Confirm the toolbox now lists all three tools: **Web Search**, the `retail_remedy_ops` MCP server, and **Code Interpreter**.
+1. Confirm the toolbox now lists exactly three tools: **Web Search**, the `retail-remedy-ops` MCP connection, and **Code Interpreter**.
+1. Confirm **FoundryMCPServerpreview** is no longer listed.
 1. Take a screenshot showing all three tools configured.
 
 ### Step 7 - Enable Tool Search
@@ -210,7 +214,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 > uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py
 > ```
 >
-> The script creates the `acl-remedy-toolbox` toolbox with Web Search, the `retail_remedy_ops` MCP server, Code Interpreter, and Tool Search enabled, then prints the consumer endpoint URL.
+> The script creates the `acl-remedy-toolbox` toolbox with Web Search, the `retail-remedy-ops` SDK server label, Code Interpreter, and Tool Search enabled, then prints the consumer endpoint URL. It uses `RETAIL_REMEDY_OPS_MCP_SERVER_URL` directly rather than looking up the portal connection.
 
 1. Run the fallback script and confirm it exits cleanly with a printed consumer endpoint URL.
 1. Navigate to the Toolboxes area in the portal (if available) and confirm `acl-remedy-toolbox` appears with a default version set. If the portal does not show it, set the new version as the default using the portal before continuing with Part 3.
@@ -243,7 +247,6 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 1. Confirm `FOUNDRY_PROJECT_ENDPOINT` is a non-empty value of the form `https://<resource>.services.ai.azure.com/api/projects/<project>`.
 1. Confirm `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, and `FOUNDRY_RESOURCE_NAME` are all non-empty (the deploy script uses them to grant the **Foundry User** role to the agent's per-deploy identity).
 1. Confirm `TOOLBOX_NAME` is `acl-remedy-toolbox` or unset (defaults to the same).
-
    **Check:** If any required variable is missing or empty, report it and stop.
 
 ### Step 12 - Deploy the agent from source code
@@ -282,10 +285,10 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
    uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py
    ```
 
-1. Let the script run to completion. The script selects the latest active version, opens an agent session, routes 100% of traffic to the new version, and runs a two-turn Australian Consumer Law conversation for receipt `R-1007` (a laptop battery that failed about 14 months after a 12-month warranty).
+1. Let the script run to completion. The script selects the latest active version, creates an agent session pinned to it, routes 100% of traffic to the new version, and runs a two-turn Australian Consumer Law conversation for receipt `R-1007` (a laptop battery that failed about 14 months after a 12-month warranty).
 1. Confirm the script exits cleanly with no traceback.
 1. Confirm the first-turn response:
-   - References receipt `R-1007` and store policy retrieved through the `retail_remedy_ops` tools.
+   - References receipt `R-1007` and store policy retrieved through the Retail Remedy Operations tools.
    - Applies Australian Consumer Law reasoning (distinguishes a major or minor failure and states the appropriate remedy).
    - Recommends a concrete next step for the customer.
 1. Confirm the second turn builds on context from the first (the customer still has the original box and charger).
@@ -294,13 +297,13 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
    **Check:** If authentication fails with a `401` or `403`, run `az login` and retry.
 
-   **Check:** If the response does not reference receipt `R-1007` or `retail_remedy_ops` data, confirm Tool Search is enabled on the default toolbox version and tool descriptions are specific. Publish a new version with improved descriptions, set it as the default, and rerun.
+   **Check:** If the response does not reference receipt `R-1007` or Retail Remedy Operations data, confirm Tool Search is enabled on the default toolbox version and tool descriptions are specific. Publish a new version with improved descriptions, set it as the default, and rerun.
 
 ### Step 15 - Review the run traces and metrics
 
 1. In the browser, open `acl-remedy-advisor-hosted-code` in the Foundry portal and select the **Traces** tab.
 1. Open the most recent run and expand the trajectory.
-1. Confirm the trace shows a `tool_search` span followed by one or more `call_tool` spans dispatching `retail_remedy_ops` lookups. This confirms Tool Search discovered the tools and invoked them through the toolbox.
+1. Confirm the trace shows a `tool_search` span followed by one or more `call_tool` spans dispatching Retail Remedy Operations lookups. This confirms Tool Search discovered the tools and invoked them through the toolbox.
 1. Take a screenshot of the trace view showing the `tool_search` → `call_tool` flow.
 1. Select the **Monitor** tab and confirm the run appears in the operational charts (agent runs, token usage, tool calls).
 1. Take a screenshot of the Monitor dashboard.
@@ -313,7 +316,7 @@ The toolbox wraps the **Retail Remedy Operations MCP server** from Module 06. It
 
 Work through each item in the lab's Validation section and confirm:
 
-1. The `acl-remedy-toolbox` toolbox exists in the Foundry project containing **Web Search**, the `retail_remedy_ops` MCP server, and **Code Interpreter**, with **Tool Search** enabled and a default version set.
+1. The `acl-remedy-toolbox` toolbox exists in the Foundry project containing **Web Search**, the `retail-remedy-ops` MCP connection, and **Code Interpreter**, with **Tool Search** enabled and a default version set.
 1. `python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/deploy_hosted_agent_code.py` publishes a new version of `acl-remedy-advisor-hosted-code` that reports **active**.
 1. The new version appears in the portal **Agents** view for `acl-remedy-advisor-hosted-code` with kind **hosted**.
 1. `python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py` runs to completion and prints a clear remedy recommendation citing store policy and Australian Consumer Law, and recommending the appropriate remedy.

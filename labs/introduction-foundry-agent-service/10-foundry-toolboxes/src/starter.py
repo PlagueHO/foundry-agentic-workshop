@@ -20,8 +20,6 @@ from azure.ai.projects import AIProjectClient
 from azure.ai.projects.models import (
     CodeConfiguration,
     CodeDependencyResolution,
-    CreateAgentVersionFromCodeContent,
-    CreateAgentVersionFromCodeMetadata,
     HostedAgentDefinition,
     ProtocolVersionRecord,
 )
@@ -72,9 +70,9 @@ def run() -> None:
 
     credential = DefaultAzureCredential()
     with AIProjectClient(endpoint=endpoint, credential=credential, allow_preview=True) as client:
-        # TODO 1: Build a CreateAgentVersionFromCodeContent describing the hosted agent.
-        #   - Set metadata=CreateAgentVersionFromCodeMetadata(description=..., definition=...).
-        #   - The definition is a HostedAgentDefinition with:
+        # TODO 1: Prepare a named code stream and hosted-agent definition.
+        #   - Wrap zip_bytes in io.BytesIO and set its .name attribute to '{agent_name}.zip'.
+        #   - Build a HostedAgentDefinition with:
         #       cpu=CPU, memory=MEMORY,
         #       environment_variables={
         #           'AZURE_AI_MODEL_DEPLOYMENT_NAME': model_deployment,
@@ -85,13 +83,15 @@ def run() -> None:
         #           entry_point=['python', 'main.py'],
         #           dependency_resolution=CodeDependencyResolution.REMOTE_BUILD,
         #       ),
-        #       protocol_versions=[ProtocolVersionRecord(protocol='responses', version='1.0.0')].
-        #   - Set code=(f'{agent_name}.zip', zip_bytes, 'application/zip').
-        content = ...  # noqa: F841
+        #       protocol_versions=[ProtocolVersionRecord(protocol='responses', version='2.0.0')].
+        code_stream = ...  # noqa: F841
+        definition = ...  # noqa: F841
 
         # TODO 2: Create the agent version from code.
-        #   created = client.beta.agents.create_version_from_code(
-        #       agent_name=agent_name, content=content, code_zip_sha256=zip_sha256,
+        #   created = client.agents.create_version_from_code(
+        #       agent_name=agent_name, definition=definition, code=code_stream,
+        #       code_zip_sha256=zip_sha256,
+        #       description='ACL Remedy Advisor hosted agent (toolbox edition) from source code.',
         #   )
 
         # TODO 3: Poll until the version is active, then grant the agent identity the

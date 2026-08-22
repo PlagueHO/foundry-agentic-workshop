@@ -186,6 +186,8 @@ def _build_attendee_env_dict(  # pylint: disable=too-many-arguments,too-many-pos
         'HOSTED_AGENT_NAME_CODE': 'acl-remedy-advisor-hosted-code',
         'KNOWLEDGE_BASE_NAME': f'acl-remedy-knowledge-{project_name}',
         'TOOLBOX_NAME': 'acl-remedy-toolbox',
+        'TOOLBOX_MCP_CONNECTION_NAME': 'retail-remedy-ops',
+        'TOOLBOX_MCP_SERVER_LABEL': 'retail-remedy-ops',
         'AZURE_OPENAI_ENDPOINT': openai_endpoint,
     }
     if search_service_name:
