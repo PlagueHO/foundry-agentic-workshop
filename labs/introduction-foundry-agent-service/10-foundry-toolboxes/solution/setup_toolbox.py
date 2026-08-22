@@ -6,8 +6,8 @@ Part 2. It builds the same toolbox that the hosted agent (deploy_hosted_agent_co
 uses through the Microsoft Agent Framework.
 
 The script:
-  1. Creates the acl-remedy-toolbox toolbox version with Web Search, the Retail
-     Remedy Operations MCP server, Code Interpreter, and Tool Search enabled.
+  1. Creates the acl-remedy-toolbox toolbox version with Web Search, the Module 10
+     Retail Remedy Operations MCP server label, Code Interpreter, and Tool Search enabled.
   2. Promotes the newly created version to the toolbox default so consumers
      (such as the hosted agent) resolve to it automatically.
   3. Prints the toolbox consumer endpoint URL.
@@ -26,10 +26,10 @@ import os
 
 from azure.ai.projects import AIProjectClient
 from azure.ai.projects.models import (
-    CodeInterpreterTool,
-    MCPTool,
-    ToolboxSearchPreviewTool,
-    WebSearchTool,
+    CodeInterpreterToolboxTool,
+    MCPToolboxTool,
+    ToolSearchToolboxTool,
+    WebSearchToolboxTool,
 )
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
@@ -52,6 +52,7 @@ def run() -> None:
 
     endpoint = os.environ['FOUNDRY_PROJECT_ENDPOINT']
     toolbox_name = os.environ.get('TOOLBOX_NAME', 'acl-remedy-toolbox')
+    mcp_server_label = os.environ.get('TOOLBOX_MCP_SERVER_LABEL', 'retail-remedy-ops-toolbox')
     mcp_server_url = os.environ.get('RETAIL_REMEDY_OPS_MCP_SERVER_URL', '').strip()
 
     if not mcp_server_url:
@@ -65,19 +66,19 @@ def run() -> None:
 
     # Create the toolbox version with Web Search, the MCP server, Code Interpreter, and Tool Search.
     print(f'Creating toolbox: {toolbox_name} ...')
-    toolbox_version = client.beta.toolboxes.create_version(
+    toolbox_version = client.toolboxes.create_version(
         name=toolbox_name,
         description=TOOLBOX_DESCRIPTION,
         tools=[
-            WebSearchTool(name='web_search', description=WEB_SEARCH_DESCRIPTION),
-            MCPTool(
-                server_label='retail_remedy_ops',
+            WebSearchToolboxTool(name='web_search', description=WEB_SEARCH_DESCRIPTION),
+            MCPToolboxTool(
+                server_label=mcp_server_label,
                 server_url=mcp_server_url,
                 require_approval='never',
                 server_description=MCP_DESCRIPTION,
             ),
-            CodeInterpreterTool(name='code_interpreter'),
-            ToolboxSearchPreviewTool(name='toolbox_search'),
+            CodeInterpreterToolboxTool(name='code_interpreter'),
+            ToolSearchToolboxTool(name='toolbox_search'),
         ],
     )
     print(f'Toolbox created: {toolbox_version.name} (version: {toolbox_version.version})')
@@ -86,7 +87,7 @@ def run() -> None:
     # default, so without this the consumer endpoint (?api-version=v1) keeps resolving to the
     # previous default version and the hosted agent would use a stale toolbox.
     print(f'Setting version {toolbox_version.version} as the default for {toolbox_name} ...')
-    client.beta.toolboxes.update(name=toolbox_name, default_version=toolbox_version.version)
+    client.toolboxes.update(name=toolbox_name, default_version=toolbox_version.version)
     print(f'Default version for {toolbox_name} is now {toolbox_version.version}.')
 
     # Derive the consumer endpoint URL the hosted agent builds at runtime.

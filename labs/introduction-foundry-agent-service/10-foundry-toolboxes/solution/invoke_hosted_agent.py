@@ -5,7 +5,7 @@ agent endpoint to that version, then runs a short multi-turn conversation over t
 Responses API. The agent answers entirely through the ``acl-remedy-toolbox`` Foundry
 Toolbox, using Tool Search to discover and call the retail tools, web search, and code
 interpreter behind the single toolbox endpoint. Sessions only work with hosted agents and
-are a preview feature accessed via ``project.beta.agents``.
+are supported through ``project.agents``.
 
 Usage:
     uv run python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/invoke_hosted_agent.py
@@ -16,21 +16,21 @@ import os
 from azure.ai.projects import AIProjectClient
 from azure.ai.projects.models import (
     AgentEndpointConfig,
-    AgentEndpointProtocol,
     FixedRatioVersionSelectionRule,
     VersionRefIndicator,
     VersionSelector,
 )
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
-
 from hosted_agent_support import get_latest_active_agent_version
 
 PROMPTS = [
-    'A customer bought a laptop on receipt R-1007 and the battery stopped holding charge '
-    'about 14 months after purchase. The standard warranty was 12 months. Look up the '
-    'purchase in our records, then tell me what remedy applies under the Australian '
-    'Consumer Law and why.',
+    (
+        'A customer bought a laptop on receipt R-1007 and the battery stopped holding charge '
+        'about 14 months after purchase. The standard warranty was 12 months. Look up the '
+        'purchase in our records, then tell me what remedy applies under the Australian '
+        'Consumer Law and why.'
+    ),
     'They still have the original box and charger. Does that change the remedy?',
 ]
 
@@ -48,7 +48,7 @@ def run() -> None:
         agent = get_latest_active_agent_version(client, agent_name)
         print(f'Using hosted agent {agent_name} version {agent.version}.')
 
-        session = client.beta.agents.create_session(
+        session = client.agents.create_session(
             agent_name=agent_name,
             version_indicator=VersionRefIndicator(agent_version=agent.version),
         )
@@ -65,9 +65,8 @@ def run() -> None:
                         ),
                     ],
                 ),
-                protocols=[AgentEndpointProtocol.RESPONSES],
             )
-            client.beta.agents.patch_agent_details(agent_name=agent_name, agent_endpoint=endpoint_config)
+            client.agents.update_details(agent_name=agent_name, agent_endpoint=endpoint_config)
 
             openai_client = client.get_openai_client(agent_name=agent_name)
 
@@ -83,10 +82,12 @@ def run() -> None:
                 if previous_response_id is not None:
                     turn_kwargs['previous_response_id'] = previous_response_id
                 response = openai_client.responses.create(**turn_kwargs)
+                if response.status == 'failed':
+                    raise RuntimeError(f'Hosted agent response failed: {response.error}')
                 previous_response_id = response.id
                 print(response.output_text)
         finally:
-            client.beta.agents.delete_session(
+            client.agents.delete_session(
                 agent_name=agent_name,
                 session_id=session.agent_session_id,
             )

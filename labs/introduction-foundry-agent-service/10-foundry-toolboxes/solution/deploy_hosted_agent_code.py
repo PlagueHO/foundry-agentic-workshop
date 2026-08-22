@@ -22,15 +22,15 @@ from azure.ai.projects import AIProjectClient
 from azure.ai.projects.models import (
     CodeConfiguration,
     CodeDependencyResolution,
-    CreateAgentVersionFromCodeContent,
-    CreateAgentVersionFromCodeMetadata,
     HostedAgentDefinition,
     ProtocolVersionRecord,
 )
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
-
-from hosted_agent_support import ensure_agent_identity_rbac, wait_for_agent_version_active
+from hosted_agent_support import (
+    ensure_agent_identity_rbac,
+    wait_for_agent_version_active,
+)
 
 # The agent bundle lives one directory up under src/agent/. Every file in that folder is
 # zipped flat (no parent directory entry) so Foundry's remote build finds main.py and
@@ -67,31 +67,29 @@ def run() -> None:
 
     credential = DefaultAzureCredential()
     with AIProjectClient(endpoint=endpoint, credential=credential, allow_preview=True) as client:
-        content = CreateAgentVersionFromCodeContent(
-            metadata=CreateAgentVersionFromCodeMetadata(
-                description='ACL Remedy Advisor hosted agent (toolbox edition) from source code.',
-                definition=HostedAgentDefinition(
-                    cpu=CPU,
-                    memory=MEMORY,
-                    environment_variables={
-                        'AZURE_AI_MODEL_DEPLOYMENT_NAME': model_deployment,
-                        'TOOLBOX_NAME': toolbox_name,
-                    },
-                    code_configuration=CodeConfiguration(
-                        runtime=RUNTIME,
-                        entry_point=['python', 'main.py'],
-                        dependency_resolution=CodeDependencyResolution.REMOTE_BUILD,
-                    ),
-                    protocol_versions=[ProtocolVersionRecord(protocol='responses', version='1.0.0')],
-                ),
+        code_stream = io.BytesIO(zip_bytes)
+        code_stream.name = f'{agent_name}.zip'
+        definition = HostedAgentDefinition(
+            cpu=CPU,
+            memory=MEMORY,
+            environment_variables={
+                'AZURE_AI_MODEL_DEPLOYMENT_NAME': model_deployment,
+                'TOOLBOX_NAME': toolbox_name,
+            },
+            code_configuration=CodeConfiguration(
+                runtime=RUNTIME,
+                entry_point=['python', 'main.py'],
+                dependency_resolution=CodeDependencyResolution.REMOTE_BUILD,
             ),
-            code=(f'{agent_name}.zip', zip_bytes, 'application/zip'),
+            protocol_versions=[ProtocolVersionRecord(protocol='responses', version='2.0.0')],
         )
 
-        created = client.beta.agents.create_version_from_code(
+        created = client.agents.create_version_from_code(
             agent_name=agent_name,
-            content=content,
+            definition=definition,
+            code=code_stream,
             code_zip_sha256=zip_sha256,
+            description='ACL Remedy Advisor hosted agent (toolbox edition) from source code.',
         )
         print(f'Created hosted agent {agent_name} version {created.version}; Foundry is building it.')
 

@@ -87,9 +87,9 @@ Both workshop indexes were seeded with a semantic configuration and pre-computed
 You could connect each index individually using the **Azure AI Search** tool in the agent's tool picker (as shown in Module 05's tool list). Foundry IQ knowledge bases offer three advantages over individual connections:
 
 1. **Multi-source fusion** - a single knowledge base retrieves across both indexes in one call, re-ranking results from both before injecting context.
-2. **Managed configuration** - retrieval behaviour (reasoning effort, output mode, and retrieval instructions) is configured once in the knowledge base and reused by any agent that attaches it.
-3. **Consistent grounding** - the same retrieval behaviour applies everywhere the knowledge base is used, making evaluations reproducible.
-4. **MCP Server** - Agents connect to the knowledge base as an MCP tool, so you get consistent `mcp://searchindex/...` citations in responses and a single connection point for all your knowledge sources. This also enables Foundry IQ to be used with 3rd party Agents.
+1. **Managed configuration** - retrieval behaviour (reasoning effort, output mode, and retrieval instructions) is configured once in the knowledge base and reused by any agent that attaches it.
+1. **Consistent grounding** - the same retrieval behaviour applies everywhere the knowledge base is used, making evaluations reproducible.
+1. **MCP Server** - Agents connect to the knowledge base as an MCP tool, so you get consistent `mcp://searchindex/...` citations in responses and a single connection point for all your knowledge sources. This also enables Foundry IQ to be used with 3rd party Agents.
 
 ### How this prompt agent authenticates to Foundry IQ
 
@@ -170,8 +170,8 @@ This module uses two Azure AI Search indexes that the workshop provisioning scri
 #### 3. Set the name and basic configuration
 
 - [ ] In the **Basic configuration** section, set:
-    - **Name**: replace the auto-generated name (for example `knowledgebase124`) with your per-attendee knowledge base name from `KNOWLEDGE_BASE_NAME` (for example, `acl-remedy-knowledge-lab-attendee-1`).
-    - **Description** (optional):
+  - **Name**: replace the auto-generated name (for example `knowledgebase124`) with your per-attendee knowledge base name from `KNOWLEDGE_BASE_NAME` (for example, `acl-remedy-knowledge-lab-attendee-1`).
+  - **Description** (optional):
 
 ```text
     Retail product catalog and store policy knowledge for the ACL Remedy Advisor agent.
@@ -198,7 +198,7 @@ This module uses two Azure AI Search indexes that the workshop provisioning scri
 - [ ] Scroll down to the **Knowledge sources (Foundry IQ)** section.
 - [ ] Click **Add sources** and select **Azure AI Search Index** from the dropdown.
 - [ ] In the **Create a knowledge source** dialog, set the fields:
-    - **Name**: replace the default (for example `ks-searchindex-69`) with:
+  - **Name**: replace the default (for example `ks-searchindex-69`) with:
 
 ```text
     retail-products
@@ -221,7 +221,7 @@ This module uses two Azure AI Search indexes that the workshop provisioning scri
 
 - [ ] Click **Add sources** again and select **Azure AI Search Index**.
 - [ ] In the **Create a knowledge source** dialog, set:
-    - **Name**:
+  - **Name**:
 
 ```text
     retail-policies
@@ -339,9 +339,9 @@ The agent now has the knowledge base attached, but it needs guidance on *when* t
   > According to our store's return policy, how many days do customers have to return non-perishable items with a receipt, and within what timeframe should spoiled perishable items be reported?
 
 - [ ] Review the response. Confirm the agent:
-    - Answers **14 days** for non-perishable returns with a receipt and **48 hours** for reporting spoiled perishable items.
-    - Includes source citation markers in the response text.
-    - Shows a `kb-...` tool chip in the response metadata.
+  - Answers **14 days** for non-perishable returns with a receipt and **48 hours** for reporting spoiled perishable items.
+  - Includes source citation markers in the response text.
+  - Shows a `kb-...` tool chip in the response metadata.
 
   <details>
   <summary>📸 Screenshot: Playground - grounded policy response</summary>
@@ -384,12 +384,12 @@ You grounded your agent in trusted knowledge. You created a Foundry IQ knowledge
 The `retail-products` and `retail-policies` indexes live in the connected Azure AI Search service, not in Foundry, so they do **not** appear on the Foundry **Indexes** tab - but they are still selectable in the **Select search index** dropdown when you create a knowledge source. If an index does not appear:
 
 1. Confirm the AI Search service is connected to your project and the seed scripts ran during setup.
-2. Confirm the index exists in the [Azure portal](https://portal.azure.com): open the AI Search resource, then **Search management > Indexes**.
-3. If an index is missing, run the seed scripts from the repository root:
+1. Confirm the index exists in the [Azure portal](https://portal.azure.com): open the AI Search resource, then **Search management > Indexes**.
+1. If an index is missing, run the seed scripts from the repository root:
 
 ```bash
-  uv run python scripts/seed-product-index.py
-   uv run python scripts/seed-document-index.py
+uv run python scripts/seed-product-index.py
+uv run python scripts/seed-document-index.py
 ```
 
 1. Reopen the **Create a knowledge source** dialog and confirm both indexes are now selectable.
