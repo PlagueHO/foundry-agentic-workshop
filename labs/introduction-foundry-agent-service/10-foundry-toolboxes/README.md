@@ -295,6 +295,7 @@ You now deploy a **hosted agent** whose only tool is the toolbox. The agent is a
   | `AZURE_RESOURCE_GROUP` | Your resource group |
   | `FOUNDRY_RESOURCE_NAME` | Your Foundry account name |
   | `TOOLBOX_NAME` | `acl-remedy-toolbox` |
+
   > `HOSTED_AGENT_NAME_CODE` defaults to `acl-remedy-advisor-hosted-code` and `AGENT_MODEL` defaults to `chat`. Set them in `.env` only if your deployment uses different names.
 
 #### 12. Deploy the agent from source code
