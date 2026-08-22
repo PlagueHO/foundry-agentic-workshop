@@ -8,7 +8,7 @@ param location = readEnvironmentVariable('AZURE_LOCATION', 'EastUS2')
 // Used to assign Search Index Data Contributor and Search Service Contributor to the organizer
 // so the postprovision seeding scripts can write to AI Search without a manual role grant.
 param principalId = readEnvironmentVariable('AZURE_PRINCIPAL_ID', '')
-param principalIdType = readEnvironmentVariable('AZURE_PRINCIPAL_TYPE', 'User')
+param principalIdType = readEnvironmentVariable('AZURE_PRINCIPAL_ID_TYPE', 'User')
 
 // Per-attendee Foundry project configuration
 param attendeeCount = int(readEnvironmentVariable('AZURE_ATTENDEE_COUNT', '1'))
