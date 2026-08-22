@@ -26,10 +26,10 @@ import os
 
 from azure.ai.projects import AIProjectClient
 from azure.ai.projects.models import (
-    CodeInterpreterTool,
-    MCPTool,
+    CodeInterpreterToolboxTool,
+    MCPToolboxTool,
     ToolSearchToolboxTool,
-    WebSearchTool,
+    WebSearchToolboxTool,
 )
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
@@ -70,14 +70,14 @@ def run() -> None:
         name=toolbox_name,
         description=TOOLBOX_DESCRIPTION,
         tools=[
-            WebSearchTool(name='web_search', description=WEB_SEARCH_DESCRIPTION),
-            MCPTool(
+            WebSearchToolboxTool(name='web_search', description=WEB_SEARCH_DESCRIPTION),
+            MCPToolboxTool(
                 server_label=mcp_server_label,
                 server_url=mcp_server_url,
                 require_approval='never',
                 server_description=MCP_DESCRIPTION,
             ),
-            CodeInterpreterTool(name='code_interpreter'),
+            CodeInterpreterToolboxTool(name='code_interpreter'),
             ToolSearchToolboxTool(name='toolbox_search'),
         ],
     )
