@@ -14,6 +14,7 @@ The script:
 1. Creates the `acl-remedy-toolbox` toolbox with **Web Search**, the
    `retail-remedy-ops-toolbox` MCP server label, **Code Interpreter**, and **Tool Search**
    (`toolbox_search`) enabled, each with a unique tool name.
+1. Sets the new version as the toolbox default.
 1. Prints the toolbox consumer endpoint URL.
 
 Before running:
@@ -27,8 +28,7 @@ Before running:
 python labs/introduction-foundry-agent-service/10-foundry-toolboxes/solution/setup_toolbox.py
 ```
 
-After running, set the new toolbox version as the default in the portal if it is
-not already, then deploy the hosted agent with `deploy_hosted_agent_code.py`.
+After running, deploy the hosted agent with `deploy_hosted_agent_code.py`.
 
 ## deploy_hosted_agent_code.py
 
