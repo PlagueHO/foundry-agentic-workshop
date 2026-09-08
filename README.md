@@ -10,7 +10,7 @@
 [![License: MIT][license-badge]][license-url]
 [![PRs Welcome][prs-badge]][prs-url]
 
-This repository contains **L200–L400 hands-on labs** for building agentic solutions on [Microsoft Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-foundry) using [Microsoft Foundry Agent Service](https://learn.microsoft.com/azure/ai-foundry/agents/overview), [Foundry IQ](https://learn.microsoft.com/azure/ai-foundry/foundry-iq/overview), and the [Microsoft Agent Framework](https://learn.microsoft.com/azure/ai-foundry/agents/agent-framework).
+This repository contains **L200–L400 hands-on labs** for building agentic solutions on [Microsoft Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-foundry) using [Microsoft Foundry Agent Service](https://learn.microsoft.com/azure/ai-foundry/agents/overview), [Foundry IQ](https://learn.microsoft.com/azure/foundry/agents/concepts/what-is-foundry-iq), and the [Microsoft Agent Framework](https://learn.microsoft.com/agent-framework/overview/).
 
 This README is the starting point. It explains **who the workshop is for**, **the two ways to run it**, and **where to go next**. All detailed steps live in the [workshop guide](https://danielscottraynsford.com/foundry-agentic-workshop/) and the [`docs/`](./docs) folder, which is the single source of truth for quickstarts and role guides.
 
