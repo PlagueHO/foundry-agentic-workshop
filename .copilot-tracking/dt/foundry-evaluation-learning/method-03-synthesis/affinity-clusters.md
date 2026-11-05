@@ -90,4 +90,4 @@ The user accepted the core production-evaluation outcome: learners identify a qu
 
 This defines the learner capability and safe exercise setting, not a selected monitoring implementation, verified detection result, or authorization to configure services. The consolidated insights and problem framing now inform `..\prd.md`; its scope and proposed acceptance detail need requester review.
 
-Keep Method 3 active. Do not declare all clusters robust, choose module implementation, or move to Method 4 without further synthesis and explicit agreement.
+The requester subsequently confirmed bounded Method 3 closure and the move to Method 4. Use these clusters as working design inputs, not fully validated themes or an approved module implementation. The closure assessment is in `problem-definition.md`.

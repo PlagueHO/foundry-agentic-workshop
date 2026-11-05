@@ -18,12 +18,15 @@ project:
   initial_classification: "frozen"
 
 current:
-  method: 3
-  space: "problem"
-  phase: "working synthesis baseline; early evaluation and explicit Microsoft Foundry capability objective captured; closure decision pending"
+  method: 4
+  space: "solution"
+  phase: "paused at user request - Method 4 outcome-fit and time-budget discussion; core below 120 minutes after provisioning pre-work, cuts and sequence still proposed"
   disclaimerShownAt: "2026-11-03T11:37:26.065+13:00"
 
-methods_completed: [1, 2]
+methods_completed: [1, 2, 3]
+
+method_completion_limits:
+  method_3: "Closed as a working design baseline by explicit user agreement on 2026-11-05, not as fully validated synthesis. The normal five-dimension exit is only partly met. Direct learner/customer/operator evidence, learning effectiveness, and technical feasibility remain unverified. No validated RPI handoff or implementation approval."
 
 transition_log:
   - from_method: null
@@ -40,11 +43,43 @@ transition_log:
     rationale: "User confirmed starting Input Synthesis using requester decisions, repository observations, and official documentation. Method 2 outputs are sufficient for this transition; partner validation and live feasibility remain unresolved and are not marked validated."
     date: "2026-11-04"
 
+  - from_method: 3
+    to_method: 4
+    rationale: "User explicitly accepted bounded Method 3 closure and a cautious move to Brainstorming. The normal exit signal, Themes validated across sources; team alignment confirmed, is only partly met. Proceed from the agreed working baseline without claiming full validation; carry evidence gaps into design and later testing."
+    date: "2026-11-05"
+
 hint_calibration:
   level: 1
   pattern_notes: "User wants discussion of learning needs before technical decisions. Ask one open question at a time."
 
 session_log:
+  - date: "2026-11-05"
+    method: 4
+    summary: "User requested committing all session work to the existing branch and pausing until later. Persisted Method 4 state, 15 ideas and documentation sources, proposed outcome-fit/cuts, the confirmed provisioning pre-work boundary, and the unverified 119-minute budget. Method 4 is not complete; no Method 5 transition, PRD signoff, implementation, cloud jobs, push, or PR creation is authorized by this request."
+  - date: "2026-11-05"
+    method: 4
+    summary: "User confirmed infrastructure provisioning as pre-work excluded from the less-than-two-hour target. Agent readiness remains inside the lab. Updated the proposed budget to 105 minutes of readiness/exercises/review plus 14 minutes contingency, totaling 119 minutes to stay below 120. This is planning arithmetic, not measured duration or approval of all proposed cuts."
+  - date: "2026-11-05"
+    method: 4
+    summary: "User set a maximum two-hour lab target and requested approximately 80% feature coverage. Recorded the duration constraint in the draft PRD and proposed a 105-minute activity budget plus 15-minute contingency. Recommend combining overlapping core activities and moving extra data generation, multi-turn comparison, clustering, trace-dataset creation, Optimizer, red teaming, and CI/CD execution outside the timed core. Workshop infrastructure-ready assumption and actual elapsed timing remain unverified. No literal coverage percentage, cuts approval, or Method 5 transition is claimed."
+  - date: "2026-11-05"
+    method: 4
+    summary: "User asked which documented activities best support the desired learning outcomes. Compared suggestions with the draft goals and acceptance criteria. Proposed six core activity groups: first run/built-in versus domain checks; rubric creation and calibration; criterion changes; tool-use/grounding diagnosis; local baseline-change-rerun with held-back validation; live lab production evaluation and investigation. Proposed trace-to-dataset as a small extension if practical, with synthetic generation, conversation comparison, and clustering as optional depth. This is a recommendation, not approved scope, a fixed module sequence, or a method transition."
+  - date: "2026-11-05"
+    method: 4
+    summary: "User requested reading Foundry evaluation docs and suggesting further hands-on activities. Read official overview, rubric, agent evaluator, results/comparison, synthetic conversation, trace dataset, monitoring, cluster analysis, and conversation evaluation guidance. Added IDEA-009 through IDEA-015 and documented refinements to existing ideas with sources and support limits. Fifteen rough ideas now exist; numerical target alone does not establish breadth, readiness, or a method transition. No live feature verification, dependency changes, cloud jobs, or implementation."
+  - date: "2026-11-05"
+    method: 4
+    summary: "User corrected drift into customer delivery: this is a hands-on learning lab like the existing repository labs, not a real customer engagement. User confirmed continuing with tooling-focused learning; handover remains professional context, not a separate simulation. Recorded the boundary and three more coach seeds: inspect individual results, repeat evaluation runs, and add a failure-derived case. Eight rough ideas exist; no selection or implementation."
+  - date: "2026-11-05"
+    method: 4
+    summary: "User tentatively suggested adjusting the rubric and showing how the change is implemented. Captured as IDEA-005. A separately labelled coach extension proposes rescoring unchanged saved responses under both versions to distinguish a criteria change from an agent improvement. Five rough ideas exist; no exercise design, product workflow, or implementation is approved."
+  - date: "2026-11-05"
+    method: 4
+    summary: "User contributed a hands-on learning idea: show straightforward Foundry rubric evaluation creation and early customer rubric agreement to expose priorities, support alignment, and help build trust before delivery. Recorded as IDEA-004, not as measured ease, alignment, or trust benefit. Four rough ideas now exist; divergence continues without ranking, clustering, or architecture selection."
+  - date: "2026-11-05"
+    method: 4
+    summary: "User confirmed closing Method 3 as a bounded working baseline and starting Method 4. Recorded the transition, preserved validation limits, and created an ideation plan, three rough coach seed ideas, and session notes. Begin divergent generation before evaluation or module selection. Existing PRD remains draft. No implementation, cloud jobs, new commit/push, or method beyond 4 is authorized by this confirmation."
   - date: "2026-11-05"
     method: 3
     summary: "User requested persistence, commit, and push of all current session work. Save the draft PRD, synthesis, anonymous practitioner evidence, industry research, and recovery notes on the existing branch. Latest agreed objective includes hands-on Microsoft Foundry capability and product-value awareness. Industry sources support early repeated evaluation and a qualified TDD analogy, not universal adoption or learner effectiveness. This checkpoint does not approve Method 4, implementation, cloud jobs, or access changes."
@@ -179,6 +214,15 @@ session_log:
     summary: "User requires each learner to run a small red-team exercise and supplied local and cloud documentation. Official local guide states incompatibility with the new Foundry portal and SDK. Cloud is the recommended candidate path, pending region and target/tool compatibility verification. Returning to Method 1 scope confirmation; no method transition has occurred."
 
 artifacts:
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-04-brainstorming/session-plan.md"
+    method: 4
+    type: "ideation-session-plan"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-04-brainstorming/divergent-ideas.md"
+    method: 4
+    type: "rough-idea-register"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-04-brainstorming/session-notes.md"
+    method: 4
+    type: "brainstorming-session-notes"
   - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-03-synthesis/insight-statements.md"
     method: 3
     type: "synthesis-insights-with-evidence-limits"
@@ -226,6 +270,8 @@ artifacts:
     type: "assumptions-log"
 
 confirmed_context:
+  - "User confirmed infrastructure provisioning as pre-work excluded from a core lab target below 120 minutes. Agent readiness is inside the session. User aims for approximately 80% feature coverage; exact feature scope/denominator is not agreed. Preserve practical evaluation, rubric creation/change, agent improvement, and live production investigation."
+  - "This is a hands-on learning lab like the existing repository labs, not a real customer delivery. Use customer situations to explain evaluation value; do not require customer role-play, agreement meetings, or a separate handover simulation. Reusable evaluation assets remain useful learning outputs."
   - "Use clearly labelled fictional airline policy for the passenger-facing flight-disruption scenario. Real-world legal-entitlement advice is outside the lab's scope."
   - "The flight-disruption agent should advise passengers directly, rather than serve airline support staff."
   - "User selected the flight-disruption scenario for now. Treat this as a provisional scenario decision; general retail is a parked alternative and ACL is no longer the active scenario."
@@ -356,7 +402,7 @@ proposed_partner_questions:
   rationale: "Ask about actual practice before suggesting evaluation tools or sales benefits. Allow evidence of no gap as well as a gap."
 
 current_exploration:
-  objective: "Carry evaluation principles, early development feedback, and explicit hands-on Microsoft Foundry capability/value awareness into design for engineers, consultants, and architects. Core completion must not require a third-party evaluation platform. Review proposed PRD acceptance detail and retain evidence and feasibility limits before closure or implementation."
+  objective: "Fit the proposed hands-on core below 120 minutes after provisioning pre-work by merging overlapping activities and deferring extra feature depth. Preserve rubric creation/change, comparable agent improvement, live production investigation, and evidence/value explanation. Keep approximately 80% coverage as an unmeasured breadth goal until its scope is defined."
   pending_question: null
   evidence_limit: "Two practitioner excerpts supplied by the requester are summarized anonymously. No independent WorkIQ verification, observed learner sessions, or direct customer evidence. Do not generalize to all partners."
 
@@ -376,9 +422,20 @@ prd_authoring:
   status: "draft"
   path: ".copilot-tracking/dt/foundry-evaluation-learning/prd.md"
   state_path: ".copilot-tracking/dt/foundry-evaluation-learning/prd-state.md"
-  authorization: "User approved drafting and explicitly requested persistence, commit, and push of all current session work. No final PRD signoff, implementation, cloud jobs, access changes, or PR creation authorized."
-  synthesis_disposition: "Requester accepted a working baseline with evidence limits and equal consultant, delivery engineer, and architect scope. Full Method 3 validation remains incomplete. Methods 1 and 2 remain the only fully completed methods; no Method 4 transition."
-  canonical_checkpoint: "Not yet available as an automatic exit offer: the validated Method 3 exit has not been reached. No snapshot or rendering generated."
+  authorization: "User approved drafting. The previous checkpoint's commit/push request was completed. The latest request authorizes persisting and committing this session's work on the existing branch, not pushing. No final PRD signoff, implementation, cloud jobs, access changes, or PR creation authorized."
+  synthesis_disposition: "User explicitly accepted bounded Method 3 closure and transition to Method 4. Method 3 is recorded complete for this design round, not fully validated. PRD acceptance detail and technical feasibility remain unapproved."
+  canonical_checkpoint: "Automatic canonical deck is not yet available because the Method 3 closure retains stakeholder and pattern-validation gaps. No snapshot or rendering generated; explicit user requests remain possible."
+
+pause_checkpoint:
+  status: "paused"
+  requested_at: "2026-11-05T17:43:19.453+13:00"
+  request: "Commit all our work to the branch and we'll continue later. Make sure all method state is persisted"
+  branch: "plagueho-foundry-rubric-evaluators"
+  commit_authorized: true
+  push_authorized: false
+  resume_method: 4
+  next_action: "Review the proposed core cuts and pacing, agree feature-coverage scope, and complete Method 4 theme grouping before any Method 5 transition."
+  retained_limits: "Provisioning pre-work is confirmed. The 119-minute budget is untested; approximately 80% coverage has no agreed denominator. PRD acceptance detail, technical feasibility, and wider learner validation remain open."
 
 external_research_references:
   - path: ".copilot-tracking/research/2026-11-05/evaluation-driven-development-research.md"

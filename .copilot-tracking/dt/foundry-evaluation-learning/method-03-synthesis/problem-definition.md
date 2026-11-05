@@ -50,17 +50,19 @@ Optimizer and controlled red teaming remain secondary learning activities. Repor
 |---|---|---|
 | Research fidelity | Source types, quotations, paraphrases, and requester requirements are distinguished | Supplied practitioner excerpts have not been independently retrieved; no observed workflows |
 | Stakeholder completeness | Requester and two practitioner perspectives are represented | Direct learners, customers, and operators are not represented |
-| Pattern robustness | Customer-value framing has support from both practitioners; handover has narrower support | No basis for population-wide claims or measured training benefit |
+| Pattern robustness | Customer-value framing has support from both practitioners; handover has narrower support; external engineering guidance supports early repeated evaluation | No basis for population-wide adoption claims or measured training benefit |
 | Actionability | Outcomes and core/optional boundaries are explicit | Architecture, delivery duration, budget, module sequence, and technical tests remain open |
-| Team alignment | Requester accepted a working design baseline with evidence limits, subject to equal inclusion of delivery engineers and architects | Role-specific problem detail and proposed PRD acceptance criteria still need review |
+| Team alignment | Requester confirmed bounded closure and the move to Method 4 after the equal-audience, early-evaluation, and Foundry capability objectives were captured | Proposed PRD acceptance criteria and representative learner understanding still need review |
 
 ## Disposition
 
-The requester accepted closing this synthesis round as a working design baseline with explicit caveats, subject to the audience correction above. Full Method 3 validation is not claimed: stakeholder completeness and pattern robustness remain limited. Do not mark the method validated, move automatically to Method 4, or emit a validated RPI handoff.
+The requester explicitly confirmed closing this synthesis round as a working design baseline and moving cautiously to Method 4 on 2026-11-05. Method 3 is recorded complete for this round by team agreement, not as fully validated research: stakeholder completeness and pattern robustness remain limited. This is a user-approved bounded transition, not an automatic pass of the normal five-dimension gate. No validated RPI handoff is issued.
 
 The draft PRD may capture agreed intent now. It does not approve architecture, implementation, cloud jobs, or the document's proposed acceptance details. Preserve the gaps for later research and representative learner testing rather than inventing evidence.
 
 No canonical deck is offered at this checkpoint because the validated problem-space exit has not been reached. No board export or rendering is required to author the draft.
+
+The normal exit signal is "Themes validated across sources; team alignment confirmed." It is only partly met. Carry the gaps into ideation and later learner testing; reconsider the baseline if new evidence contradicts it. The industry research supports the early-evaluation principle, not the lab's learning effectiveness.
 
 ## Sources
 
@@ -68,3 +70,4 @@ No canonical deck is offered at this checkpoint because the validated problem-sp
 - `affinity-clusters.md`: grouped evidence, tensions, and agreed teaching candidates.
 - `practitioner-evidence.md`: anonymous practitioner summaries and limits.
 - `..\implementation-plan.md`: detailed scope decisions and technical questions.
+- [Industry evidence](../../../research/2026-11-05/evaluation-driven-development-research.md): support and limits for evaluation-driven development.

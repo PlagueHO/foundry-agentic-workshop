@@ -33,6 +33,8 @@ license: "CC-BY 4.0 (Microsoft HVE-Core)"
 
 Create a separate Microsoft Foundry workshop track that teaches consultants, delivery engineers, solution architects, and operators to run and use evaluations. Consultants, delivery engineers, and architects are equally important audiences with distinct needs. Learners should define quality expectations, design evaluation into solutions, run repeatable checks, explain evidence and its limits, improve at least one quality aspect, and carry reusable evaluation assets into delivery and handover.
 
+This is a hands-on learning lab like the existing repository labs, not a real customer delivery. Customer priorities and handover explain why the tooling matters; they do not require customer role-play, agreement meetings, or a separate delivery/handover simulation. Interpret the lifecycle and reuse requirements below as learning outcomes and reusable lab guidance.
+
 Microsoft product capability is an explicit learning objective, not just the hosting context. Learners must gain practical experience with Microsoft Foundry evaluation features and explain how those features support customer solutions. The core path must not require a third-party evaluation platform. Teach product value through actual use and evidence, with support limits stated accurately; do not imply that Foundry covers every evaluation need or that external systems are never appropriate.
 
 Use a passenger-facing flight-disruption assistant with read-only tools, synthetic requests, and fictional airline policy. The agent is a teaching vehicle, not a production airline service. No earlier track completion or Python authoring is required.
@@ -41,7 +43,7 @@ Delivery engineers must learn to adopt evaluation early and evaluate while build
 
 Hands-on production evaluation is core. Learners identify a quality failure in live lab-agent activity, inspect its supporting conversation or trace, and explain what needs investigation. CI/CD execution is optional extra credit with a real repository GitHub Actions workflow. Agent Optimizer and controlled red teaming are secondary activities whose deployment limitations must not block primary completion.
 
-Primary success evidence is a learner's completed evaluation and explanation, not a portal click sequence or an improved score alone. Cohort targets, duration, budget, and release date remain open. This draft captures agreed intent and proposed acceptance tests; it does not prove learning effectiveness or technical feasibility.
+Primary success evidence is a learner's completed evaluation and explanation, not a portal click sequence or an improved score alone. The requester confirmed infrastructure provisioning as pre-work outside the less-than-two-hour lab target and asked for approximately 80% feature coverage. Treat the coverage request as a breadth objective, not a measured percentage of the entire Foundry catalogue: the feature denominator is not agreed. Detailed pacing, spend budget, cohort targets, and release date remain open. This draft captures agreed intent and proposed acceptance tests; it does not prove learning effectiveness or technical feasibility.
 
 ## Product Context
 
@@ -118,7 +120,7 @@ These are proposed verifiable quality conditions for the draft, not claims that 
 
 ### Performance and Capacity
 
-NFR-001: Before an exercise starts paid work, instructions shall identify its cost drivers and bounded run/sample settings. Numeric cost and runtime budgets remain open.
+NFR-001: Before an exercise starts paid work, instructions shall identify its cost drivers and bounded run/sample settings. Design the required lab for less than 120 minutes elapsed learner time, including the agent readiness check, expected waits, and contingency. Infrastructure provisioning is required pre-work and does not count against this session target. Detailed timing requires validation; numeric spend and individual job-runtime budgets remain open.
 
 ### Reliability and Resilience
 
@@ -317,13 +319,13 @@ No formal bounded RPI research report was consumed. Contextual findings are hand
 | R-003 | Production evaluation delay, trace availability, or permissions prevent the core investigation | Unknown | High | Verify live activity scoring and navigation; do not silently substitute prerecorded-only evidence |
 | R-004 | Optimizer access or remote MCP red-team coverage differs by environment | Unknown | Medium for secondary scope | Explicit readiness and coverage reports; preserve primary completion |
 | R-005 | Forked CI setup exposes credentials, permits unintended paid triggers, or targets shared resources incorrectly | Unknown | High | Review identity scope, triggers, inputs, artifacts, and run limits before enabling |
-| R-006 | Scope exceeds available workshop time or budget | Unknown | High | Agree duration and spend limits; separate optional execution without dropping core outcomes |
+| R-006 | Scope exceeds available workshop time or budget | Unknown | High | Keep the core below 120 minutes after provisioning pre-work; validate elapsed timing, agree spend limits, and separate optional execution without dropping core outcomes |
 
 ### Open Decisions and Verification
 
 | ID | Question or test | Required before |
 |---|---|---|
-| Q-001 | Duration, pacing, expected learner cohort, spend limits, and release horizon | Baseline approval and module sizing |
+| Q-001 | Detailed pacing below 120 minutes after provisioning pre-work, meaning of approximately 80% feature coverage, expected learner cohort, spend limits, and release horizon | Baseline approval and module sizing |
 | Q-002 | Hosted-agent implementation, SDK version, supported model roles, quota, runtime/tool identity | Primary-path implementation commitment |
 | Q-003 | Production evaluation mechanism, repeat cadence, sampling, retention, latency, and navigation | Production module implementation and live verification |
 | Q-004 | Known-answer fixtures, rubric criteria, thresholds, critical-failure gates, and judge calibration | Claiming evaluator-example reliability |

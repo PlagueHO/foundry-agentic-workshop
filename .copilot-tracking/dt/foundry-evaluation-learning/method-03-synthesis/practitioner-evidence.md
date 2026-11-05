@@ -44,4 +44,4 @@ The first-run outcome remains introductory: explain what an evaluation is, what 
 - How customers or operators maintain checks and investigate failures after changes.
 - Whether representative learners can perform these tasks with the proposed learning material.
 
-Method 3 remains active. This evidence does not authorize implementation, cloud jobs, or a move to Method 4.
+The requester subsequently authorized bounded Method 3 closure and a cautious move to Method 4. That separate decision does not strengthen these practitioner findings or authorize implementation or cloud jobs. See `problem-definition.md` for the closure assessment.
