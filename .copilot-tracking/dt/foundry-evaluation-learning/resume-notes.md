@@ -2,13 +2,29 @@
 
 ## Current checkpoint
 
-The user paused during Design Thinking Method 2 to continue from another machine. Method 1 is complete. Method 2 is not complete, and no move to Method 3 has been approved.
+The user approved consolidation of Method 3 and creation of a draft PRD. `prd.md` version 0.1.0 is ready for requester review, not approved for implementation. Methods 1 and 2 remain the completed methods: Method 3 documentation is consolidated, but wider learner/customer/operator validation and live feasibility remain unresolved. No move to Method 4 or validated RPI handoff is recorded.
+
+The user subsequently accepted closing the synthesis round as a working design baseline with evidence limits, subject to including delivery engineers and solution architects as equal audiences to consultants. The problem statement and PRD now distinguish these roles. Detailed role-specific problems are working interpretations, not new research findings. Do not treat this bounded agreement as full Method 3 validation or approval of PRD acceptance criteria.
+
+The user clarified the delivery-engineer need: adopt evaluations early and evaluate while building, using a TDD-like feedback cycle to assess changes against non-functional requirements throughout product development. This is confirmed requester intent, not independent research evidence. Draft FR-003/AC-003 now connect a quality requirement, criteria, baseline, repeat local runs, and a development decision. CI/CD remains optional.
+
+The user added an explicit Microsoft product-learning objective: practical use of Foundry evaluation features and the ability to communicate their value and limits in customer solutions. Core completion must not require a third-party evaluation platform. GOAL-004, FR-019, and AC-019 capture this; the draft now has 19 FRs, 19 ACs, and four goals. This does not establish a partner awareness gap or universal platform sufficiency. The user has not yet confirmed the proposed Method 4 transition.
 
 This checkpoint saves planning and research only. It does not authorize lab implementation, infrastructure changes, paid evaluations, optimization jobs, or red-team scans. No cloud feasibility run has been completed.
+
+The latest user request authorizes persistence, commit, and push of all current session work on the existing branch. It does not authorize a PR, final PRD approval, or a method transition.
+
+Industry evidence is saved in [evaluation-driven-development research](../../research/2026-11-05/evaluation-driven-development-research.md). OpenAI, Anthropic, Microsoft, and a research paper support early repeated evaluation and a qualified TDD analogy. This adds external support for the engineering principle, not proof of industry-wide adoption or workshop effectiveness. Evaluations can assess functional and non-functional requirements; they do not replace all system testing. Read this evidence before asking the user to justify the analogy again.
 
 ## Read these files first
 
 1. `coaching-state.md`: YAML state in a fenced block, user quotations, decisions, method history, and remaining questions.
+1. `prd.md` and `prd-state.md`: draft requirements, proposed acceptance criteria, evidence limits, technical gates, and review state.
+1. `method-03-synthesis\problem-definition.md`, `insight-statements.md`, and `how-might-we-questions.md`: consolidated synthesis and five-dimension assessment; paths are all within `method-03-synthesis`.
+1. `method-03-synthesis\affinity-clusters.md`: working evidence groups, tensions, source strength, and the next discussion. These are not final validated themes.
+1. `method-03-synthesis\practitioner-evidence.md`: anonymous practitioner evidence, its limits, and the user-approved learning gap. Omit people and company names from repository notes.
+1. `method-03-synthesis\input-inventory.md`: evidence sources, coverage gaps, synthesis approach, and the first candidate for discussion.
+1. `method-02-research\findings-summary.md`: consolidated evidence, confidence, deferred questions, and revised primary/secondary completion priorities.
 1. `implementation-plan.md`: working learning outcomes, proposed modules, deployment requirements, and implementation boundaries.
 1. `method-02-research\constraint-catalog.md`: repository evidence, official sources, scenario comparison, and the latest red-team clarification.
 1. `method-01-scope\scope-boundaries.md`, `method-01-scope\stakeholder-map.md`, and `method-01-scope\assumptions-log.md`: learner scope and unvalidated assumptions.
@@ -22,9 +38,12 @@ All paths above are relative to this directory. The repository copies are author
 - Use read-only operational tools and clearly labelled fictional airline policy. Exclude real-world legal-entitlement advice.
 - Keep general retail as a parked alternative. Do not implement both scenarios or retain ACL as the active scenario.
 - Do not require learners to write Python. Supplied scripts are acceptable, with source available.
-- Require rubric creation, use with Agent Optimizer, and a small hands-on red-team exercise.
+- Prioritize learning to use/run evaluations, including rubric creation. Retain Agent Optimizer and hands-on red-team evaluations as secondary activities.
+- Deployment blocks to secondary activities must not prevent primary completion. Report each affected activity's actual status, cause, and next action.
 - Prioritize lower agent runtime cost while matching or exceeding baseline quality. Any quality reduction needs explicit customer acceptance.
 - Support independent and facilitated learning, including reusable evaluation assets for handover and operations.
+- Treat handover as reusable quality-assurance assets and processes for future customer, internal, or partner teams. The intended practice covers local development, CI/CD build/deployment, and regular production runs. Production evaluation is hands-on in the core: identify a quality failure in live activity, inspect the supporting conversation or trace, and explain what needs investigation. Use the deployed lab agent and synthetic passenger requests, not a customer production system. Exact mechanics remain open.
+- CI/CD execution is optional extra credit, not a core prerequisite. Provide a real repository GitHub Actions evaluation workflow targeting the lab-deployed agent. Fork setup, environment settings, authentication, permissions, and quality-gate behavior require further exploration; initial workflow observations are in `implementation-plan.md`. Core production evaluation must not depend on this extension.
 - Reuse existing provisioning. Support multiple tracks through maintained, data-driven requirements, with individual and organizer behavior.
 - Recommend East US 2 for new environments. Preserve existing regions and organizer choices, and report module-specific limitations.
 
@@ -34,7 +53,7 @@ Investigate one supplied Python hosted Responses agent, prepared for optimizatio
 
 The existing .NET travel track supplies scenario and tool ideas; it is not a requirement to adopt .NET or a multi-agent design.
 
-## Latest unresolved question
+## Open technical question
 
 The last discussion corrected an overly broad interpretation of red-team support.
 
@@ -52,9 +71,9 @@ Sources and a proposed incremental feasibility test are in the constraint catalo
 - Verify hosted rubric-to-Optimizer integration, effective identity access, model roles, quota, and cost evidence.
 - Prepare an aligned flight/policy fixture proposal with a fixed scenario clock. Existing flight lookups do not validate booking ownership or passenger eligibility.
 - Do not reuse the existing rights-focused knowledge unchanged. Existing flight tools also include a claim-submission operation outside the read-only scope.
-- Revisit partner evidence when replies arrive. Beginner evaluation experience remains a design assumption, not a verified partner finding.
+- Build on the two anonymous practitioner summaries without generalizing them to all partners. Beginner evaluation experience remains a design assumption, not a verified partner finding.
 - Agree detailed tasks, rubric criteria, module sequence, and operational automation depth before implementation.
 
 ## Resume protocol
 
-Load the DT coaching foundation and Method 2 references. Read the saved state and confirm the checkpoint with the user. Continue from the red-team execution-versus-coverage question unless the user redirects. Do not restart Method 1 or mark deferred research complete.
+Load the DT coaching foundation and Method 3 references. Read the saved state and the draft PRD. Continue requester review of scope and proposed acceptance detail; resolve duration, budget, release horizon, and review ownership. Keep the introductory first-run outcome separate from later diagnosis and handover goals. Do not restart Method 1, claim wider research validated, or treat a document draft as implementation approval.

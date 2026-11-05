@@ -4,7 +4,7 @@
 
 Help Azure agent builders, architects, and operators who are new to practical evaluation propose and deliver repeatable evaluation. They should use results to make quality decisions, investigate failures, and improve at least one quality aspect.
 
-The user wants an evaluation suite to be a reusable delivery and handover artifact. It should support development, agent or model updates, and production evaluation. The depth of actual production integration is not yet agreed.
+The user wants an evaluation suite to be a reusable delivery and handover artifact. It should support development, agent or model updates, and production evaluation. Later Method 3 decisions require hands-on production evaluation of synthetic live lab-agent activity, with failure investigation through its conversation or trace. CI/CD execution is optional extra credit with a real GitHub Actions workflow. Exact technical integration remains open; see `..\prd.md` for the current draft.
 
 ## User-confirmed boundaries
 
@@ -16,10 +16,12 @@ The user wants an evaluation suite to be a reusable delivery and handover artifa
 - Reuse workshop provisioning and attendee projects.
 - Include grounded advice and read-only MCP tool use.
 - Demonstrate improvement of at least one quality aspect. Do not cover every evaluator.
-- Teach rubric creation and its use with Agent Optimizer.
+- Teach rubric creation and evaluation use as primary outcomes; retain Agent Optimizer as a secondary activity.
 - Make lower agent cost the main optimization objective for this lab, with quality and rubric-adherence improvements as additional outcomes.
 - Match or exceed baseline quality by default. A slight reduction for a large cost saving may be explicitly accepted by the customer.
-- Each learner runs a small controlled AI red-team exercise.
+- Include a small controlled hands-on AI red-team exercise as a secondary activity.
+
+The user's later priority clarification allows primary completion when deployment conditions block Optimizer or red-team activities. Report those activities separately with their actual status, cause, and next action; do not report blocked work as executed.
 
 ## Not yet selected
 

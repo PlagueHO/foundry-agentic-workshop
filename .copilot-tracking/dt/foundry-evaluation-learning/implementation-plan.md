@@ -2,7 +2,11 @@
 
 ## Status
 
-Learning-design draft. No repository implementation is approved. Method 1 scope discussions are complete. Method 2 desk research continues. Partner validation is deferred at the user's request; limited practical evaluation experience is a design assumption, not a confirmed finding about all partners.
+Learning-design draft. No lab implementation is approved. The user accepted Methods 1 and 2 as sufficient to start Method 3: Input Synthesis. Partner validation and live feasibility remain unresolved; limited practical evaluation experience is a design assumption, not a confirmed finding about all partners.
+
+The user has now authorized a draft PRD. `prd.md` consolidates current requirements, proposed acceptance criteria, and open verification gates. This file remains earlier planning context; its proposed module sequence and architecture are not approved. Method 3 documentation is consolidated in `method-03-synthesis`, with validation limits recorded in `problem-definition.md` there.
+
+The latest user decision makes learning to use/run evaluations the primary goal. Agent Optimizer and red-team evaluations remain secondary activities. Deployment conditions that block them must be explained without preventing primary completion. This supersedes earlier unconditional execution requirements. See `method-02-research\findings-summary.md`.
 
 The user has paused the prompt-agent proposal to determine whether the entire new track should use hosted agents. Hosted agents are now the preferred option to investigate, not a confirmed architecture decision. The earlier recommendation to use the portal prompt-agent Optimizer is suspended.
 
@@ -31,11 +35,14 @@ Teach learners to use evidence to decide whether an agent is ready, what needs t
 - Do not require Python authoring. Running supplied scripts for asset creation and evaluation is acceptable; keep source available for engineers.
 - Support facilitated and independent completion.
 - Teach repeatable evaluation as a delivery and handover capability for development, model or agent changes, and production monitoring.
+- Teach partner handover of reusable evaluation assets and processes that customers, internal teams, or another partner can continue using to check changes against quality gates. Include hands-on production evaluation in the core. CI/CD execution remains optional extra credit.
+- In the core production exercise, learners identify a quality failure in live lab-agent activity, inspect the supporting conversation or trace, and explain what needs investigation. Use synthetic passenger requests against the deployed lab agent, not a real customer production system. Monitoring mechanics and verification remain open.
+- Keep CI/CD execution outside core completion. Provide an optional extra-credit module and a runnable GitHub Actions evaluation workflow in this repository, targeting the agent already deployed through the lab. Explore fork setup, configuration, authentication, and permissions before implementation. Do not require Azure DevOps or another CI platform in the core.
 - Teach investigation and improvement of at least one quality aspect, rather than exhaustive evaluator coverage.
-- Require creation of rubric evaluators and their use with Agent Optimizer.
+- Require creation and use of rubric evaluators in the primary evaluation learning path. Include their use with Agent Optimizer as a secondary activity.
 - Make agent cost reduction the primary optimization objective for this lab, with improved quality and rubric adherence as additional outcomes.
 - Match or exceed baseline quality by default. Allow an explicit customer decision to accept a slight quality reduction for a large cost reduction.
-- Require each learner to run a small controlled AI red-team exercise.
+- Include a small controlled hands-on AI red-team exercise as a secondary activity. Report deployment blocks without preventing primary completion.
 - Respect the organizer's selected region. Warn when a feature or module is unsupported there; do not block the entire track or automatically relocate resources.
 - Allow deployment of a smaller model for comparison. Automatic provisioning is a possibility, not yet a selected requirement.
 - Expect ongoing maintenance as supported models and versions change.
@@ -66,7 +73,21 @@ Teach learners to use evidence to decide whether an agent is ready, what needs t
 | 05. Use evaluation in development and operations | Regression checks, release criteria, sampled traffic, traces, and dataset feedback | A reusable release check and an operational evaluation design |
 | 06. Optimize and make a release decision | Baseline selection, candidate generation, independent validation, and human review | A supported promote-or-keep decision |
 
-This sequence is proposed, not confirmed. The track needs its own asset-creation starting point. Operational automation depth, model-provisioning responsibility, and hosted-agent coverage remain open. Modules must identify their prerequisites and regional limits so that supported independent work can continue.
+This sequence is proposed, not confirmed. The track needs its own asset-creation starting point. Local, CI/CD, and regular production execution are required contexts for the partner practice being taught. Production evaluation is hands-on core work; CI/CD execution is optional extra credit. Exact production-evaluation mechanics, model-provisioning responsibility, and hosted-agent coverage remain open. Modules must identify their prerequisites and regional limits so that supported independent work can continue.
+
+### Optional CI/CD extension: exploration scope
+
+The user selected an optional extra-credit module with a real repository GitHub Actions evaluation workflow, not only illustrative YAML. It should evaluate the agent deployed through the lab. Learners who choose this extension would fork the repository and configure the required environment settings and access. Skipping it must not prevent primary completion.
+
+Initial repository observations:
+
+- `.github/workflows/smoke-test.yml` already uses a GitHub environment, federated Azure login, environment settings, and result artifacts. These are potential patterns, not proof of sufficient Foundry evaluation permissions.
+- `.github/workflows/provision-infrastructure.yml` uses federated authentication and resolves environment configuration for provisioning. Evaluation should target the existing lab deployment rather than require provisioning again.
+- `.github/workflows/e2e-test.yml` orchestrates provisioning and cleanup. Do not reuse that whole lifecycle for an evaluation-only run against an attendee's existing deployment.
+
+Questions for later design and feasibility work: fork onboarding and workflow activation; explicit target project and agent version; required variables versus protected credentials; federated identity setup and least-privilege evaluation access; sharing evaluation definitions with local runs; safe triggers and cost controls; result artifacts and quality-gate failures versus setup or execution errors; and handling shared organizer environments.
+
+No workflow has been created or executed. No identity or permission changes are authorized by recording this requirement. Production evaluation is hands-on in the core and must not depend on completing this optional extension.
 
 ## Completion criteria
 
@@ -82,6 +103,8 @@ The final exercise must require the learner to make a decision, not just complet
 
 Do not require an optimizer improvement or a passing red-team scan for completion. An informed decision not to release is a valid result. A higher average must not override a critical failure.
 
+Primary completion must be demonstrated through actual evaluation work, not depend on execution of the two secondary activities. Where optimization is blocked, base the primary decision on the evaluation evidence available; do not require a generated optimization candidate. Report secondary completion separately, with the specific cause and next action for blocked work. Unverified capability and execution failure must not be presented as confirmed deployment blocks or successful runs.
+
 ## Technical facts and limits
 
 - The repository currently has 13 introduction-track modules, including an optional extension. Some guidance still describes 12 core modules.
@@ -94,7 +117,7 @@ Do not require an optimizer improvement or a passing red-team scan for completio
 - An unsupported regional feature must produce a clear module-specific warning. Distinguish unsupported, prerequisite unavailable, execution failure, and completed states; do not present skipped work as a successful run.
 - Do not require a supported-region redeployment to access the rest of the track. Any alternative deployment requires an explicit organizer decision.
 - Optimization can execute external tools repeatedly. Use test resources and prevent changes to real customer data.
-- The exact portal/script balance and flight-agent name remain proposals. Hosted-agent optimization is the preferred path under investigation; using Agent Optimizer is required, not optional. No Python authoring is required, but supplied scripts may be part of the core path.
+- The exact portal/script balance and flight-agent name remain proposals. Hosted-agent optimization is the preferred secondary path under investigation; its execution does not gate primary completion when deployment conditions block it. No Python authoring is required, but supplied scripts may be part of the core path.
 - Existing Module 07 has Python setup for knowledge sources over seeded product and policy indexes, a knowledge base, a project connection, and a prompt-agent version. Reuse its setup approach where suitable; never assume those resources already exist for a new attendee.
 - Existing retail MCP tools include purchase, product, policy, and replacement lookups plus a simulated case-creation operation. The new core scope must restrict the agent to read-only tools rather than attach the full tool set unchanged.
 - The workshop profile's `chat` and `gpt54mini` deployments use the same model/version. Different names do not establish different model costs.
@@ -162,7 +185,7 @@ The user has confirmed changing the recommended default to East US 2 as part of 
 - Distinguish documented support, documented lack of support, and unknown or conflicting evidence. Do not equate omission from an incomplete list with a verified unsupported status.
 - Resolve regional guidance for the selected tracks and mode. Show affected modules or exercises and the reason in setup and documentation; distinguish required activities from optional extensions.
 - An unknown feature status should prompt a verification warning. An unsupported feature should mark the affected activity unavailable; neither should prevent unrelated supported work.
-- Unsupported or skipped required hands-on activities remain incomplete. Do not describe the whole track as completed when a required regional feature was unavailable.
+- Unsupported or skipped activities must retain their actual status. Primary outcomes may be completed while a secondary Optimizer or red-team activity is blocked; do not claim that every activity was executed.
 - Preserve explicit environment regions and deployment overrides. Suggest East US 2 without silently selecting it for an existing environment.
 - Prefer producing documentation tables and setup warnings from the same regional data. Validate module and feature references in CI. The exact catalog format and documentation generation approach remain open.
 
@@ -212,7 +235,7 @@ The user cannot know target subscription access in advance. A partner or custome
 - Use a supported read-only capability check if one is available. If no such check exists, report access as unverified. Do not create a paid optimization job just to classify readiness.
 - If an authorized run fails, report its actual error. Distinguish access restrictions from permissions, regional support, model configuration, and quota failures; do not infer allowlisting from any generic 403.
 - Explain the request/verification path in current official guidance where applicable. Permit the rest of the track to continue while access is unresolved.
-- Keep the required Optimizer exercise incomplete until the learner can execute it. A sample report is not a replacement for the required hands-on outcome.
+- Report an unexecuted Optimizer exercise separately from primary completion. A sample report is not evidence that the learner executed the secondary activity; a deployment block must include its cause and next action.
 - Recheck availability guidance before publishing the lab, especially after service announcements. Do not depend on a future launch to make the plan valid.
 
 Sources: [Agent Service overview](https://learn.microsoft.com/en-us/azure/foundry/agents/overview), [hosted-agent concepts](https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/hosted-agents), [hosted optimization quickstart](https://learn.microsoft.com/en-us/azure/foundry/agents/quickstarts/quickstart-optimize-hosted-agent), [optimizer-ready runtime](https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/make-agent-optimizer-ready), [optimizer datasets and rubrics](https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/create-optimizer-dataset), and [optimization targets](https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/optimize-agent-targets).

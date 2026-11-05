@@ -18,12 +18,12 @@ project:
   initial_classification: "frozen"
 
 current:
-  method: 2
+  method: 3
   space: "problem"
-  phase: "paused during Method 2 desk research; partner validation deferred"
+  phase: "working synthesis baseline; early evaluation and explicit Microsoft Foundry capability objective captured; closure decision pending"
   disclaimerShownAt: "2026-11-03T11:37:26.065+13:00"
 
-methods_completed: [1]
+methods_completed: [1, 2]
 
 transition_log:
   - from_method: null
@@ -35,11 +35,64 @@ transition_log:
     rationale: "User explicitly confirmed moving to Method 2. Intended learners, learning outcomes, and boundaries are scoped. Research must now test partner-practice and customer-confidence hypotheses; those are not validated findings."
     date: "2026-11-03"
 
+  - from_method: 2
+    to_method: 3
+    rationale: "User confirmed starting Input Synthesis using requester decisions, repository observations, and official documentation. Method 2 outputs are sufficient for this transition; partner validation and live feasibility remain unresolved and are not marked validated."
+    date: "2026-11-04"
+
 hint_calibration:
   level: 1
   pattern_notes: "User wants discussion of learning needs before technical decisions. Ask one open question at a time."
 
 session_log:
+  - date: "2026-11-05"
+    method: 3
+    summary: "User requested persistence, commit, and push of all current session work. Save the draft PRD, synthesis, anonymous practitioner evidence, industry research, and recovery notes on the existing branch. Latest agreed objective includes hands-on Microsoft Foundry capability and product-value awareness. Industry sources support early repeated evaluation and a qualified TDD analogy, not universal adoption or learner effectiveness. This checkpoint does not approve Method 4, implementation, cloud jobs, or access changes."
+  - date: "2026-11-05"
+    method: 3
+    summary: "User added an explicit objective: introduce evaluation principles and practice through hands-on Microsoft Foundry feature use, increasing partner engineer/consultant awareness and their ability to communicate Microsoft product features and solution value. Core completion must not depend on a third-party evaluation platform. Added GOAL-004, FR-019, AC-019 and traceability to the draft PRD, plus synthesis framing. This does not claim universal Foundry coverage, partner awareness gaps, or platform superiority. Method 3 closure and Method 4 transition remain pending; no implementation authorized."
+  - date: "2026-11-05"
+    method: 3
+    summary: "User clarified delivery-engineer needs: adopt evaluations early and evaluate while building, like TDD feedback, to assess how changes affect the system and verify non-functional requirements throughout product development. Recorded as requester intent, not independent practitioner evidence. Updated synthesis and draft FR-003/AC-003 to link a quality requirement, criteria, baseline, repeated local runs, and decisions. CI/CD remains optional. No implementation or method transition."
+  - date: "2026-11-05"
+    method: 3
+    summary: "User accepted the working design baseline and evidence limits, subject to including delivery engineers building solutions and architects designing solutions as equal audiences to consultants. Updated the problem statement and draft PRD role descriptions. Role-specific difficulties remain design interpretations pending clarification, not new practitioner evidence. This closes the synthesis round only as a working baseline; full validation, a Method 4 transition, and implementation are not claimed."
+  - date: "2026-11-05"
+    method: 3
+    summary: "User authorized consolidating Method 3 and creating a draft PRD. Added evidence-linked insights, problem definition with five-dimension assessment, HMW questions, PRD 0.1.0, and PRD authoring state. Synthesis documentation is consolidated, but missing direct learner/customer/operator evidence prevents claiming full Method 3 validation. Remain in Method 3; no Method 4 or validated RPI handoff. PRD acceptance detail is proposed, not signed off. No implementation or cloud jobs."
+  - date: "2026-11-05"
+    method: 3
+    summary: "User accepted the production-evaluation learning outcome: identify a quality failure in live agent activity, inspect the supporting conversation or trace, and explain what needs investigation. Accepted use of the deployed lab agent with synthetic passenger requests; no real customer production system is required. This is an agreed outcome, not verified exercise behavior. Method 3 remains active."
+  - date: "2026-11-05"
+    method: 3
+    summary: "User explicitly requires hands-on production evaluation in the core. Updated current planning and synthesis notes; optional CI/CD must not gate this exercise. Exact production-evaluation outcome, execution mechanism, and cadence remain open. No deployment, monitoring configuration, evaluation run, or method transition occurred."
+  - date: "2026-11-05"
+    method: 3
+    summary: "User excludes CI/CD execution from core completion because it adds another technology. Requires an optional extra-credit module and real GitHub Actions evaluation workflow against the lab-deployed agent, with fork/environment setup to explore. Inspected existing smoke, provisioning, and E2E workflow patterns; recorded bounded setup and feasibility questions without implementing a workflow, changing access, or running jobs. Production-evaluation hands-on depth remains open."
+  - date: "2026-11-05"
+    method: 3
+    summary: "Requester clarified their Microsoft Solution Architect role and the intended partner practice: hand over reusable evaluation assets and processes, like test automation, so customers, internal teams, or another partner can check later changes against quality gates. Methods should support local development, CI/CD build/deployment, and regular production runs. Recorded as a requester requirement, not evidence that these practices are consistently delivered. Workshop hands-on depth across the three contexts remains open. Method 3 continues."
+  - date: "2026-11-04"
+    method: 3
+    summary: "User clarified this is a teaching lab, not a production flight service, and accepted the proposed examples after reviewing documented evaluator fit. Recorded provisional examples and limitations in the clusters. The small live scoring test fits Method 7 technical feasibility; Method 6 can review example clarity and Method 8 tests learner use. Remain in Method 3 and clarify the desired customer capability after handover. No live test or method transition is authorized."
+  - date: "2026-11-04"
+    method: 3
+    summary: "Requester supplied a follow-up from Practitioner A expressing interest in a lab showing a more formal evaluation approach. Recorded anonymously as perceived value in response to a suggested lab, not measured learning benefit or a third independent source. Updated the repeatable-checks cluster. The pending question about unacceptable flight advice remains open."
+  - date: "2026-11-04"
+    method: 3
+    summary: "User requested continuing Method 3. Organized working clusters around customer value, repeatable checks without arbitrary targets, and evidence use after handover. Marked source strength and tensions separately; lifecycle handover has only one practitioner source plus requester intent. Next discussion clarifies essential customer expectations without selecting metrics or implementing a rubric."
+  - date: "2026-11-04"
+    method: 3
+    summary: "Requester supplied two practitioner conversation excerpts and approved capturing the gap with people names omitted. Saved anonymous paraphrases without company names or full transcripts. Evidence shows differing practices, not a general lack of evaluation knowledge. User approved the gap of turning customer expectations into repeatable checks, explaining evidence limits, and handing checks over for later changes. No WorkIQ verification, Method 4 transition, or implementation occurred."
+  - date: "2026-11-04"
+    method: 3
+    summary: "User clarified the first-run outcome: Have a general idea of what an evaluation is and be able to explain what it provides for a customer and agentic AI solution and why it's important to provide. Recorded this as a requester requirement, not partner validation. Independent diagnosis remains a later track goal rather than a required first-run outcome."
+  - date: "2026-11-04"
+    method: 3
+    summary: "User approved Method 3. Created an input inventory with source types, coverage gaps, and a synthesis approach. Beginning candidate-theme discussion without treating requester requirements as validated partner findings. No Method 4 transition, lab implementation, or cloud jobs are approved."
+  - date: "2026-11-04"
+    method: 2
+    summary: "Resumed from the repository checkpoint. User requested the findings summary and clarified that using/running evaluations is primary; Optimizer and red-team evaluations are secondary and may be blocked by deployment conditions without preventing primary completion. Partner outreach continues with no replies recorded. Updated active requirements while retaining historical quotations. No method transition or implementation is approved."
   - date: "2026-11-03"
     method: 2
     summary: "User requested persistence, commit, and push before pausing. All five DT assets and the working plan are now stored in the repository with a resume note. This authorizes saving planning documents only, not lab implementation, deployments, paid jobs, or a method transition."
@@ -126,6 +179,33 @@ session_log:
     summary: "User requires each learner to run a small red-team exercise and supplied local and cloud documentation. Official local guide states incompatibility with the new Foundry portal and SDK. Cloud is the recommended candidate path, pending region and target/tool compatibility verification. Returning to Method 1 scope confirmation; no method transition has occurred."
 
 artifacts:
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-03-synthesis/insight-statements.md"
+    method: 3
+    type: "synthesis-insights-with-evidence-limits"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-03-synthesis/problem-definition.md"
+    method: 3
+    type: "problem-definition-and-readiness-assessment"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-03-synthesis/how-might-we-questions.md"
+    method: 3
+    type: "how-might-we-questions"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/prd.md"
+    method: 3
+    type: "draft-prd"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/prd-state.md"
+    method: 3
+    type: "prd-authoring-state"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-03-synthesis/affinity-clusters.md"
+    method: 3
+    type: "working-affinity-clusters"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-03-synthesis/practitioner-evidence.md"
+    method: 3
+    type: "anonymous-practitioner-evidence-and-agreed-gap"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-03-synthesis/input-inventory.md"
+    method: 3
+    type: "synthesis-input-inventory"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-02-research/findings-summary.md"
+    method: 2
+    type: "findings-summary"
   - path: ".copilot-tracking/dt/foundry-evaluation-learning/resume-notes.md"
     method: 2
     type: "session-handoff"
@@ -174,12 +254,12 @@ confirmed_context:
   - "Running supplied Python scripts for evaluations and asset creation is acceptable in the core."
   - "Python source must be shown or available so engineers can inspect the implementation."
   - "Both facilitated and independent completion must be supported."
-  - "Creating rubric evaluators and using them with Agent Optimizer are required learning outcomes, not optional extensions."
+  - "Evaluation learning, including rubric creation, is primary. Agent Optimizer is a secondary learning activity; a deployment block must be reported without preventing primary completion. This supersedes its earlier unconditional core requirement."
   - "Learning must build toward optimizing agent cost while maintaining quality as measured by evaluations."
   - "User prioritizes cost reduction for optimization, with improved quality and rubric adherence as secondary outcomes."
   - "Default optimization acceptance should match or exceed baseline quality."
   - "User allows explicit customer acceptance of a slight quality reduction for a large cost reduction. No numerical trade-off rule has been agreed."
-  - "Each learner must run a small AI red-team exercise; interpreting an existing report alone does not meet the core outcome."
+  - "A small hands-on red-team exercise remains in scope as a secondary activity. Deployment blocks must not prevent primary completion. Do not label blocked, unverified, or failed secondary work as executed."
   - "No previous lab completion or previously created agent, knowledge base, or connection may be assumed. The track must create its required assets from the provisioned workshop starting state."
   - "Reuse setup patterns from existing labs, not their presumed deployed end state."
   - "Notify learners when their deployed region does not support a module or feature, but do not block the whole track."
@@ -197,6 +277,12 @@ confirmed_context:
   - "Target subscription Optimizer access is unknown and may require partner/customer requests. Possible future GA or stale documentation is not confirmed. Do not block hosted-agent planning solely on this uncertainty."
 
 stakeholder_evidence:
+  - source: "User's revised priorities and handling of secondary deployment blocks; supersedes earlier unconditional Optimizer and red-team completion requirements."
+    quote: |-
+      The primary goal is learning to use/run evals. Secondary is Agent Optimizer and red-team evals. So, as long as we can achieve primary, but can tell the lab user when secondaries are blocked because of some lab deployment condition then I think this is ok
+  - source: "User's assessment of likely partner practice, not verified evidence."
+    quote: |-
+      will be difficult to achieve as I don't think any/many or our partners are even running evaluations - but I'm checking with them.
   - source: "User confirmation of the policy-grounding boundary."
     quote: |-
       Yes. Let's avoid real-world legal-entitlement advice.
@@ -214,7 +300,7 @@ stakeholder_evidence:
       I expect it's the customer having confidence in the agent and therefore will delay release or possibly delay commitment to the solution. E.g. if the customer doesn't know how to evaluate an agent then they might not have enough confidence to buy into the solution. So including the evaluation methodology in the solution may also facilitate the sale and deliver a higher quality outcome. But I am on the Microsoft Partner team, so I don't know exactly what/whether all partners include evaluations as part of a solution proposal (e.g. "Agent will meet this quality metric based on these evaluations"). I've asked.
   - source: "User's outreach question to a partner; this is a question, not evidence of partner practice."
     quote: |-
-      Hey Jason, I'm working on building out a lab to show Rubric evaluators and Agent Optimizer and was thinking about the problem: Is providing agentic evaluations/quality milestones & gates part of your typical sales/delivery? E.g., would it be useful for your consultants to include Agentic quality/evaluation metrics in sales proposals/RFPs to win the deal?
+      Hey [name omitted], I'm working on building out a lab to show Rubric evaluators and Agent Optimizer and was thinking about the problem: Is providing agentic evaluations/quality milestones & gates part of your typical sales/delivery? E.g., would it be useful for your consultants to include Agentic quality/evaluation metrics in sales proposals/RFPs to win the deal?
   - source: "User statement of desired learner capability and proposed delivery outcome, not observed partner practice."
     quote: |-
       They should be able to propose how the customer can evaluate the quality and reliability of the agent/AI solution - just as they'd do with traditional quality/automated testing of a typical application being delivered. Evaluation suite might be considered an artefact that is handed over as part of the delivery so and can be run in both day to day operations (continuous production evaluation) as well as when updates are made (e.g. a new model is rolled out) and during development
@@ -264,15 +350,15 @@ stakeholder_evidence:
       Perhaps after deployment the configuration script should produce a summary of which modules can be completed within the lab?
 
 proposed_partner_questions:
-  status: "User confirms questions have been asked. Responses are pending. Nothing was sent by the assistant."
+  status: "User supplied excerpts from two practitioner responses and one follow-up, recorded anonymously in Method 3. Wider validation remains open. Nothing was sent by the assistant."
   primary: "Thinking about your most recent agentic AI customer project, how did you and the customer agree what acceptable quality meant, and what evidence, if any, did you use to decide whether to move forward?"
   follow_up: "Can you describe a point where that decision was difficult and how you handled it?"
   rationale: "Ask about actual practice before suggesting evaluation tools or sales benefits. Allow evidence of no gap as well as a gap."
 
 current_exploration:
-  objective: "Continue Method 2 feasibility research for passenger-facing, read-only flight-disruption advice grounded in clearly labelled fictional airline policy. Document aligned-fixture needs and unresolved hosted evaluation, Optimizer, and custom MCP red-team constraints."
+  objective: "Carry evaluation principles, early development feedback, and explicit hands-on Microsoft Foundry capability/value awareness into design for engineers, consultants, and architects. Core completion must not require a third-party evaluation platform. Review proposed PRD acceptance detail and retain evidence and feasibility limits before closure or implementation."
   pending_question: null
-  evidence_limit: "No partner responses or direct customer evidence are available yet. Do not treat waiting as confirmation of the proposed gap."
+  evidence_limit: "Two practitioner excerpts supplied by the requester are summarized anonymously. No independent WorkIQ verification, observed learner sessions, or direct customer evidence. Do not generalize to all partners."
 
 research_deferral:
   requested_by: "user"
@@ -280,11 +366,24 @@ research_deferral:
   working_assumption: "Design for no or limited practical evaluation experience."
   confidence: "Unvalidated assumption, not a finding about all partners."
   revisit_when: "Partner replies or access to a practitioner become available."
-  status: "Partner validation deferred; Method 2 is not marked complete."
+  status: "Partially addressed by two requester-supplied practitioner excerpts. Wider learner and customer validation remains open. See method-03-synthesis/practitioner-evidence.md; earlier no-reply log entries are historical."
 
 working_problem_statement:
-  status: "Draft derived from the user's desired outcomes; partner need not yet validated."
-  text: "Help technically informed Azure agent builders, architects, and operators who are new to practical evaluation agree measurable quality expectations, run and interpret repeatable evaluations, investigate failures, and improve at least one quality aspect. Build toward creating rubric evaluators and using them with Agent Optimizer to assess lower-cost agent candidates while maintaining required quality. Prepare evaluation as a reusable delivery and handover capability across development, changes, and production. Support facilitated and independent learning without requiring Python authoring."
+  status: "User-approved learning gap, informed by two limited practitioner perspectives; not validated across the intended learner population."
+  text: "Consultants, delivery engineers, and solution architects need practical ways to define, run, and interpret repeatable evaluations from the start of development and throughout the product lifecycle so they can agree quality requirements, design and build agentic solutions, assess changes against those requirements, and hand over checks and processes for continued use."
+
+prd_authoring:
+  status: "draft"
+  path: ".copilot-tracking/dt/foundry-evaluation-learning/prd.md"
+  state_path: ".copilot-tracking/dt/foundry-evaluation-learning/prd-state.md"
+  authorization: "User approved drafting and explicitly requested persistence, commit, and push of all current session work. No final PRD signoff, implementation, cloud jobs, access changes, or PR creation authorized."
+  synthesis_disposition: "Requester accepted a working baseline with evidence limits and equal consultant, delivery engineer, and architect scope. Full Method 3 validation remains incomplete. Methods 1 and 2 remain the only fully completed methods; no Method 4 transition."
+  canonical_checkpoint: "Not yet available as an automatic exit offer: the validated Method 3 exit has not been reached. No snapshot or rendering generated."
+
+external_research_references:
+  - path: ".copilot-tracking/research/2026-11-05/evaluation-driven-development-research.md"
+    purpose: "Verified industry guidance for early repeated evaluation and a qualified TDD analogy; also covers functional/non-functional verification limits."
+    limit: "Not evidence of universal adoption, partner maturity, technical feasibility of this lab, or learner effectiveness."
 
 working_hypotheses:
   - "Earlier ACL-agent proposal is superseded by the user's provisional flight-disruption selection."
@@ -319,8 +418,8 @@ constraints:
     - "Core MCP use is read-only."
     - "Core completion must not require Python authoring; running supplied scripts is allowed, and source must remain available."
     - "Support facilitated and independent completion."
-    - "Teach rubric evaluator creation and its use with Agent Optimizer; cost reduction must be assessed against required quality."
-    - "Core completion requires running a small controlled AI red-team exercise, not only reviewing a sample report."
+    - "Teach evaluation use and rubric creation as primary outcomes. Retain Agent Optimizer as secondary; cost reduction must be assessed against required quality."
+    - "Retain a small hands-on red-team exercise as secondary. Deployment blocks must not prevent primary completion; report each secondary activity's actual status and reason."
     - "No prior lab completion or previously created agent and knowledge assets are prerequisites."
     - "Respect organizer region selection; warn for unsupported modules without blocking the whole track."
   open:

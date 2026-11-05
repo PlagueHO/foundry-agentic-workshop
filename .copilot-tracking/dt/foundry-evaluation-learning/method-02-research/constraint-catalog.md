@@ -2,6 +2,8 @@
 
 ## Evidence boundary
 
+The consolidated current assessment is in `findings-summary.md`. The latest user priority makes evaluation learning primary and Optimizer/red-team work secondary. Deployment blocks to secondary activities must not prevent primary completion; earlier unconditional completion statements below are historical.
+
 Partner replies are pending. The requester reports a public holiday and asks to proceed, then return to partner research. Limited practical evaluation experience is the user-directed design assumption. Silence does not establish that partners have never used evaluations.
 
 This note records repository observations and official documentation. It is not a set of user-research findings. No cloud workflow has been executed.
