@@ -1,6 +1,6 @@
 {
   "prdFile": ".copilot-tracking/dt/foundry-evaluation-learning/prd.md",
-  "lastAccessed": "2026-11-11T15:42:34.5639260+13:00",
+  "lastAccessed": "2026-11-11T17:32:54.8287751+13:00",
   "currentPhase": "Build",
   "disclaimerShownAt": "2026-11-11T15:42:34.5639260+13:00",
   "phaseSkillsLoaded": [
@@ -31,7 +31,8 @@
     "rubric-authoring-support",
     "rubric-change-support",
     "opening-order",
-    "prd-refinement-with-method-6-incomplete"
+    "prd-refinement-with-method-6-incomplete",
+    "official-documentation-alignment"
   ],
   "answeredQuestions": {
     "track-scope": "Separate Microsoft Foundry evaluation learning track; preserve the introduction track progression.",
@@ -47,7 +48,8 @@
     "rubric-authoring-support": "Supply quality priorities and fictional policy. Foundry generates a starting rubric; learners review and refine it instead of writing all criteria from scratch.",
     "rubric-change-support": "Supply one additional requirement for learners to incorporate and test. The exact requirement remains open. Comparing unchanged answers under both rubric versions is a coach recommendation.",
     "opening-order": "Run Understand Customize: an actual simple built-in evaluation and result review precede rubric generation, comparison, and guided revision.",
-    "prd-refinement-with-method-6-incomplete": "Ok, you're now the PRD builder - proceed leaving Method 6 incomplete."
+    "prd-refinement-with-method-6-incomplete": "Ok, you're now the PRD builder - proceed leaving Method 6 incomplete.",
+    "official-documentation-alignment": "Current official Microsoft documentation for Foundry, evaluations/evaluators, Agent Optimizer, AI Red Teaming Agent, and related capabilities used MUST be consulted throughout Research, Plan, Implement, and review. CON-009 requires source-linked decisions, check dates, applicable versions/support limits, repeated checks, and explicit handling of documentation differences."
   },
   "referencesProcessed": [
     {
@@ -87,6 +89,7 @@
     }
   ],
   "nextActions": [
+    "Carry CON-009 into any Development RPI handoff. Consult current official Microsoft documentation throughout every stage, record source evidence, and resolve or retain documentation differences before making support claims.",
     "Review the consolidated draft and proposed acceptance detail with the requester.",
     "Resolve Q-001 through Q-010 at their recorded boundaries, including exact evaluator selection, the supplied additional requirement, spend limits, reviewer roles, and timing.",
     "Keep Method 6 incomplete. Resume its proposed tests only when requested; do not infer a validated Solution Space exit.",
@@ -112,12 +115,22 @@
   },
   "document": {
     "status": "draft",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "functionalRequirements": 22,
     "acceptanceCriteria": 22,
     "productGoals": 4,
     "nonFunctionalRequirements": 12,
-    "constraints": 8
+    "constraints": 9
+  },
+  "documentationAlignment": {
+    "constraintId": "CON-009",
+    "requestedAt": "2026-11-11T17:32:32.840+13:00",
+    "required": true,
+    "stages": ["Research", "Plan", "Implement", "Review and release"],
+    "scope": ["Microsoft Foundry", "Evaluations and evaluators", "Agent Optimizer", "AI Red Teaming Agent", "Related capabilities used by the track"],
+    "evidence": "Specific official source URL and section, date checked, applicable versions and support limits, page update date when available, and documentation differences with their disposition.",
+    "recheck": "At each RPI phase transition, when implementation dependencies/configuration/approach change, and before release.",
+    "status": "Mandatory process rule recorded; completed stage alignment checks and live feasibility are not claimed."
   },
   "authorization": {
     "requestedAt": "2026-11-11T15:41:15.697+13:00",

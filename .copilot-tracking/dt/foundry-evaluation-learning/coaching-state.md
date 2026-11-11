@@ -66,6 +66,9 @@ hint_calibration:
 session_log:
   - date: "2026-11-11"
     method: 6
+    summary: "At 2026-11-11T17:32:32.840+13:00 the requester required official Microsoft documentation alignment throughout the process. Added CON-009 and stage-specific checks to PRD draft 0.2.1 for Foundry, evaluations, Agent Optimizer, AI Red Teaming Agent, and related capabilities used. Any Development RPI handoff must carry this rule. Source links, check dates, applicable versions/support limits, and documentation differences are required; documentation does not establish live feasibility. Method 6 remains incomplete. No implementation, cloud jobs, formal approval, new commit, or push."
+  - date: "2026-11-11"
+    method: 6
     summary: "User requested Commit all changes and push at 2026-11-11T16:24:57.496+13:00. This authorizes one checkpoint of all current work on plagueho-foundry-rubric-evaluators and its push. Verify the result in Git. Method 6 remains incomplete, PRD 0.2.0 remains draft, and no implementation, cloud jobs, access changes, PR creation, or final sign-off is authorized."
   - date: "2026-11-11"
     method: 6
@@ -510,10 +513,11 @@ prd_authoring:
   path: ".copilot-tracking/dt/foundry-evaluation-learning/prd.md"
   state_path: ".copilot-tracking/dt/foundry-evaluation-learning/prd-state.md"
   builder_session_state: ".copilot-tracking/prd-sessions/foundry-evaluation-learning.state.json"
-  version: "0.2.0"
+  version: "0.2.1"
   phase: "Build"
   authorization: "User requested PRD Builder on 2026-11-11, leaving Method 6 incomplete, then explicitly requested committing all current changes and pushing at 2026-11-11T16:24:57.496+13:00. The commit/push authorization applies to this checkpoint only. No final PRD signoff, implementation, cloud jobs, access changes, or PR creation is authorized."
   authorization_quote: "Ok, you're now the PRD builder - proceed leaving Method 6 incomplete."
+  documentation_alignment: "CON-009 requires current official Microsoft documentation throughout Research, Plan, Implement, and review, including Foundry, evaluations/evaluators, Agent Optimizer, AI Red Teaming Agent, and related capabilities used. Carry source-linked decisions, check dates, applicable versions/support limits, and unresolved differences into the Development RPI handoff."
   method_6_status: "Paused, incomplete. Existing rough prototype plan retained; no variations built or tested, participants confirmed, or observed learner evidence. Not a validated Solution Space exit."
   synthesis_disposition: "User explicitly accepted bounded Method 3 closure and transition to Method 4. Method 3 is recorded complete for this design round, not fully validated. PRD acceptance detail and technical feasibility remain unapproved."
   canonical_checkpoint: "Four canonical Markdown entries remain. User rejected and requested removal of the generated PowerPoint on 2026-11-11. The deck and its build files were removed. HTML is preferred for a future visual summary; no replacement was created. Method 6 is paused and incomplete during PRD authoring."

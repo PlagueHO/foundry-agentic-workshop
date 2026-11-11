@@ -4,7 +4,7 @@
 prd_id: "PRD-FOUNDRY-EVALUATION-LEARNING"
 artifact: ".copilot-tracking/dt/foundry-evaluation-learning/prd.md"
 status: "draft"
-version: "0.2.0"
+version: "0.2.1"
 phase: "build"
 builder_session_state: ".copilot-tracking/prd-sessions/foundry-evaluation-learning.state.json"
 last_updated: "2026-11-11"
@@ -23,12 +23,13 @@ upstream:
 draft_scope: "Separate evaluation track; explicit Microsoft Foundry hands-on capability and product-value awareness; no required third-party evaluation platform for core completion; core production evaluation; optional GitHub Actions; conditional secondary Optimizer and red teaming."
 selected_journey: "Run Understand Customize: actual simple built-in run and result review before rubric generation from supplied priorities/policy, comparison, and revision against one supplied new requirement; separate live-agent improvement and production investigation."
 design_evidence: "Requester selected the concept with bounded Method 5 closure. Method 6 remains incomplete; no prototypes built or tested, participants confirmed, or learner observations. This authoring transfer is not a validated DT/RPI handoff or implementation approval."
+documentation_alignment: "CON-009: Current official Microsoft documentation for Foundry, evaluations/evaluators, Agent Optimizer, AI Red Teaming Agent, and related capabilities used MUST be consulted throughout Research, Plan, Implement, and review. Record source URLs/sections, dates checked, applicable versions/support limits, and unresolved differences. Recheck at phase transitions and before release. Documentation is not live feasibility evidence."
 document_counts:
   functional_requirements: 22
   acceptance_criteria: 22
   product_goals: 4
   non_functional_requirements: 12
-  constraints: 8
+  constraints: 9
 review:
   acceptance_detail: "proposed, requester review pending"
   acceptance_tests: "Not Started"
@@ -45,6 +46,7 @@ delivery_target:
   provisioning_boundary: "Requester confirmed infrastructure provisioning is pre-work outside the session; agent readiness check remains inside."
   scope_cuts: "Recommended only: merge overlapping core activities and move synthetic generation, conversation-level comparison, clustering, trace-dataset creation, Optimizer, red teaming, and CI/CD execution outside the timed core."
 next:
+  - "Carry CON-009 into any Development RPI handoff and enforce current Microsoft documentation alignment throughout every stage."
   - "Review draft scope and proposed acceptance detail with requester."
   - "Resolve exact built-in selection and inputs, supplied additional requirement, and rubric edit workflow."
   - "Review proposed cuts and validate elapsed timing below 120 minutes after provisioning pre-work; define coverage scope."

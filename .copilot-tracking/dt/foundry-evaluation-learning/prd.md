@@ -2,7 +2,7 @@
 prd_id: "PRD-FOUNDRY-EVALUATION-LEARNING"
 title: "Foundry Evaluation Learning Track"
 status: "draft"
-version: "0.2.0"
+version: "0.2.1"
 owners: ["Workshop requester"]
 reviewers: ["Workshop maintainer", "Technical reviewer", "Representative learner"]
 created_date: "2026-11-05"
@@ -27,7 +27,7 @@ license: "CC-BY 4.0 (Microsoft HVE-Core)"
 
 # Foundry Evaluation Learning Track
 
-> **PRD-FOUNDRY-EVALUATION-LEARNING** | Draft 0.2.0 | Not approved for implementation
+> **PRD-FOUNDRY-EVALUATION-LEARNING** | Draft 0.2.1 | Not approved for implementation
 
 ## Executive Summary
 
@@ -56,6 +56,25 @@ The requester approved the problem framing and learning boundaries. Detailed syn
 On 2026-11-11 the requester authorized PRD refinement while explicitly leaving Method 6 incomplete. Methods 1-5 are closed for progression, with bounded validation limits for Methods 3 and 5. Method 6 has a [prototype plan](method-06-lofi-prototypes/prototype-plan.md), but no built variations, confirmed participants, test observations, or constraint discoveries. This is a requirements-authoring transfer, not a validated Solution Space exit, Method 7 transition, or implementation approval.
 
 The [selected-concept handoff](method-05-user-concepts/method-06-handoff.md) and [requester feedback](method-05-user-concepts/stakeholder-alignment.md) supply the later learning-design decisions. The original Evidence First and Criteria First openings are design history, not unresolved alternatives. Requester selection is not independent learner validation.
+
+### Mandatory Microsoft documentation alignment
+
+**CON-009 applies throughout the process, not only during initial research.** Research, Plan, Implement, and review MUST consult the current official Microsoft documentation for Microsoft Foundry, evaluations and evaluators, Agent Optimizer, AI Red Teaming Agent, and related capabilities used by the track. Use the relevant Microsoft Learn concepts, how-to guides, support matrices, and SDK/API references. Memory, earlier notes, third-party examples, and existing repository code are not substitutes.
+
+| Stage | Required documentation check |
+|---|---|
+| Research | Check documented capabilities, prerequisites, supported inputs, restrictions, and known gaps for each proposed path. |
+| Plan | Link technical decisions and planned exercises to the applicable documentation. Recheck sources for the selected agent type, SDK/API version, models, region, permissions, and execution surface where relevant. |
+| Implement | Consult the relevant documentation while building each affected feature. Recheck it when dependencies, configuration, or approach change. Keep code, lab steps, and capability claims aligned with that guidance. |
+| Review and release | Check the implemented path and learner instructions against current documentation and actual test evidence. Record unsupported, preview, blocked, or unverified behavior accurately. |
+
+For each material technical decision or capability claim, record the specific source URL and section, the date checked, and the applicable version or support limits. Record the page's update date when available. Put references in the relevant research findings, plan decisions, and learner guidance, not only in a general reading list.
+
+Check alignment at each RPI phase transition and before release. If documentation is missing, conflicting, or inconsistent with observed behavior, record both the source and the observation. Keep the affected decision or support claim unresolved until the difference is addressed. Do not silently use a different workflow or broaden a support claim. Return any required scope change to the requester.
+
+Start with the [Microsoft Foundry documentation](https://learn.microsoft.com/en-us/azure/foundry/), [evaluation overview](https://learn.microsoft.com/en-us/azure/foundry/concepts/evaluation-overview), [rubric evaluators](https://learn.microsoft.com/en-us/azure/foundry/concepts/evaluation-evaluators/rubric-evaluators), [Agent Optimizer overview](https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/agent-optimizer-overview), and [AI Red Teaming Agent](https://learn.microsoft.com/en-us/azure/foundry/concepts/ai-red-teaming-agent). These are starting points, not a complete or permanently current source set. Follow their relevant references and recheck them during the work.
+
+Documentation alignment is required evidence, not proof that this lab works in the selected environment. Live verification, cost approval, privacy and safety boundaries, and incomplete Method 6 evidence remain separate.
 
 ## Users and Personas
 
@@ -189,6 +208,7 @@ NFR-012: Tracked artifacts shall not contain device-specific paths, internal pac
 | CON-006 | CI/CD is optional extra credit; production evaluation is hands-on core | Requester | Scope; no CI dependency for production learning |
 | CON-007 | Do not run paid jobs just to determine readiness | Requester | Financial; use known prerequisites and explicit evidence |
 | CON-008 | No live jobs, infrastructure changes, access changes, or implementation are authorized by this draft | Current planning authorization | Governance; later execution requires appropriate approval |
+| CON-009 | Current official Microsoft documentation MUST be consulted throughout Research, Plan, Implement, and review for Foundry, evaluations, Agent Optimizer, AI Red Teaming Agent, and related capabilities used | Explicit requester direction on 2026-11-11 | Technical and process; source-linked decisions, repeated alignment checks, and explicit handling of documentation gaps are required |
 
 These constraints are imposed within this draft's scope. A change requires explicit requester review.
 
@@ -410,6 +430,7 @@ All rows below are pending. Suggested review roles are not confirmed assignments
 | Timing and cost | Full core elapsed time, waits and contingency, bounded sample sizes, runtime/evaluation cost drivers, and agreed spend limits | Maintainer and requester | Proposed 119 minutes only; spend cap unknown |
 | Requirement quality | Formal standard findings and quality report, with findings resolved or retained as blockers | PRD quality reviewer | Validate not entered; no report or gate clearance |
 | Scope and accountability | Accepted detailed scope cuts, feature-coverage denominator, release horizon, review owners, and acceptance detail | Requester and maintainer | Decisions remain open; no PRD sign-off |
+| Microsoft documentation alignment | Stage-specific source links, dates checked, applicable versions/support limits, and resolved or explicitly open documentation differences as required by CON-009 | Technical reviewer and maintainer | Required across RPI and review; no completed alignment review is claimed |
 
 ## Glossary
 
@@ -442,6 +463,8 @@ None granted. Evidence gaps are recorded, not waived or reported as validated.
 
 Draft only. The 2026-11-11 authorization permits PRD refinement while Method 6 stays incomplete. This draft can support requirements discussion; it is not a validated Solution Space exit or an approved implementation baseline. Formal PRD quality-review payloads and Validate/Finalize gates have not been completed. No approved release hash or implementation handoff is issued. All acceptance tests remain unexecuted.
 
+Any Development RPI handoff MUST carry CON-009 and the mandatory Microsoft documentation alignment checks above. A draft Research input is not implementation approval.
+
 ## Disclaimer
 
 This planning draft uses limited practitioner evidence and unverified technical assumptions. It is not approval to deploy, spend, change permissions, or release a production solution. Supplied fictional policy is not legal advice.
@@ -457,4 +480,5 @@ This planning draft uses limited practitioner evidence and unverified technical 
 - Attribution: Microsoft HVE-Core Team.
 - Source synthesis: [insights](method-03-synthesis/insight-statements.md), [problem definition](method-03-synthesis/problem-definition.md), and [how-might-we questions](method-03-synthesis/how-might-we-questions.md).
 - Revision 0.2.0: integrated Method 5 selection and later requester corrections on 2026-11-11. Existing IDs are preserved. Added FR-020 through FR-022 and AC-020 through AC-022; all acceptance statuses remain Not Started.
+- Revision 0.2.1: added requester-mandated Microsoft documentation alignment throughout RPI and review as CON-009, with source evidence and conflict-handling checks. Existing requirement and acceptance IDs are unchanged. Method 6 remains incomplete; no formal approval or implementation authorization is granted.
 - PRD session state: [builder state](../../prd-sessions/foundry-evaluation-learning.state.json) and [local authoring summary](prd-state.md). The existing PRD path is retained to preserve DT evidence links.
