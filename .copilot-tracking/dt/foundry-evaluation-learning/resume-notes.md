@@ -2,7 +2,23 @@
 
 ## Current checkpoint
 
-Paused at the user's request on 2026-11-05. Commit all current session work on `plagueho-foundry-rubric-evaluators`; do not push or create a PR. Resume in Method 4, not Method 1 or Method 5. The 15 ideas and outcome-fit recommendations are saved, but Method 4 is not complete: scope cuts, feature-coverage definition, theme grouping, and detailed pacing still need agreement.
+The user explicitly approved bounded Method 5 closure and progression to Method 6 at 2026-11-07T16:43:57.048+13:00. Methods 1-5 are complete for progression; Method 3 and Method 5 validation limits remain. Run Understand Customize is the selected combined journey: introduce/run a built-in check, inspect results, generate/review a rubric from supplied priorities, evaluate supplied answers, add a supplied requirement, then separate live-agent improvement and production evaluation. Do not repeat the original opening-order choice.
+
+On 2026-11-11 the user explicitly requested: "Ok, you're now the PRD builder - proceed leaving Method 6 incomplete." Current work is PRD Builder, in Build with source integration. Method 6 is paused and incomplete, not passed or replaced by a validated DT/RPI handoff. Its three rough formats have not been built or tested; no participants are confirmed. No new implementation, cloud activity, or PR is authorized.
+
+At 2026-11-11T16:24:57.496+13:00 the user requested: "Commit all changes and push". This authorizes one checkpoint of all current changes on `plagueho-foundry-rubric-evaluators` and its push. Verify the result in Git. It does not approve the PRD, complete Method 6, or grant permission for later commits.
+
+The existing [PRD](prd.md) is now draft 0.2.0 with 22 FRs, 22 ACs, four goals, 12 NFRs, and eight constraints. It records the selected journey, labelled supplied answers and their purpose, generated rubric review from supplied priorities/policy, and testing one supplied new requirement. Live-agent improvement and production investigation remain separate core requirements. Comparing unchanged answers across rubric versions remains a recommendation. All acceptance tests are Not Started. Timing, budget, exact evaluators, the additional requirement, learner understanding, integrated feasibility, review ownership, and final acceptance remain open. Formal Validate/Finalize have not been entered.
+
+Read [PRD Builder state](../../prd-sessions/foundry-evaluation-learning.state.json) for PRD recovery and [legacy state](prd-state.md) for the DT-side summary. The JSON state points to the existing PRD; no duplicate was created in `docs\project-planning`. The PRD disclaimer was displayed and its timestamp persisted. Load `requirements-author` and its Build section before continuing. Review confirmed decisions before asking questions. Load the formal quality contracts and dispatch the PRD Quality Reviewer before entering Validate; document checks alone do not clear that gate.
+
+Four Markdown entries remain under `canonical`. On 2026-11-11 the user rejected the customer-card PowerPoint and requested its removal. The deck, generated slide definitions, and deck validation reports were removed. The user prefers HTML for a future visual summary; no replacement was created. Do not regenerate or re-offer PowerPoint in this DT run.
+
+## Historical context
+
+The paragraphs below preserve earlier decisions and pending states. The current checkpoint and coaching state take precedence where later approvals supersede them.
+
+The user resumed Method 4 on 2026-11-05 from local commit `aba1446` on `plagueho-foundry-rubric-evaluators`. That checkpoint's commit request is complete; it was not pushed. Current work is local coaching only. `method-04-brainstorming\theme-clusters.md` records three learning approaches: see a mismatch, make expectations explicit, and use a controlled change/feedback loop. After challenging live-failure reliability, the user accepted clearly labelled supplied good/bad responses for initial rubric practice, separate from live-agent exercises, with an explanation of why. Do not ask for that decision again. The introductory approach and concept-development transition are accepted, but the complete concept, retained scope, and sequence are not. Live failure/improvement feasibility is still unverified.
 
 The user confirmed infrastructure provisioning as required pre-work excluded from a lab target of less than two hours, with the agent readiness check inside the lab. Do not ask for that boundary again. The draft PRD records this and the requested approximately 80% feature coverage; the feature denominator remains undefined. `method-04-brainstorming\session-notes.md` proposes a 105-minute activity budget plus 14-minute contingency, totaling 119 minutes, and cuts extra generation, multi-turn comparison, clustering, and trace-dataset creation from the timed core. Optimizer, red teaming, and CI/CD are proposed as optional follow-ons, not removed track deliverables. Core live production evaluation is retained. The scope cuts and actual timings are not yet approved/verified.
 
@@ -20,7 +36,7 @@ The user added an explicit Microsoft product-learning objective: practical use o
 
 This checkpoint saves planning and research only. It does not authorize lab implementation, infrastructure changes, paid evaluations, optimization jobs, or red-team scans. No cloud feasibility run has been completed.
 
-The preceding checkpoint was committed and pushed as `6d099f6`. The current pause request authorizes a new local commit containing all subsequent session work, but not a push, PR, final PRD approval, or implementation. Use the branch's latest commit for this recovery checkpoint.
+The earlier checkpoint was committed and pushed as `6d099f6`; the subsequent pause checkpoint was committed locally as `aba1446`. The current resume request does not authorize another commit, push, PR, final PRD approval, or implementation.
 
 Industry evidence is saved in [evaluation-driven-development research](../../research/2026-11-05/evaluation-driven-development-research.md). OpenAI, Anthropic, Microsoft, and a research paper support early repeated evaluation and a qualified TDD analogy. This adds external support for the engineering principle, not proof of industry-wide adoption or workshop effectiveness. Evaluations can assess functional and non-functional requirements; they do not replace all system testing. Read this evidence before asking the user to justify the analogy again.
 
@@ -28,6 +44,7 @@ Industry evidence is saved in [evaluation-driven-development research](../../res
 
 1. `coaching-state.md`: YAML state in a fenced block, user quotations, decisions, method history, and remaining questions.
 1. `method-04-brainstorming\session-plan.md`, `divergent-ideas.md`, and `session-notes.md`: ideation structure, rough ideas, and phase tracking; all are within `method-04-brainstorming`.
+1. `method-04-brainstorming\theme-clusters.md`: three proposed learning approaches and the pending opening-experience question.
 1. `prd.md` and `prd-state.md`: draft requirements, proposed acceptance criteria, evidence limits, technical gates, and review state.
 1. `method-03-synthesis\problem-definition.md`, `insight-statements.md`, and `how-might-we-questions.md`: consolidated synthesis and five-dimension assessment; paths are all within `method-03-synthesis`.
 1. `method-03-synthesis\affinity-clusters.md`: working evidence groups, tensions, source strength, and the next discussion. These are not final validated themes.
@@ -85,4 +102,4 @@ Sources and a proposed incremental feasibility test are in the constraint catalo
 
 ## Resume protocol
 
-Load the DT coaching foundation and Method 4 references. Read the saved state and Method 4 artifacts. Fifteen ideas already exist; do not restart generation merely to meet that numerical target. Resume discussion of proposed cuts and pacing, clarify the feature-coverage scope, and complete theme grouping before requesting any Method 5 transition. The user has already accepted the bounded Method 3 closure and provisioning pre-work; do not ask for those decisions again. Keep the introductory first-run outcome separate from later tooling and investigation experiences. Apply the latest learning-lab boundary when reading earlier delivery/handover language. Do not restart Method 1, claim wider research validated, or treat the draft PRD as implementation approval.
+Resume PRD Builder from the JSON session state and the existing draft. Read the recorded next actions and unresolved decisions. Keep Method 6 incomplete unless the user asks to resume its tests. If DT coaching resumes, load the foundation and Method 6 references, selected-concept handoff, and prototype plan; preserve one assumption per rough variation. No timed comprehension test, learner session, or technical feasibility run has passed. Preserve the built-in-first hands-on opening, guided rubric generation/change, provisioning pre-work, and sub-two-hour target. Do not re-ask confirmed decisions, claim wider research validated, or treat the draft PRD as implementation approval.

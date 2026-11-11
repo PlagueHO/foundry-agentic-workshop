@@ -18,14 +18,15 @@ project:
   initial_classification: "frozen"
 
 current:
-  method: 4
+  method: 6
   space: "solution"
-  phase: "paused at user request - Method 4 outcome-fit and time-budget discussion; core below 120 minutes after provisioning pre-work, cuts and sequence still proposed"
+  phase: "PRD Builder - Build/Integrate by user request; Method 6 paused and incomplete; no prototype built or tested"
   disclaimerShownAt: "2026-11-03T11:37:26.065+13:00"
 
-methods_completed: [1, 2, 3]
+methods_completed: [1, 2, 3, 4, 5]
 
 method_completion_limits:
+  method_5: "Requester explicitly approved bounded closure and progression on 2026-11-07. Selected the combined journey with requester feedback and a documented three-lens assessment. Timed comprehension, independent learner review, integrated execution, costs, and duration remain unverified. No implementation approval."
   method_3: "Closed as a working design baseline by explicit user agreement on 2026-11-05, not as fully validated synthesis. The normal five-dimension exit is only partly met. Direct learner/customer/operator evidence, learning effectiveness, and technical feasibility remain unverified. No validated RPI handoff or implementation approval."
 
 transition_log:
@@ -48,11 +49,69 @@ transition_log:
     rationale: "User explicitly accepted bounded Method 3 closure and a cautious move to Brainstorming. The normal exit signal, Themes validated across sources; team alignment confirmed, is only partly met. Proceed from the agreed working baseline without claiming full validation; carry evidence gaps into design and later testing."
     date: "2026-11-05"
 
+  - from_method: 4
+    to_method: 5
+    rationale: "User explicitly confirmed moving to User Concepts. Fifteen ideas and three learning themes meet the exit signal Multiple distinct directions grounded in themes. Supplied introductory examples and provisioning pre-work are accepted; concept selection, exact scope, timing, and technical feasibility remain open for subsequent review and tests."
+    date: "2026-11-06"
+
+  - from_method: 5
+    to_method: 6
+    rationale: "Requester explicitly approved bounded Method 5 closure and progression at 2026-11-07T16:43:57.048+13:00. Selected Run Understand Customize and prepared the handoff. The normal exit signal, 30-second comprehensible visual with feedback captured, is partly met: requester feedback exists but timed comprehension and independent learner review are missing. Carry those limits into rough prototype testing."
+    date: "2026-11-07"
+
 hint_calibration:
   level: 1
   pattern_notes: "User wants discussion of learning needs before technical decisions. Ask one open question at a time."
 
 session_log:
+  - date: "2026-11-11"
+    method: 6
+    summary: "User requested Commit all changes and push at 2026-11-11T16:24:57.496+13:00. This authorizes one checkpoint of all current work on plagueho-foundry-rubric-evaluators and its push. Verify the result in Git. Method 6 remains incomplete, PRD 0.2.0 remains draft, and no implementation, cloud jobs, access changes, PR creation, or final sign-off is authorized."
+  - date: "2026-11-11"
+    method: 6
+    summary: "User explicitly requested switching to PRD Builder at 2026-11-11T15:41:15.697+13:00 while leaving Method 6 incomplete. Updated the existing PRD to draft 0.2.0 with the built-in-first Run Understand Customize journey, supplied introductory answers, generated rubric review, and guided additional-requirement change. Added three FR/AC pairs, preserving prior IDs and separate live improvement and production evaluation. Created missing PRD Builder JSON state pointing at the existing PRD and recorded the already-displayed PRD disclaimer. Formal Validate/Finalize remain unentered; no approval, implementation, cloud jobs, new commit, push, or PR."
+  - date: "2026-11-11"
+    method: 6
+    summary: "User rejected the customer-card PowerPoint and requested its removal at 2026-11-11T15:02:38.727+13:00. Removed the deck, generated slide definitions, and deck validation reports. Preserved all four canonical Markdown entries and other DT work. User prefers HTML for a future visual summary; no HTML replacement was created. Do not regenerate or re-offer PowerPoint in this DT run. Method 6 remains prototype planning; no commit or push."
+  - date: "2026-11-11"
+    method: 6
+    summary: "User accepted the customer-card PowerPoint offer at 2026-11-11T12:44:53.558+13:00. Built seven slides from four canonical entries with full source notes and explicit evidence limits. Adjusted generated layouts, restored the primary-user section on use-case part 1, and added document language and unique slide titles. Slide-count, notes, and geometry checks passed. Rendered-slide and visual checks were not run because LibreOffice is unavailable. Method 6 remains prototype planning; no learner test, implementation, cloud job, new commit, or push."
+  - date: "2026-11-11"
+    method: 6
+    summary: "User accepted the optional canonical Markdown snapshot offered at the Method 5 exit. Created four evidence-linked entries: vision, problem, flight-disruption scenario, and Run Understand Customize use case. Preserved bounded research/selection limits and unverified implementation, timing, costs, and learner outcomes. No personas invented, model calls, PowerPoint, commit, or push. Post-snapshot customer-card PowerPoint offer pending."
+  - date: "2026-11-07"
+    method: 6
+    summary: "User confirmed closing Method 5 on the stated bounded basis and moving to Method 6. Selected Run Understand Customize, documented selection rationale and three-lens limits, and prepared the Method 6 handoff and rough prototype plan with three candidate formats for one opening-comprehension assumption. No prototypes built, participants confirmed, tests run, model calls, implementation, or new commit/push. Canonical snapshot offer is optional and pending."
+  - date: "2026-11-07"
+    method: 5
+    summary: "Requester asked to run a simple built-in evaluator before building the rubric, extending the earlier introduction-only correction. Updated the working journey to introduce and run a built-in check on supplied answers, inspect its results and limits, then generate/review a domain rubric from supplied requirements. The original Evidence First versus Criteria First ordering distinction has converged; do not keep asking the requester to choose between those original openings. Exact built-in selection, live feasibility, timing, broader review, and final concept selection remain open."
+  - date: "2026-11-07"
+    method: 5
+    summary: "Requester corrected the proposed sequence: introduce built-in evaluators before generating the rubric so learners first understand the built-in checks. Updated Criteria First to include this introduction, followed by automatic rubric generation/review and hands-on comparison using supplied answers. This does not require an initial scored run before rubric generation; that detail remains open. Built-in introduction and early explicit domain criteria are compatible. No final concept selection, method transition, or implementation."
+  - date: "2026-11-07"
+    method: 5
+    summary: "Requester confirmed that the rubric-change exercise should supply one additional quality requirement for learners to add and test. Exact requirement and edit workflow remain open. This confirms guided rubric change, not final concept selection, measured timing, or implementation approval."
+  - date: "2026-11-07"
+    method: 5
+    summary: "Requester accepted guided support but corrected the manual-authoring emphasis: the lab should suggest what matters, and Foundry can automatically propose rubric criteria. Refined the concepts toward supplied scenario requirements and policy, automatic rubric generation, human review/refinement, and evaluation of supplied answers. Do not require writing remaining criteria from scratch or treat generated criteria as customer agreement. Official rubric documentation rechecked: generation supports agent context, system prompts, or reference files; hosted agent selection supplies its description, not internal code. Criteria First remains tentative; no final selection, implementation, or live validation."
+  - date: "2026-11-07"
+    method: 5
+    summary: "Requester found the initial understanding-check question confusing. Rephrased the comparison as evaluating examples first versus writing a rubric first. Requester replied Maybe write a rubric first. Record a tentative Criteria First preference, not final selection or a passed comprehension test. Explore how much guidance beginners need before their first result; wider learner feedback, three-lens review, timing, and technical feasibility remain open."
+  - date: "2026-11-06"
+    method: 5
+    summary: "User explicitly approved moving to Method 5. Closed Method 4 for concept development using 15 ideas and three learning themes. Drafted Evidence First and Criteria First learner journeys, strict-schema concept YAML, and an alignment/review plan. Both preserve supplied introductory examples, simple built-in checks, rubric work, controlled agent change, and live lab evaluation. Comprehension, D/F/V review, learner feedback, scope cuts, timing, and live-failure feasibility remain open. No implementation, Method 6 transition, commit, or push."
+  - date: "2026-11-06"
+    method: 4
+    summary: "User checked that simple built-in evaluators remain in core, then asked whether to progress beyond Method 4. Built-in versus domain checks remain part of the working core; Relevance, Groundedness, and Tool Output Utilization are coach-proposed examples, not newly approved evaluator selections. Reviewed the 15 ideas and three documented themes against the exit signal Multiple distinct directions grounded in themes. Recommend forward progression to Method 5 for concept review, carrying timing, live-failure reliability, and technical feasibility as open tests. Await explicit transition confirmation; Method 4 remains current."
+  - date: "2026-11-05"
+    method: 4
+    summary: "User accepted supplied good/bad responses for the first rubric exercise, separate from live-agent evaluation, and asked that the lab explain why. Label examples and their provenance accurately; learners run real Foundry evaluations on supplied responses rather than expect a fresh agent response to fail on demand. Live failure/improvement requirements remain separate unverified feasibility gates. This accepts the introductory approach only, not the complete sequence, cuts, implementation, or a method transition."
+  - date: "2026-11-05"
+    method: 4
+    summary: "User challenged whether the agent can reliably give bad flight advice without failure-inducing instructions/tools. No live behavior has been verified. Revised the coach recommendation toward clearly labelled supplied good/bad examples for initial rubric practice, separate from actual live-agent exercises. Realistic live baseline failure, correction, and production investigation remain feasibility gates, not satisfied by stored answers. No design approval, method transition, or cloud test."
+  - date: "2026-11-05"
+    method: 4
+    summary: "User explicitly resumed Method 4 from local checkpoint aba1446. Refreshed the method and saved artifacts, then drafted three candidate learning themes: learn by seeing a mismatch, make expectations explicit, and use a controlled change/feedback loop. Recommended exploring a failure-first opening while retaining rubric-first and change-first alternatives. Theme approval, scope cuts, coverage definition, and timing remain open. No Method 5 transition, new commit/push, implementation, or cloud jobs."
   - date: "2026-11-05"
     method: 4
     summary: "User requested committing all session work to the existing branch and pausing until later. Persisted Method 4 state, 15 ideas and documentation sources, proposed outcome-fit/cuts, the confirmed provisioning pre-work boundary, and the unverified 119-minute budget. Method 4 is not complete; no Method 5 transition, PRD signoff, implementation, cloud jobs, push, or PR creation is authorized by this request."
@@ -214,6 +273,33 @@ session_log:
     summary: "User requires each learner to run a small red-team exercise and supplied local and cloud documentation. Official local guide states incompatibility with the new Foundry portal and SDK. Cloud is the recommended candidate path, pending region and target/tool compatibility verification. Returning to Method 1 scope confirmation; no method transition has occurred."
 
 artifacts:
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/canonical/vision-statement.md"
+    method: 5
+    type: "canonical-vision"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/canonical/problem-statement.md"
+    method: 5
+    type: "canonical-problem"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/canonical/scenarios/flight-disruption-evaluation.md"
+    method: 5
+    type: "canonical-scenario"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/canonical/use-cases/run-understand-customize.md"
+    method: 5
+    type: "canonical-use-case"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-05-user-concepts/method-06-handoff.md"
+    method: 5
+    type: "selected-concept-handoff-with-validation-limits"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-06-lofi-prototypes/prototype-plan.md"
+    method: 6
+    type: "rough-prototype-planning"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-05-user-concepts/concepts.yml"
+    method: 5
+    type: "draft-concept-cards"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-05-user-concepts/stakeholder-alignment.md"
+    method: 5
+    type: "learner-journey-review-and-validation-plan"
+  - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-04-brainstorming/theme-clusters.md"
+    method: 4
+    type: "candidate-learning-themes-with-rationale"
   - path: ".copilot-tracking/dt/foundry-evaluation-learning/method-04-brainstorming/session-plan.md"
     method: 4
     type: "ideation-session-plan"
@@ -270,6 +356,7 @@ artifacts:
     type: "assumptions-log"
 
 confirmed_context:
+  - "User accepted clearly labelled supplied good/bad response examples for introductory rubric practice, with an explicit explanation that fresh agent responses do not reliably reproduce a particular failure. Actual Foundry evaluation runs on these inputs remain hands-on. Keep live-agent evaluation separate; do not claim supplied answers were generated by the current agent."
   - "User confirmed infrastructure provisioning as pre-work excluded from a core lab target below 120 minutes. Agent readiness is inside the session. User aims for approximately 80% feature coverage; exact feature scope/denominator is not agreed. Preserve practical evaluation, rubric creation/change, agent improvement, and live production investigation."
   - "This is a hands-on learning lab like the existing repository labs, not a real customer delivery. Use customer situations to explain evaluation value; do not require customer role-play, agreement meetings, or a separate handover simulation. Reusable evaluation assets remain useful learning outputs."
   - "Use clearly labelled fictional airline policy for the passenger-facing flight-disruption scenario. Real-world legal-entitlement advice is outside the lab's scope."
@@ -402,7 +489,7 @@ proposed_partner_questions:
   rationale: "Ask about actual practice before suggesting evaluation tools or sales benefits. Allow evidence of no gap as well as a gap."
 
 current_exploration:
-  objective: "Fit the proposed hands-on core below 120 minutes after provisioning pre-work by merging overlapping activities and deferring extra feature depth. Preserve rubric creation/change, comparable agent improvement, live production investigation, and evidence/value explanation. Keep approximately 80% coverage as an unmeasured breadth goal until its scope is defined."
+  objective: "Refine the existing PRD as PRD Builder using the selected Run Understand Customize journey and recorded requester decisions. Retain all learner, technical, timing, budget, and scope gaps; leave Method 6 paused and incomplete."
   pending_question: null
   evidence_limit: "Two practitioner excerpts supplied by the requester are summarized anonymously. No independent WorkIQ verification, observed learner sessions, or direct customer evidence. Do not generalize to all partners."
 
@@ -422,18 +509,25 @@ prd_authoring:
   status: "draft"
   path: ".copilot-tracking/dt/foundry-evaluation-learning/prd.md"
   state_path: ".copilot-tracking/dt/foundry-evaluation-learning/prd-state.md"
-  authorization: "User approved drafting. The previous checkpoint's commit/push request was completed. The latest request authorizes persisting and committing this session's work on the existing branch, not pushing. No final PRD signoff, implementation, cloud jobs, access changes, or PR creation authorized."
+  builder_session_state: ".copilot-tracking/prd-sessions/foundry-evaluation-learning.state.json"
+  version: "0.2.0"
+  phase: "Build"
+  authorization: "User requested PRD Builder on 2026-11-11, leaving Method 6 incomplete, then explicitly requested committing all current changes and pushing at 2026-11-11T16:24:57.496+13:00. The commit/push authorization applies to this checkpoint only. No final PRD signoff, implementation, cloud jobs, access changes, or PR creation is authorized."
+  authorization_quote: "Ok, you're now the PRD builder - proceed leaving Method 6 incomplete."
+  method_6_status: "Paused, incomplete. Existing rough prototype plan retained; no variations built or tested, participants confirmed, or observed learner evidence. Not a validated Solution Space exit."
   synthesis_disposition: "User explicitly accepted bounded Method 3 closure and transition to Method 4. Method 3 is recorded complete for this design round, not fully validated. PRD acceptance detail and technical feasibility remain unapproved."
-  canonical_checkpoint: "Automatic canonical deck is not yet available because the Method 3 closure retains stakeholder and pattern-validation gaps. No snapshot or rendering generated; explicit user requests remain possible."
+  canonical_checkpoint: "Four canonical Markdown entries remain. User rejected and requested removal of the generated PowerPoint on 2026-11-11. The deck and its build files were removed. HTML is preferred for a future visual summary; no replacement was created. Method 6 is paused and incomplete during PRD authoring."
 
 pause_checkpoint:
-  status: "paused"
+  status: "resumed"
   requested_at: "2026-11-05T17:43:19.453+13:00"
   request: "Commit all our work to the branch and we'll continue later. Make sure all method state is persisted"
   branch: "plagueho-foundry-rubric-evaluators"
+  commit: "aba1446"
   commit_authorized: true
   push_authorized: false
   resume_method: 4
+  resumed_at: "2026-11-05T19:23:06.547+13:00"
   next_action: "Review the proposed core cuts and pacing, agree feature-coverage scope, and complete Method 4 theme grouping before any Method 5 transition."
   retained_limits: "Provisioning pre-work is confirmed. The 119-minute budget is untested; approximately 80% coverage has no agreed denominator. PRD acceptance detail, technical feasibility, and wider learner validation remain open."
 
@@ -500,15 +594,33 @@ storage:
   reason: "User requested repository persistence and branch push for cross-machine recovery. Repository copies are authoritative on resume."
 
 canonical_deck:
-  snapshots: []
-  last_offered_at: null
-  last_offered_response: null
-  last_generated_at: null
+  snapshots:
+    - method: 5
+      date: "2026-11-11"
+      mode: "create"
+      entry_count: 4
+      candidate_count: 4
+      fingerprint: "f2f0df229e8531f1315a62c5f1cffcfb588e61243b2d0b27d3033c71be261f6b"
+      fingerprint_algorithm: "SHA-256 of sorted relative paths and UTF-8 content, LF normalized, separated by LF"
+      evidence_limit: "Requester-approved working design; no measured comprehension, independent learner testing, integrated execution, or timed completion. Snapshot does not change Method 6 status."
+  last_offered_at: "2026-11-07T16:43:57.048+13:00"
+  last_offered_response: "accepted"
+  last_generated_at: "2026-11-11T09:46:57.642+13:00"
 
 customer_card_render:
-  last_offered_at: null
-  last_offered_response: null
-  last_generated_at: null
-  decline_final: false
+  last_offered_at: "2026-11-11T09:46:57.642+13:00"
+  last_offered_response: "accepted"
+  response_at: "2026-11-11T12:44:53.558+13:00"
+  status: "removed at user request; PowerPoint rejected"
+  snapshot_fingerprint: "f2f0df229e8531f1315a62c5f1cffcfb588e61243b2d0b27d3033c71be261f6b"
+  last_offered_snapshot_key: "method-5-2026-11-11"
+  last_generated_snapshot_key: "method-5-2026-11-11"
+  last_generated_at: "2026-11-11"
+  decline_final: true
+  removed_at: "2026-11-11T15:02:38.727+13:00"
+  removal_reason: "User rejected presentation quality and prefers HTML."
+  preferred_format: "HTML"
   output_path: null
+  slide_count: 0
+  retained_limits: "Canonical Markdown is preserved. No HTML replacement was created. Do not regenerate or re-offer PowerPoint in this DT run."
 ```

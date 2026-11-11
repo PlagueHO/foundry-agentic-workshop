@@ -1,0 +1,42 @@
+concepts:
+  - name: Evidence First
+    description: >-
+      Learners evaluate supplied good and bad flight answers with built-in checks,
+      then generate and refine a rubric from supplied requirements to express
+      what those checks miss.
+      They apply the checks to an agent change and synthetic live lab activity.
+    file: evidence-first.png
+    prompt: >-
+      Create a simple line drawing with stick figures showing a learner comparing
+      two supplied answers, inspecting evaluation results, and reviewing generated
+      quality criteria before checking a live agent. Use minimal lines, a plain white
+      background, black-and-white line art, and no shading. Show only the core
+      interaction, not a detailed portal interface.
+  - name: Run Understand Customize
+    description: >-
+      Learners run a built-in check on supplied flight answers, inspect its limits,
+      then generate and review a rubric from supplied policy and quality priorities.
+      They test a supplied new requirement before comparing an agent change and
+      evaluating synthetic live activity.
+    file: run-understand-customize.png
+    prompt: >-
+      Create a simple line drawing with stick figures showing a learner inspecting
+      a built-in evaluation result, reviewing generated criteria beside a supplied
+      policy sheet, and changing one criterion before checking the same answers.
+      Use minimal lines, a plain white background, black-and-white line art,
+      and no shading. Show only the core interaction, not a detailed portal interface.
+  - name: Criteria First
+    description: >-
+      Learners first run a simple built-in evaluator on supplied answers,
+      then generate and review a rubric from supplied flight requirements
+      and policy before comparing rubric results with built-in checks.
+      They refine the criteria before evaluating an agent change and synthetic
+      live lab activity.
+    file: criteria-first.png
+    prompt: >-
+      Create a simple line drawing with stick figures showing a learner turning
+      a built-in evaluation result beside a short requirements sheet, reviewing generated
+      quality criteria, checking two supplied
+      answers, and then checking a live agent. Use minimal lines, a plain white
+      background, black-and-white line art, and no shading. Show only the core
+      interaction, not a detailed portal interface.

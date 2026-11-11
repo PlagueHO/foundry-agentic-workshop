@@ -38,10 +38,12 @@ How might we give consultants, delivery engineers, and architects hands-on Found
 
 Planning is recorded. Fifteen rough ideas include user ideas about early rubric agreement and implementing rubric changes, plus documentation-informed tooling suggestions. The user corrected drift toward customer delivery: focus on practical Foundry tooling experiences instead. The numerical target is met. At the user's request, an initial outcome-fit recommendation in `session-notes.md` distinguishes proposed core experiences from optional depth. No selection, formal theme clustering, or Method 5 transition is approved.
 
+On resume, the coach drafted three candidate themes in `theme-clusters.md` for review: comparison through a visible mismatch, explicit quality criteria, and controlled change/feedback. This begins candidate grouping, not approved theme selection or a fixed module sequence.
+
 The requester subsequently confirmed a target below two hours with infrastructure provisioning as pre-work. `session-notes.md` proposes merged core activities, cuts, and a 105-minute activity budget plus 14-minute contingency, totaling 119 minutes. These are not measured timings or an approved module sequence.
 
 ## Deferred artifacts and optional surfaces
 
-Create `theme-clusters.md` only when convergence begins. Keep concepts rough; no polished deck or visual design is needed.
+Candidate grouping is now recorded in `theme-clusters.md`. Keep concepts rough; no polished deck or visual design is needed.
 
 The automatic canonical deck is not yet available because the Method 3 closure retains stakeholder and pattern-validation gaps. No rendering is requested. A collaborative board export can be considered separately; no external board write is authorized.

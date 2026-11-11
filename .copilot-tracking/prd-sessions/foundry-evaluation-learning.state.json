@@ -1,0 +1,141 @@
+{
+  "prdFile": ".copilot-tracking/dt/foundry-evaluation-learning/prd.md",
+  "lastAccessed": "2026-11-11T15:42:34.5639260+13:00",
+  "currentPhase": "Build",
+  "disclaimerShownAt": "2026-11-11T15:42:34.5639260+13:00",
+  "phaseSkillsLoaded": [
+    "prd-author#assess",
+    "prd-author#discover",
+    "prd-author#create",
+    "prd-author#build",
+    "prd-author#integrate"
+  ],
+  "sourceBrdHandoff": null,
+  "feasibilityHandoff": null,
+  "recovery": {
+    "legacyStateFile": ".copilot-tracking/dt/foundry-evaluation-learning/prd-state.md",
+    "coachingStateFile": ".copilot-tracking/dt/foundry-evaluation-learning/coaching-state.md",
+    "note": "Reconstructed from the existing draft and recorded requester decisions. The existing PRD path is retained. The PRD disclaimer was displayed before this state was created; its timestamp was persisted during recovery. No unused extension state or RPI invocation history was initialized."
+  },
+  "questionsAsked": [
+    "track-scope",
+    "target-users",
+    "learner-prerequisites",
+    "working-scenario",
+    "primary-outcomes",
+    "production-and-cicd-scope",
+    "provisioning-boundary",
+    "duration-target",
+    "feature-coverage-aim",
+    "introductory-examples",
+    "rubric-authoring-support",
+    "rubric-change-support",
+    "opening-order",
+    "prd-refinement-with-method-6-incomplete"
+  ],
+  "answeredQuestions": {
+    "track-scope": "Separate Microsoft Foundry evaluation learning track; preserve the introduction track progression.",
+    "target-users": "Consultants, delivery engineers, and solution architects have equal priority. Also support operators and facilitators.",
+    "learner-prerequisites": "Basic Foundry knowledge; no prior track completion or Python authoring. Running supplied scripts is allowed and source remains available.",
+    "working-scenario": "Passenger-facing flight-disruption advice using synthetic data, fictional policy, and read-only tools. Exclude booking, claim submission, and legal-entitlement advice.",
+    "primary-outcomes": "Run evaluations, generate/review/change rubrics, explain results and limits, investigate failures, verify an agent quality improvement, and make reasoned decisions.",
+    "production-and-cicd-scope": "Hands-on evaluation of live lab-agent activity is core. A real GitHub Actions evaluation workflow is a required track deliverable with optional learner participation. Optimizer and controlled red teaming are secondary.",
+    "provisioning-boundary": "Required infrastructure provisioning is pre-work. The agent readiness check remains within the timed core.",
+    "duration-target": "Less than 120 minutes, including readiness, expected waits, and contingency. The proposed 119-minute budget is not measured.",
+    "feature-coverage-aim": "Approximately 80% is a breadth aim. No feature denominator or measured coverage is agreed.",
+    "introductory-examples": "Use labelled supplied acceptable/unacceptable answers and explain why. Real evaluations on those answers do not satisfy live-agent improvement or production evidence.",
+    "rubric-authoring-support": "Supply quality priorities and fictional policy. Foundry generates a starting rubric; learners review and refine it instead of writing all criteria from scratch.",
+    "rubric-change-support": "Supply one additional requirement for learners to incorporate and test. The exact requirement remains open. Comparing unchanged answers under both rubric versions is a coach recommendation.",
+    "opening-order": "Run Understand Customize: an actual simple built-in evaluation and result review precede rubric generation, comparison, and guided revision.",
+    "prd-refinement-with-method-6-incomplete": "Ok, you're now the PRD builder - proceed leaving Method 6 incomplete."
+  },
+  "referencesProcessed": [
+    {
+      "file": ".copilot-tracking/dt/foundry-evaluation-learning/prd.md",
+      "status": "updated",
+      "key-findings": "Existing draft updated from 0.1.0 to 0.2.0. Stable IDs retained; FR-020 through FR-022 and AC-020 through AC-022 added."
+    },
+    {
+      "file": ".copilot-tracking/dt/foundry-evaluation-learning/method-03-synthesis/problem-definition.md",
+      "status": "integrated",
+      "key-findings": "Bounded working baseline. Two anonymous requester-supplied practitioner perspectives are not independent learner or customer validation."
+    },
+    {
+      "file": ".copilot-tracking/dt/foundry-evaluation-learning/method-04-brainstorming/theme-clusters.md",
+      "status": "integrated-with-limits",
+      "key-findings": "Learning themes and proposed scope cuts inform the draft. Timing, cuts, and feature-coverage denominator are not validated."
+    },
+    {
+      "file": ".copilot-tracking/dt/foundry-evaluation-learning/method-05-user-concepts/method-06-handoff.md",
+      "status": "integrated",
+      "key-findings": "Selected Run Understand Customize journey, bounded Method 5 closure, and separate live-agent improvement and production requirements."
+    },
+    {
+      "file": ".copilot-tracking/dt/foundry-evaluation-learning/method-05-user-concepts/stakeholder-alignment.md",
+      "status": "integrated",
+      "key-findings": "Later requester corrections supersede initial opening alternatives. Guided generation and an additional supplied requirement are confirmed; unchanged-answer comparison is a recommendation."
+    },
+    {
+      "file": ".copilot-tracking/dt/foundry-evaluation-learning/method-06-lofi-prototypes/prototype-plan.md",
+      "status": "retained-validation-gap",
+      "key-findings": "Three proposed rough formats for one clarity assumption. No built prototypes, confirmed participants, or observations. Method 6 remains incomplete."
+    },
+    {
+      "file": "https://learn.microsoft.com/en-us/azure/foundry/concepts/evaluation-evaluators/rubric-evaluators",
+      "status": "rechecked-and-integrated",
+      "key-findings": "Official guidance supports rubric generation followed by review/refinement. Hosted-agent selection supplies its description, not internal code. Documentation is not integrated lab validation."
+    }
+  ],
+  "nextActions": [
+    "Review the consolidated draft and proposed acceptance detail with the requester.",
+    "Resolve Q-001 through Q-010 at their recorded boundaries, including exact evaluator selection, the supplied additional requirement, spend limits, reviewer roles, and timing.",
+    "Keep Method 6 incomplete. Resume its proposed tests only when requested; do not infer a validated Solution Space exit.",
+    "Retain live-agent, production-evaluation, SDK/model/input-mapping, Optimizer, and red-team support as unverified until separately authorized evidence exists.",
+    "Before entering Validate, load the PRD quality contracts and dispatch the PRD Quality Reviewer. Do not equate document checks with formal gate clearance."
+  ],
+  "qualityChecks": [
+    "Repository Markdown lint passed: pnpm run lint:md, via cached npm execution; 113 files, zero issues.",
+    "Explicit hidden planning Markdown lint passed: 27 files.",
+    "YAML/JSON parsing, stable requirement IDs, Given/When/Then shape, and 22/22 FR-to-AC and FR-to-goal links passed.",
+    "Local Markdown links, source paths, cross-state consistency, and scoped portability checks passed.",
+    "git diff --check passed."
+  ],
+  "qualityStatus": {
+    "documentChecks": "passed; author checks only, not a formal quality gate",
+    "tooling": "Direct pnpm was unavailable on PATH. The required repository command passed using cached pnpm and Markdown tools through offline npm execution with the effective managed source checked. No dependency or package configuration change.",
+    "formalReview": "not-run",
+    "validateEntered": false,
+    "finalizeEntered": false,
+    "acceptanceTests": "Not Started",
+    "technicalFeasibility": "unverified",
+    "approval": "not-granted"
+  },
+  "document": {
+    "status": "draft",
+    "version": "0.2.0",
+    "functionalRequirements": 22,
+    "acceptanceCriteria": 22,
+    "productGoals": 4,
+    "nonFunctionalRequirements": 12,
+    "constraints": 8
+  },
+  "authorization": {
+    "requestedAt": "2026-11-11T15:41:15.697+13:00",
+    "localPrdRefinement": true,
+    "method6Completion": false,
+    "finalPrdApproval": false,
+    "implementation": false,
+    "cloudJobs": false,
+    "accessChanges": false,
+    "commit": true,
+    "push": true,
+    "commitPushRequestedAt": "2026-11-11T16:24:57.496+13:00",
+    "commitPushRequest": "Commit all changes and push",
+    "commitPushScope": "One checkpoint of all current changes on plagueho-foundry-rubric-evaluators. Verify the commit and push in Git; this request does not approve the PRD, complete Method 6, or authorize implementation.",
+    "pullRequest": false
+  },
+  "userPreferences": {
+    "question-style": "One focused question at a time; do not repeat confirmed decisions.",
+    "visual-output": "Preserve the canonical Markdown. Do not regenerate or offer PowerPoint. HTML is preferred if a future visual summary is requested."
+  }
+}

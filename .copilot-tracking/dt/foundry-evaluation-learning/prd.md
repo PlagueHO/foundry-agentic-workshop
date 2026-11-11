@@ -2,11 +2,11 @@
 prd_id: "PRD-FOUNDRY-EVALUATION-LEARNING"
 title: "Foundry Evaluation Learning Track"
 status: "draft"
-version: "0.1.0"
+version: "0.2.0"
 owners: ["Workshop requester"]
 reviewers: ["Workshop maintainer", "Technical reviewer", "Representative learner"]
 created_date: "2026-11-05"
-last_updated: "2026-11-05"
+last_updated: "2026-11-11"
 product_goal_ids: ["GOAL-001", "GOAL-002", "GOAL-003", "GOAL-004"]
 product_goal_smart_status: "deferred"
 fr_to_ac_coverage_threshold_pct: 80.0
@@ -27,7 +27,7 @@ license: "CC-BY 4.0 (Microsoft HVE-Core)"
 
 # Foundry Evaluation Learning Track
 
-> **PRD-FOUNDRY-EVALUATION-LEARNING** | Draft 0.1.0 | Not approved for implementation
+> **PRD-FOUNDRY-EVALUATION-LEARNING** | Draft 0.2.0 | Not approved for implementation
 
 ## Executive Summary
 
@@ -45,11 +45,17 @@ Hands-on production evaluation is core. Learners identify a quality failure in l
 
 Primary success evidence is a learner's completed evaluation and explanation, not a portal click sequence or an improved score alone. The requester confirmed infrastructure provisioning as pre-work outside the less-than-two-hour lab target and asked for approximately 80% feature coverage. Treat the coverage request as a breadth objective, not a measured percentage of the entire Foundry catalogue: the feature denominator is not agreed. Detailed pacing, spend budget, cohort targets, and release date remain open. This draft captures agreed intent and proposed acceptance tests; it does not prove learning effectiveness or technical feasibility.
 
+The selected journey is **Run Understand Customize**. Learners first run a simple built-in evaluator on labelled supplied answers and inspect the results. They then generate and review a rubric from lab-supplied priorities and policy, evaluate the answers, and test a rubric revision against one supplied additional requirement. Separate exercises address live-agent improvement and production evaluation. The lab does not require blank-page domain discovery or writing all criteria from scratch.
+
 ## Product Context
 
 The original rubric-module request expanded into a reusable evaluation learning track. Two anonymous practitioner perspectives describe differing assessment practices: semantic comparison and pilot judgment in one case; lifecycle checks and recommended handover in another. One source expresses interest in a more formal lab. This is limited evidence, not an industry-wide capability assessment.
 
 The requester approved the problem framing and learning boundaries. Detailed synthesis is in [problem-definition.md](method-03-synthesis/problem-definition.md). No approved BRD, feasibility handoff, or formal RPI research handoff was supplied. Existing planning notes provide contextual observations, not those formal contracts.
+
+On 2026-11-11 the requester authorized PRD refinement while explicitly leaving Method 6 incomplete. Methods 1-5 are closed for progression, with bounded validation limits for Methods 3 and 5. Method 6 has a [prototype plan](method-06-lofi-prototypes/prototype-plan.md), but no built variations, confirmed participants, test observations, or constraint discoveries. This is a requirements-authoring transfer, not a validated Solution Space exit, Method 7 transition, or implementation approval.
+
+The [selected-concept handoff](method-05-user-concepts/method-06-handoff.md) and [requester feedback](method-05-user-concepts/stakeholder-alignment.md) supply the later learning-design decisions. The original Evidence First and Criteria First openings are design history, not unresolved alternatives. Requester selection is not independent learner validation.
 
 ## Users and Personas
 
@@ -74,6 +80,10 @@ These are role-based descriptions, not invented biographies or observed learner 
 | DD-005 | Investigate one supplied Python hosted agent | Preferred direction, not approved architecture |
 | DD-006 | Author a draft PRD before implementation | User-authorized; formal synthesis validation remains incomplete |
 | DD-007 | Teach Microsoft Foundry feature use and value explicitly; no third-party evaluation platform required for core completion | User-confirmed objective; technical support still requires verification |
+| DD-008 | Use Run Understand Customize, with an actual simple built-in run and result review before rubric generation | Requester-selected in Method 5; comprehension and execution remain untested |
+| DD-009 | Use labelled supplied acceptable/unacceptable answers for introductory practice and explain their purpose | Requester-confirmed; does not satisfy live-agent improvement or production evaluation |
+| DD-010 | Generate a starting rubric from supplied priorities and policy, review it, then test one supplied additional requirement | Requester-confirmed learning direction; exact criteria and edit workflow remain open |
+| DD-011 | Refresh this existing draft while leaving Method 6 incomplete | Explicit user authorization on 2026-11-11; no validated DT exit, PRD sign-off, or implementation approval |
 
 ## Product Goals
 
@@ -95,8 +105,8 @@ Statements below capture agreed capabilities. Acceptance detail is proposed for 
 | FR-001 | The track shall provide creation of its required agent and assets from the provisioned workshop starting state. | MUST | Learner starts this track without assets from another track; setup prepares its prerequisites |
 | FR-002 | The first evaluation exercise shall require an explanation of what evaluation provides and why it matters to a customer and agentic solution. | MUST | Learner completes the first run and explains value and limits |
 | FR-003 | The track shall provide an early, repeatable local development evaluation cycle using supplied scripts to assess changes against an explicit non-functional quality requirement. | MUST | Learner links a requirement to criteria, records a baseline, and reruns checks while building without authoring Python |
-| FR-004 | The track shall contrast built-in evaluator results with scenario-specific quality criteria. | MUST | Learner compares checks and explains what each measures |
-| FR-005 | The rubric exercise shall require creation or revision of a rubric and use of its criterion-level results. | MUST | Learner evaluates known examples and explains a scoring judgment |
+| FR-004 | The track shall contrast the selected built-in evaluator results with scenario-specific rubric results. | MUST | Learner compares checks on supplied examples and explains each check's purpose and limits |
+| FR-005 | The rubric exercise shall guide learners to a reviewed Foundry-generated rubric based on lab-supplied quality priorities and fictional policy. | MUST | Learner generates a starting rubric, checks its criteria against the supplied priorities, and uses criterion-level results; writing all criteria from scratch is not required |
 | FR-006 | The evaluation exercises shall provide representative cases and separate held-back validation cases. | MUST | Learner assesses a change without treating improvement examples as independent validation |
 | FR-007 | The improvement exercise shall require verification of at least one quality change against a recorded baseline. | MUST | Learner changes an aspect and uses comparable evidence to determine the effect |
 | FR-008 | The decision exercise shall require a justified change or release recommendation based on evaluation evidence and its limits. | MUST | Learner recommends proceeding or retaining the baseline; neither outcome is forced |
@@ -111,6 +121,9 @@ Statements below capture agreed capabilities. Acceptance detail is proposed for 
 | FR-017 | The optional CI/CD module shall provide a real repository GitHub Actions workflow evaluating the lab-deployed agent. | MUST, optional learner participation | Learner forks, configures settings and access, then runs the workflow against an existing deployment |
 | FR-018 | Setup shall use maintained track requirements and report module-specific environment limitations. | MUST | Individual or organizer prepares selected tracks; supported work remains available without silent region changes |
 | FR-019 | Core exercises shall provide hands-on use of Microsoft Foundry evaluation features and require learners to explain their role, value, and limits in a solution without requiring a third-party evaluation platform. | MUST | Partner engineer, consultant, or architect connects actual feature use and results to a customer quality need |
+| FR-020 | The introductory evaluation exercise shall identify supplied answers and explain why they are used. | MUST | Learner uses labelled acceptable/unacceptable examples without mistaking them for newly generated live-agent evidence |
+| FR-021 | The rubric-change exercise shall require learners to incorporate and test one lab-supplied additional quality requirement. | MUST | Learner revises the rubric and explains its effect on measurement, separately from any agent change |
+| FR-022 | The core journey shall include a completed simple built-in evaluation and result review before rubric generation. | MUST | Learner inspects actual scores and explanations before generating the domain rubric |
 
 Acceptance and goal links for every requirement are maintained in the Traceability Matrix.
 
@@ -142,7 +155,7 @@ No numeric concurrency target is agreed. Shared organizer operation must be asse
 
 ### Maintainability and Operability
 
-NFR-006: Comparisons shall identify the agent version, actual model identity/version, dataset, evaluator/rubric configuration, and relevant tool configuration used.
+NFR-006: Comparison records shall identify the agent version, actual model identity/version, dataset, evaluator/rubric configuration, and relevant tool configuration used. Agent-change comparisons shall keep the dataset, rubric, and judge settings fixed. Any other changed setting shall be disclosed so that the comparison does not imply an isolated agent effect.
 
 NFR-007: New environment settings shall be reflected in the canonical `shared/.env.example` and setup generation or derivation path. Reprovisioning must not depend on preserving undocumented manual edits.
 
@@ -188,8 +201,8 @@ All criteria are **Not Started**. Each statement is a proposed test, not a passe
 | AC-001 | Given only the documented provisioned workshop starting state, when track setup completes, then all required core agent, tool, policy, and data assets are available without completing another track. | FR-001 |
 | AC-002 | Given the first evaluation output, when the learner explains it, then the explanation states what was checked, its customer value, and at least one limit of the evidence. | FR-002 |
 | AC-003 | Given the documented local environment and an explicit non-functional quality requirement linked to evaluation criteria before a development change, when the learner runs supplied checks before and after the change without editing Python, then actual case-level results identify its effect against those criteria and support a next development decision without CI/CD setup. | FR-003 |
-| AC-004 | Given supplied tool-data, unsupported-action, fictional-policy, and trade-off examples, when the learner compares evaluator results, then the explanation distinguishes tool choice, tool-result use, grounding, and domain judgment. | FR-004 |
-| AC-005 | Given known acceptable and unacceptable answers, when a learner creates or revises and runs a rubric, then criterion-level scores and reasons support an explanation of agreements or disagreements with expected judgments. | FR-005 |
+| AC-004 | Given selected built-in and rubric results for supplied examples, when the learner compares them, then the explanation states what each check measures, what input evidence it uses, and which supplied domain requirement a built-in score alone does not establish. | FR-004 |
+| AC-005 | Given supplied quality priorities, fictional policy, and labelled answers, when the learner generates and reviews a rubric in Foundry, then they identify how its criteria cover the supplied priorities, refine gaps or explain why no refinement is needed, and use criterion-level scores and reasons to explain a judgment. | FR-005 |
 | AC-006 | Given improvement and held-back case sets, when the learner validates a change, then the validation evidence identifies the held-back set separately. | FR-006 |
 | AC-007 | Given a baseline and a changed configuration, when comparable evaluations run, then the learner demonstrates at least one improved quality aspect and records any regressions. | FR-007 |
 | AC-008 | Given case-level results and agreed gates, when a recommendation is made, then it cites evidence, limitations, and critical failures; an average does not silently override a designated critical failure. | FR-008 |
@@ -204,10 +217,24 @@ All criteria are **Not Started**. Each statement is a proposed test, not a passe
 | AC-017 | Given a fork, configured access/settings, and an existing lab-deployed agent, when the optional evaluation workflow is invoked, then it produces real evaluation evidence and a gate outcome without provisioning or deleting the lab environment. | FR-017 |
 | AC-018 | Given selected tracks in individual or organizer mode, when setup resolves requirements, then it preserves explicit configuration and reports unsupported modules without removing unrelated supported work. | FR-018 |
 | AC-019 | Given completed core exercises using Microsoft Foundry, when the learner explains the solution to a customer or delivery team, then they identify the Foundry evaluation features actually used, link their results to a quality need, and state relevant limits; core completion requires no third-party evaluation platform account or deployment. | FR-019 |
+| AC-020 | Given the introductory answers and instructions, when the learner runs their evaluation, then the answers are labelled as supplied examples, the instructions explain why a fresh agent mistake is not required for this exercise, and the results are not reported as newly generated live-agent evidence. | FR-020 |
+| AC-021 | Given an initial rubric and one supplied additional quality requirement, when the learner revises and evaluates the rubric, then the revised criteria represent that requirement and the learner explains what changed in measurement without claiming that a score difference proves an agent improvement. | FR-021 |
+| AC-022 | Given the documented core path, when the learner follows it, then they complete a real simple built-in evaluation and inspect its scores, explanations, and limits before starting rubric generation. | FR-022 |
 
 ## Traceability Matrix
 
-Source codes: S1 = requester-approved scope in `implementation-plan.md` and `coaching-state.md`; S2 = anonymous `method-03-synthesis/practitioner-evidence.md`; S3 = synthesis insights and problem definition; S4 = documented evaluator fit in `method-03-synthesis/affinity-clusters.md`. These are local artifact pointers, not independent evidence counts.
+Source codes below identify supporting artifacts, not independent evidence counts.
+
+| Code | Source | Authority and limit |
+|---|---|---|
+| S1 | [Working plan](implementation-plan.md) and [coaching state](coaching-state.md) | Requester scope and history; the later recorded decisions take precedence over older proposals |
+| S2 | [Anonymous practitioner evidence](method-03-synthesis/practitioner-evidence.md) | Two requester-supplied perspectives, not population-level evidence |
+| S3 | [Synthesis insights](method-03-synthesis/insight-statements.md) and [problem definition](method-03-synthesis/problem-definition.md) | Bounded working baseline, not fully validated synthesis |
+| S4 | [Evaluator fit notes](method-03-synthesis/affinity-clusters.md) | Documentation-based suitability, not live verification |
+| S5 | [Selected-concept handoff](method-05-user-concepts/method-06-handoff.md) | Requester-selected journey with explicit Method 5 limits |
+| S6 | [Requester feedback and corrections](method-05-user-concepts/stakeholder-alignment.md) | Chronological decisions; later corrections supersede earlier suggestions |
+| S7 | [Method 6 prototype plan](method-06-lofi-prototypes/prototype-plan.md) | Planned clarity tests, no observations or validated solution exit |
+| S8 | [Official rubric guidance](https://learn.microsoft.com/en-us/azure/foundry/concepts/evaluation-evaluators/rubric-evaluators) | Rechecked on 2026-11-11; supports generation and human refinement, not this lab's integrated feasibility |
 
 ### Feasibility Candidate Disposition
 
@@ -220,8 +247,8 @@ Not applicable: no formal feasibility-to-PRD handoff was consumed. Technical pro
 | FR-001 | AC-001 | 1 | S1 |
 | FR-002 | AC-002 | 1 | S1, S3 |
 | FR-003 | AC-003 | 1 | S1 |
-| FR-004 | AC-004 | 1 | S1, S4 |
-| FR-005 | AC-005 | 1 | S1, S4 |
+| FR-004 | AC-004 | 1 | S1, S4, S5 |
+| FR-005 | AC-005 | 1 | S1, S5, S6, S8 |
 | FR-006 | AC-006 | 1 | S1 |
 | FR-007 | AC-007 | 1 | S1 |
 | FR-008 | AC-008 | 1 | S1, S3 |
@@ -236,8 +263,11 @@ Not applicable: no formal feasibility-to-PRD handoff was consumed. Technical pro
 | FR-017 | AC-017 | 1 | S1 |
 | FR-018 | AC-018 | 1 | S1 |
 | FR-019 | AC-019 | 1 | S1, S3 |
+| FR-020 | AC-020 | 1 | S5, S6 |
+| FR-021 | AC-021 | 1 | S5, S6 |
+| FR-022 | AC-022 | 1 | S5, S6 |
 
-Coverage: 19/19 requirements have acceptance links (100%). This is document coverage, not execution evidence or proof of requirement quality.
+Coverage: 22/22 requirements have acceptance links (100%). This is document coverage, not execution evidence or proof of requirement quality.
 
 ### FR-to-GOAL Alignment
 
@@ -262,12 +292,15 @@ Coverage: 19/19 requirements have acceptance links (100%). This is document cove
 | FR-017 | GOAL-003 | 1 |
 | FR-018 | GOAL-003 | 1 |
 | FR-019 | GOAL-004 | 1 |
+| FR-020 | GOAL-001 | 1 |
+| FR-021 | GOAL-001 | 1 |
+| FR-022 | GOAL-004 | 1 |
 
-Alignment: 19/19 requirements have goal links (100%). No coverage waiver is requested.
+Alignment: 22/22 requirements have goal links (100%). No coverage waiver is requested.
 
 ## MVP and Release Framing
 
-Core: FR-001 through FR-014, FR-018, and FR-019. Include first-run explanation, local evaluation, rubric use, improvement, evidence-based decisions, hands-on production investigation, and reusable handover. Explicitly teach the Microsoft Foundry features used and their solution value, without a required third-party evaluation platform. Preserve the workshop's Python-first flow and support individual and facilitated use.
+Core: FR-001 through FR-014 and FR-018 through FR-022. Include the built-in-first opening, guided rubric generation and revision, local evaluation, live-agent improvement, evidence-based decisions, hands-on production investigation, and reusable process guidance. Explicitly teach the Microsoft Foundry features used and their solution value, without a required third-party evaluation platform. Preserve the workshop's Python-first flow and support individual and facilitated use.
 
 Secondary: FR-015 and FR-016. Include practical instructions for supported environments and actionable incomplete states elsewhere. Their successful execution is not required for primary completion.
 
@@ -275,7 +308,30 @@ Optional learner extension: FR-017. The delivered track includes a real workflow
 
 Not in scope: production airline functionality, legal-entitlement guidance, booking or claim execution, exhaustive evaluator coverage, a required Azure DevOps implementation, customer production access, or mandatory execution of all secondary features.
 
-Module order, count, titles, and time allocations are unapproved. The earlier implementation plan's sequence remains a proposal.
+### Selected core learning journey
+
+This sequence is requester-selected learning intent. It is not a fixed module structure, verified portal procedure, or measured schedule.
+
+| Stage | Learner action | Required evidence | Requirements |
+|---|---|---|---|
+| Ready | Check the provisioned environment and locate the supplied assets | Actual readiness state and activity-specific limits | FR-001, FR-013, FR-018 |
+| Run | Run a simple built-in evaluator on labelled supplied answers | Real Foundry result, with example provenance and purpose | FR-020, FR-022 |
+| Understand | Inspect scores and explanations before rubric generation | Explanation of what the check establishes and what it leaves open | FR-002, FR-022 |
+| Generate and review | Generate a rubric from supplied priorities and policy; review its criteria | Reviewed criteria and rubric results compared with built-ins | FR-004, FR-005 |
+| Customize | Add one supplied requirement and test a revised rubric | Revised criteria and explanation of changed measurement | FR-021 |
+| Improve | Evaluate a live agent, make a guided change, and rerun checks with held-back validation | Comparable live-agent evidence of at least one quality improvement and any regressions | FR-003, FR-006, FR-007, FR-008 |
+| Investigate | Evaluate synthetic live deployed-agent activity and inspect a quality failure | Result linked to supporting conversation or trace and a next investigation step | FR-009, FR-010, FR-011 |
+| Explain and reuse | Explain the feature value, limits, and repeat-run process | Reasoned decision and reusable lab evaluation assets | FR-012, FR-019 |
+
+Supplied priorities reduce domain-discovery work; they do not remove human review of generated criteria. A hosted-agent description must not be assumed to contain internal code or all quality priorities. Supply explicit context when needed. Official generation support is documented in S8; the selected lab path still requires verification.
+
+The saved-answer opening makes inputs available for introductory practice. It does not make model-judge scores deterministic. Do not promise that built-ins will accept an unacceptable answer, that a rubric will disagree with a built-in, or that a new requirement will change every score. Do not retry until a desired failure appears, alter thresholds just to force a lesson, or silently substitute saved evidence for live work.
+
+**Recommendation, not an accepted exercise detail:** Score unchanged supplied answers under both rubric versions, with the same judge settings. This can help separate changed measurement from agent behavior. Record the actual rubric and settings in either design. A rubric change is not an agent improvement. Weighted averages do not automatically enforce critical-failure gates. Small case sets do not establish population-level performance, and evaluations do not replace integration, load, or security testing.
+
+Exact evaluator selection, the supplied additional requirement, module count and titles, execution surfaces, and time allocations remain open. Relevance, Groundedness, Tool Call Accuracy, and Tool Output Utilization are candidate examples, not a mandated evaluator list. Select representative quality and agent checks only after their input needs and learning fit are verified. Groundedness checks support in supplied context, not independent truth; tool-use checks need the relevant interaction evidence.
+
+The earlier implementation plan's module structure and the 119-minute activity budget remain proposals. Provisioning is required pre-work; the agent readiness check, evaluation waits, and contingency count toward the less-than-120-minute core. Proposed optional-depth cuts are not approval to remove Optimizer, red teaming, or the GitHub Actions deliverable.
 
 ## Success Metrics
 
@@ -298,6 +354,8 @@ Do not treat satisfaction with the lab idea as measured capability gain. No clai
 | A-002 | The flight scenario makes evaluation differences understandable | Untested | Domain detail distracts from learning | Fixed, reviewed fixtures and early example walkthrough | S1, S4 |
 | A-003 | A supplied Python hosted agent can support the primary path | Untested end to end | Core path may require redesign | Verify runtime, SDK, tools, identity, and judge together | S1 |
 | A-004 | Production evaluation can yield actionable evidence within a workshop session | Untested | Core exercise stalls or cannot be completed | Measure latency and verify result-to-conversation/trace navigation | S1 |
+| A-005 | The built-in-first journey makes the distinction between general checks and domain criteria understandable | Requester-selected, learner understanding untested | Learners follow steps without understanding the evidence | Method 6 rough walkthrough and later representative learner testing | S5, S7 |
+| A-006 | All required core work fits below 120 minutes after provisioning pre-work | Untested; proposed budget only | Required outcomes cannot fit the session | Timed end-to-end walkthrough with expected waits and contingency; review scope with requester | S1, S5 |
 
 ### Research Finding Dispositions
 
@@ -309,6 +367,9 @@ No formal bounded RPI research report was consumed. Contextual findings are hand
 | Documented evaluator definitions match proposed examples | Retained suitability assumption pending live test | FR-004, FR-005 | No scored fixtures verified |
 | Existing flight/knowledge assets are not an aligned fictional-policy evaluation dataset | Incorporated as setup work | FR-001, FR-006 | Do not reuse rights content unchanged or include claim tool |
 | Existing workflow patterns provide authentication and artifact examples | Retained design input | FR-017 | Not proof of sufficient Foundry permissions or safe fork operation |
+| Requester selected Run Understand Customize and supplied-answer introductory practice | Incorporated as learning-design decisions | FR-004, FR-005, FR-020, FR-021, FR-022 | Not evidence of comprehension, reliable score contrasts, or completion time |
+| Official guidance supports rubric generation followed by review and refinement | Incorporated as the guided rubric approach | FR-005 | Hosted context and complete input mappings still need verification |
+| Method 6 contains a plan but no test observations | Retained validation gap | A-005, Sign-Off | No concept-validated Solution Space exit or implementation readiness |
 
 ### Risk Register
 
@@ -328,13 +389,27 @@ No formal bounded RPI research report was consumed. Contextual findings are hand
 | Q-001 | Detailed pacing below 120 minutes after provisioning pre-work, meaning of approximately 80% feature coverage, expected learner cohort, spend limits, and release horizon | Baseline approval and module sizing |
 | Q-002 | Hosted-agent implementation, SDK version, supported model roles, quota, runtime/tool identity | Primary-path implementation commitment |
 | Q-003 | Production evaluation mechanism, repeat cadence, sampling, retention, latency, and navigation | Production module implementation and live verification |
-| Q-004 | Known-answer fixtures, rubric criteria, thresholds, critical-failure gates, and judge calibration | Claiming evaluator-example reliability |
+| Q-004 | Supplied-answer fixtures, the additional quality requirement, rubric criteria, thresholds, critical-failure gates, and judge calibration | Claiming evaluator-example reliability |
 | Q-005 | Optimizer access and actual applied configuration, runtime cost measurement | Claiming secondary exercise support |
 | Q-006 | Ordinary agent scan support versus tool-mediated coverage for custom MCP | Claiming red-team coverage; backend security remains separate |
 | Q-007 | Fork onboarding, identity setup, variables/secrets, safe triggers, shared-environment target, and gate exit behavior | Optional workflow implementation |
 | Q-008 | Maintainer, technical, quality, and representative learner review ownership | PRD approval |
+| Q-009 | Exact first built-in evaluator and representative quality/agent checks, required input evidence, and portal versus supplied-script steps | Runnable exercise instructions |
+| Q-010 | Learner comprehension and independent review of the selected journey, including whether to resume the incomplete Method 6 tests | Claiming learning-design validation |
 
 Plan the small live evaluator comparison in Method 7 technical feasibility work, or an explicitly approved bounded research test if needed earlier. Method 6 can review the clarity of examples; Method 8 tests learner use. None is authorized by writing this draft.
+
+### Required validation evidence
+
+All rows below are pending. Suggested review roles are not confirmed assignments. These evidence needs are not permission to run cloud work.
+
+| Area | Evidence needed | Intended review role | Current limit |
+|---|---|---|---|
+| Opening comprehension | Observed explanation of built-in versus domain checks using a rough walkthrough | Representative learner and facilitator | Method 6 incomplete; no participants or observations |
+| Primary-path feasibility | Integrated built-in/rubric runs, input mappings, live-agent change, and a production result linked to supporting evidence | Technical reviewer | Documentation reviewed; no integrated test |
+| Timing and cost | Full core elapsed time, waits and contingency, bounded sample sizes, runtime/evaluation cost drivers, and agreed spend limits | Maintainer and requester | Proposed 119 minutes only; spend cap unknown |
+| Requirement quality | Formal standard findings and quality report, with findings resolved or retained as blockers | PRD quality reviewer | Validate not entered; no report or gate clearance |
+| Scope and accountability | Accepted detailed scope cuts, feature-coverage denominator, release horizon, review owners, and acceptance detail | Requester and maintainer | Decisions remain open; no PRD sign-off |
 
 ## Glossary
 
@@ -365,11 +440,14 @@ None granted. Evidence gaps are recorded, not waived or reported as validated.
 
 ### Handoff Readiness
 
-Draft only. Formal PRD quality-review payloads and Validate/Finalize gates have not been completed. No approved release hash or implementation handoff is issued. All acceptance tests remain unexecuted.
+Draft only. The 2026-11-11 authorization permits PRD refinement while Method 6 stays incomplete. This draft can support requirements discussion; it is not a validated Solution Space exit or an approved implementation baseline. Formal PRD quality-review payloads and Validate/Finalize gates have not been completed. No approved release hash or implementation handoff is issued. All acceptance tests remain unexecuted.
 
 ## Disclaimer
 
 This planning draft uses limited practitioner evidence and unverified technical assumptions. It is not approval to deploy, spend, change permissions, or release a production solution. Supplied fictional policy is not legal advice.
+
+> [!CAUTION]
+> **Disclaimer:** This agent is an assistive tool only. It does not provide product management approval, technical feasibility validation, or business sign-off and does not replace product managers, engineering leads, business stakeholders, or other qualified human reviewers. The output consists of suggested requirements, acceptance criteria, and product specifications to support a user's own product planning and decision-making. All Product Requirements Documents, functional requirements, non-functional requirements, and constraint definitions generated by this tool must be independently reviewed and validated by appropriate product and engineering reviewers before adoption. Outputs from this tool do not constitute product approval, requirements sign-off, or engineering commitment.
 
 ## Document Metadata
 
@@ -378,3 +456,5 @@ This planning draft uses limited practitioner evidence and unverified technical 
 - License: CC-BY 4.0 (Microsoft HVE-Core).
 - Attribution: Microsoft HVE-Core Team.
 - Source synthesis: [insights](method-03-synthesis/insight-statements.md), [problem definition](method-03-synthesis/problem-definition.md), and [how-might-we questions](method-03-synthesis/how-might-we-questions.md).
+- Revision 0.2.0: integrated Method 5 selection and later requester corrections on 2026-11-11. Existing IDs are preserved. Added FR-020 through FR-022 and AC-020 through AC-022; all acceptance statuses remain Not Started.
+- PRD session state: [builder state](../../prd-sessions/foundry-evaluation-learning.state.json) and [local authoring summary](prd-state.md). The existing PRD path is retained to preserve DT evidence links.

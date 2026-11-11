@@ -71,8 +71,42 @@ An initial outcome-fit recommendation is now recorded at the user's request. No 
 
 ## Next interaction
 
-Review the proposed cuts against the target below two hours after provisioning pre-work. Do not ask for the confirmed pre-work boundary again or promise measured duration or 80% coverage before validation.
+Review the candidate learning approaches in `theme-clusters.md`, starting with how learners first experience evaluation value. Retain the proposed cuts and timing for later agreement; do not ask for the confirmed pre-work boundary again or promise measured duration or 80% coverage before validation.
 
 ## Pause checkpoint
 
 The user requested saving all method state, committing all session work on the existing branch, and continuing later. Method 4 remains active but paused. No theme clusters, selected concept, or Method 5 transition have been approved. The current commit is local only; no push is requested.
+
+## Resumed coaching
+
+The user resumed Method 4 from checkpoint `aba1446` on 2026-11-05. The coach drafted three candidate learning themes with representative ideas, grouping rationale, constraints, stakeholder value, and concept entry points in `theme-clusters.md`. These are proposed interpretations for discussion, not validated approaches or approved module order.
+
+The next question compares failure-first, rubric-first, and change-first openings. A failure-first opening is the coach's recommendation, not a requester decision. No method transition, new commit/push, cloud run, or implementation is authorized.
+
+## Reliability challenge
+
+The user questioned whether a live agent will reliably give bad flight advice without explicit failure-inducing instructions or bad tools. The coach acknowledges that no repeatable live failure has been demonstrated. Do not portray the accepted seat-count, booking, policy, or trade-off examples as verified live outputs.
+
+The revised coach recommendation is to use accurately labelled supplied acceptable/unacceptable responses for the first rubric exercise, while learners run real Foundry evaluations. This trades live-generation realism for predictable teaching inputs; it is not yet a user-approved design.
+
+This does not satisfy the separate live improvement and production-failure requirements. A realistic baseline limitation and correction still need repeated, bounded feasibility testing with held-back cases and calibrated scoring. If that path is not reliable, revise the exercise with the user rather than force wrong answers, sample until a failure appears, or silently substitute prerecorded data. No test or method transition is authorized by this discussion.
+
+## Accepted introductory approach
+
+The user accepted supplied good/bad examples for the first rubric exercise and explicitly asked that the lab explain why. The explanation should distinguish supplied input provenance, actual hands-on Foundry scoring, and later live-agent evaluation. Stable teaching inputs avoid dependence on a fresh agent reproducing a specific mistake; they do not make judge scores deterministic.
+
+This decision does not approve the full module sequence or solve live improvement and production-failure feasibility. Do not re-ask the supplied-example question.
+
+## Method 4 exit assessment
+
+On 2026-11-06, the user checked that built-in evaluators remain part of the lab and asked whether to progress. Built-in versus custom checks remain in the working core. Relevance, Groundedness, and Tool Output Utilization were proposed as a compact selection; final input mappings and evaluator selection still require design and feasibility review.
+
+The exit signal is "Multiple distinct directions grounded in themes." The 15 rough ideas and three themes in `theme-clusters.md` provide enough material for concept comparison: visible mismatch, explicit expectations, and controlled change/feedback. Each theme has representative ideas, rationale, constraints, stakeholder value, and a concept entry point. The supplied-example introduction and provisioning pre-work are accepted decisions.
+
+Recommend moving forward to Method 5 to compare simple learner journeys and resolve retained scope, rather than keep adding features. Staying in Method 4 is useful only if a missing learning approach emerges. No evidence currently requires returning to problem synthesis.
+
+This is readiness for concept work, not validated delivery: sub-two-hour pacing, reliable live failures/improvement, evaluator calibration, and hosted integration remain open tests. Approximately 80% coverage is not a measured percentage. Wider research limits from Method 3 remain. No implementation or Method 5 transition is authorized by the readiness question alone; explicit confirmation is pending.
+
+## Confirmed transition to Method 5
+
+The user explicitly confirmed moving to Method 5 on 2026-11-06. Method 4 is closed as sufficient for concept comparison; open timing, retained scope, learner validation, and technical feasibility carry forward. The earlier pending-confirmation entries are historical. See `../method-05-user-concepts/stakeholder-alignment.md` for current review work.
