@@ -1,11 +1,6 @@
 name: Generate uv lockfile
 
 on:
-  push:
-    branches:
-      - plagueho-foundry-rubric-evaluators
-    paths:
-      - .github/workflows/generate-uv-lock.yml
   workflow_dispatch:
     inputs:
       project:
@@ -33,7 +28,7 @@ jobs:
     timeout-minutes: 10
     defaults:
       run:
-        working-directory: ${{ inputs.project || '.' }}
+        working-directory: ${{ inputs.project }}
 
     steps:
       - name: Check out the selected ref
@@ -50,7 +45,7 @@ jobs:
       - name: Generate and check the lockfile
         shell: bash
         env:
-          UPGRADE_PACKAGE: ${{ github.event_name == 'push' && 'azure-ai-projects==2.11.0' || inputs.upgrade_package }}
+          UPGRADE_PACKAGE: ${{ inputs.upgrade_package }}
         run: |
           if [[ -n "$UPGRADE_PACKAGE" ]]; then
             if [[ ! "$UPGRADE_PACKAGE" =~ ^[a-zA-Z0-9][a-zA-Z0-9._-]*(==[a-zA-Z0-9][a-zA-Z0-9.!+_-]*)?$ ]]; then
@@ -106,6 +101,6 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: uv-lock
-          path: ${{ inputs.project || '.' }}/uv.lock
+          path: ${{ inputs.project }}/uv.lock
           if-no-files-found: error
           retention-days: 7
