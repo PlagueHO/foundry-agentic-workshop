@@ -50,6 +50,15 @@ Opening an issue first lets maintainers confirm the change is in scope, avoids d
 | Secrets | Never commit secrets, tokens, keys, or connection strings |
 | Environment variables | Add all new variables to `shared/.env.example` |
 
+## Generate a portable Python lockfile
+
+Use the [Generate uv lockfile workflow](.github/workflows/generate-uv-lock.yml) if your local package proxy would put a private URL in `uv.lock`. The GitHub-hosted runner uses its default package source. The workflow rejects non-PyPI package sources and download URLs before it uploads the lockfile. It does not commit or push changes.
+
+1. Make sure the workflow is on the default branch. Push the `pyproject.toml` changes to the branch that needs the lockfile.
+1. In **Actions**, select **Generate uv lockfile**, then select **Run workflow**. Select the branch and project directory. Keep `.` for the root project.
+1. Leave **upgrade_package** blank to keep existing pins where the manifest allows them. To request an exact upgrade, enter a value such as `azure-ai-projects==2.11.0`.
+1. When the run succeeds, download **uv-lock** from the run's **Artifacts** section. Extract `uv.lock` into the selected project directory and review the diff before committing it.
+
 ## Lab content standards
 
 - Steps must be concrete and numbered so an attendee can follow them without ambiguity.

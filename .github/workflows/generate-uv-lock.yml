@@ -1,0 +1,106 @@
+name: Generate uv lockfile
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: Project directory (. is the repository root)
+        type: choice
+        required: true
+        default: '.'
+        options:
+          - '.'
+          - shared/mcp-servers/blob-relay
+          - shared/mcp-servers/flight-ops
+          - shared/mcp-servers/retail-remedy-ops
+          - tools/attendee-portal
+          - tools/python
+      upgrade_package:
+        description: Optional package to upgrade (name or name==version)
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ${{ inputs.project }}
+
+    steps:
+      - name: Check out the selected ref
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: '3.13'
+          enable-cache: false
+
+      - name: Generate and check the lockfile
+        shell: bash
+        env:
+          UPGRADE_PACKAGE: ${{ inputs.upgrade_package }}
+        run: |
+          if [[ -n "$UPGRADE_PACKAGE" ]]; then
+            if [[ ! "$UPGRADE_PACKAGE" =~ ^[a-zA-Z0-9][a-zA-Z0-9._-]*(==[a-zA-Z0-9][a-zA-Z0-9.!+_-]*)?$ ]]; then
+              echo 'Enter a package name or an exact version in the form name==version.' >&2
+              exit 1
+            fi
+            uv lock --upgrade-package "$UPGRADE_PACKAGE"
+          else
+            uv lock
+          fi
+          uv lock --check
+
+      - name: Check package sources before upload
+        shell: bash
+        run: |
+          python - <<'PY'
+          import tomllib
+          from pathlib import Path
+          from urllib.parse import urlsplit
+
+          with Path('uv.lock').open('rb') as lockfile:
+              packages = tomllib.load(lockfile)['package']
+
+          for package in packages:
+              source = package['source']
+              if source in ({'virtual': '.'}, {'editable': '.'}):
+                  continue
+              registry = urlsplit(source.get('registry', ''))
+              if (
+                  registry.scheme != 'https'
+                  or registry.netloc != 'pypi.org'
+                  or registry.path.rstrip('/') != '/simple'
+                  or registry.query
+                  or registry.fragment
+              ):
+                  raise SystemExit('The lockfile contains a non-PyPI package source.')
+
+              artifacts = [*package.get('wheels', [])]
+              if 'sdist' in package:
+                  artifacts.append(package['sdist'])
+              for artifact in artifacts:
+                  url = urlsplit(artifact.get('url', ''))
+                  if (
+                      url.scheme != 'https'
+                      or url.netloc != 'files.pythonhosted.org'
+                      or url.query
+                      or url.fragment
+                  ):
+                      raise SystemExit('The lockfile contains a non-PyPI download URL.')
+          PY
+
+      - name: Upload the generated lockfile
+        uses: actions/upload-artifact@v7
+        with:
+          name: uv-lock
+          path: ${{ inputs.project }}/uv.lock
+          if-no-files-found: error
+          retention-days: 7
